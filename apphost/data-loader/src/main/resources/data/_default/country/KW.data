@@ -1,109 +1,142 @@
 {
-	"countryCode": "KW",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_KW",
-		"id": "ar_KW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KWD",
-		"id": "KWD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AH": {
-			"locales": {
-				"ar_KW": {
-					"shortName": "الاحمدي",
-					"longName": "الاحمدي"
-				},
-				"en_US": {
-					"shortName": "Al Ahmadi",
-					"longName": "Al Ahmadi"
-				}
-			}
-		},
-		"FA": {
-			"locales": {
-				"ar_KW": {
-					"shortName": "الفروانية‎",
-					"longName": "الفروانية‎"
-				},
-				"en_US": {
-					"shortName": "Al Farwaniyah",
-					"longName": "Al Farwaniyah"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"ar_KW": {
-					"shortName": "حولي",
-					"longName": "حولي"
-				},
-				"en_US": {
-					"shortName": "Hawalli",
-					"longName": "Hawalli"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Jahra",
-					"longName": "Al Jahra"
-				},
-				"ar_KW": {
-					"shortName": "الجهراء",
-					"longName": "الجهراء"
-				}
-			}
-		},
-		"KU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Asimah",
-					"longName": "Al Asimah"
-				},
-				"ar_KW": {
-					"shortName": "العاصمه",
-					"longName": "العاصمه"
-				}
-			}
-		},
-		"MU": {
-			"locales": {
-				"ar_KW": {
-					"shortName": "مبارك الكبير",
-					"longName": "مبارك الكبير"
-				},
-				"en_US": {
-					"shortName": "Mubarak Al-Kabeer",
-					"longName": "Mubarak Al-Kabeer"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_KW",
-		"id": "ar_KW"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Kuwait",
-			"longName": "State of Kuwait",
-			"postalCode": "Postal Code"
-		},
-		"ar_KW": {
-			"shortName": "الكويت",
-			"longName": "دولة الكويت‎",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_KW",
+    "id" : "ar_KW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KWD",
+    "id" : "KWD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AH" : {
+      "locales" : {
+        "ar_KW" : {
+          "shortName" : "الاحمدي",
+          "longName" : "الاحمدي"
+        },
+        "en_US" : {
+          "shortName" : "Al Ahmadi",
+          "longName" : "Al Ahmadi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FA" : {
+      "locales" : {
+        "ar_KW" : {
+          "shortName" : "الفروانية‎",
+          "longName" : "الفروانية‎"
+        },
+        "en_US" : {
+          "shortName" : "Al Farwaniyah",
+          "longName" : "Al Farwaniyah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "ar_KW" : {
+          "shortName" : "حولي",
+          "longName" : "حولي"
+        },
+        "en_US" : {
+          "shortName" : "Hawalli",
+          "longName" : "Hawalli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Jahra",
+          "longName" : "Al Jahra"
+        },
+        "ar_KW" : {
+          "shortName" : "الجهراء",
+          "longName" : "الجهراء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Asimah",
+          "longName" : "Al Asimah"
+        },
+        "ar_KW" : {
+          "shortName" : "العاصمه",
+          "longName" : "العاصمه"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MU" : {
+      "locales" : {
+        "ar_KW" : {
+          "shortName" : "مبارك الكبير",
+          "longName" : "مبارك الكبير"
+        },
+        "en_US" : {
+          "shortName" : "Mubarak Al-Kabeer",
+          "longName" : "Mubarak Al-Kabeer"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_KW",
+    "id" : "ar_KW"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Kuwait",
+      "longName" : "State of Kuwait",
+      "postalCode" : ""
+    },
+    "ar_KW" : {
+      "shortName" : "الكويت",
+      "longName" : "دولة الكويت‎",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Kuwait",
+      "longName" : "Staat Kuwait",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Kuwait",
+      "longName" : "State of Kuwait",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Kuwait",
+      "longName" : "Estado de Kuwait",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Koweït",
+      "longName" : "État du Koweït",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Kuwait",
+      "longName" : "Stato del Kuwait",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "쿠웨이트",
+      "longName" : "State of Kuwait",
+      "postalCode" : ""
+    }
+  }
 }

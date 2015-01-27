@@ -1,38 +1,63 @@
 {
-	"countryCode": "AW",
-	"defaultLocale": {
-		"href": "/v1/locales/nl_AW",
-		"id": "nl_AW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AWG",
-		"id": "AWG"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/nl_AW",
-		"id": "nl_AW"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Aruba",
-			"longName": "Aruba",
-			"postalCode": "Postal Code"
-		},
-		"nl_AW": {
-			"shortName": "Aruba",
-			"longName": "Aruba",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/nl_AW",
+    "id" : "nl_AW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AWG",
+    "id" : "AWG"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/nl_AW",
+    "id" : "nl_AW"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "nl_AW" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Aruba",
+      "longName" : "Aruba",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아루바",
+      "longName" : "아루바",
+      "postalCode" : ""
+    }
+  }
 }

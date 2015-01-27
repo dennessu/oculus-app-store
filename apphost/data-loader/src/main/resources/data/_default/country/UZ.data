@@ -1,212 +1,252 @@
 {
-	"countryCode": "UZ",
-	"defaultLocale": {
-		"href": "/v1/locales/uz_UZ",
-		"id": "uz_UZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/RUB",
-		"id": "RUB"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"AN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Andijan",
-					"longName": "Andijan"
-				},
-				"uz_UZ": {
-					"shortName": "Andijon",
-					"longName": "Andijon"
-				}
-			}
-		},
-		"BU": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Buxoro",
-					"longName": "Buxoro"
-				},
-				"en_US": {
-					"shortName": "Bukhara",
-					"longName": "Bukhara"
-				}
-			}
-		},
-		"FA": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": " Farg‘ona",
-					"longName": " Farg‘ona"
-				},
-				"en_US": {
-					"shortName": "Fergana",
-					"longName": "Fergana"
-				}
-			}
-		},
-		"JI": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Jizzax",
-					"longName": "Jizzax"
-				},
-				"en_US": {
-					"shortName": "Jizzakh",
-					"longName": "Jizzakh"
-				}
-			}
-		},
-		"NG": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Namangan",
-					"longName": "Namangan"
-				},
-				"en_US": {
-					"shortName": "Namangan",
-					"longName": "Namangan"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Navoiy",
-					"longName": "Navoiy"
-				},
-				"uz_UZ": {
-					"shortName": "Navoiy",
-					"longName": "Navoiy"
-				}
-			}
-		},
-		"QA": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Qashqadaryo",
-					"longName": "Qashqadaryo"
-				},
-				"en_US": {
-					"shortName": "Qashqadaryo",
-					"longName": "Qashqadaryo"
-				}
-			}
-		},
-		"QR": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Qoraqalpog'iston",
-					"longName": "Qoraqalpog'iston"
-				},
-				"en_US": {
-					"shortName": "Karakalpakstan",
-					"longName": "Karakalpakstan"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Samarqand",
-					"longName": "Samarqand"
-				},
-				"en_US": {
-					"shortName": "Samarqand",
-					"longName": "Samarqand"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Sirdaryo",
-					"longName": "Sirdaryo"
-				},
-				"en_US": {
-					"shortName": "Sirdaryo",
-					"longName": "Sirdaryo"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Surxondaryo",
-					"longName": "Surxondaryo"
-				},
-				"uz_UZ": {
-					"shortName": "Surxondaryo",
-					"longName": "Surxondaryo"
-				}
-			}
-		},
-		"TK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tashkent",
-					"longName": "Tashkent"
-				},
-				"uz_UZ": {
-					"shortName": "Toshkent",
-					"longName": "Toshkent"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"uz_UZ": {
-					"shortName": "Toshkent viloyati",
-					"longName": "Toshkent viloyati"
-				},
-				"en_US": {
-					"shortName": "Tashkent Province",
-					"longName": "Tashkent Province"
-				}
-			}
-		},
-		"XO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xorazm",
-					"longName": "Xorazm"
-				},
-				"uz_UZ": {
-					"shortName": "Xorazm",
-					"longName": "Xorazm"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/uz_UZ",
-		"id": "uz_UZ"
-	},
-	{
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Uzbekistan",
-			"longName": "Republic of Uzbekistan",
-			"postalCode": "Postal Code"
-		},
-		"uz_UZ": {
-			"shortName": "O'zbekiston",
-			"longName": "O'zbekiston Respublikasi",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "UZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/uz_UZ",
+    "id" : "uz_UZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/RUB",
+    "id" : "RUB"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "AN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Andijan",
+          "longName" : "Andijan"
+        },
+        "uz_UZ" : {
+          "shortName" : "Andijon",
+          "longName" : "Andijon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BU" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Buxoro",
+          "longName" : "Buxoro"
+        },
+        "en_US" : {
+          "shortName" : "Bukhara",
+          "longName" : "Bukhara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FA" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : " Farg‘ona",
+          "longName" : " Farg‘ona"
+        },
+        "en_US" : {
+          "shortName" : "Fergana",
+          "longName" : "Fergana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JI" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Jizzax",
+          "longName" : "Jizzax"
+        },
+        "en_US" : {
+          "shortName" : "Jizzakh",
+          "longName" : "Jizzakh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NG" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Namangan",
+          "longName" : "Namangan"
+        },
+        "en_US" : {
+          "shortName" : "Namangan",
+          "longName" : "Namangan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Navoiy",
+          "longName" : "Navoiy"
+        },
+        "uz_UZ" : {
+          "shortName" : "Navoiy",
+          "longName" : "Navoiy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QA" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Qashqadaryo",
+          "longName" : "Qashqadaryo"
+        },
+        "en_US" : {
+          "shortName" : "Qashqadaryo",
+          "longName" : "Qashqadaryo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QR" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Qoraqalpog'iston",
+          "longName" : "Qoraqalpog'iston"
+        },
+        "en_US" : {
+          "shortName" : "Karakalpakstan",
+          "longName" : "Karakalpakstan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Samarqand",
+          "longName" : "Samarqand"
+        },
+        "en_US" : {
+          "shortName" : "Samarqand",
+          "longName" : "Samarqand"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Sirdaryo",
+          "longName" : "Sirdaryo"
+        },
+        "en_US" : {
+          "shortName" : "Sirdaryo",
+          "longName" : "Sirdaryo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Surxondaryo",
+          "longName" : "Surxondaryo"
+        },
+        "uz_UZ" : {
+          "shortName" : "Surxondaryo",
+          "longName" : "Surxondaryo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tashkent",
+          "longName" : "Tashkent"
+        },
+        "uz_UZ" : {
+          "shortName" : "Toshkent",
+          "longName" : "Toshkent"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "uz_UZ" : {
+          "shortName" : "Toshkent viloyati",
+          "longName" : "Toshkent viloyati"
+        },
+        "en_US" : {
+          "shortName" : "Tashkent Province",
+          "longName" : "Tashkent Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xorazm",
+          "longName" : "Xorazm"
+        },
+        "uz_UZ" : {
+          "shortName" : "Xorazm",
+          "longName" : "Xorazm"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/uz_UZ",
+    "id" : "uz_UZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Uzbekistan",
+      "longName" : "Republic of Uzbekistan",
+      "postalCode" : ""
+    },
+    "uz_UZ" : {
+      "shortName" : "O'zbekiston",
+      "longName" : "O'zbekiston Respublikasi",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Usbekistan",
+      "longName" : "Republic of Uzbekistan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Uzbekistan",
+      "longName" : "Republic of Uzbekistan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Uzbekistán",
+      "longName" : "República de Uzbekistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Ouzbékistan",
+      "longName" : "République d’Ouzbékistan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Uzbekistan",
+      "longName" : "Repubblica dell'Uzbekistan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "우즈베키스탄",
+      "longName" : "Republic of Uzbekistan",
+      "postalCode" : ""
+    }
+  }
 }

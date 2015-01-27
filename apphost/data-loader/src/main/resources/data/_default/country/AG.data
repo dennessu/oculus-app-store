@@ -1,92 +1,128 @@
 {
-	"countryCode": "AG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint George",
-					"longName": "Saint George Parish"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint John",
-					"longName": "Saint John Parish"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Mary",
-					"longName": "Saint Mary Parish"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Paul",
-					"longName": "Saint Paul Parish"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Peter",
-					"longName": "Saint Peter Parish"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Philip",
-					"longName": "Saint Philip Parish"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Barbuda",
-					"longName": "Barbuda"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Redonda",
-					"longName": "Redonda"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Antigua and Barbuda",
-			"longName": "Antigua and Barbuda",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint George",
+          "longName" : "Saint George Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint John",
+          "longName" : "Saint John Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Mary",
+          "longName" : "Saint Mary Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Paul",
+          "longName" : "Saint Paul Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Peter",
+          "longName" : "Saint Peter Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Philip",
+          "longName" : "Saint Philip Parish"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Barbuda",
+          "longName" : "Barbuda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Redonda",
+          "longName" : "Redonda"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Antigua and Barbuda",
+      "longName" : "Antigua and Barbuda",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Antigua und Barbuda",
+      "longName" : "Antigua und Barbuda",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Antigua and Barbuda",
+      "longName" : "Antigua and Barbuda",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Antigua y Barbuda",
+      "longName" : "Antigua y Barbuda",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Antigua et Barbuda",
+      "longName" : "Antigua et Barbuda",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Antigua e Barbuda",
+      "longName" : "Antigua e Barbuda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "앤티가 바부다",
+      "longName" : "앤티가 바부다",
+      "postalCode" : ""
+    }
+  }
 }

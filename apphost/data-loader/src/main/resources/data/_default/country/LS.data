@@ -1,111 +1,149 @@
 {
-	"countryCode": "LS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ZAR",
-		"id": "ZAR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maseru",
-					"longName": "Maseru"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"en_US": {
-					"shortName": "Butha-Buthe",
-					"longName": "Butha-Buthe"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Leribe",
-					"longName": "Leribe"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"en_US": {
-					"shortName": "Berea",
-					"longName": "Berea"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mafeteng",
-					"longName": "Mafeteng"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mohale's Hoek",
-					"longName": "Mohale's Hoek"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quthing",
-					"longName": "Quthing"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qacha's Nek",
-					"longName": "Qacha's Nek"
-				}
-			}
-		},
-		"J": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mokhotlong",
-					"longName": "Mokhotlong"
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"en_US": {
-					"shortName": "Thaba-Tseka",
-					"longName": "Thaba-Tseka"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Lesotho",
-			"longName": "Kingdom of Lesotho",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ZAR",
+    "id" : "ZAR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maseru",
+          "longName" : "Maseru"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Butha-Buthe",
+          "longName" : "Butha-Buthe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Leribe",
+          "longName" : "Leribe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Berea",
+          "longName" : "Berea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mafeteng",
+          "longName" : "Mafeteng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mohale's Hoek",
+          "longName" : "Mohale's Hoek"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quthing",
+          "longName" : "Quthing"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qacha's Nek",
+          "longName" : "Qacha's Nek"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "J" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mokhotlong",
+          "longName" : "Mokhotlong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Thaba-Tseka",
+          "longName" : "Thaba-Tseka"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Lesotho",
+      "longName" : "Kingdom of Lesotho",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Lesotho",
+      "longName" : "Kingdom of Lesotho",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Lesotho",
+      "longName" : "Kingdom of Lesotho",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Lesoto",
+      "longName" : "Reino de Lesoto",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Lesotho",
+      "longName" : "Royaume du Lesotho",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Lesotho",
+      "longName" : "Regno del Lesotho",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "레소토",
+      "longName" : "Kingdom of Lesotho",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,137 +1,178 @@
 {
-	"countryCode": "MR",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_MR",
-		"id": "ar_MR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MRO",
-		"id": "MRO"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hodh ech Chargui",
-					"longName": "Hodh ech Chargui"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hodh el Gharbi",
-					"longName": "Hodh el Gharbi"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Assaba",
-					"longName": "Assaba"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gorgol",
-					"longName": "Gorgol"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brakna",
-					"longName": "Brakna"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trarza",
-					"longName": "Trarza"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Adrar",
-					"longName": "Adrar"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dakhlet Nouâdhibou",
-					"longName": "Dakhlet Nouâdhibou"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tagant",
-					"longName": "Tagant"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guidimaka",
-					"longName": "Guidimaka"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tiris Zemmour",
-					"longName": "Tiris Zemmour"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Inchiri",
-					"longName": "Inchiri"
-				}
-			}
-		},
-		"NKC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nouakchott",
-					"longName": "Nouakchott"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_MR",
-		"id": "ar_MR"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Mauritania",
-			"longName": "Islamic Republic of Mauritania",
-			"postalCode": "Postal Code"
-		},
-		"ar_MR": {
-			"shortName": "Mūrītānyā",
-			"longName": "الجمهورية الإسلامية الموريتانية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_MR",
+    "id" : "ar_MR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MRO",
+    "id" : "MRO"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hodh ech Chargui",
+          "longName" : "Hodh ech Chargui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hodh el Gharbi",
+          "longName" : "Hodh el Gharbi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Assaba",
+          "longName" : "Assaba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gorgol",
+          "longName" : "Gorgol"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brakna",
+          "longName" : "Brakna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trarza",
+          "longName" : "Trarza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Adrar",
+          "longName" : "Adrar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dakhlet Nouâdhibou",
+          "longName" : "Dakhlet Nouâdhibou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tagant",
+          "longName" : "Tagant"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guidimaka",
+          "longName" : "Guidimaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tiris Zemmour",
+          "longName" : "Tiris Zemmour"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Inchiri",
+          "longName" : "Inchiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NKC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nouakchott",
+          "longName" : "Nouakchott"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_MR",
+    "id" : "ar_MR"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mauritania",
+      "longName" : "Islamic Republic of Mauritania",
+      "postalCode" : ""
+    },
+    "ar_MR" : {
+      "shortName" : "Mūrītānyā",
+      "longName" : "الجمهورية الإسلامية الموريتانية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Mauretanien",
+      "longName" : "Islamic Republic of Mauritania",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mauritania",
+      "longName" : "Islamic Republic of Mauritania",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Mauritania",
+      "longName" : "República Islámica de Mauritania",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Mauritanie",
+      "longName" : "République islamique de Mauritanie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Mauritania",
+      "longName" : "Repubblica islamica di Mauritania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "모리타니아",
+      "longName" : "Islamic Republic of Mauritania",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,116 +1,148 @@
 {
-	"countryCode": "TM",
-	"defaultLocale": {
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TMT",
-		"id": "TMT"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"tk_TM": {
-					"shortName": "Ahal",
-					"longName": "Ahal"
-				},
-				"en_US": {
-					"shortName": "Ahal",
-					"longName": "Ahal"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"tk_TM": {
-					"shortName": "Balkan ",
-					"longName": "Balkan "
-				},
-				"en_US": {
-					"shortName": "Balkan",
-					"longName": "Balkan"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"tk_TM": {
-					"shortName": "Daşoguz",
-					"longName": "Daşoguz"
-				},
-				"en_US": {
-					"shortName": "Daşoguz",
-					"longName": "Daşoguz"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lebap",
-					"longName": "Lebap"
-				},
-				"tk_TM": {
-					"shortName": "Lebap",
-					"longName": "Lebap"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mary",
-					"longName": "Mary"
-				},
-				"tk_TM": {
-					"shortName": "Mary",
-					"longName": "Mary"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"tk_TM": {
-					"shortName": "Aşgabat",
-					"longName": "Aşgabat"
-				},
-				"en_US": {
-					"shortName": "Ashgabat",
-					"longName": "Ashgabat"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/tk_TM",
-		"id": "tk_TM"
-	},
-	{
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Turkmenistan",
-			"longName": "Turkmenistan",
-			"postalCode": "Postal Code"
-		},
-		"tk_TM": {
-			"shortName": "Türkmenistan",
-			"longName": "Türkmenistan",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TMT",
+    "id" : "TMT"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "tk_TM" : {
+          "shortName" : "Ahal",
+          "longName" : "Ahal"
+        },
+        "en_US" : {
+          "shortName" : "Ahal",
+          "longName" : "Ahal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "tk_TM" : {
+          "shortName" : "Balkan ",
+          "longName" : "Balkan "
+        },
+        "en_US" : {
+          "shortName" : "Balkan",
+          "longName" : "Balkan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "tk_TM" : {
+          "shortName" : "Daşoguz",
+          "longName" : "Daşoguz"
+        },
+        "en_US" : {
+          "shortName" : "Daşoguz",
+          "longName" : "Daşoguz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lebap",
+          "longName" : "Lebap"
+        },
+        "tk_TM" : {
+          "shortName" : "Lebap",
+          "longName" : "Lebap"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mary",
+          "longName" : "Mary"
+        },
+        "tk_TM" : {
+          "shortName" : "Mary",
+          "longName" : "Mary"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "tk_TM" : {
+          "shortName" : "Aşgabat",
+          "longName" : "Aşgabat"
+        },
+        "en_US" : {
+          "shortName" : "Ashgabat",
+          "longName" : "Ashgabat"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/tk_TM",
+    "id" : "tk_TM"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Turkmenistan",
+      "longName" : "Turkmenistan",
+      "postalCode" : ""
+    },
+    "tk_TM" : {
+      "shortName" : "Türkmenistan",
+      "longName" : "Türkmenistan",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Turkmenistan",
+      "longName" : "Turkmenistan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Turkmenistan",
+      "longName" : "Turkmenistan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Turkmenistán",
+      "longName" : "Turkmenistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Turkménistan",
+      "longName" : "Turkménistan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Turkmenistan",
+      "longName" : "Turkmenistan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "투르크메니스탄",
+      "longName" : "투르크메니스탄",
+      "postalCode" : ""
+    }
+  }
 }

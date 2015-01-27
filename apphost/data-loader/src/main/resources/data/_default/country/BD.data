@@ -1,540 +1,632 @@
 {
-	"countryCode": "BD",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BDT",
-		"id": "BDT"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bandarban",
-					"longName": "Bandarban"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Barguna",
-					"longName": "Barguna"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bogra",
-					"longName": "Bogra"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brahmanbaria",
-					"longName": "Brahmanbaria"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bagerhat",
-					"longName": "Bagerhat"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Barisal",
-					"longName": "Barisal"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bhola",
-					"longName": "Bhola"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Comilla",
-					"longName": "Comilla"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chandpur",
-					"longName": "Chandpur"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chittagong",
-					"longName": "Chittagong"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cox's Bazar",
-					"longName": "Cox's Bazar"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chuadanga",
-					"longName": "Chuadanga"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dhaka",
-					"longName": "Dhaka"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dinajpur",
-					"longName": "Dinajpur"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Faridpur",
-					"longName": "Faridpur"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Feni",
-					"longName": "Feni"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gopalganj",
-					"longName": "Gopalganj"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gazipur",
-					"longName": "Gazipur"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gaibandha",
-					"longName": "Gaibandha"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Habiganj",
-					"longName": "Habiganj"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jamalpur",
-					"longName": "Jamalpur"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jessore",
-					"longName": "Jessore"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jhenaidah",
-					"longName": "Jhenaidah"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Joypurhat",
-					"longName": "Joypurhat"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jhalakati",
-					"longName": "Jhalakati"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kishoreganj",
-					"longName": "Kishoreganj"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khulna",
-					"longName": "Khulna"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kurigram",
-					"longName": "Kurigram"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khagrachari",
-					"longName": "Khagrachari"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kushtia",
-					"longName": "Kushtia"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lakshmipur",
-					"longName": "Lakshmipur"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lalmonirhat",
-					"longName": "Lalmonirhat"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manikganj",
-					"longName": "Manikganj"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mymensingh",
-					"longName": "Mymensingh"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "Munshiganj",
-					"longName": "Munshiganj"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Madaripur",
-					"longName": "Madaripur"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"en_US": {
-					"shortName": "Magura",
-					"longName": "Magura"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moulvibazar",
-					"longName": "Moulvibazar"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"en_US": {
-					"shortName": "Meherpur",
-					"longName": "Meherpur"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Narayanganj",
-					"longName": "Narayanganj"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Netrakona",
-					"longName": "Netrakona"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Narsingdi",
-					"longName": "Narsingdi"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Narail",
-					"longName": "Narail"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Natore",
-					"longName": "Natore"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nawabganj",
-					"longName": "Nawabganj"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nilphamari",
-					"longName": "Nilphamari"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "Noakhali",
-					"longName": "Noakhali"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naogaon",
-					"longName": "Naogaon"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pabna",
-					"longName": "Pabna"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pirojpur",
-					"longName": "Pirojpur"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Patuakhali",
-					"longName": "Patuakhali"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"en_US": {
-					"shortName": "Panchagarh",
-					"longName": "Panchagarh"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rajbari",
-					"longName": "Rajbari"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rajshahi",
-					"longName": "Rajshahi"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rangpur",
-					"longName": "Rangpur"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rangamati",
-					"longName": "Rangamati"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sherpur",
-					"longName": "Sherpur"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"en_US": {
-					"shortName": "Satkhira",
-					"longName": "Satkhira"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sirajganj",
-					"longName": "Sirajganj"
-				}
-			}
-		},
-		"60": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sylhet",
-					"longName": "Sylhet"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sunamganj",
-					"longName": "Sunamganj"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shariatpur",
-					"longName": "Shariatpur"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tangail",
-					"longName": "Tangail"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"en_US": {
-					"shortName": "Thakurgaon",
-					"longName": "Thakurgaon"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Bangladesh",
-			"longName": "People's Republic of Bangladesh",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BD",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BDT",
+    "id" : "BDT"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bandarban",
+          "longName" : "Bandarban"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Barguna",
+          "longName" : "Barguna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bogra",
+          "longName" : "Bogra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brahmanbaria",
+          "longName" : "Brahmanbaria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bagerhat",
+          "longName" : "Bagerhat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Barisal",
+          "longName" : "Barisal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bhola",
+          "longName" : "Bhola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Comilla",
+          "longName" : "Comilla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chandpur",
+          "longName" : "Chandpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chittagong",
+          "longName" : "Chittagong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cox's Bazar",
+          "longName" : "Cox's Bazar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chuadanga",
+          "longName" : "Chuadanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dhaka",
+          "longName" : "Dhaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dinajpur",
+          "longName" : "Dinajpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Faridpur",
+          "longName" : "Faridpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Feni",
+          "longName" : "Feni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gopalganj",
+          "longName" : "Gopalganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gazipur",
+          "longName" : "Gazipur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gaibandha",
+          "longName" : "Gaibandha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Habiganj",
+          "longName" : "Habiganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jamalpur",
+          "longName" : "Jamalpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jessore",
+          "longName" : "Jessore"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jhenaidah",
+          "longName" : "Jhenaidah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Joypurhat",
+          "longName" : "Joypurhat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jhalakati",
+          "longName" : "Jhalakati"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kishoreganj",
+          "longName" : "Kishoreganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khulna",
+          "longName" : "Khulna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kurigram",
+          "longName" : "Kurigram"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khagrachari",
+          "longName" : "Khagrachari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kushtia",
+          "longName" : "Kushtia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lakshmipur",
+          "longName" : "Lakshmipur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lalmonirhat",
+          "longName" : "Lalmonirhat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manikganj",
+          "longName" : "Manikganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mymensingh",
+          "longName" : "Mymensingh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Munshiganj",
+          "longName" : "Munshiganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Madaripur",
+          "longName" : "Madaripur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Magura",
+          "longName" : "Magura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moulvibazar",
+          "longName" : "Moulvibazar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Meherpur",
+          "longName" : "Meherpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Narayanganj",
+          "longName" : "Narayanganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Netrakona",
+          "longName" : "Netrakona"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Narsingdi",
+          "longName" : "Narsingdi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Narail",
+          "longName" : "Narail"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Natore",
+          "longName" : "Natore"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nawabganj",
+          "longName" : "Nawabganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nilphamari",
+          "longName" : "Nilphamari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Noakhali",
+          "longName" : "Noakhali"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naogaon",
+          "longName" : "Naogaon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pabna",
+          "longName" : "Pabna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pirojpur",
+          "longName" : "Pirojpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Patuakhali",
+          "longName" : "Patuakhali"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Panchagarh",
+          "longName" : "Panchagarh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rajbari",
+          "longName" : "Rajbari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rajshahi",
+          "longName" : "Rajshahi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rangpur",
+          "longName" : "Rangpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rangamati",
+          "longName" : "Rangamati"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sherpur",
+          "longName" : "Sherpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Satkhira",
+          "longName" : "Satkhira"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sirajganj",
+          "longName" : "Sirajganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "60" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sylhet",
+          "longName" : "Sylhet"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sunamganj",
+          "longName" : "Sunamganj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shariatpur",
+          "longName" : "Shariatpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tangail",
+          "longName" : "Tangail"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Thakurgaon",
+          "longName" : "Thakurgaon"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bangladesh",
+      "longName" : "People's Republic of Bangladesh",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Bangladesch",
+      "longName" : "Volksrepublik Bangladesch",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bangladesh",
+      "longName" : "People's Republic of Bangladesh",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bangladesh",
+      "longName" : "República Popular de Bangladesh",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bangladesh",
+      "longName" : "République populaire du Bangladesh",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bangladesh",
+      "longName" : "Repubblica Popolare del Bangladesh",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "방글라데시",
+      "longName" : "People's Republic of Bangladesh",
+      "postalCode" : ""
+    }
+  }
 }

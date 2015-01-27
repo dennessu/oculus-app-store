@@ -1,92 +1,128 @@
 {
-	"countryCode": "KE",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KES",
-		"id": "KES"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"110": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nairobi",
-					"longName": "Nairobi"
-				}
-			}
-		},
-		"200": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"300": {
-			"locales": {
-				"en_US": {
-					"shortName": "Coast",
-					"longName": "Coast"
-				}
-			}
-		},
-		"400": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"500": {
-			"locales": {
-				"en_US": {
-					"shortName": "North-Eastern",
-					"longName": "North-Eastern"
-				}
-			}
-		},
-		"600": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nyanza",
-					"longName": "Nyanza"
-				}
-			}
-		},
-		"700": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rift Valley",
-					"longName": "Rift Valley"
-				}
-			}
-		},
-		"800": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Kenya",
-			"longName": "Republic of Kenya",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KES",
+    "id" : "KES"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "110" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nairobi",
+          "longName" : "Nairobi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "200" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "300" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Coast",
+          "longName" : "Coast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "400" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "500" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North-Eastern",
+          "longName" : "North-Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "600" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nyanza",
+          "longName" : "Nyanza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "700" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rift Valley",
+          "longName" : "Rift Valley"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "800" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Kenya",
+      "longName" : "Republic of Kenya",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Kenia",
+      "longName" : "Republic of Kenya",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Kenya",
+      "longName" : "Republic of Kenya",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Kenia",
+      "longName" : "República de Kenia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Kenya",
+      "longName" : "République du Kenya",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Kenya",
+      "longName" : "Repubblica del Kenya",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "케냐",
+      "longName" : "Republic of Kenya",
+      "postalCode" : ""
+    }
+  }
 }

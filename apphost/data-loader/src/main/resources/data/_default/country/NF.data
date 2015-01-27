@@ -1,29 +1,55 @@
 {
-	"countryCode": "NF",
-	"defaultLocale": {
-		"href": "/v1/locales/en_NF",
-		"id": "en_NF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_NF",
-		"id": "en_NF"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Norfolk Island",
-			"longName": "Territory of Norfolk Island",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_NF",
+    "id" : "en_NF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_NF",
+    "id" : "en_NF"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Norfolk Island",
+      "longName" : "Territory of Norfolk Island",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Norfolkinsel",
+      "longName" : "Norfolkinsel",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Norfolk Island",
+      "longName" : "Territory of Norfolk Island",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Isla Norfolk",
+      "longName" : "Territorio de la Isla Norfolk",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Île Norfolk",
+      "longName" : "Territoire de l’île de Norfolk",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isola Norfolk",
+      "longName" : "Territorio dell'Isola Norfolk",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "노퍽 섬",
+      "longName" : "Territory of Norfolk Island",
+      "postalCode" : ""
+    }
+  }
 }

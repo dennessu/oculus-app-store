@@ -1,232 +1,270 @@
 {
-	"countryCode": "DE",
-	"defaultLocale": {
-		"href": "/v1/locales/de_DE",
-		"id": "de_DE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/USK",
-		"id": "USK"
-	}],
-	"subCountries": {
-		"BB": {
-			"locales": {
-				"de_DE": {
-					"shortName": "BB",
-					"longName": "Brandenburg"
-				},
-				"en_US": {
-					"shortName": "BB",
-					"longName": "Brandenburg"
-				}
-			}
-		},
-		"BE": {
-			"locales": {
-				"de_DE": {
-					"shortName": "BE",
-					"longName": "Berlin"
-				},
-				"en_US": {
-					"shortName": "BE",
-					"longName": "Berlin"
-				}
-			}
-		},
-		"BW": {
-			"locales": {
-				"en_US": {
-					"shortName": "BW",
-					"longName": "Baden-Wurttemberg"
-				},
-				"de_DE": {
-					"shortName": "BW",
-					"longName": "Baden-Württemberg"
-				}
-			}
-		},
-		"BY": {
-			"locales": {
-				"en_US": {
-					"shortName": "BY",
-					"longName": "Bavaria"
-				},
-				"de_DE": {
-					"shortName": "BY",
-					"longName": "Bayern"
-				}
-			}
-		},
-		"HB": {
-			"locales": {
-				"en_US": {
-					"shortName": "HB",
-					"longName": "Bremen"
-				},
-				"de_DE": {
-					"shortName": "HB",
-					"longName": "Bremen"
-				}
-			}
-		},
-		"HE": {
-			"locales": {
-				"de_DE": {
-					"shortName": "HE",
-					"longName": "Hessen"
-				},
-				"en_US": {
-					"shortName": "HE",
-					"longName": "Hesse"
-				}
-			}
-		},
-		"HH": {
-			"locales": {
-				"en_US": {
-					"shortName": "HH",
-					"longName": "Hamburg"
-				},
-				"de_DE": {
-					"shortName": "HH",
-					"longName": "Hamburg"
-				}
-			}
-		},
-		"MV": {
-			"locales": {
-				"en_US": {
-					"shortName": "MV",
-					"longName": "Mecklenburg-Western Pomerania"
-				},
-				"de_DE": {
-					"shortName": "MV",
-					"longName": "Mecklenburg-Vorpommern"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "NI",
-					"longName": "Lower Saxony"
-				},
-				"de_DE": {
-					"shortName": "NI",
-					"longName": "Niedersachsen"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"de_DE": {
-					"shortName": "NW",
-					"longName": "Nordrhein-Westfalen"
-				},
-				"en_US": {
-					"shortName": "NW",
-					"longName": "North Rhine-Westphalia"
-				}
-			}
-		},
-		"RP": {
-			"locales": {
-				"en_US": {
-					"shortName": "RP",
-					"longName": "Rhineland-Palatinate"
-				},
-				"de_DE": {
-					"shortName": "RP",
-					"longName": "Rheinland-Pfalz"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "SH",
-					"longName": "Schleswig-Holstein"
-				},
-				"de_DE": {
-					"shortName": "SH",
-					"longName": "Schleswig-Holstein"
-				}
-			}
-		},
-		"SL": {
-			"locales": {
-				"en_US": {
-					"shortName": "SL",
-					"longName": "Saarland"
-				},
-				"de_DE": {
-					"shortName": "SL",
-					"longName": "Saarland"
-				}
-			}
-		},
-		"SN": {
-			"locales": {
-				"de_DE": {
-					"shortName": "SN",
-					"longName": "Sachsen"
-				},
-				"en_US": {
-					"shortName": "SN",
-					"longName": "Saxony"
-				}
-			}
-		},
-		"ST": {
-			"locales": {
-				"de_DE": {
-					"shortName": "ST",
-					"longName": "Sachsen-Anhalt"
-				},
-				"en_US": {
-					"shortName": "ST",
-					"longName": "Saxony-Anhalt"
-				}
-			}
-		},
-		"TH": {
-			"locales": {
-				"de_DE": {
-					"shortName": "TH",
-					"longName": "Thüringen"
-				},
-				"en_US": {
-					"shortName": "TH",
-					"longName": "Thuringia"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/de_DE",
-		"id": "de_DE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Germany",
-			"longName": "Federal Republic of Germany",
-			"postalCode": "Postal Code"
-		},
-		"de_DE": {
-			"shortName": "Deutschland",
-			"longName": "Bundesrepublik Deutschland",
-			"postalCode": "Postleitzahl"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "DE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/de_DE",
+    "id" : "de_DE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/USK",
+    "id" : "USK"
+  } ],
+  "subCountries" : {
+    "BB" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "BB",
+          "longName" : "Brandenburg"
+        },
+        "en_US" : {
+          "shortName" : "BB",
+          "longName" : "Brandenburg"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BE" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "BE",
+          "longName" : "Berlin"
+        },
+        "en_US" : {
+          "shortName" : "BE",
+          "longName" : "Berlin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BW",
+          "longName" : "Baden-Wurttemberg"
+        },
+        "de_DE" : {
+          "shortName" : "BW",
+          "longName" : "Baden-Württemberg"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BY",
+          "longName" : "Bavaria"
+        },
+        "de_DE" : {
+          "shortName" : "BY",
+          "longName" : "Bayern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HB",
+          "longName" : "Bremen"
+        },
+        "de_DE" : {
+          "shortName" : "HB",
+          "longName" : "Bremen"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HE" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "HE",
+          "longName" : "Hessen"
+        },
+        "en_US" : {
+          "shortName" : "HE",
+          "longName" : "Hesse"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HH",
+          "longName" : "Hamburg"
+        },
+        "de_DE" : {
+          "shortName" : "HH",
+          "longName" : "Hamburg"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MV",
+          "longName" : "Mecklenburg-Western Pomerania"
+        },
+        "de_DE" : {
+          "shortName" : "MV",
+          "longName" : "Mecklenburg-Vorpommern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NI",
+          "longName" : "Lower Saxony"
+        },
+        "de_DE" : {
+          "shortName" : "NI",
+          "longName" : "Niedersachsen"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "NW",
+          "longName" : "Nordrhein-Westfalen"
+        },
+        "en_US" : {
+          "shortName" : "NW",
+          "longName" : "North Rhine-Westphalia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "RP",
+          "longName" : "Rhineland-Palatinate"
+        },
+        "de_DE" : {
+          "shortName" : "RP",
+          "longName" : "Rheinland-Pfalz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SH",
+          "longName" : "Schleswig-Holstein"
+        },
+        "de_DE" : {
+          "shortName" : "SH",
+          "longName" : "Schleswig-Holstein"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SL",
+          "longName" : "Saarland"
+        },
+        "de_DE" : {
+          "shortName" : "SL",
+          "longName" : "Saarland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SN" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "SN",
+          "longName" : "Sachsen"
+        },
+        "en_US" : {
+          "shortName" : "SN",
+          "longName" : "Saxony"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ST" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "ST",
+          "longName" : "Sachsen-Anhalt"
+        },
+        "en_US" : {
+          "shortName" : "ST",
+          "longName" : "Saxony-Anhalt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TH" : {
+      "locales" : {
+        "de_DE" : {
+          "shortName" : "TH",
+          "longName" : "Thüringen"
+        },
+        "en_US" : {
+          "shortName" : "TH",
+          "longName" : "Thuringia"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/de_DE",
+    "id" : "de_DE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Germany",
+      "longName" : "Federal Republic of Germany",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Deutschland",
+      "longName" : "Bundesrepublik Deutschland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Germany",
+      "longName" : "Federal Republic of Germany",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Alemania",
+      "longName" : "República Federal de Alemania",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Allemagne",
+      "longName" : "République fédérale d’Allemagne",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Germania",
+      "longName" : "Repubblica Federale di Germania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "독일",
+      "longName" : "Federal Republic of Germany",
+      "postalCode" : ""
+    }
+  }
 }

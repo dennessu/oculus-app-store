@@ -1,148 +1,184 @@
 {
-	"countryCode": "AT",
-	"defaultLocale": {
-		"href": "/v1/locales/de_AT",
-		"id": "de_AT"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"de_AT": {
-					"shortName": "Burgenland",
-					"longName": "Burgenland"
-				},
-				"en_US": {
-					"shortName": "Burgenland",
-					"longName": "Burgenland"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"de_AT": {
-					"shortName": "Kärnten",
-					"longName": "Kärnten"
-				},
-				"en_US": {
-					"shortName": "Carinthia",
-					"longName": "Carinthia"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lower Austria",
-					"longName": "Lower Austria"
-				},
-				"de_AT": {
-					"shortName": "Niederösterreich",
-					"longName": "Niederösterreich"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Upper Austria",
-					"longName": "Upper Austria"
-				},
-				"de_AT": {
-					"shortName": "Oberösterreich",
-					"longName": "Oberösterreich"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salzburg",
-					"longName": "Salzburg"
-				},
-				"de_AT": {
-					"shortName": "Salzburg",
-					"longName": "Salzburg"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Styria",
-					"longName": "Styria"
-				},
-				"de_AT": {
-					"shortName": "Steiermark",
-					"longName": "Steiermark"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tyrol",
-					"longName": "Tyrol"
-				},
-				"de_AT": {
-					"shortName": "Tirol",
-					"longName": "Tirol"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vorarlberg",
-					"longName": "Vorarlberg"
-				},
-				"de_AT": {
-					"shortName": "Vorarlberg",
-					"longName": "Vorarlberg"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"de_AT": {
-					"shortName": "Wien",
-					"longName": "Wien"
-				},
-				"en_US": {
-					"shortName": "Vienna",
-					"longName": "Vienna"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-        "href": "/v1/locales/de_AT",
-        "id": "de_AT"
+  "futureExpansion" : { },
+  "countryCode" : "AT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/de_AT",
+    "id" : "de_AT"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "de_AT" : {
+          "shortName" : "Burgenland",
+          "longName" : "Burgenland"
+        },
+        "en_US" : {
+          "shortName" : "Burgenland",
+          "longName" : "Burgenland"
+        }
+      },
+      "localeAccuracy" : null
     },
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Austria",
-			"longName": "Republic of Austria",
-			"postalCode": "Postal Code"
-		},
-		"de_AT": {
-			"shortName": "Österreich",
-			"longName": "Republik Österreich",
-			"postalCode": "Postleitzahl"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+    "2" : {
+      "locales" : {
+        "de_AT" : {
+          "shortName" : "Kärnten",
+          "longName" : "Kärnten"
+        },
+        "en_US" : {
+          "shortName" : "Carinthia",
+          "longName" : "Carinthia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lower Austria",
+          "longName" : "Lower Austria"
+        },
+        "de_AT" : {
+          "shortName" : "Niederösterreich",
+          "longName" : "Niederösterreich"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Upper Austria",
+          "longName" : "Upper Austria"
+        },
+        "de_AT" : {
+          "shortName" : "Oberösterreich",
+          "longName" : "Oberösterreich"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salzburg",
+          "longName" : "Salzburg"
+        },
+        "de_AT" : {
+          "shortName" : "Salzburg",
+          "longName" : "Salzburg"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Styria",
+          "longName" : "Styria"
+        },
+        "de_AT" : {
+          "shortName" : "Steiermark",
+          "longName" : "Steiermark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tyrol",
+          "longName" : "Tyrol"
+        },
+        "de_AT" : {
+          "shortName" : "Tirol",
+          "longName" : "Tirol"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vorarlberg",
+          "longName" : "Vorarlberg"
+        },
+        "de_AT" : {
+          "shortName" : "Vorarlberg",
+          "longName" : "Vorarlberg"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "de_AT" : {
+          "shortName" : "Wien",
+          "longName" : "Wien"
+        },
+        "en_US" : {
+          "shortName" : "Vienna",
+          "longName" : "Vienna"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/de_AT",
+    "id" : "de_AT"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Austria",
+      "longName" : "Republic of Austria",
+      "postalCode" : ""
+    },
+    "de_AT" : {
+      "shortName" : "Österreich",
+      "longName" : "Republik Österreich",
+      "postalCode" : "Postleitzahl"
+    },
+    "de_DE" : {
+      "shortName" : "Österreich",
+      "longName" : "Republic of Austria",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Austria",
+      "longName" : "Republic of Austria",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Austria",
+      "longName" : "República de Austria",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Autriche",
+      "longName" : "République d’Autriche",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Austria",
+      "longName" : "Repubblica di Austria",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "오스트리아",
+      "longName" : "Republic of Austria",
+      "postalCode" : ""
+    }
+  }
 }

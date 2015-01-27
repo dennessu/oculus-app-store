@@ -1,100 +1,137 @@
 {
-	"countryCode": "UM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_UM",
-		"id": "en_UM"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Johnston Atoll",
-					"longName": "Johnston Atoll"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Midway Islands",
-					"longName": "Midway Islands"
-				}
-			}
-		},
-		"76": {
-			"locales": {
-				"en_US": {
-					"shortName": "Navassa Island",
-					"longName": "Navassa Island"
-				}
-			}
-		},
-		"79": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wake Island",
-					"longName": "Wake Island"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baker Island",
-					"longName": "Baker Island"
-				}
-			}
-		},
-		"84": {
-			"locales": {
-				"en_US": {
-					"shortName": "Howland Island",
-					"longName": "Howland Island"
-				}
-			}
-		},
-		"86": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jarvis Island",
-					"longName": "Jarvis Island"
-				}
-			}
-		},
-		"89": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kingman Reef",
-					"longName": "Kingman Reef"
-				}
-			}
-		},
-		"95": {
-			"locales": {
-				"en_US": {
-					"shortName": "Palmyra Atoll",
-					"longName": "Palmyra Atoll"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_UM",
-		"id": "en_UM"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "United States Minor Outlying Islands",
-			"longName": "United States Minor Outlying Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "UM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_UM",
+    "id" : "en_UM"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Johnston Atoll",
+          "longName" : "Johnston Atoll"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Midway Islands",
+          "longName" : "Midway Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "76" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Navassa Island",
+          "longName" : "Navassa Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "79" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wake Island",
+          "longName" : "Wake Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baker Island",
+          "longName" : "Baker Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "84" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Howland Island",
+          "longName" : "Howland Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "86" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jarvis Island",
+          "longName" : "Jarvis Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "89" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kingman Reef",
+          "longName" : "Kingman Reef"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "95" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Palmyra Atoll",
+          "longName" : "Palmyra Atoll"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_UM",
+    "id" : "en_UM"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "United States Minor Outlying Islands",
+      "longName" : "United States Minor Outlying Islands",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Kleinere Inselbesitzungen der Vereinigten Staaten",
+      "longName" : "Kleinere Inselbesitzungen der Vereinigten Staaten",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "United States Minor Outlying Islands",
+      "longName" : "United States Minor Outlying Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Ultramarinas Menores de Estados Unidos",
+      "longName" : "Islas menores alejadas de los Estados Unidos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles mineures des États-Unis",
+      "longName" : "Îles mineures des États-Unis",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole minori esterne degli Stati Uniti",
+      "longName" : "Isole minori esterne degli Stati Uniti",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "미국령 군소 제도",
+      "longName" : "미국령 군소 제도",
+      "postalCode" : ""
+    }
+  }
 }

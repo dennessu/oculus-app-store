@@ -1,232 +1,275 @@
 {
-	"countryCode": "PL",
-	"defaultLocale": {
-		"href": "/v1/locales/pl_PL",
-		"id": "pl_PL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PLN",
-		"id": "PLN"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"DS": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo dolnośląskie",
-					"longName": "Województwo dolnośląskie"
-				},
-				"en_US": {
-					"shortName": "Lower Silesian Voivodeship",
-					"longName": "Lower Silesian Voivodeship"
-				}
-			}
-		},
-		"KP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kuyavian-Pomeranian Voivodeship",
-					"longName": "Kuyavian-Pomeranian Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo kujawsko-pomorskie",
-					"longName": "Województwo kujawsko-pomorskie"
-				}
-			}
-		},
-		"LB": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo lubuskie",
-					"longName": "Województwo lubuskie"
-				},
-				"en_US": {
-					"shortName": "Lubusz Voivodeship",
-					"longName": "Lubusz Voivodeship"
-				}
-			}
-		},
-		"LD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Łódź Voivodeship",
-					"longName": "Łódź Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo łódzkie",
-					"longName": "Województwo łódzkie"
-				}
-			}
-		},
-		"LU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lublin Voivodeship",
-					"longName": "Lublin Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo lubelskie",
-					"longName": "Województwo lubelskie"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo małopolskie",
-					"longName": "Województwo małopolskie"
-				},
-				"en_US": {
-					"shortName": "Lesser Poland Voivodeship",
-					"longName": "Lesser Poland Voivodeship"
-				}
-			}
-		},
-		"MZ": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo mazowieckie",
-					"longName": "Województwo mazowieckie"
-				},
-				"en_US": {
-					"shortName": "Masovian Voivodeship",
-					"longName": "Masovian Voivodeship"
-				}
-			}
-		},
-		"OP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Opole Voivodeship",
-					"longName": "Opole Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo opolskie",
-					"longName": "Województwo opolskie"
-				}
-			}
-		},
-		"PD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Podlaskie Voivodeship",
-					"longName": "Podlaskie Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo podlaskie",
-					"longName": "Województwo podlaskie"
-				}
-			}
-		},
-		"PK": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo podkarpackie",
-					"longName": "Województwo podkarpackie"
-				},
-				"en_US": {
-					"shortName": "Podkarpackie Voivodeship",
-					"longName": "Podkarpackie Voivodeship"
-				}
-			}
-		},
-		"PM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pomeranian Voivodeship",
-					"longName": "Pomeranian Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo Pomorskie",
-					"longName": "Województwo Pomorskie"
-				}
-			}
-		},
-		"SK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Świętokrzyskie Voivodeship",
-					"longName": "Świętokrzyskie Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo świętokrzyskie",
-					"longName": "Województwo świętokrzyskie"
-				}
-			}
-		},
-		"SL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Silesian Voivodeship",
-					"longName": "Silesian Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo śląskie",
-					"longName": "Województwo śląskie"
-				}
-			}
-		},
-		"WN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Warmian-Masurian Voivodeship",
-					"longName": "Warmian-Masurian Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo warmińsko-mazurskie",
-					"longName": "Województwo warmińsko-mazurskie"
-				}
-			}
-		},
-		"WP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Greater Poland Voivodeship",
-					"longName": "Greater Poland Voivodeship"
-				},
-				"pl_PL": {
-					"shortName": "Województwo wielkopolskie",
-					"longName": "Województwo wielkopolskie"
-				}
-			}
-		},
-		"ZP": {
-			"locales": {
-				"pl_PL": {
-					"shortName": "Województwo zachodniopomorskie",
-					"longName": "Województwo zachodniopomorskie"
-				},
-				"en_US": {
-					"shortName": "West Pomeranian Voivodeship",
-					"longName": "West Pomeranian Voivodeship"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pl_PL",
-		"id": "pl_PL"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Poland",
-			"longName": "Republic of Poland",
-			"postalCode": "Postal Code"
-		},
-		"pl_PL": {
-			"shortName": "Polska",
-			"longName": "Rzeczpospolita Polska",
-			"postalCode": "Kod pocztowy"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pl_PL",
+    "id" : "pl_PL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PLN",
+    "id" : "PLN"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "DS" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo dolnośląskie",
+          "longName" : "Województwo dolnośląskie"
+        },
+        "en_US" : {
+          "shortName" : "Lower Silesian Voivodeship",
+          "longName" : "Lower Silesian Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kuyavian-Pomeranian Voivodeship",
+          "longName" : "Kuyavian-Pomeranian Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo kujawsko-pomorskie",
+          "longName" : "Województwo kujawsko-pomorskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LB" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo lubuskie",
+          "longName" : "Województwo lubuskie"
+        },
+        "en_US" : {
+          "shortName" : "Lubusz Voivodeship",
+          "longName" : "Lubusz Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Łódź Voivodeship",
+          "longName" : "Łódź Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo łódzkie",
+          "longName" : "Województwo łódzkie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lublin Voivodeship",
+          "longName" : "Lublin Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo lubelskie",
+          "longName" : "Województwo lubelskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo małopolskie",
+          "longName" : "Województwo małopolskie"
+        },
+        "en_US" : {
+          "shortName" : "Lesser Poland Voivodeship",
+          "longName" : "Lesser Poland Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MZ" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo mazowieckie",
+          "longName" : "Województwo mazowieckie"
+        },
+        "en_US" : {
+          "shortName" : "Masovian Voivodeship",
+          "longName" : "Masovian Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Opole Voivodeship",
+          "longName" : "Opole Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo opolskie",
+          "longName" : "Województwo opolskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Podlaskie Voivodeship",
+          "longName" : "Podlaskie Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo podlaskie",
+          "longName" : "Województwo podlaskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PK" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo podkarpackie",
+          "longName" : "Województwo podkarpackie"
+        },
+        "en_US" : {
+          "shortName" : "Podkarpackie Voivodeship",
+          "longName" : "Podkarpackie Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pomeranian Voivodeship",
+          "longName" : "Pomeranian Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo Pomorskie",
+          "longName" : "Województwo Pomorskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Świętokrzyskie Voivodeship",
+          "longName" : "Świętokrzyskie Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo świętokrzyskie",
+          "longName" : "Województwo świętokrzyskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Silesian Voivodeship",
+          "longName" : "Silesian Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo śląskie",
+          "longName" : "Województwo śląskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Warmian-Masurian Voivodeship",
+          "longName" : "Warmian-Masurian Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo warmińsko-mazurskie",
+          "longName" : "Województwo warmińsko-mazurskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Greater Poland Voivodeship",
+          "longName" : "Greater Poland Voivodeship"
+        },
+        "pl_PL" : {
+          "shortName" : "Województwo wielkopolskie",
+          "longName" : "Województwo wielkopolskie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZP" : {
+      "locales" : {
+        "pl_PL" : {
+          "shortName" : "Województwo zachodniopomorskie",
+          "longName" : "Województwo zachodniopomorskie"
+        },
+        "en_US" : {
+          "shortName" : "West Pomeranian Voivodeship",
+          "longName" : "West Pomeranian Voivodeship"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pl_PL",
+    "id" : "pl_PL"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Poland",
+      "longName" : "Republic of Poland",
+      "postalCode" : ""
+    },
+    "pl_PL" : {
+      "shortName" : "Polska",
+      "longName" : "Rzeczpospolita Polska",
+      "postalCode" : "Kod pocztowy"
+    },
+    "de_DE" : {
+      "shortName" : "Polen",
+      "longName" : "Republik Polen",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Poland",
+      "longName" : "Republic of Poland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Polonia",
+      "longName" : "República de Polonia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Pologne",
+      "longName" : "République de Pologne",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Polonia",
+      "longName" : "Repubblica di Polonia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "폴란드",
+      "longName" : "Republic of Poland",
+      "postalCode" : ""
+    }
+  }
 }

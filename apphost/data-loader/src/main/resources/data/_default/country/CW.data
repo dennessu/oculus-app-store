@@ -1,34 +1,60 @@
 {
-	"countryCode": "CW",
-	"defaultLocale": {
-		"href": "/v1/locales/nl_CW",
-		"id": "nl_CW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ANG",
-		"id": "ANG"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/nl_CW",
-		"id": "nl_CW"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Curaçao",
-			"longName": "Country of Curaçao",
-			"postalCode": "Postal Code"
-		},
-		"nl_CW": {
-			"shortName": "Curaçao",
-			"longName": "Land Curaçao",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/nl_CW",
+    "id" : "nl_CW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ANG",
+    "id" : "ANG"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/nl_CW",
+    "id" : "nl_CW"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Curaçao",
+      "longName" : "Country of Curaçao",
+      "postalCode" : ""
+    },
+    "nl_CW" : {
+      "shortName" : "Curaçao",
+      "longName" : "Land Curaçao",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Curaçao",
+      "longName" : "Land Curaçao",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Curaçao",
+      "longName" : "Country of Curaçao",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Curazao",
+      "longName" : "País de Curazao",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Curaçao",
+      "longName" : "Pays de Curaçao",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Curaçao",
+      "longName" : "Curaçao",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "퀴라소",
+      "longName" : "Country of Curaçao",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,29 +1,55 @@
 {
-	"countryCode": "PM",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_PM",
-		"id": "fr_PM"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_PM",
-		"id": "fr_PM"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Saint Pierre and Miquelon",
-			"longName": "Saint Pierre and Miquelon",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_PM",
+    "id" : "fr_PM"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_PM",
+    "id" : "fr_PM"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saint Pierre and Miquelon",
+      "longName" : "Saint Pierre and Miquelon",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Saint-Pierre und Miquelon",
+      "longName" : "Saint-Pierre und Miquelon",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saint Pierre and Miquelon",
+      "longName" : "Saint Pierre and Miquelon",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Pedro y Miquelón",
+      "longName" : "Colectividad Territorial de San Pedro y Miquelón",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint-Pierre et Miquelon",
+      "longName" : "Saint-Pierre et Miquelon",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Saint-Pierre e Miquelon",
+      "longName" : "Saint-Pierre e Miquelon",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "생피에르앤드미클롱",
+      "longName" : "생피에르앤드미클롱",
+      "postalCode" : ""
+    }
+  }
 }

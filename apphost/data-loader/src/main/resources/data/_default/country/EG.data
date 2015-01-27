@@ -1,385 +1,441 @@
 {
-	"countryCode": "EG",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_EG",
-		"id": "ar_EG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EGP",
-		"id": "EGP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"ALX": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة الإسكندرية‎",
-					"longName": "‏محافظة الإسكندرية‎"
-				},
-				"en_US": {
-					"shortName": "Alexandria",
-					"longName": "Alexandria"
-				}
-			}
-		},
-		"ASN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aswan",
-					"longName": "Aswan"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة أسوان",
-					"longName": "‏محافظة أسوان"
-				}
-			}
-		},
-		"AST": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة أسيوط",
-					"longName": "محافظة أسيوط"
-				},
-				"en_US": {
-					"shortName": "Asyut",
-					"longName": "Asyut"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة البحر الأحمر",
-					"longName": "‏محافظة البحر الأحمر"
-				},
-				"en_US": {
-					"shortName": "Red Sea",
-					"longName": "Red Sea"
-				}
-			}
-		},
-		"BH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beheira",
-					"longName": "Beheira"
-				},
-				"ar_EG": {
-					"shortName": "محافظة البحيرة‎",
-					"longName": "محافظة البحيرة‎"
-				}
-			}
-		},
-		"BNS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beni Suef",
-					"longName": "Beni Suef"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة بنى سويف‎",
-					"longName": "‏محافظة بنى سويف‎"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة القاهرة‎",
-					"longName": "محافظة القاهرة‎"
-				},
-				"en_US": {
-					"shortName": "Cairo",
-					"longName": "Cairo"
-				}
-			}
-		},
-		"DK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dakahlia",
-					"longName": "Dakahlia"
-				},
-				"ar_EG": {
-					"shortName": "الدقهلية",
-					"longName": "الدقهلية"
-				}
-			}
-		},
-		"DT": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة دمياط",
-					"longName": "محافظة دمياط"
-				},
-				"en_US": {
-					"shortName": "Damietta",
-					"longName": "Damietta"
-				}
-			}
-		},
-		"FYM": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة الفيوم‎",
-					"longName": "‏محافظة الفيوم‎"
-				},
-				"en_US": {
-					"shortName": "Faiyum",
-					"longName": "Faiyum"
-				}
-			}
-		},
-		"GH": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة الغربية",
-					"longName": "محافظة الغربية"
-				},
-				"en_US": {
-					"shortName": "Gharbia",
-					"longName": "Gharbia"
-				}
-			}
-		},
-		"GZ": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة الجيزة",
-					"longName": "محافظة الجيزة"
-				},
-				"en_US": {
-					"shortName": "Giza",
-					"longName": "Giza"
-				}
-			}
-		},
-		"HU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Helwan",
-					"longName": "Helwan"
-				},
-				"ar_EG": {
-					"shortName": "محافظة حلوان",
-					"longName": "محافظة حلوان"
-				}
-			}
-		},
-		"IS": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة الإسماعيلية‎",
-					"longName": "محافظة الإسماعيلية‎"
-				},
-				"en_US": {
-					"shortName": "Ismailia",
-					"longName": "Ismailia"
-				}
-			}
-		},
-		"JS": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Sinai",
-					"longName": "South Sinai"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة جنوب سيناء",
-					"longName": "‏محافظة جنوب سيناء"
-				}
-			}
-		},
-		"KB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qalyubia",
-					"longName": "Qalyubia"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة القليوبية‎",
-					"longName": "‏محافظة القليوبية‎"
-				}
-			}
-		},
-		"KFS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kafr el-Sheikh",
-					"longName": "Kafr el-Sheikh"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة كفر الشيخ",
-					"longName": "‏محافظة كفر الشيخ"
-				}
-			}
-		},
-		"KN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qena",
-					"longName": "Qena"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة قنا",
-					"longName": "‏محافظة قنا"
-				}
-			}
-		},
-		"LX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Luxor",
-					"longName": "Luxor"
-				},
-				"ar_EG": {
-					"shortName": "محافظة الأقصر",
-					"longName": "محافظة الأقصر"
-				}
-			}
-		},
-		"MN": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "محافظة المنيا‎",
-					"longName": "محافظة المنيا‎"
-				},
-				"en_US": {
-					"shortName": "Minya",
-					"longName": "Minya"
-				}
-			}
-		},
-		"MNF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Monufia",
-					"longName": "Monufia"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة المنوفية‎",
-					"longName": "‏محافظة المنوفية‎"
-				}
-			}
-		},
-		"MT": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة مطروح",
-					"longName": "‏محافظة مطروح"
-				},
-				"en_US": {
-					"shortName": "Matrouh",
-					"longName": "Matrouh"
-				}
-			}
-		},
-		"PTS": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة بورسعيد",
-					"longName": "‏محافظة بورسعيد"
-				},
-				"en_US": {
-					"shortName": "Port Said",
-					"longName": "Port Said"
-				}
-			}
-		},
-		"SHG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sohag",
-					"longName": "Sohag"
-				},
-				"ar_EG": {
-					"shortName": "‏محافظة سوهاج‎",
-					"longName": "‏محافظة سوهاج‎"
-				}
-			}
-		},
-		"SHR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Sharqia",
-					"longName": "Al Sharqia"
-				},
-				"ar_EG": {
-					"shortName": "محافظة الشرقية‎",
-					"longName": "محافظة الشرقية‎"
-				}
-			}
-		},
-		"SIN": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Sinai",
-					"longName": "North Sinai"
-				},
-				"ar_EG": {
-					"shortName": "محافظة شمال سيناء",
-					"longName": "محافظة شمال سيناء"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "6th of October",
-					"longName": "6th of October"
-				},
-				"ar_EG": {
-					"shortName": "محافظة السادس من أكتوبر‎",
-					"longName": "محافظة السادس من أكتوبر‎"
-				}
-			}
-		},
-		"SUZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Suez",
-					"longName": "Suez"
-				},
-				"ar_EG": {
-					"shortName": "محافظة السويس",
-					"longName": "محافظة السويس"
-				}
-			}
-		},
-		"WAD": {
-			"locales": {
-				"ar_EG": {
-					"shortName": "‏محافظة الوادي الجديد‎",
-					"longName": "‏محافظة الوادي الجديد‎"
-				},
-				"en_US": {
-					"shortName": "New Valley",
-					"longName": "New Valley"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_EG",
-		"id": "ar_EG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Egypt",
-			"longName": "Arab Republic of Egypt",
-			"postalCode": "Postal Code"
-		},
-		"ar_EG": {
-			"shortName": "مصر",
-			"longName": "جمهورية مصر العربية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "EG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_EG",
+    "id" : "ar_EG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EGP",
+    "id" : "EGP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "ALX" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة الإسكندرية‎",
+          "longName" : "‏محافظة الإسكندرية‎"
+        },
+        "en_US" : {
+          "shortName" : "Alexandria",
+          "longName" : "Alexandria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ASN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aswan",
+          "longName" : "Aswan"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة أسوان",
+          "longName" : "‏محافظة أسوان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AST" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة أسيوط",
+          "longName" : "محافظة أسيوط"
+        },
+        "en_US" : {
+          "shortName" : "Asyut",
+          "longName" : "Asyut"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة البحر الأحمر",
+          "longName" : "‏محافظة البحر الأحمر"
+        },
+        "en_US" : {
+          "shortName" : "Red Sea",
+          "longName" : "Red Sea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beheira",
+          "longName" : "Beheira"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة البحيرة‎",
+          "longName" : "محافظة البحيرة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BNS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beni Suef",
+          "longName" : "Beni Suef"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة بنى سويف‎",
+          "longName" : "‏محافظة بنى سويف‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة القاهرة‎",
+          "longName" : "محافظة القاهرة‎"
+        },
+        "en_US" : {
+          "shortName" : "Cairo",
+          "longName" : "Cairo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dakahlia",
+          "longName" : "Dakahlia"
+        },
+        "ar_EG" : {
+          "shortName" : "الدقهلية",
+          "longName" : "الدقهلية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DT" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة دمياط",
+          "longName" : "محافظة دمياط"
+        },
+        "en_US" : {
+          "shortName" : "Damietta",
+          "longName" : "Damietta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FYM" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة الفيوم‎",
+          "longName" : "‏محافظة الفيوم‎"
+        },
+        "en_US" : {
+          "shortName" : "Faiyum",
+          "longName" : "Faiyum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GH" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة الغربية",
+          "longName" : "محافظة الغربية"
+        },
+        "en_US" : {
+          "shortName" : "Gharbia",
+          "longName" : "Gharbia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GZ" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة الجيزة",
+          "longName" : "محافظة الجيزة"
+        },
+        "en_US" : {
+          "shortName" : "Giza",
+          "longName" : "Giza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Helwan",
+          "longName" : "Helwan"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة حلوان",
+          "longName" : "محافظة حلوان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IS" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة الإسماعيلية‎",
+          "longName" : "محافظة الإسماعيلية‎"
+        },
+        "en_US" : {
+          "shortName" : "Ismailia",
+          "longName" : "Ismailia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Sinai",
+          "longName" : "South Sinai"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة جنوب سيناء",
+          "longName" : "‏محافظة جنوب سيناء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qalyubia",
+          "longName" : "Qalyubia"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة القليوبية‎",
+          "longName" : "‏محافظة القليوبية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KFS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kafr el-Sheikh",
+          "longName" : "Kafr el-Sheikh"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة كفر الشيخ",
+          "longName" : "‏محافظة كفر الشيخ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qena",
+          "longName" : "Qena"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة قنا",
+          "longName" : "‏محافظة قنا"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Luxor",
+          "longName" : "Luxor"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة الأقصر",
+          "longName" : "محافظة الأقصر"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MN" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "محافظة المنيا‎",
+          "longName" : "محافظة المنيا‎"
+        },
+        "en_US" : {
+          "shortName" : "Minya",
+          "longName" : "Minya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MNF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Monufia",
+          "longName" : "Monufia"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة المنوفية‎",
+          "longName" : "‏محافظة المنوفية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MT" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة مطروح",
+          "longName" : "‏محافظة مطروح"
+        },
+        "en_US" : {
+          "shortName" : "Matrouh",
+          "longName" : "Matrouh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PTS" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة بورسعيد",
+          "longName" : "‏محافظة بورسعيد"
+        },
+        "en_US" : {
+          "shortName" : "Port Said",
+          "longName" : "Port Said"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SHG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sohag",
+          "longName" : "Sohag"
+        },
+        "ar_EG" : {
+          "shortName" : "‏محافظة سوهاج‎",
+          "longName" : "‏محافظة سوهاج‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SHR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Sharqia",
+          "longName" : "Al Sharqia"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة الشرقية‎",
+          "longName" : "محافظة الشرقية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Sinai",
+          "longName" : "North Sinai"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة شمال سيناء",
+          "longName" : "محافظة شمال سيناء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "6th of October",
+          "longName" : "6th of October"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة السادس من أكتوبر‎",
+          "longName" : "محافظة السادس من أكتوبر‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SUZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Suez",
+          "longName" : "Suez"
+        },
+        "ar_EG" : {
+          "shortName" : "محافظة السويس",
+          "longName" : "محافظة السويس"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WAD" : {
+      "locales" : {
+        "ar_EG" : {
+          "shortName" : "‏محافظة الوادي الجديد‎",
+          "longName" : "‏محافظة الوادي الجديد‎"
+        },
+        "en_US" : {
+          "shortName" : "New Valley",
+          "longName" : "New Valley"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_EG",
+    "id" : "ar_EG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Egypt",
+      "longName" : "Arab Republic of Egypt",
+      "postalCode" : ""
+    },
+    "ar_EG" : {
+      "shortName" : "مصر",
+      "longName" : "جمهورية مصر العربية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Ägypten",
+      "longName" : "Arab Republic of Egypt",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Egypt",
+      "longName" : "Arab Republic of Egypt",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Egipto",
+      "longName" : "República Árabe de Egipto",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Égypte",
+      "longName" : "République arabe d’Égypte",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Egitto",
+      "longName" : "Repubblica Araba d'Egitto",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "이집트",
+      "longName" : "Arab Republic of Egypt",
+      "postalCode" : ""
+    }
+  }
 }

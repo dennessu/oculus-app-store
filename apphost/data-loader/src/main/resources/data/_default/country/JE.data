@@ -1,38 +1,63 @@
 {
-	"countryCode": "JE",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GBP",
-		"id": "GBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	{
-		"href": "/v1/locales/fr_JE",
-		"id": "fr_JE"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Jersey",
-			"longName": "Bailiwick of Jersey",
-			"postalCode": "Postal Code"
-		},
-		"fr_JE": {
-			"shortName": "Jersey",
-			"longName": "Bailliage de Jersey",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "JE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GBP",
+    "id" : "GBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/fr_JE",
+    "id" : "fr_JE"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailiwick of Jersey",
+      "postalCode" : ""
+    },
+    "fr_JE" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailliage de Jersey",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailiwick of Jersey",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailiwick of Jersey",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailiazgo de Jersey",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Jersey",
+      "longName" : "Bailliage de Jersey",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Jersey",
+      "longName" : "Baliato di Jersey",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "저지",
+      "longName" : "Bailiwick of Jersey",
+      "postalCode" : ""
+    }
+  }
 }

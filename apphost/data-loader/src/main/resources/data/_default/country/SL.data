@@ -1,63 +1,95 @@
 {
-	"countryCode": "SL",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SLL",
-		"id": "SLL"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"E": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"en_US": {
-					"shortName": " Western Area",
-					"longName": " Western Area"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Sierra Leone",
-			"longName": "Republic of Sierra Leone",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SLL",
+    "id" : "SLL"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "E" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : " Western Area",
+          "longName" : " Western Area"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Sierra Leone",
+      "longName" : "Republic of Sierra Leone",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Sierra Leone",
+      "longName" : "Republik Sierra Leone",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Sierra Leone",
+      "longName" : "Republic of Sierra Leone",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sierra Leona",
+      "longName" : "República de Sierra Leona",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Sierra Leone",
+      "longName" : "République de Sierra Leone",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sierra Leone",
+      "longName" : "Repubblica della Sierra Leone",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "시에라리온",
+      "longName" : "Republic of Sierra Leone",
+      "postalCode" : ""
+    }
+  }
 }

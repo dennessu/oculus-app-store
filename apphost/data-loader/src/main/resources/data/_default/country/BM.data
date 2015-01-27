@@ -1,29 +1,55 @@
 {
-	"countryCode": "BM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BMD",
-		"id": "BMD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Bermuda",
-			"longName": "the Bermudas or Somers Isles",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BMD",
+    "id" : "BMD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bermuda",
+      "longName" : "the Bermudas or Somers Isles",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Bermuda",
+      "longName" : "the Bermudas or Somers Isles",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bermuda",
+      "longName" : "the Bermudas or Somers Isles",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bermudas",
+      "longName" : "Bermudas o Islas Somerset",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bermudes",
+      "longName" : "Îles des Bermudes ou de Somers",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bermuda",
+      "longName" : "Isole Bermuda e Somers",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "버뮤다",
+      "longName" : "the Bermudas or Somers Isles",
+      "postalCode" : ""
+    }
+  }
 }

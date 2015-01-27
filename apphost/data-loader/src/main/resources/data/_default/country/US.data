@@ -1,487 +1,572 @@
 {
-	"countryCode": "US",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/ESRB",
-		"id": "ESRB"
-	}],
-	"subCountries": {
-		"AK": {
-			"locales": {
-				"en_US": {
-					"shortName": "AK",
-					"longName": " Alaska"
-				}
-			}
-		},
-		"AL": {
-			"locales": {
-				"en_US": {
-					"shortName": "AL",
-					"longName": " Alabama"
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"en_US": {
-					"shortName": "AR",
-					"longName": " Arkansas"
-				}
-			}
-		},
-		"AS": {
-			"locales": {
-				"en_US": {
-					"shortName": "AS",
-					"longName": " American Samoa"
-				}
-			}
-		},
-		"AZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "AZ",
-					"longName": " Arizona"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"en_US": {
-					"shortName": "CA",
-					"longName": " California"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "CO",
-					"longName": " Colorado"
-				}
-			}
-		},
-		"CT": {
-			"locales": {
-				"en_US": {
-					"shortName": "CT",
-					"longName": " Connecticut"
-				}
-			}
-		},
-		"DC": {
-			"locales": {
-				"en_US": {
-					"shortName": "DC",
-					"longName": " District of Columbia"
-				}
-			}
-		},
-		"DE": {
-			"locales": {
-				"en_US": {
-					"shortName": "DE",
-					"longName": " Delaware"
-				}
-			}
-		},
-		"FL": {
-			"locales": {
-				"en_US": {
-					"shortName": "FL",
-					"longName": " Florida"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "GA",
-					"longName": " Georgia"
-				}
-			}
-		},
-		"GU": {
-			"locales": {
-				"en_US": {
-					"shortName": "GU",
-					"longName": " Guam"
-				}
-			}
-		},
-		"HI": {
-			"locales": {
-				"en_US": {
-					"shortName": "HI",
-					"longName": " Hawaii"
-				}
-			}
-		},
-		"IA": {
-			"locales": {
-				"en_US": {
-					"shortName": "IA",
-					"longName": " Iowa"
-				}
-			}
-		},
-		"ID": {
-			"locales": {
-				"en_US": {
-					"shortName": "ID",
-					"longName": " Idaho"
-				}
-			}
-		},
-		"IL": {
-			"locales": {
-				"en_US": {
-					"shortName": "IL",
-					"longName": " Illinois"
-				}
-			}
-		},
-		"IN": {
-			"locales": {
-				"en_US": {
-					"shortName": "IN",
-					"longName": " Indiana"
-				}
-			}
-		},
-		"KS": {
-			"locales": {
-				"en_US": {
-					"shortName": "KS",
-					"longName": " Kansas"
-				}
-			}
-		},
-		"KY": {
-			"locales": {
-				"en_US": {
-					"shortName": "KY",
-					"longName": " Kentucky"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "LA",
-					"longName": " Louisiana"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "MA",
-					"longName": " Massachusetts"
-				}
-			}
-		},
-		"MD": {
-			"locales": {
-				"en_US": {
-					"shortName": "MD",
-					"longName": " Maryland"
-				}
-			}
-		},
-		"ME": {
-			"locales": {
-				"en_US": {
-					"shortName": "ME",
-					"longName": " Maine"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "MI",
-					"longName": " Michigan"
-				}
-			}
-		},
-		"MN": {
-			"locales": {
-				"en_US": {
-					"shortName": "MN",
-					"longName": " Minnesota"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "MO",
-					"longName": " Missouri"
-				}
-			}
-		},
-		"MP": {
-			"locales": {
-				"en_US": {
-					"shortName": "MP",
-					"longName": " Northern Mariana Islands"
-				}
-			}
-		},
-		"MS": {
-			"locales": {
-				"en_US": {
-					"shortName": "MS",
-					"longName": " Mississippi"
-				}
-			}
-		},
-		"MT": {
-			"locales": {
-				"en_US": {
-					"shortName": "MT",
-					"longName": " Montana"
-				}
-			}
-		},
-		"NC": {
-			"locales": {
-				"en_US": {
-					"shortName": "NC",
-					"longName": " North Carolina"
-				}
-			}
-		},
-		"ND": {
-			"locales": {
-				"en_US": {
-					"shortName": "ND",
-					"longName": " North Dakota"
-				}
-			}
-		},
-		"NE": {
-			"locales": {
-				"en_US": {
-					"shortName": "NE",
-					"longName": " Nebraska"
-				}
-			}
-		},
-		"NH": {
-			"locales": {
-				"en_US": {
-					"shortName": "NH",
-					"longName": " New Hampshire"
-				}
-			}
-		},
-		"NJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "NJ",
-					"longName": " New Jersey"
-				}
-			}
-		},
-		"NM": {
-			"locales": {
-				"en_US": {
-					"shortName": "NM",
-					"longName": " New Mexico"
-				}
-			}
-		},
-		"NV": {
-			"locales": {
-				"en_US": {
-					"shortName": "NV",
-					"longName": " Nevada"
-				}
-			}
-		},
-		"NY": {
-			"locales": {
-				"en_US": {
-					"shortName": "NY",
-					"longName": " New York"
-				}
-			}
-		},
-		"OH": {
-			"locales": {
-				"en_US": {
-					"shortName": "OH",
-					"longName": " Ohio"
-				}
-			}
-		},
-		"OK": {
-			"locales": {
-				"en_US": {
-					"shortName": "OK",
-					"longName": " Oklahoma"
-				}
-			}
-		},
-		"OR": {
-			"locales": {
-				"en_US": {
-					"shortName": "OR",
-					"longName": " Oregon"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"en_US": {
-					"shortName": "PA",
-					"longName": " Pennsylvania"
-				}
-			}
-		},
-		"PR": {
-			"locales": {
-				"en_US": {
-					"shortName": "PR",
-					"longName": " Puerto Rico"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "RI",
-					"longName": " Rhode Island"
-				}
-			}
-		},
-		"SC": {
-			"locales": {
-				"en_US": {
-					"shortName": "SC",
-					"longName": " South Carolina"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "SD",
-					"longName": " South Dakota"
-				}
-			}
-		},
-		"TN": {
-			"locales": {
-				"en_US": {
-					"shortName": "TN",
-					"longName": " Tennessee"
-				}
-			}
-		},
-		"TX": {
-			"locales": {
-				"en_US": {
-					"shortName": "TX",
-					"longName": " Texas"
-				}
-			}
-		},
-		"UM": {
-			"locales": {
-				"en_US": {
-					"shortName": "UM",
-					"longName": " United States Minor Outlying Islands"
-				}
-			}
-		},
-		"UT": {
-			"locales": {
-				"en_US": {
-					"shortName": "UT",
-					"longName": " Utah"
-				}
-			}
-		},
-		"VA": {
-			"locales": {
-				"en_US": {
-					"shortName": "VA",
-					"longName": " Virginia"
-				}
-			}
-		},
-		"VI": {
-			"locales": {
-				"en_US": {
-					"shortName": "VI",
-					"longName": " Virgin Islands, U.S."
-				}
-			}
-		},
-		"VT": {
-			"locales": {
-				"en_US": {
-					"shortName": "VT",
-					"longName": " Vermont"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"en_US": {
-					"shortName": "WA",
-					"longName": " Washington"
-				}
-			}
-		},
-		"WI": {
-			"locales": {
-				"en_US": {
-					"shortName": "WI",
-					"longName": " Wisconsin"
-				}
-			}
-		},
-		"WV": {
-			"locales": {
-				"en_US": {
-					"shortName": "WV",
-					"longName": " West Virginia"
-				}
-			}
-		},
-		"WY": {
-			"locales": {
-				"en_US": {
-					"shortName": "WY",
-					"longName": " Wyoming"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "USA",
-			"longName": "United States of America",
-			"postalCode": "ZIP Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "US",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/ESRB",
+    "id" : "ESRB"
+  } ],
+  "subCountries" : {
+    "AK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AK",
+          "longName" : " Alaska"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AL",
+          "longName" : " Alabama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AR",
+          "longName" : " Arkansas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AS",
+          "longName" : " American Samoa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AZ",
+          "longName" : " Arizona"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CA",
+          "longName" : " California"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CO",
+          "longName" : " Colorado"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CT",
+          "longName" : " Connecticut"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "DC",
+          "longName" : " District of Columbia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "DE",
+          "longName" : " Delaware"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "FL",
+          "longName" : " Florida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GA",
+          "longName" : " Georgia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GU",
+          "longName" : " Guam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HI",
+          "longName" : " Hawaii"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "IA",
+          "longName" : " Iowa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ID" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ID",
+          "longName" : " Idaho"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "IL",
+          "longName" : " Illinois"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "IN",
+          "longName" : " Indiana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KS",
+          "longName" : " Kansas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KY",
+          "longName" : " Kentucky"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "LA",
+          "longName" : " Louisiana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MA",
+          "longName" : " Massachusetts"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MD",
+          "longName" : " Maryland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ME" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ME",
+          "longName" : " Maine"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MI",
+          "longName" : " Michigan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MN",
+          "longName" : " Minnesota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MO",
+          "longName" : " Missouri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MP",
+          "longName" : " Northern Mariana Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MS",
+          "longName" : " Mississippi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MT",
+          "longName" : " Montana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NC",
+          "longName" : " North Carolina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ND" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ND",
+          "longName" : " North Dakota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NE",
+          "longName" : " Nebraska"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NH",
+          "longName" : " New Hampshire"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NJ",
+          "longName" : " New Jersey"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NM",
+          "longName" : " New Mexico"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NV",
+          "longName" : " Nevada"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NY",
+          "longName" : " New York"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OH",
+          "longName" : " Ohio"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OK",
+          "longName" : " Oklahoma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OR",
+          "longName" : " Oregon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PA",
+          "longName" : " Pennsylvania"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PR",
+          "longName" : " Puerto Rico"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "RI",
+          "longName" : " Rhode Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SC",
+          "longName" : " South Carolina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SD",
+          "longName" : " South Dakota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TN",
+          "longName" : " Tennessee"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TX",
+          "longName" : " Texas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "UM",
+          "longName" : " United States Minor Outlying Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "UT",
+          "longName" : " Utah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VA",
+          "longName" : " Virginia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VI",
+          "longName" : " Virgin Islands, U.S."
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VT",
+          "longName" : " Vermont"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "WA",
+          "longName" : " Washington"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "WI",
+          "longName" : " Wisconsin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "WV",
+          "longName" : " West Virginia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "WY",
+          "longName" : " Wyoming"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "USA",
+      "longName" : "United States of America",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "USA",
+      "longName" : "Vereinigte Staaten von Amerika",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "USA",
+      "longName" : "United States of America",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "EE. UU.",
+      "longName" : "Estados Unidos de América",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "USA",
+      "longName" : "États-Unis d’Amérique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "USA",
+      "longName" : "Stati Uniti d'America",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "USA",
+      "longName" : "미국",
+      "postalCode" : ""
+    }
+  }
 }

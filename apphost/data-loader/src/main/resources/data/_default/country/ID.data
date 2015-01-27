@@ -1,124 +1,158 @@
 {
-	"countryCode": "ID",
-	"defaultLocale": {
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/IDR",
-		"id": "IDR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"IJ": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Papua",
-					"longName": "Papua"
-				},
-				"en_US": {
-					"shortName": "Papua",
-					"longName": "Papua"
-				}
-			}
-		},
-		"JW": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Jawa",
-					"longName": "Jawa"
-				},
-				"en_US": {
-					"shortName": "Jawa",
-					"longName": "Jawa"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Kalimantan",
-					"longName": "Kalimantan"
-				},
-				"en_US": {
-					"shortName": "Kalimantan",
-					"longName": "Kalimantan"
-				}
-			}
-		},
-		"ML": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Maluku",
-					"longName": "Maluku"
-				},
-				"en_US": {
-					"shortName": "Maluku",
-					"longName": "Maluku"
-				}
-			}
-		},
-		"NU": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Nusa Tenggara",
-					"longName": "Nusa Tenggara"
-				},
-				"en_US": {
-					"shortName": "Nusa Tenggara",
-					"longName": "Nusa Tenggara"
-				}
-			}
-		},
-		"SL": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Sulawesi",
-					"longName": "Sulawesi"
-				},
-				"en_US": {
-					"shortName": "Sulawesi",
-					"longName": "Sulawesi"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Sumatera",
-					"longName": "Sumatera"
-				},
-                "en_US": {
-					"shortName": "Sumatera",
-					"longName": "Sumatera"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Indonesia",
-			"longName": "Republic of Indonesia",
-			"postalCode": "Postal Code"
-		},
-		"en_SG": {
-			"shortName": "Indonesia",
-			"longName": "Republic of Indonesia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ID",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/IDR",
+    "id" : "IDR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "IJ" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Papua",
+          "longName" : "Papua"
+        },
+        "en_US" : {
+          "shortName" : "Papua",
+          "longName" : "Papua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JW" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Jawa",
+          "longName" : "Jawa"
+        },
+        "en_US" : {
+          "shortName" : "Jawa",
+          "longName" : "Jawa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Kalimantan",
+          "longName" : "Kalimantan"
+        },
+        "en_US" : {
+          "shortName" : "Kalimantan",
+          "longName" : "Kalimantan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ML" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Maluku",
+          "longName" : "Maluku"
+        },
+        "en_US" : {
+          "shortName" : "Maluku",
+          "longName" : "Maluku"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NU" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Nusa Tenggara",
+          "longName" : "Nusa Tenggara"
+        },
+        "en_US" : {
+          "shortName" : "Nusa Tenggara",
+          "longName" : "Nusa Tenggara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SL" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Sulawesi",
+          "longName" : "Sulawesi"
+        },
+        "en_US" : {
+          "shortName" : "Sulawesi",
+          "longName" : "Sulawesi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Sumatera",
+          "longName" : "Sumatera"
+        },
+        "en_US" : {
+          "shortName" : "Sumatera",
+          "longName" : "Sumatera"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Indonesia",
+      "longName" : "Republic of Indonesia",
+      "postalCode" : ""
+    },
+    "en_SG" : {
+      "shortName" : "Indonesia",
+      "longName" : "Republic of Indonesia",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Indonesien",
+      "longName" : "Republik Indonesien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Indonesia",
+      "longName" : "Republic of Indonesia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Indonesia",
+      "longName" : "República de Indonesia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Indonésie",
+      "longName" : "République d’Indonésie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Indonesia",
+      "longName" : "Repubblica d'Indonesia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "인도네시아",
+      "longName" : "Republic of Indonesia",
+      "postalCode" : ""
+    }
+  }
 }

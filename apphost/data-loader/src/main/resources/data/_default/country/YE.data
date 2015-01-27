@@ -1,289 +1,337 @@
 {
-	"countryCode": "YE",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_YE",
-		"id": "ar_YE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/YER",
-		"id": "YER"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "أبين",
-					"longName": "أبين"
-				},
-				"en_US": {
-					"shortName": "Abyan",
-					"longName": "Abyan"
-				}
-			}
-		},
-		"AD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aden",
-					"longName": "Aden"
-				},
-				"ar_YE": {
-					"shortName": "عدن",
-					"longName": "عدن"
-				}
-			}
-		},
-		"AM": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "عمران",
-					"longName": "عمران"
-				},
-				"en_US": {
-					"shortName": "Amran",
-					"longName": "Amran"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Bayda'",
-					"longName": "Al Bayda'"
-				},
-				"ar_YE": {
-					"shortName": "البيضاء",
-					"longName": "البيضاء"
-				}
-			}
-		},
-		"DA": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "الضالع",
-					"longName": "الضالع"
-				},
-				"en_US": {
-					"shortName": "Ad Dali'",
-					"longName": "Ad Dali'"
-				}
-			}
-		},
-		"DH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dhamar",
-					"longName": "Dhamar"
-				},
-				"ar_YE": {
-					"shortName": "ذمار",
-					"longName": "ذمار"
-				}
-			}
-		},
-		"HD": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "حضرموت",
-					"longName": "حضرموت"
-				},
-				"en_US": {
-					"shortName": "Dhamar",
-					"longName": "Dhamar"
-				}
-			}
-		},
-		"HJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hajjah",
-					"longName": "Hajjah"
-				},
-				"ar_YE": {
-					"shortName": "حجة",
-					"longName": "حجة"
-				}
-			}
-		},
-		"HU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Hudaydah",
-					"longName": "Al Hudaydah"
-				},
-				"ar_YE": {
-					"shortName": "الحديدة",
-					"longName": "الحديدة"
-				}
-			}
-		},
-		"IB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ibb",
-					"longName": "Ibb"
-				},
-				"ar_YE": {
-					"shortName": "إب",
-					"longName": "إب"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Jawf",
-					"longName": "Al Jawf"
-				},
-				"ar_YE": {
-					"shortName": "الجوف",
-					"longName": "الجوف"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "لحج",
-					"longName": "لحج"
-				},
-				"en_US": {
-					"shortName": "Lahij",
-					"longName": "Lahij"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ma'rib",
-					"longName": "Ma'rib"
-				},
-				"ar_YE": {
-					"shortName": "مأرب",
-					"longName": "مأرب"
-				}
-			}
-		},
-		"MR": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "المهرة",
-					"longName": "المهرة"
-				},
-				"en_US": {
-					"shortName": "Al Mahrah",
-					"longName": "Al Mahrah"
-				}
-			}
-		},
-		"MW": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "المحويت",
-					"longName": "المحويت"
-				},
-				"en_US": {
-					"shortName": "Al Mahwit",
-					"longName": "Al Mahwit"
-				}
-			}
-		},
-		"RA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Raymah",
-					"longName": "Raymah"
-				},
-				"ar_YE": {
-					"shortName": "ريمه‎",
-					"longName": "ريمه‎"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sanaa",
-					"longName": "Sanaa"
-				},
-				"ar_YE": {
-					"shortName": "صنعاء",
-					"longName": "صنعاء"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saada",
-					"longName": "Saada"
-				},
-				"ar_YE": {
-					"shortName": "‏صعدة‎",
-					"longName": "‏صعدة‎"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shabwah",
-					"longName": "Shabwah"
-				},
-				"ar_YE": {
-					"shortName": "شبوة",
-					"longName": "شبوة"
-				}
-			}
-		},
-		"SN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sana'a",
-					"longName": "Sana'a"
-				},
-				"ar_YE": {
-					"shortName": "صنعاء",
-					"longName": "صنعاء"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"ar_YE": {
-					"shortName": "تعز",
-					"longName": "تعز"
-				},
-				"en_US": {
-					"shortName": "Ta'izz",
-					"longName": "Ta'izz"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_YE",
-		"id": "ar_YE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Yemen",
-			"longName": "Republic of Yemen",
-			"postalCode": "Postal Code"
-		},
-		"ar_YE": {
-			"shortName": "اليَمَن",
-			"longName": "الجمهورية اليمنية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "YE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_YE",
+    "id" : "ar_YE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/YER",
+    "id" : "YER"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "أبين",
+          "longName" : "أبين"
+        },
+        "en_US" : {
+          "shortName" : "Abyan",
+          "longName" : "Abyan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aden",
+          "longName" : "Aden"
+        },
+        "ar_YE" : {
+          "shortName" : "عدن",
+          "longName" : "عدن"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AM" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "عمران",
+          "longName" : "عمران"
+        },
+        "en_US" : {
+          "shortName" : "Amran",
+          "longName" : "Amran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Bayda'",
+          "longName" : "Al Bayda'"
+        },
+        "ar_YE" : {
+          "shortName" : "البيضاء",
+          "longName" : "البيضاء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DA" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "الضالع",
+          "longName" : "الضالع"
+        },
+        "en_US" : {
+          "shortName" : "Ad Dali'",
+          "longName" : "Ad Dali'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dhamar",
+          "longName" : "Dhamar"
+        },
+        "ar_YE" : {
+          "shortName" : "ذمار",
+          "longName" : "ذمار"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HD" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "حضرموت",
+          "longName" : "حضرموت"
+        },
+        "en_US" : {
+          "shortName" : "Dhamar",
+          "longName" : "Dhamar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hajjah",
+          "longName" : "Hajjah"
+        },
+        "ar_YE" : {
+          "shortName" : "حجة",
+          "longName" : "حجة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Hudaydah",
+          "longName" : "Al Hudaydah"
+        },
+        "ar_YE" : {
+          "shortName" : "الحديدة",
+          "longName" : "الحديدة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ibb",
+          "longName" : "Ibb"
+        },
+        "ar_YE" : {
+          "shortName" : "إب",
+          "longName" : "إب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Jawf",
+          "longName" : "Al Jawf"
+        },
+        "ar_YE" : {
+          "shortName" : "الجوف",
+          "longName" : "الجوف"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "لحج",
+          "longName" : "لحج"
+        },
+        "en_US" : {
+          "shortName" : "Lahij",
+          "longName" : "Lahij"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ma'rib",
+          "longName" : "Ma'rib"
+        },
+        "ar_YE" : {
+          "shortName" : "مأرب",
+          "longName" : "مأرب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MR" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "المهرة",
+          "longName" : "المهرة"
+        },
+        "en_US" : {
+          "shortName" : "Al Mahrah",
+          "longName" : "Al Mahrah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MW" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "المحويت",
+          "longName" : "المحويت"
+        },
+        "en_US" : {
+          "shortName" : "Al Mahwit",
+          "longName" : "Al Mahwit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Raymah",
+          "longName" : "Raymah"
+        },
+        "ar_YE" : {
+          "shortName" : "ريمه‎",
+          "longName" : "ريمه‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sanaa",
+          "longName" : "Sanaa"
+        },
+        "ar_YE" : {
+          "shortName" : "صنعاء",
+          "longName" : "صنعاء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saada",
+          "longName" : "Saada"
+        },
+        "ar_YE" : {
+          "shortName" : "‏صعدة‎",
+          "longName" : "‏صعدة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shabwah",
+          "longName" : "Shabwah"
+        },
+        "ar_YE" : {
+          "shortName" : "شبوة",
+          "longName" : "شبوة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sana'a",
+          "longName" : "Sana'a"
+        },
+        "ar_YE" : {
+          "shortName" : "صنعاء",
+          "longName" : "صنعاء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "ar_YE" : {
+          "shortName" : "تعز",
+          "longName" : "تعز"
+        },
+        "en_US" : {
+          "shortName" : "Ta'izz",
+          "longName" : "Ta'izz"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_YE",
+    "id" : "ar_YE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Yemen",
+      "longName" : "Republic of Yemen",
+      "postalCode" : ""
+    },
+    "ar_YE" : {
+      "shortName" : "اليَمَن",
+      "longName" : "الجمهورية اليمنية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Jemen",
+      "longName" : "Republic of Yemen",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Yemen",
+      "longName" : "Republic of Yemen",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Yemen",
+      "longName" : "República de Yemen",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Yémen",
+      "longName" : "République du Yémen",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Yemen",
+      "longName" : "Repubblica dello Yemen",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "예멘",
+      "longName" : "Republic of Yemen",
+      "postalCode" : ""
+    }
+  }
 }

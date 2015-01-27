@@ -1,119 +1,158 @@
 {
-	"countryCode": "AM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AMD",
-		"id": "AMD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"AG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aragac̣otn",
-					"longName": "Aragac̣otn"
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ararat",
-					"longName": "Ararat"
-				}
-			}
-		},
-		"AV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Armavir",
-					"longName": "Armavir"
-				}
-			}
-		},
-		"ER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Erevan",
-					"longName": "Erevan"
-				}
-			}
-		},
-		"GR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Geġark'unik'",
-					"longName": "Geġark'unik'"
-				}
-			}
-		},
-		"KT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kotayk'",
-					"longName": "Kotayk'"
-				}
-			}
-		},
-		"LO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Loṙy",
-					"longName": "Loṙy"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Širak",
-					"longName": "Širak"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Syunik'",
-					"longName": "Syunik'"
-				}
-			}
-		},
-		"TV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tavuš",
-					"longName": "Tavuš"
-				}
-			}
-		},
-		"VD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vayoc Jor",
-					"longName": "Vayoc Jor"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Armenia",
-			"longName": "Republic of Armenia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AMD",
+    "id" : "AMD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "AG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aragac̣otn",
+          "longName" : "Aragac̣otn"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ararat",
+          "longName" : "Ararat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Armavir",
+          "longName" : "Armavir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Erevan",
+          "longName" : "Erevan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Geġark'unik'",
+          "longName" : "Geġark'unik'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kotayk'",
+          "longName" : "Kotayk'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Loṙy",
+          "longName" : "Loṙy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Širak",
+          "longName" : "Širak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Syunik'",
+          "longName" : "Syunik'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tavuš",
+          "longName" : "Tavuš"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vayoc Jor",
+          "longName" : "Vayoc Jor"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Armenia",
+      "longName" : "Republic of Armenia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Armenien",
+      "longName" : "Republic of Armenia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Armenia",
+      "longName" : "Republic of Armenia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Armenia",
+      "longName" : "República de Armenia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Arménie",
+      "longName" : "République d’Arménie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Armenia",
+      "longName" : "Repubblica di Armenia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아르메니아",
+      "longName" : "Republic of Armenia",
+      "postalCode" : ""
+    }
+  }
 }

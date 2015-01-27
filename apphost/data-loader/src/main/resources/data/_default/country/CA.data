@@ -1,257 +1,296 @@
 {
-	"countryCode": "CA",
-	"defaultLocale": {
-		"href": "/v1/locales/en_CA",
-		"id": "en_CA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CAD",
-		"id": "CAD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/ESRB",
-		"id": "ESRB"
-	}],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "AB",
-					"longName": "Alberta"
-				},
-				"en_CA": {
-					"shortName": "AB",
-					"longName": "Alberta"
-				},
-				"en_US": {
-					"shortName": "AB",
-					"longName": "Alberta"
-				}
-			}
-		},
-		"BC": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "BC",
-					"longName": "Colombie-Britannique"
-				},
-				"en_CA": {
-					"shortName": "BC",
-					"longName": "British Columbia"
-				},
-				"en_US": {
-					"shortName": "BC",
-					"longName": "British Columbia"
-				}
-			}
-		},
-		"MB": {
-			"locales": {
-				"en_CA": {
-					"shortName": "MB",
-					"longName": "Manitoba"
-				},
-				"fr_CA": {
-					"shortName": "MB",
-					"longName": "Manitoba"
-				},
-				"en_US": {
-					"shortName": "MB",
-					"longName": "Manitoba"
-				}
-			}
-		},
-		"NB": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "NB",
-					"longName": "Nouveau-Brunswick"
-				},
-				"en_CA": {
-					"shortName": "NB",
-					"longName": "New Brunswick"
-				},
-				"en_US": {
-					"shortName": "NB",
-					"longName": "New Brunswick"
-				}
-			}
-		},
-		"NL": {
-			"locales": {
-				"en_CA": {
-					"shortName": "NL",
-					"longName": "Newfoundland and Labrador"
-				},
-				"fr_CA": {
-					"shortName": "NL",
-					"longName": "Terre-Neuve-et-Labrador"
-				},
-				"en_US": {
-					"shortName": "NL",
-					"longName": "Newfoundland and Labrador"
-				}
-			}
-		},
-		"NS": {
-			"locales": {
-				"en_CA": {
-					"shortName": "NS",
-					"longName": "Nova Scotia"
-				},
-				"fr_CA": {
-					"shortName": "NS",
-					"longName": "Nouvelle-Écosse"
-				},
-				"en_US": {
-					"shortName": "NS",
-					"longName": "Nova Scotia"
-				}
-			}
-		},
-		"NT": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "NT",
-					"longName": "Territoires du Nord-Ouest"
-				},
-				"en_CA": {
-					"shortName": "NT",
-					"longName": "Northwest Territories"
-				},
-                "en_US": {
-					"shortName": "NT",
-					"longName": "Northwest Territories"
-				}
-			}
-		},
-		"NU": {
-			"locales": {
-				"en_CA": {
-					"shortName": "NU",
-					"longName": "Nunavut"
-				},
-				"fr_CA": {
-					"shortName": "NU",
-					"longName": "Nunavut"
-				},
-                "en_US": {
-					"shortName": "NU",
-					"longName": "Nunavut"
-				}
-			}
-		},
-		"ON": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "ON",
-					"longName": "Ontario"
-				},
-				"en_CA": {
-					"shortName": "ON",
-					"longName": "Ontario"
-				},
-				"en_US": {
-					"shortName": "ON",
-					"longName": "Ontario"
-				}
-			}
-		},
-		"PE": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "PE",
-					"longName": "Île-du-Prince-Édouard"
-				},
-				"en_CA": {
-					"shortName": "PE",
-					"longName": "Prince Edward Island"
-				},
-				"en_US": {
-					"shortName": "PE",
-					"longName": "Prince Edward Island"
-				}
-			}
-		},
-		"QC": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "QC",
-					"longName": "Québec"
-				},
-				"en_CA": {
-					"shortName": "QC",
-					"longName": "Quebec"
-				},
-				"en_US": {
-					"shortName": "QC",
-					"longName": "Quebec"
-				}
-			}
-		},
-		"SK": {
-			"locales": {
-				"en_CA": {
-					"shortName": "SK",
-					"longName": "Saskatchewan"
-				},
-				"fr_CA": {
-					"shortName": "SK",
-					"longName": "Saskatchewan"
-				},
-				"en_US": {
-					"shortName": "SK",
-					"longName": "Saskatchewan"
-				}
-			}
-		},
-		"YT": {
-			"locales": {
-				"fr_CA": {
-					"shortName": "YT",
-					"longName": "Territoire du Yukon"
-				},
-				"en_CA": {
-					"shortName": "YT",
-					"longName": "Yukon Territory"
-				},
-				"en_US": {
-					"shortName": "YT",
-					"longName": "Yukon Territory"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_CA",
-		"id": "en_CA"
-	},
-	{
-		"href": "/v1/locales/fr_CA",
-		"id": "fr_CA"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Canada",
-			"longName": "Canada",
-			"postalCode": "Postal Code"
-		},
-		"en_CA": {
-			"shortName": "Canada",
-			"longName": "Canada",
-			"postalCode": "Postal Code"
-		},
-		"fr_CA": {
-			"shortName": "Le Canada",
-			"longName": "Le Canada",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_CA",
+    "id" : "en_CA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CAD",
+    "id" : "CAD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/ESRB",
+    "id" : "ESRB"
+  } ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "AB",
+          "longName" : "Alberta"
+        },
+        "en_CA" : {
+          "shortName" : "AB",
+          "longName" : "Alberta"
+        },
+        "en_US" : {
+          "shortName" : "AB",
+          "longName" : "Alberta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BC" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "BC",
+          "longName" : "Colombie-Britannique"
+        },
+        "en_CA" : {
+          "shortName" : "BC",
+          "longName" : "British Columbia"
+        },
+        "en_US" : {
+          "shortName" : "BC",
+          "longName" : "British Columbia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MB" : {
+      "locales" : {
+        "en_CA" : {
+          "shortName" : "MB",
+          "longName" : "Manitoba"
+        },
+        "fr_CA" : {
+          "shortName" : "MB",
+          "longName" : "Manitoba"
+        },
+        "en_US" : {
+          "shortName" : "MB",
+          "longName" : "Manitoba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NB" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "NB",
+          "longName" : "Nouveau-Brunswick"
+        },
+        "en_CA" : {
+          "shortName" : "NB",
+          "longName" : "New Brunswick"
+        },
+        "en_US" : {
+          "shortName" : "NB",
+          "longName" : "New Brunswick"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NL" : {
+      "locales" : {
+        "en_CA" : {
+          "shortName" : "NL",
+          "longName" : "Newfoundland and Labrador"
+        },
+        "fr_CA" : {
+          "shortName" : "NL",
+          "longName" : "Terre-Neuve-et-Labrador"
+        },
+        "en_US" : {
+          "shortName" : "NL",
+          "longName" : "Newfoundland and Labrador"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NS" : {
+      "locales" : {
+        "en_CA" : {
+          "shortName" : "NS",
+          "longName" : "Nova Scotia"
+        },
+        "fr_CA" : {
+          "shortName" : "NS",
+          "longName" : "Nouvelle-Écosse"
+        },
+        "en_US" : {
+          "shortName" : "NS",
+          "longName" : "Nova Scotia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NT" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "NT",
+          "longName" : "Territoires du Nord-Ouest"
+        },
+        "en_CA" : {
+          "shortName" : "NT",
+          "longName" : "Northwest Territories"
+        },
+        "en_US" : {
+          "shortName" : "NT",
+          "longName" : "Northwest Territories"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NU" : {
+      "locales" : {
+        "en_CA" : {
+          "shortName" : "NU",
+          "longName" : "Nunavut"
+        },
+        "fr_CA" : {
+          "shortName" : "NU",
+          "longName" : "Nunavut"
+        },
+        "en_US" : {
+          "shortName" : "NU",
+          "longName" : "Nunavut"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ON" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "ON",
+          "longName" : "Ontario"
+        },
+        "en_CA" : {
+          "shortName" : "ON",
+          "longName" : "Ontario"
+        },
+        "en_US" : {
+          "shortName" : "ON",
+          "longName" : "Ontario"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PE" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "PE",
+          "longName" : "Île-du-Prince-Édouard"
+        },
+        "en_CA" : {
+          "shortName" : "PE",
+          "longName" : "Prince Edward Island"
+        },
+        "en_US" : {
+          "shortName" : "PE",
+          "longName" : "Prince Edward Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QC" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "QC",
+          "longName" : "Québec"
+        },
+        "en_CA" : {
+          "shortName" : "QC",
+          "longName" : "Quebec"
+        },
+        "en_US" : {
+          "shortName" : "QC",
+          "longName" : "Quebec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SK" : {
+      "locales" : {
+        "en_CA" : {
+          "shortName" : "SK",
+          "longName" : "Saskatchewan"
+        },
+        "fr_CA" : {
+          "shortName" : "SK",
+          "longName" : "Saskatchewan"
+        },
+        "en_US" : {
+          "shortName" : "SK",
+          "longName" : "Saskatchewan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YT" : {
+      "locales" : {
+        "fr_CA" : {
+          "shortName" : "YT",
+          "longName" : "Territoire du Yukon"
+        },
+        "en_CA" : {
+          "shortName" : "YT",
+          "longName" : "Yukon Territory"
+        },
+        "en_US" : {
+          "shortName" : "YT",
+          "longName" : "Yukon Territory"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_CA",
+    "id" : "en_CA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/fr_CA",
+    "id" : "fr_CA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Canada",
+      "longName" : "Canada",
+      "postalCode" : ""
+    },
+    "en_CA" : {
+      "shortName" : "Canada",
+      "longName" : "Canada",
+      "postalCode" : "Postal Code"
+    },
+    "fr_CA" : {
+      "shortName" : "Le Canada",
+      "longName" : "Le Canada",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Kanada",
+      "longName" : "Kanada",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Canada",
+      "longName" : "Canada",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Canadá",
+      "longName" : "Canadá",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Canada",
+      "longName" : "Canada",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Canada",
+      "longName" : "Canada",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "캐나다",
+      "longName" : "캐나다",
+      "postalCode" : ""
+    }
+  }
 }

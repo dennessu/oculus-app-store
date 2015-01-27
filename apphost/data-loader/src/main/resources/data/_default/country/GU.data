@@ -1,28 +1,55 @@
 {
-	"countryCode": "GU",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Guam",
-			"longName": "Guam"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guam",
+      "longName" : "Guam",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "괌",
+      "longName" : "괌",
+      "postalCode" : ""
+    }
+  }
 }

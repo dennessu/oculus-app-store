@@ -1,445 +1,506 @@
 {
-	"countryCode": "CN",
-	"defaultLocale": {
-		"href": "/v1/locales/zh_CN",
-		"id": "zh_CN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CNY",
-		"id": "CNY"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"11": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "京",
-					"longName": "北京"
-				},
-				"en_US": {
-					"shortName": "Beijing",
-					"longName": "Beijing"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tianjin",
-					"longName": "Tianjin"
-				},
-				"zh_CN": {
-					"shortName": "津",
-					"longName": "天津"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "冀",
-					"longName": "河北"
-				},
-				"en_US": {
-					"shortName": "Hebei",
-					"longName": "Hebei"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shanxi",
-					"longName": "Shanxi"
-				},
-				"zh_CN": {
-					"shortName": "晋",
-					"longName": "山西"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "蒙",
-					"longName": "内蒙古"
-				},
-				"en_US": {
-					"shortName": "Neimenggu",
-					"longName": "Neimenggu"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Liaoning",
-					"longName": "Liaoning"
-				},
-				"zh_CN": {
-					"shortName": "辽",
-					"longName": "辽宁"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jilin",
-					"longName": "Jilin"
-				},
-				"zh_CN": {
-					"shortName": "吉",
-					"longName": "吉林"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "黑",
-					"longName": "黑龙江"
-				},
-				"en_US": {
-					"shortName": "Heilongjiang",
-					"longName": "Heilongjiang"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shanghai",
-					"longName": "Shanghai"
-				},
-				"zh_CN": {
-					"shortName": "沪",
-					"longName": "上海"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "苏",
-					"longName": "江苏"
-				},
-				"en_US": {
-					"shortName": "Jiangsu",
-					"longName": "Jiangsu"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zhejiang",
-					"longName": "Zhejiang"
-				},
-				"zh_CN": {
-					"shortName": "浙",
-					"longName": "浙江"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "皖",
-					"longName": "安徽"
-				},
-				"en_US": {
-					"shortName": "Anhui",
-					"longName": "Anhui"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "闽",
-					"longName": "福建"
-				},
-				"en_US": {
-					"shortName": "Fujian",
-					"longName": "Fujian"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jiangxi",
-					"longName": "Jiangxi"
-				},
-				"zh_CN": {
-					"shortName": "赣",
-					"longName": "江西"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "鲁",
-					"longName": "山东"
-				},
-				"en_US": {
-					"shortName": "Shandong",
-					"longName": "Shandong"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Henan",
-					"longName": "Henan"
-				},
-				"zh_CN": {
-					"shortName": "豫",
-					"longName": "河南"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hubei",
-					"longName": "Hubei"
-				},
-				"zh_CN": {
-					"shortName": "鄂",
-					"longName": "湖北"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hunan",
-					"longName": "Hunan"
-				},
-				"zh_CN": {
-					"shortName": "湘",
-					"longName": "湖南"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guangdong",
-					"longName": "Guangdong"
-				},
-				"zh_CN": {
-					"shortName": "粤",
-					"longName": "广东"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "桂",
-					"longName": "广西"
-				},
-				"en_US": {
-					"shortName": "Guangxi",
-					"longName": "Guangxi"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "琼",
-					"longName": "海南"
-				},
-				"en_US": {
-					"shortName": "Hainan",
-					"longName": "Hainan"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "渝",
-					"longName": "重庆"
-				},
-				"en_US": {
-					"shortName": "Chongqing",
-					"longName": "Chongqing"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sichuan",
-					"longName": "Sichuan"
-				},
-				"zh_CN": {
-					"shortName": "川",
-					"longName": "四川"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guizhou",
-					"longName": "Guizhou"
-				},
-				"zh_CN": {
-					"shortName": "黔",
-					"longName": "贵州"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "滇",
-					"longName": "云南"
-				},
-				"en_US": {
-					"shortName": "Yunnan",
-					"longName": "Yunnan"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xizang",
-					"longName": "Xizang"
-				},
-				"zh_CN": {
-					"shortName": "藏",
-					"longName": "西藏"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "陕",
-					"longName": "陕西"
-				},
-				"en_US": {
-					"shortName": "Shaanxi",
-					"longName": "Shaanxi"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "甘",
-					"longName": "甘肃"
-				},
-				"en_US": {
-					"shortName": "Gansu",
-					"longName": "Gansu"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qinghai",
-					"longName": "Qinghai"
-				},
-				"zh_CN": {
-					"shortName": "青",
-					"longName": "青海"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ningxia",
-					"longName": "Ningxia"
-				},
-				"zh_CN": {
-					"shortName": "宁",
-					"longName": "宁夏"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xinjiang",
-					"longName": "Xinjiang"
-				},
-				"zh_CN": {
-					"shortName": "新",
-					"longName": "新疆"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Taiwan",
-					"longName": "Taiwan"
-				},
-				"zh_CN": {
-					"shortName": "台",
-					"longName": "台湾"
-				}
-			}
-		},
-		"91": {
-			"locales": {
-				"en_US": {
-					"shortName": "HongKong",
-					"longName": "HongKong"
-				},
-				"zh_CN": {
-					"shortName": "港",
-					"longName": "香港"
-				}
-			}
-		},
-		"92": {
-			"locales": {
-				"zh_CN": {
-					"shortName": "澳",
-					"longName": "澳门"
-				},
-				"en_US": {
-					"shortName": "Macao",
-					"longName": "Macao"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/zh_CN",
-		"id": "zh_CN"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "China",
-			"longName": "People's Republic of China",
-			"postalCode": "Postal Code"
-		},
-		"zh_CN": {
-			"shortName": "中国",
-			"longName": "中华人民共和国",
-			"postalCode": "邮政编码"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/zh_CN",
+    "id" : "zh_CN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CNY",
+    "id" : "CNY"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "11" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "京",
+          "longName" : "北京"
+        },
+        "en_US" : {
+          "shortName" : "Beijing",
+          "longName" : "Beijing"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tianjin",
+          "longName" : "Tianjin"
+        },
+        "zh_CN" : {
+          "shortName" : "津",
+          "longName" : "天津"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "冀",
+          "longName" : "河北"
+        },
+        "en_US" : {
+          "shortName" : "Hebei",
+          "longName" : "Hebei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shanxi",
+          "longName" : "Shanxi"
+        },
+        "zh_CN" : {
+          "shortName" : "晋",
+          "longName" : "山西"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "蒙",
+          "longName" : "内蒙古"
+        },
+        "en_US" : {
+          "shortName" : "Neimenggu",
+          "longName" : "Neimenggu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Liaoning",
+          "longName" : "Liaoning"
+        },
+        "zh_CN" : {
+          "shortName" : "辽",
+          "longName" : "辽宁"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jilin",
+          "longName" : "Jilin"
+        },
+        "zh_CN" : {
+          "shortName" : "吉",
+          "longName" : "吉林"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "黑",
+          "longName" : "黑龙江"
+        },
+        "en_US" : {
+          "shortName" : "Heilongjiang",
+          "longName" : "Heilongjiang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shanghai",
+          "longName" : "Shanghai"
+        },
+        "zh_CN" : {
+          "shortName" : "沪",
+          "longName" : "上海"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "苏",
+          "longName" : "江苏"
+        },
+        "en_US" : {
+          "shortName" : "Jiangsu",
+          "longName" : "Jiangsu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zhejiang",
+          "longName" : "Zhejiang"
+        },
+        "zh_CN" : {
+          "shortName" : "浙",
+          "longName" : "浙江"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "皖",
+          "longName" : "安徽"
+        },
+        "en_US" : {
+          "shortName" : "Anhui",
+          "longName" : "Anhui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "闽",
+          "longName" : "福建"
+        },
+        "en_US" : {
+          "shortName" : "Fujian",
+          "longName" : "Fujian"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jiangxi",
+          "longName" : "Jiangxi"
+        },
+        "zh_CN" : {
+          "shortName" : "赣",
+          "longName" : "江西"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "鲁",
+          "longName" : "山东"
+        },
+        "en_US" : {
+          "shortName" : "Shandong",
+          "longName" : "Shandong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Henan",
+          "longName" : "Henan"
+        },
+        "zh_CN" : {
+          "shortName" : "豫",
+          "longName" : "河南"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hubei",
+          "longName" : "Hubei"
+        },
+        "zh_CN" : {
+          "shortName" : "鄂",
+          "longName" : "湖北"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hunan",
+          "longName" : "Hunan"
+        },
+        "zh_CN" : {
+          "shortName" : "湘",
+          "longName" : "湖南"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guangdong",
+          "longName" : "Guangdong"
+        },
+        "zh_CN" : {
+          "shortName" : "粤",
+          "longName" : "广东"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "桂",
+          "longName" : "广西"
+        },
+        "en_US" : {
+          "shortName" : "Guangxi",
+          "longName" : "Guangxi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "琼",
+          "longName" : "海南"
+        },
+        "en_US" : {
+          "shortName" : "Hainan",
+          "longName" : "Hainan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "渝",
+          "longName" : "重庆"
+        },
+        "en_US" : {
+          "shortName" : "Chongqing",
+          "longName" : "Chongqing"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sichuan",
+          "longName" : "Sichuan"
+        },
+        "zh_CN" : {
+          "shortName" : "川",
+          "longName" : "四川"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guizhou",
+          "longName" : "Guizhou"
+        },
+        "zh_CN" : {
+          "shortName" : "黔",
+          "longName" : "贵州"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "滇",
+          "longName" : "云南"
+        },
+        "en_US" : {
+          "shortName" : "Yunnan",
+          "longName" : "Yunnan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xizang",
+          "longName" : "Xizang"
+        },
+        "zh_CN" : {
+          "shortName" : "藏",
+          "longName" : "西藏"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "陕",
+          "longName" : "陕西"
+        },
+        "en_US" : {
+          "shortName" : "Shaanxi",
+          "longName" : "Shaanxi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "甘",
+          "longName" : "甘肃"
+        },
+        "en_US" : {
+          "shortName" : "Gansu",
+          "longName" : "Gansu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qinghai",
+          "longName" : "Qinghai"
+        },
+        "zh_CN" : {
+          "shortName" : "青",
+          "longName" : "青海"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ningxia",
+          "longName" : "Ningxia"
+        },
+        "zh_CN" : {
+          "shortName" : "宁",
+          "longName" : "宁夏"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xinjiang",
+          "longName" : "Xinjiang"
+        },
+        "zh_CN" : {
+          "shortName" : "新",
+          "longName" : "新疆"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Taiwan",
+          "longName" : "Taiwan"
+        },
+        "zh_CN" : {
+          "shortName" : "台",
+          "longName" : "台湾"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "91" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HongKong",
+          "longName" : "HongKong"
+        },
+        "zh_CN" : {
+          "shortName" : "港",
+          "longName" : "香港"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "92" : {
+      "locales" : {
+        "zh_CN" : {
+          "shortName" : "澳",
+          "longName" : "澳门"
+        },
+        "en_US" : {
+          "shortName" : "Macao",
+          "longName" : "Macao"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/zh_CN",
+    "id" : "zh_CN"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "China",
+      "longName" : "People's Republic of China",
+      "postalCode" : ""
+    },
+    "zh_CN" : {
+      "shortName" : "中国",
+      "longName" : "中华人民共和国",
+      "postalCode" : "邮政编码"
+    },
+    "de_DE" : {
+      "shortName" : "China",
+      "longName" : "People's Republic of China",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "China",
+      "longName" : "People's Republic of China",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "China",
+      "longName" : "República Popular China",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Chine",
+      "longName" : "République populaire de Chine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Cina",
+      "longName" : "Repubblica Popolare Cinese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "중국",
+      "longName" : "People's Republic of China",
+      "postalCode" : ""
+    }
+  }
 }

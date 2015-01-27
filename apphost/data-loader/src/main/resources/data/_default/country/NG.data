@@ -1,327 +1,392 @@
 {
-	"countryCode": "NG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NGN",
-		"id": "NGN"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"en_US": {
-					"shortName": "AB",
-					"longName": "Abia"
-				}
-			}
-		},
-		"AD": {
-			"locales": {
-				"en_US": {
-					"shortName": "AD",
-					"longName": "Adamawa"
-				}
-			}
-		},
-		"AK": {
-			"locales": {
-				"en_US": {
-					"shortName": "AK",
-					"longName": "Akwa Ibom"
-				}
-			}
-		},
-		"AN": {
-			"locales": {
-				"en_US": {
-					"shortName": "AN",
-					"longName": "Anambra"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "BA",
-					"longName": "Bauchi"
-				}
-			}
-		},
-		"BE": {
-			"locales": {
-				"en_US": {
-					"shortName": "BE",
-					"longName": "Benue"
-				}
-			}
-		},
-		"BO": {
-			"locales": {
-				"en_US": {
-					"shortName": "BO",
-					"longName": "Borno"
-				}
-			}
-		},
-		"BY": {
-			"locales": {
-				"en_US": {
-					"shortName": "BY",
-					"longName": "Bayelsa"
-				}
-			}
-		},
-		"CR": {
-			"locales": {
-				"en_US": {
-					"shortName": "CR",
-					"longName": "Cross River"
-				}
-			}
-		},
-		"DE": {
-			"locales": {
-				"en_US": {
-					"shortName": "DE",
-					"longName": "Delta"
-				}
-			}
-		},
-		"EB": {
-			"locales": {
-				"en_US": {
-					"shortName": "EB",
-					"longName": "Ebonyi"
-				}
-			}
-		},
-		"ED": {
-			"locales": {
-				"en_US": {
-					"shortName": "ED",
-					"longName": "Edo"
-				}
-			}
-		},
-		"EK": {
-			"locales": {
-				"en_US": {
-					"shortName": "EK",
-					"longName": "Ekiti"
-				}
-			}
-		},
-		"EN": {
-			"locales": {
-				"en_US": {
-					"shortName": "EN",
-					"longName": "Enugu"
-				}
-			}
-		},
-		"FC": {
-			"locales": {
-				"en_US": {
-					"shortName": "FC",
-					"longName": "Abuja Federal Capital Territory"
-				}
-			}
-		},
-		"GO": {
-			"locales": {
-				"en_US": {
-					"shortName": "GO",
-					"longName": "Gombe"
-				}
-			}
-		},
-		"IM": {
-			"locales": {
-				"en_US": {
-					"shortName": "IM",
-					"longName": "Imo"
-				}
-			}
-		},
-		"JI": {
-			"locales": {
-				"en_US": {
-					"shortName": "JI",
-					"longName": "Jigawa"
-				}
-			}
-		},
-		"KD": {
-			"locales": {
-				"en_US": {
-					"shortName": "KD",
-					"longName": "Kaduna"
-				}
-			}
-		},
-		"KE": {
-			"locales": {
-				"en_US": {
-					"shortName": "KE",
-					"longName": "Kebbi"
-				}
-			}
-		},
-		"KN": {
-			"locales": {
-				"en_US": {
-					"shortName": "KN",
-					"longName": "Kano"
-				}
-			}
-		},
-		"KO": {
-			"locales": {
-				"en_US": {
-					"shortName": "KO",
-					"longName": "Kogi"
-				}
-			}
-		},
-		"KT": {
-			"locales": {
-				"en_US": {
-					"shortName": "KT",
-					"longName": "Katsina"
-				}
-			}
-		},
-		"KW": {
-			"locales": {
-				"en_US": {
-					"shortName": "KW",
-					"longName": "Kwara"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "LA",
-					"longName": "Lagos"
-				}
-			}
-		},
-		"NA": {
-			"locales": {
-				"en_US": {
-					"shortName": "NA",
-					"longName": "Nassarawa"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "NI",
-					"longName": "Niger"
-				}
-			}
-		},
-		"OG": {
-			"locales": {
-				"en_US": {
-					"shortName": "OG",
-					"longName": "Ogun"
-				}
-			}
-		},
-		"ON": {
-			"locales": {
-				"en_US": {
-					"shortName": "ON",
-					"longName": "Ondo"
-				}
-			}
-		},
-		"OS": {
-			"locales": {
-				"en_US": {
-					"shortName": "OS",
-					"longName": "Osun"
-				}
-			}
-		},
-		"OY": {
-			"locales": {
-				"en_US": {
-					"shortName": "OY",
-					"longName": "Oyo"
-				}
-			}
-		},
-		"PL": {
-			"locales": {
-				"en_US": {
-					"shortName": "PL",
-					"longName": "Plateau"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "RI",
-					"longName": "Rivers"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "SO",
-					"longName": "Sokoto"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "TA",
-					"longName": "Taraba"
-				}
-			}
-		},
-		"YO": {
-			"locales": {
-				"en_US": {
-					"shortName": "YO",
-					"longName": "Yobe"
-				}
-			}
-		},
-		"ZA": {
-			"locales": {
-				"en_US": {
-					"shortName": "ZA",
-					"longName": "Zamfara"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Nigeria",
-			"longName": "Federal Republic of Nigeria",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NGN",
+    "id" : "NGN"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AB",
+          "longName" : "Abia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AD",
+          "longName" : "Adamawa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AK",
+          "longName" : "Akwa Ibom"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AN",
+          "longName" : "Anambra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BA",
+          "longName" : "Bauchi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BE",
+          "longName" : "Benue"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BO",
+          "longName" : "Borno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BY",
+          "longName" : "Bayelsa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CR",
+          "longName" : "Cross River"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "DE",
+          "longName" : "Delta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "EB",
+          "longName" : "Ebonyi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ED" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ED",
+          "longName" : "Edo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "EK",
+          "longName" : "Ekiti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "EN",
+          "longName" : "Enugu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "FC",
+          "longName" : "Abuja Federal Capital Territory"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GO",
+          "longName" : "Gombe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "IM",
+          "longName" : "Imo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "JI",
+          "longName" : "Jigawa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KD",
+          "longName" : "Kaduna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KE",
+          "longName" : "Kebbi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KN",
+          "longName" : "Kano"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KO",
+          "longName" : "Kogi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KT",
+          "longName" : "Katsina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KW",
+          "longName" : "Kwara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "LA",
+          "longName" : "Lagos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NA",
+          "longName" : "Nassarawa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NI",
+          "longName" : "Niger"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OG",
+          "longName" : "Ogun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ON" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ON",
+          "longName" : "Ondo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OS",
+          "longName" : "Osun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OY",
+          "longName" : "Oyo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PL",
+          "longName" : "Plateau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "RI",
+          "longName" : "Rivers"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SO",
+          "longName" : "Sokoto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TA",
+          "longName" : "Taraba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "YO",
+          "longName" : "Yobe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ZA",
+          "longName" : "Zamfara"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Nigeria",
+      "longName" : "Federal Republic of Nigeria",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Nigeria",
+      "longName" : "Federal Republic of Nigeria",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Nigeria",
+      "longName" : "Federal Republic of Nigeria",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Nigeria",
+      "longName" : "República Federal de Nigeria",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Nigéria",
+      "longName" : "République fédérale du Nigeria",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Nigeria",
+      "longName" : "Repubblica Federale della Nigeria",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "나이지리아",
+      "longName" : "Federal Republic of Nigeria",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,324 +1,389 @@
 {
-	"countryCode": "MD",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MDL",
-		"id": "MDL"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anenii Noi",
-					"longName": "Anenii Noi"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bălţi",
-					"longName": "Bălţi"
-				}
-			}
-		},
-		"BD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tighina",
-					"longName": "Tighina"
-				}
-			}
-		},
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Briceni",
-					"longName": "Briceni"
-				}
-			}
-		},
-		"BS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Basarabeasca",
-					"longName": "Basarabeasca"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cahul",
-					"longName": "Cahul"
-				}
-			}
-		},
-		"CL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Călăraşi",
-					"longName": "Călăraşi"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cimişlia",
-					"longName": "Cimişlia"
-				}
-			}
-		},
-		"CR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Criuleni",
-					"longName": "Criuleni"
-				}
-			}
-		},
-		"CS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Căuşeni",
-					"longName": "Căuşeni"
-				}
-			}
-		},
-		"CT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cantemir",
-					"longName": "Cantemir"
-				}
-			}
-		},
-		"CU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chişinău",
-					"longName": "Chişinău"
-				}
-			}
-		},
-		"DO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Donduşeni",
-					"longName": "Donduşeni"
-				}
-			}
-		},
-		"DR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Drochia",
-					"longName": "Drochia"
-				}
-			}
-		},
-		"DU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dubăsari",
-					"longName": "Dubăsari"
-				}
-			}
-		},
-		"ED": {
-			"locales": {
-				"en_US": {
-					"shortName": "Edineţ",
-					"longName": "Edineţ"
-				}
-			}
-		},
-		"FA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Făleşti",
-					"longName": "Făleşti"
-				}
-			}
-		},
-		"FL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Floreşti",
-					"longName": "Floreşti"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Găgăuzia, Unitatea teritorială autonomă (UTAG)",
-					"longName": "Găgăuzia, Unitatea teritorială autonomă (UTAG)"
-				}
-			}
-		},
-		"GL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Glodeni",
-					"longName": "Glodeni"
-				}
-			}
-		},
-		"HI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hînceşti",
-					"longName": "Hînceşti"
-				}
-			}
-		},
-		"IA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ialoveni",
-					"longName": "Ialoveni"
-				}
-			}
-		},
-		"LE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Leova",
-					"longName": "Leova"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nisporeni",
-					"longName": "Nisporeni"
-				}
-			}
-		},
-		"OC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ocniţa",
-					"longName": "Ocniţa"
-				}
-			}
-		},
-		"OR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Orhei",
-					"longName": "Orhei"
-				}
-			}
-		},
-		"RE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rezina",
-					"longName": "Rezina"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rîşcani",
-					"longName": "Rîşcani"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şoldăneşti",
-					"longName": "Şoldăneşti"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sîngerei",
-					"longName": "Sîngerei"
-				}
-			}
-		},
-		"SN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Stînga Nistrului, unitatea teritorială din",
-					"longName": "Stînga Nistrului, unitatea teritorială din"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Soroca",
-					"longName": "Soroca"
-				}
-			}
-		},
-		"ST": {
-			"locales": {
-				"en_US": {
-					"shortName": "Străşeni",
-					"longName": "Străşeni"
-				}
-			}
-		},
-		"SV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ştefan Vodă",
-					"longName": "Ştefan Vodă"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Taraclia",
-					"longName": "Taraclia"
-				}
-			}
-		},
-		"TE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Teleneşti",
-					"longName": "Teleneşti"
-				}
-			}
-		},
-		"UN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ungheni",
-					"longName": "Ungheni"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Moldova",
-			"longName": "Republic of Moldova",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MD",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MDL",
+    "id" : "MDL"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anenii Noi",
+          "longName" : "Anenii Noi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bălţi",
+          "longName" : "Bălţi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tighina",
+          "longName" : "Tighina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Briceni",
+          "longName" : "Briceni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Basarabeasca",
+          "longName" : "Basarabeasca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cahul",
+          "longName" : "Cahul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Călăraşi",
+          "longName" : "Călăraşi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cimişlia",
+          "longName" : "Cimişlia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Criuleni",
+          "longName" : "Criuleni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Căuşeni",
+          "longName" : "Căuşeni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cantemir",
+          "longName" : "Cantemir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chişinău",
+          "longName" : "Chişinău"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Donduşeni",
+          "longName" : "Donduşeni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Drochia",
+          "longName" : "Drochia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dubăsari",
+          "longName" : "Dubăsari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ED" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Edineţ",
+          "longName" : "Edineţ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Făleşti",
+          "longName" : "Făleşti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Floreşti",
+          "longName" : "Floreşti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Găgăuzia, Unitatea teritorială autonomă (UTAG)",
+          "longName" : "Găgăuzia, Unitatea teritorială autonomă (UTAG)"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Glodeni",
+          "longName" : "Glodeni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hînceşti",
+          "longName" : "Hînceşti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ialoveni",
+          "longName" : "Ialoveni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Leova",
+          "longName" : "Leova"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nisporeni",
+          "longName" : "Nisporeni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ocniţa",
+          "longName" : "Ocniţa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Orhei",
+          "longName" : "Orhei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rezina",
+          "longName" : "Rezina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rîşcani",
+          "longName" : "Rîşcani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şoldăneşti",
+          "longName" : "Şoldăneşti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sîngerei",
+          "longName" : "Sîngerei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Stînga Nistrului, unitatea teritorială din",
+          "longName" : "Stînga Nistrului, unitatea teritorială din"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Soroca",
+          "longName" : "Soroca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ST" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Străşeni",
+          "longName" : "Străşeni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ştefan Vodă",
+          "longName" : "Ştefan Vodă"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Taraclia",
+          "longName" : "Taraclia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Teleneşti",
+          "longName" : "Teleneşti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ungheni",
+          "longName" : "Ungheni"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Moldova",
+      "longName" : "Republic of Moldova",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Moldawien",
+      "longName" : "Republik Moldau",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Moldova",
+      "longName" : "Republic of Moldova",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Moldavia",
+      "longName" : "República de Moldavia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Moldavie",
+      "longName" : "République de Moldavie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Moldavia",
+      "longName" : "Repubblica di Moldavia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "몰도바",
+      "longName" : "Republic of Moldova",
+      "postalCode" : ""
+    }
+  }
 }

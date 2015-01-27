@@ -1,781 +1,870 @@
 {
-	"countryCode": "MA",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_MA",
-		"id": "ar_MA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MAD",
-		"id": "MAD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AGD": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "اگادير",
-					"longName": "اگادير"
-				},
-				"en_US": {
-					"shortName": "Agadir",
-					"longName": "Agadir"
-				}
-			}
-		},
-		"AOU": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "أوسرد",
-					"longName": "أوسرد"
-				},
-				"en_US": {
-					"shortName": "Aousserd",
-					"longName": "Aousserd"
-				}
-			}
-		},
-		"ASZ": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "أسا الزاك",
-					"longName": "أسا الزاك"
-				},
-				"en_US": {
-					"shortName": "Assa-Zag",
-					"longName": "Assa-Zag"
-				}
-			}
-		},
-		"AZI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Azilal",
-					"longName": "Azilal"
-				},
-				"ar_MA": {
-					"shortName": "أزيلال",
-					"longName": "أزيلال"
-				}
-			}
-		},
-		"BEM": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "بني ملال",
-					"longName": "بني ملال"
-				},
-				"en_US": {
-					"shortName": "Beni Mellal",
-					"longName": "Beni Mellal"
-				}
-			}
-		},
-		"BER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Berkane",
-					"longName": "Berkane"
-				},
-				"ar_MA": {
-					"shortName": "بركان",
-					"longName": "بركان"
-				}
-			}
-		},
-		"BES": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "بن سليمان",
-					"longName": "بن سليمان"
-				},
-				"en_US": {
-					"shortName": "Ben Slimane",
-					"longName": "Ben Slimane"
-				}
-			}
-		},
-		"BOD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boujdour",
-					"longName": "Boujdour"
-				},
-				"ar_MA": {
-					"shortName": "بوجدور",
-					"longName": "بوجدور"
-				}
-			}
-		},
-		"BOM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boulemane",
-					"longName": "Boulemane"
-				},
-				"ar_MA": {
-					"shortName": "بولمان",
-					"longName": "بولمان"
-				}
-			}
-		},
-		"CAS": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "الدار البيضاء",
-					"longName": "الدار البيضاء"
-				},
-				"en_US": {
-					"shortName": "Casablanca",
-					"longName": "Casablanca"
-				}
-			}
-		},
-		"CHE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chefchaouen",
-					"longName": "Chefchaouen"
-				},
-				"ar_MA": {
-					"shortName": "شفشاون",
-					"longName": "شفشاون"
-				}
-			}
-		},
-		"CHI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chichaoua",
-					"longName": "Chichaoua"
-				},
-				"ar_MA": {
-					"shortName": "شيشاوة",
-					"longName": "شيشاوة"
-				}
-			}
-		},
-		"CHT": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "شتوكة آيت باها-",
-					"longName": "شتوكة آيت باها-"
-				},
-				"en_US": {
-					"shortName": "Chtouka-Ait Baha",
-					"longName": "Chtouka-Ait Baha"
-				}
-			}
-		},
-		"ERR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Errachidia",
-					"longName": "Errachidia"
-				},
-				"ar_MA": {
-					"shortName": "الرشيدية",
-					"longName": "الرشيدية"
-				}
-			}
-		},
-		"ESI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Essaouira",
-					"longName": "Essaouira"
-				},
-				"ar_MA": {
-					"shortName": "الصويرة",
-					"longName": "الصويرة"
-				}
-			}
-		},
-		"ESM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Es Smara",
-					"longName": "Es Smara"
-				},
-				"ar_MA": {
-					"shortName": "السمارة",
-					"longName": "السمارة"
-				}
-			}
-		},
-		"FAH": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "عمالة الفحص أنجرة",
-					"longName": "عمالة الفحص أنجرة"
-				},
-				"en_US": {
-					"shortName": "Fahs-Beni Makada",
-					"longName": "Fahs-Beni Makada"
-				}
-			}
-		},
-		"FIG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Figuig",
-					"longName": "Figuig"
-				},
-				"ar_MA": {
-					"shortName": "فكيك",
-					"longName": "فكيك"
-				}
-			}
-		},
-		"GUE": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "كلميم",
-					"longName": "كلميم"
-				},
-				"en_US": {
-					"shortName": "Guelmim",
-					"longName": "Guelmim"
-				}
-			}
-		},
-		"HAJ": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "الحاجب",
-					"longName": "الحاجب"
-				},
-				"en_US": {
-					"shortName": "El Hajeb",
-					"longName": "El Hajeb"
-				}
-			}
-		},
-		"HAO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Haouz",
-					"longName": "Al Haouz"
-				},
-				"ar_MA": {
-					"shortName": "الحوش",
-					"longName": "الحوش"
-				}
-			}
-		},
-		"HOC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Hoceïma",
-					"longName": "Al Hoceïma"
-				},
-				"ar_MA": {
-					"shortName": "الحسيمة",
-					"longName": "الحسيمة"
-				}
-			}
-		},
-		"IFR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ifrane",
-					"longName": "Ifrane"
-				},
-				"ar_MA": {
-					"shortName": "إفران",
-					"longName": "إفران"
-				}
-			}
-		},
-		"INE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Inezgane-Ait Melloul",
-					"longName": "Inezgane-Ait Melloul"
-				},
-				"ar_MA": {
-					"shortName": "إنزكان أيت ملول-",
-					"longName": "إنزكان أيت ملول-"
-				}
-			}
-		},
-		"JDI": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "الجديدي",
-					"longName": "الجديدي"
-				},
-				"en_US": {
-					"shortName": "El Jadida",
-					"longName": "El Jadida"
-				}
-			}
-		},
-		"JRA": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "جرادة",
-					"longName": "جرادة"
-				},
-				"en_US": {
-					"shortName": "Jrada",
-					"longName": "Jrada"
-				}
-			}
-		},
-		"KEN": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "القنيطرة ",
-					"longName": "القنيطرة "
-				},
-				"en_US": {
-					"shortName": "Kénitra",
-					"longName": "Kénitra"
-				}
-			}
-		},
-		"KES": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kelaat es Sraghna",
-					"longName": "Kelaat es Sraghna"
-				},
-				"ar_MA": {
-					"shortName": "إقليم قلعة السراغنة",
-					"longName": "إقليم قلعة السراغنة"
-				}
-			}
-		},
-		"KHE": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "الخميسات",
-					"longName": "الخميسات"
-				},
-				"en_US": {
-					"shortName": "Khémisset",
-					"longName": "Khémisset"
-				}
-			}
-		},
-		"KHN": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "خنيفرة",
-					"longName": "خنيفرة"
-				},
-				"en_US": {
-					"shortName": "Khénifra",
-					"longName": "Khénifra"
-				}
-			}
-		},
-		"KHO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khouribga",
-					"longName": "Khouribga"
-				},
-				"ar_MA": {
-					"shortName": "خريبكة",
-					"longName": "خريبكة"
-				}
-			}
-		},
-		"LAA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Laâyoune",
-					"longName": "Laâyoune"
-				},
-				"ar_MA": {
-					"shortName": "العيون",
-					"longName": "العيون"
-				}
-			}
-		},
-		"LAR": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "العرائش",
-					"longName": "العرائش"
-				},
-				"en_US": {
-					"shortName": "Larache",
-					"longName": "Larache"
-				}
-			}
-		},
-		"MED": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "مديونة",
-					"longName": "مديونة"
-				},
-				"en_US": {
-					"shortName": "Médiouna",
-					"longName": "Médiouna"
-				}
-			}
-		},
-		"MEK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Meknès",
-					"longName": "Meknès"
-				},
-				"ar_MA": {
-					"shortName": "مكناس",
-					"longName": "مكناس"
-				}
-			}
-		},
-		"MMD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marrakech-Medina",
-					"longName": "Marrakech-Medina"
-				},
-				"ar_MA": {
-					"shortName": "مراكش المدينة المنورة",
-					"longName": "مراكش المدينة المنورة"
-				}
-			}
-		},
-		"MMN": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "مراكش المنارة",
-					"longName": "مراكش المنارة"
-				},
-				"en_US": {
-					"shortName": "Marrakech-Menara",
-					"longName": "Marrakech-Menara"
-				}
-			}
-		},
-		"MOH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mohammadia",
-					"longName": "Mohammadia"
-				},
-				"ar_MA": {
-					"shortName": "المحمدية",
-					"longName": "المحمدية"
-				}
-			}
-		},
-		"MOU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moulay Yacoub",
-					"longName": "Moulay Yacoub"
-				},
-				"ar_MA": {
-					"shortName": "مولاي يعقوب",
-					"longName": "مولاي يعقوب"
-				}
-			}
-		},
-		"NAD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nador",
-					"longName": "Nador"
-				},
-				"ar_MA": {
-					"shortName": "الناظور",
-					"longName": "الناظور"
-				}
-			}
-		},
-		"NOU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nouaceur",
-					"longName": "Nouaceur"
-				},
-				"ar_MA": {
-					"shortName": "النواصر",
-					"longName": "النواصر"
-				}
-			}
-		},
-		"OUA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ouarzazate",
-					"longName": "Ouarzazate"
-				},
-				"ar_MA": {
-					"shortName": "ورزازات",
-					"longName": "ورزازات"
-				}
-			}
-		},
-		"OUD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oued ed Dahab",
-					"longName": "Oued ed Dahab"
-				},
-				"ar_MA": {
-					"shortName": "واد دهب",
-					"longName": "واد دهب"
-				}
-			}
-		},
-		"OUJ": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "وجدة أنجاد،",
-					"longName": "وجدة أنجاد،"
-				},
-				"en_US": {
-					"shortName": "Oujda-Angad",
-					"longName": "Oujda-Angad"
-				}
-			}
-		},
-		"RAB": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "الرباط",
-					"longName": "الرباط"
-				},
-				"en_US": {
-					"shortName": "Rabat",
-					"longName": "Rabat"
-				}
-			}
-		},
-		"SAF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Safi",
-					"longName": "Safi"
-				},
-				"ar_MA": {
-					"shortName": "آسفي",
-					"longName": "آسفي"
-				}
-			}
-		},
-		"SAL": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "سلا",
-					"longName": "سلا"
-				},
-				"en_US": {
-					"shortName": "Salé",
-					"longName": "Salé"
-				}
-			}
-		},
-		"SEF": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "صفرو",
-					"longName": "صفرو"
-				},
-				"en_US": {
-					"shortName": "Sefrou",
-					"longName": "Sefrou"
-				}
-			}
-		},
-		"SET": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "سطات",
-					"longName": "سطات"
-				},
-				"en_US": {
-					"shortName": "Settat",
-					"longName": "Settat"
-				}
-			}
-		},
-		"SIK": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "سيدي قاسم",
-					"longName": "سيدي قاسم"
-				},
-				"en_US": {
-					"shortName": "Sidi Kacem",
-					"longName": "Sidi Kacem"
-				}
-			}
-		},
-		"SKH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Skhirate-Témara",
-					"longName": "Skhirate-Témara"
-				},
-				"ar_MA": {
-					"shortName": "الصخيرات تمارة-",
-					"longName": "الصخيرات تمارة-"
-				}
-			}
-		},
-		"SYB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sidi Youssef Ben Ali",
-					"longName": "Sidi Youssef Ben Ali"
-				},
-				"ar_MA": {
-					"shortName": "سيدي يوسف بن علي",
-					"longName": "سيدي يوسف بن علي"
-				}
-			}
-		},
-		"TAI": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "تاوريرت",
-					"longName": "تاوريرت"
-				},
-				"en_US": {
-					"shortName": "Taourirt",
-					"longName": "Taourirt"
-				}
-			}
-		},
-		"TAO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Taounate",
-					"longName": "Taounate"
-				},
-				"ar_MA": {
-					"shortName": "تاونات",
-					"longName": "تاونات"
-				}
-			}
-		},
-		"TAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Taroudant",
-					"longName": "Taroudant"
-				},
-				"ar_MA": {
-					"shortName": "تارودانت",
-					"longName": "تارودانت"
-				}
-			}
-		},
-		"TAT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tata",
-					"longName": "Tata"
-				},
-				"ar_MA": {
-					"shortName": "تاتا",
-					"longName": "تاتا"
-				}
-			}
-		},
-		"TAZ": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "تازة",
-					"longName": "تازة"
-				},
-				"en_US": {
-					"shortName": "Taza",
-					"longName": "Taza"
-				}
-			}
-		},
-		"TET": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "تطوان",
-					"longName": "تطوان"
-				},
-				"en_US": {
-					"shortName": "Tétouan",
-					"longName": "Tétouan"
-				}
-			}
-		},
-		"TIZ": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "تزنيت",
-					"longName": "تزنيت"
-				},
-				"en_US": {
-					"shortName": "Tiznit",
-					"longName": "Tiznit"
-				}
-			}
-		},
-		"TNG": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "طنجة أصيلة",
-					"longName": "طنجة أصيلة"
-				},
-				"en_US": {
-					"shortName": "Tanger-Assilah",
-					"longName": "Tanger-Assilah"
-				}
-			}
-		},
-		"TNT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tan-Tan",
-					"longName": "Tan-Tan"
-				},
-				"ar_MA": {
-					"shortName": "تان تان",
-					"longName": "تان تان"
-				}
-			}
-		},
-		"ZAG": {
-			"locales": {
-				"ar_MA": {
-					"shortName": "زاكورة",
-					"longName": "زاكورة"
-				},
-				"en_US": {
-					"shortName": "Zagora",
-					"longName": "Zagora"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_MA",
-		"id": "ar_MA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Morocco",
-			"longName": "Kingdom of Morocco",
-			"postalCode": "Postal Code"
-		},
-		"ar_MA": {
-			"shortName": "المغرب",
-			"longName": "المملكة المغربية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_MA",
+    "id" : "ar_MA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MAD",
+    "id" : "MAD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AGD" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "اگادير",
+          "longName" : "اگادير"
+        },
+        "en_US" : {
+          "shortName" : "Agadir",
+          "longName" : "Agadir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AOU" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "أوسرد",
+          "longName" : "أوسرد"
+        },
+        "en_US" : {
+          "shortName" : "Aousserd",
+          "longName" : "Aousserd"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ASZ" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "أسا الزاك",
+          "longName" : "أسا الزاك"
+        },
+        "en_US" : {
+          "shortName" : "Assa-Zag",
+          "longName" : "Assa-Zag"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AZI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Azilal",
+          "longName" : "Azilal"
+        },
+        "ar_MA" : {
+          "shortName" : "أزيلال",
+          "longName" : "أزيلال"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BEM" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "بني ملال",
+          "longName" : "بني ملال"
+        },
+        "en_US" : {
+          "shortName" : "Beni Mellal",
+          "longName" : "Beni Mellal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Berkane",
+          "longName" : "Berkane"
+        },
+        "ar_MA" : {
+          "shortName" : "بركان",
+          "longName" : "بركان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BES" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "بن سليمان",
+          "longName" : "بن سليمان"
+        },
+        "en_US" : {
+          "shortName" : "Ben Slimane",
+          "longName" : "Ben Slimane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BOD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boujdour",
+          "longName" : "Boujdour"
+        },
+        "ar_MA" : {
+          "shortName" : "بوجدور",
+          "longName" : "بوجدور"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BOM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boulemane",
+          "longName" : "Boulemane"
+        },
+        "ar_MA" : {
+          "shortName" : "بولمان",
+          "longName" : "بولمان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAS" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "الدار البيضاء",
+          "longName" : "الدار البيضاء"
+        },
+        "en_US" : {
+          "shortName" : "Casablanca",
+          "longName" : "Casablanca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chefchaouen",
+          "longName" : "Chefchaouen"
+        },
+        "ar_MA" : {
+          "shortName" : "شفشاون",
+          "longName" : "شفشاون"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chichaoua",
+          "longName" : "Chichaoua"
+        },
+        "ar_MA" : {
+          "shortName" : "شيشاوة",
+          "longName" : "شيشاوة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHT" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "شتوكة آيت باها-",
+          "longName" : "شتوكة آيت باها-"
+        },
+        "en_US" : {
+          "shortName" : "Chtouka-Ait Baha",
+          "longName" : "Chtouka-Ait Baha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ERR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Errachidia",
+          "longName" : "Errachidia"
+        },
+        "ar_MA" : {
+          "shortName" : "الرشيدية",
+          "longName" : "الرشيدية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ESI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Essaouira",
+          "longName" : "Essaouira"
+        },
+        "ar_MA" : {
+          "shortName" : "الصويرة",
+          "longName" : "الصويرة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ESM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Es Smara",
+          "longName" : "Es Smara"
+        },
+        "ar_MA" : {
+          "shortName" : "السمارة",
+          "longName" : "السمارة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FAH" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "عمالة الفحص أنجرة",
+          "longName" : "عمالة الفحص أنجرة"
+        },
+        "en_US" : {
+          "shortName" : "Fahs-Beni Makada",
+          "longName" : "Fahs-Beni Makada"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FIG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Figuig",
+          "longName" : "Figuig"
+        },
+        "ar_MA" : {
+          "shortName" : "فكيك",
+          "longName" : "فكيك"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GUE" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "كلميم",
+          "longName" : "كلميم"
+        },
+        "en_US" : {
+          "shortName" : "Guelmim",
+          "longName" : "Guelmim"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HAJ" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "الحاجب",
+          "longName" : "الحاجب"
+        },
+        "en_US" : {
+          "shortName" : "El Hajeb",
+          "longName" : "El Hajeb"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HAO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Haouz",
+          "longName" : "Al Haouz"
+        },
+        "ar_MA" : {
+          "shortName" : "الحوش",
+          "longName" : "الحوش"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HOC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Hoceïma",
+          "longName" : "Al Hoceïma"
+        },
+        "ar_MA" : {
+          "shortName" : "الحسيمة",
+          "longName" : "الحسيمة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IFR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ifrane",
+          "longName" : "Ifrane"
+        },
+        "ar_MA" : {
+          "shortName" : "إفران",
+          "longName" : "إفران"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "INE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Inezgane-Ait Melloul",
+          "longName" : "Inezgane-Ait Melloul"
+        },
+        "ar_MA" : {
+          "shortName" : "إنزكان أيت ملول-",
+          "longName" : "إنزكان أيت ملول-"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JDI" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "الجديدي",
+          "longName" : "الجديدي"
+        },
+        "en_US" : {
+          "shortName" : "El Jadida",
+          "longName" : "El Jadida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JRA" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "جرادة",
+          "longName" : "جرادة"
+        },
+        "en_US" : {
+          "shortName" : "Jrada",
+          "longName" : "Jrada"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KEN" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "القنيطرة ",
+          "longName" : "القنيطرة "
+        },
+        "en_US" : {
+          "shortName" : "Kénitra",
+          "longName" : "Kénitra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KES" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kelaat es Sraghna",
+          "longName" : "Kelaat es Sraghna"
+        },
+        "ar_MA" : {
+          "shortName" : "إقليم قلعة السراغنة",
+          "longName" : "إقليم قلعة السراغنة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHE" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "الخميسات",
+          "longName" : "الخميسات"
+        },
+        "en_US" : {
+          "shortName" : "Khémisset",
+          "longName" : "Khémisset"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHN" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "خنيفرة",
+          "longName" : "خنيفرة"
+        },
+        "en_US" : {
+          "shortName" : "Khénifra",
+          "longName" : "Khénifra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khouribga",
+          "longName" : "Khouribga"
+        },
+        "ar_MA" : {
+          "shortName" : "خريبكة",
+          "longName" : "خريبكة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Laâyoune",
+          "longName" : "Laâyoune"
+        },
+        "ar_MA" : {
+          "shortName" : "العيون",
+          "longName" : "العيون"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAR" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "العرائش",
+          "longName" : "العرائش"
+        },
+        "en_US" : {
+          "shortName" : "Larache",
+          "longName" : "Larache"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MED" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "مديونة",
+          "longName" : "مديونة"
+        },
+        "en_US" : {
+          "shortName" : "Médiouna",
+          "longName" : "Médiouna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MEK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Meknès",
+          "longName" : "Meknès"
+        },
+        "ar_MA" : {
+          "shortName" : "مكناس",
+          "longName" : "مكناس"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MMD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marrakech-Medina",
+          "longName" : "Marrakech-Medina"
+        },
+        "ar_MA" : {
+          "shortName" : "مراكش المدينة المنورة",
+          "longName" : "مراكش المدينة المنورة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MMN" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "مراكش المنارة",
+          "longName" : "مراكش المنارة"
+        },
+        "en_US" : {
+          "shortName" : "Marrakech-Menara",
+          "longName" : "Marrakech-Menara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mohammadia",
+          "longName" : "Mohammadia"
+        },
+        "ar_MA" : {
+          "shortName" : "المحمدية",
+          "longName" : "المحمدية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moulay Yacoub",
+          "longName" : "Moulay Yacoub"
+        },
+        "ar_MA" : {
+          "shortName" : "مولاي يعقوب",
+          "longName" : "مولاي يعقوب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nador",
+          "longName" : "Nador"
+        },
+        "ar_MA" : {
+          "shortName" : "الناظور",
+          "longName" : "الناظور"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NOU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nouaceur",
+          "longName" : "Nouaceur"
+        },
+        "ar_MA" : {
+          "shortName" : "النواصر",
+          "longName" : "النواصر"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OUA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ouarzazate",
+          "longName" : "Ouarzazate"
+        },
+        "ar_MA" : {
+          "shortName" : "ورزازات",
+          "longName" : "ورزازات"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OUD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oued ed Dahab",
+          "longName" : "Oued ed Dahab"
+        },
+        "ar_MA" : {
+          "shortName" : "واد دهب",
+          "longName" : "واد دهب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OUJ" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "وجدة أنجاد،",
+          "longName" : "وجدة أنجاد،"
+        },
+        "en_US" : {
+          "shortName" : "Oujda-Angad",
+          "longName" : "Oujda-Angad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RAB" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "الرباط",
+          "longName" : "الرباط"
+        },
+        "en_US" : {
+          "shortName" : "Rabat",
+          "longName" : "Rabat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Safi",
+          "longName" : "Safi"
+        },
+        "ar_MA" : {
+          "shortName" : "آسفي",
+          "longName" : "آسفي"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAL" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "سلا",
+          "longName" : "سلا"
+        },
+        "en_US" : {
+          "shortName" : "Salé",
+          "longName" : "Salé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SEF" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "صفرو",
+          "longName" : "صفرو"
+        },
+        "en_US" : {
+          "shortName" : "Sefrou",
+          "longName" : "Sefrou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SET" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "سطات",
+          "longName" : "سطات"
+        },
+        "en_US" : {
+          "shortName" : "Settat",
+          "longName" : "Settat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIK" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "سيدي قاسم",
+          "longName" : "سيدي قاسم"
+        },
+        "en_US" : {
+          "shortName" : "Sidi Kacem",
+          "longName" : "Sidi Kacem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SKH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Skhirate-Témara",
+          "longName" : "Skhirate-Témara"
+        },
+        "ar_MA" : {
+          "shortName" : "الصخيرات تمارة-",
+          "longName" : "الصخيرات تمارة-"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SYB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sidi Youssef Ben Ali",
+          "longName" : "Sidi Youssef Ben Ali"
+        },
+        "ar_MA" : {
+          "shortName" : "سيدي يوسف بن علي",
+          "longName" : "سيدي يوسف بن علي"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAI" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "تاوريرت",
+          "longName" : "تاوريرت"
+        },
+        "en_US" : {
+          "shortName" : "Taourirt",
+          "longName" : "Taourirt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Taounate",
+          "longName" : "Taounate"
+        },
+        "ar_MA" : {
+          "shortName" : "تاونات",
+          "longName" : "تاونات"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Taroudant",
+          "longName" : "Taroudant"
+        },
+        "ar_MA" : {
+          "shortName" : "تارودانت",
+          "longName" : "تارودانت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tata",
+          "longName" : "Tata"
+        },
+        "ar_MA" : {
+          "shortName" : "تاتا",
+          "longName" : "تاتا"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAZ" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "تازة",
+          "longName" : "تازة"
+        },
+        "en_US" : {
+          "shortName" : "Taza",
+          "longName" : "Taza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TET" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "تطوان",
+          "longName" : "تطوان"
+        },
+        "en_US" : {
+          "shortName" : "Tétouan",
+          "longName" : "Tétouan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TIZ" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "تزنيت",
+          "longName" : "تزنيت"
+        },
+        "en_US" : {
+          "shortName" : "Tiznit",
+          "longName" : "Tiznit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TNG" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "طنجة أصيلة",
+          "longName" : "طنجة أصيلة"
+        },
+        "en_US" : {
+          "shortName" : "Tanger-Assilah",
+          "longName" : "Tanger-Assilah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TNT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tan-Tan",
+          "longName" : "Tan-Tan"
+        },
+        "ar_MA" : {
+          "shortName" : "تان تان",
+          "longName" : "تان تان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAG" : {
+      "locales" : {
+        "ar_MA" : {
+          "shortName" : "زاكورة",
+          "longName" : "زاكورة"
+        },
+        "en_US" : {
+          "shortName" : "Zagora",
+          "longName" : "Zagora"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_MA",
+    "id" : "ar_MA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Morocco",
+      "longName" : "Kingdom of Morocco",
+      "postalCode" : ""
+    },
+    "ar_MA" : {
+      "shortName" : "المغرب",
+      "longName" : "المملكة المغربية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Marokko",
+      "longName" : "Kingdom of Morocco",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Morocco",
+      "longName" : "Kingdom of Morocco",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Marruecos",
+      "longName" : "Reino de Marruecos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Maroc",
+      "longName" : "Royaume du Maroc",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Marocco",
+      "longName" : "Regno del Marocco",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "모로코",
+      "longName" : "Kingdom of Morocco",
+      "postalCode" : ""
+    }
+  }
 }

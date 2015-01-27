@@ -1,38 +1,63 @@
 {
-	"countryCode": "AX",
-	"defaultLocale": {
-		"href": "/v1/locales/sv_AX",
-		"id": "sv_AX"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/sv_AX",
-		"id": "sv_AX"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Åland Islands",
-			"longName": "Åland Islands",
-			"postalCode": "Postal Code"
-		},
-		"sv_AX": {
-			"shortName": "Landskapet Åland",
-			"longName": "Landskapet Åland",
-			"postalCode": "postnummer"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AX",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/sv_AX",
+    "id" : "sv_AX"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/sv_AX",
+    "id" : "sv_AX"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Åland Islands",
+      "longName" : "Åland Islands",
+      "postalCode" : ""
+    },
+    "sv_AX" : {
+      "shortName" : "Landskapet Åland",
+      "longName" : "Landskapet Åland",
+      "postalCode" : "postnummer"
+    },
+    "de_DE" : {
+      "shortName" : "Inseln Ålands",
+      "longName" : "Åland Islands",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Åland Islands",
+      "longName" : "Åland Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Åland",
+      "longName" : "Åland",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Åland",
+      "longName" : "Îles Åland",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Åland",
+      "longName" : "Isole Åland",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Åland Islands",
+      "longName" : "Åland Islands",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,111 +1,149 @@
 {
-	"countryCode": "GH",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GHS",
-		"id": "GHS"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Greater Accra",
-					"longName": "Greater Accra"
-				}
-			}
-		},
-		"AH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ashanti",
-					"longName": "Ashanti"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brong-Ahafo",
-					"longName": "Brong-Ahafo"
-				}
-			}
-		},
-		"CP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"EP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"NP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		},
-		"TV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Volta",
-					"longName": "Volta"
-				}
-			}
-		},
-		"UE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Upper East",
-					"longName": "Upper East"
-				}
-			}
-		},
-		"UW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Upper West",
-					"longName": "Upper West"
-				}
-			}
-		},
-		"WP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Ghana",
-			"longName": "Republic of Ghana",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GHS",
+    "id" : "GHS"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Greater Accra",
+          "longName" : "Greater Accra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ashanti",
+          "longName" : "Ashanti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brong-Ahafo",
+          "longName" : "Brong-Ahafo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Volta",
+          "longName" : "Volta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Upper East",
+          "longName" : "Upper East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Upper West",
+          "longName" : "Upper West"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ghana",
+      "longName" : "Republic of Ghana",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Ghana",
+      "longName" : "Republic of Ghana",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ghana",
+      "longName" : "Republic of Ghana",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Ghana",
+      "longName" : "República de Ghana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Ghana",
+      "longName" : "République du Ghana",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Ghana",
+      "longName" : "Repubblica del Ghana",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "가나",
+      "longName" : "Republic of Ghana",
+      "postalCode" : ""
+    }
+  }
 }

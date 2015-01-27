@@ -1,145 +1,187 @@
 {
-	"countryCode": "KN",
-	"defaultLocale": {
-		"href": "/v1/locales/en_KN",
-		"id": "en_KN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "CCN",
-					"longName": "Christ Church Nichola Town"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "ASP",
-					"longName": "Saint Anne Sandy Point"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "GBA",
-					"longName": "Saint George Basseterre"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "GGI",
-					"longName": "Saint George Gingerland"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "JWI",
-					"longName": "Saint James Windward"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "JCA",
-					"longName": "Saint John Capisterre"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "JFI",
-					"longName": "Saint John Figtree"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "MCA",
-					"longName": "Saint Mary Cayon"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "PCA",
-					"longName": "Saint Paul Capisterre"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "PCH",
-					"longName": "Saint Paul Charlestown"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "PBS",
-					"longName": "Saint Peter Basseterre"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "TLO",
-					"longName": "Saint Thomas Lowland"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "TMI",
-					"longName": "Saint Thomas Middle Island"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "TPP",
-					"longName": "Trinity Palmetto Point"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Saint Kitts and Nevis",
-			"longName": "Federation of Saint Christopher and Nevisa",
-			"postalCode": "Postal Code"
-		},
-		"en_KN": {
-			"shortName": "Saint Kitts and Nevis",
-			"longName": "Federation of Saint Christopher and Nevisa",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_KN",
+    "id" : "en_KN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CCN",
+          "longName" : "Christ Church Nichola Town"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ASP",
+          "longName" : "Saint Anne Sandy Point"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GBA",
+          "longName" : "Saint George Basseterre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GGI",
+          "longName" : "Saint George Gingerland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "JWI",
+          "longName" : "Saint James Windward"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "JCA",
+          "longName" : "Saint John Capisterre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "JFI",
+          "longName" : "Saint John Figtree"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MCA",
+          "longName" : "Saint Mary Cayon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PCA",
+          "longName" : "Saint Paul Capisterre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PCH",
+          "longName" : "Saint Paul Charlestown"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PBS",
+          "longName" : "Saint Peter Basseterre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TLO",
+          "longName" : "Saint Thomas Lowland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TMI",
+          "longName" : "Saint Thomas Middle Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TPP",
+          "longName" : "Trinity Palmetto Point"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saint Kitts and Nevis",
+      "longName" : "Federation of Saint Christopher and Nevisa",
+      "postalCode" : ""
+    },
+    "en_KN" : {
+      "shortName" : "Saint Kitts and Nevis",
+      "longName" : "Federation of Saint Christopher and Nevisa",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "St. Kitts und Nevis",
+      "longName" : "Federation of Saint Christopher and Nevisa",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saint Kitts and Nevis",
+      "longName" : "Federation of Saint Christopher and Nevisa",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Cristóbal y Nieves",
+      "longName" : "Federación de San Cristóbal y Nieves",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint-Christophe-et-Niévès",
+      "longName" : "Fédération de Saint-Christophe-et-Niévès",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Saint Kitts e Nevis",
+      "longName" : "Federazione di Saint Kitts e Nevis",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "세인트 크리스토퍼 네비스",
+      "longName" : "Federation of Saint Christopher and Nevisa",
+      "postalCode" : ""
+    }
+  }
 }

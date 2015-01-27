@@ -1,364 +1,418 @@
 {
-	"countryCode": "UA",
-	"defaultLocale": {
-		"href": "/v1/locales/uk_UA",
-		"id": "uk_UA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/UAH",
-		"id": "UAH"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"05": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Вінницька область",
-					"longName": "Вінницька область"
-				},
-				"en_US": {
-					"shortName": "Vinnytsia Oblast",
-					"longName": "Vinnytsia Oblast"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Волинська область",
-					"longName": "Волинська область"
-				},
-				"en_US": {
-					"shortName": "Volyn Oblast",
-					"longName": "Volyn Oblast"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Луганська область",
-					"longName": "Луганська область"
-				},
-				"en_US": {
-					"shortName": "Luhansk Oblast",
-					"longName": "Luhansk Oblast"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dnipropetrovsk Oblast",
-					"longName": "Dnipropetrovsk Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Дніпропетро́вська о́бласть",
-					"longName": "Дніпропетро́вська о́бласть"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Доне́цька о́бласть",
-					"longName": "Доне́цька о́бласть"
-				},
-				"en_US": {
-					"shortName": "Donetsk Oblast",
-					"longName": "Donetsk Oblast"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zhytomyr Oblast",
-					"longName": "Zhytomyr Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Житомирська область",
-					"longName": "Житомирська область"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zakarpattia Oblast",
-					"longName": "Zakarpattia Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Закарпатська область",
-					"longName": "Закарпатська область"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zaporizhia Oblast",
-					"longName": "Zaporizhia Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Запорізька область",
-					"longName": "Запорізька область"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ivano-Frankivsk Oblast",
-					"longName": "Ivano-Frankivsk Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Івано-Франківська область",
-					"longName": "Івано-Франківська область"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Київ",
-					"longName": "Київ"
-				},
-				"en_US": {
-					"shortName": "Kiev",
-					"longName": "Kiev"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Київська область",
-					"longName": "Київська область"
-				},
-				"en_US": {
-					"shortName": "Kiev Oblast",
-					"longName": "Kiev Oblast"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kirovohrad Oblast",
-					"longName": "Kirovohrad Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Кіровоградська область",
-					"longName": "Кіровоградська область"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Севастополь",
-					"longName": "Севастополь"
-				},
-				"en_US": {
-					"shortName": "Sevastopol",
-					"longName": "Sevastopol"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Автономна Республіка Крим",
-					"longName": "Автономна Республіка Крим"
-				},
-				"en_US": {
-					"shortName": "Autonomous Republic of Crimea",
-					"longName": "Autonomous Republic of Crimea"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Львівська область",
-					"longName": "Львівська область"
-				},
-				"en_US": {
-					"shortName": "Lviv Oblast",
-					"longName": "Lviv Oblast"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mykolaiv Oblast",
-					"longName": "Mykolaiv Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Миколаївська область",
-					"longName": "Миколаївська область"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Odessa Oblast",
-					"longName": "Odessa Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Одеська область",
-					"longName": "Одеська область"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Полтавська область",
-					"longName": "Полтавська область"
-				},
-				"en_US": {
-					"shortName": "Odessa Oblast",
-					"longName": "Odessa Oblast"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rivne Oblast",
-					"longName": "Rivne Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Рівненська область",
-					"longName": "Рівненська область"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Сумська область",
-					"longName": "Сумська область"
-				},
-				"en_US": {
-					"shortName": "Sumy Oblast",
-					"longName": "Sumy Oblast"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Тернопільська область",
-					"longName": "Тернопільська область"
-				},
-				"en_US": {
-					"shortName": "Ternopil Oblast",
-					"longName": "Ternopil Oblast"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kharkiv Oblast",
-					"longName": "Kharkiv Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Харківська область",
-					"longName": "Харківська область"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kherson Oblast",
-					"longName": "Kherson Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Херсонська область",
-					"longName": "Херсонська область"
-				}
-			}
-		},
-		"68": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khmelnytskyi Oblast",
-					"longName": "Khmelnytskyi Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Хмельницька область",
-					"longName": "Хмельницька область"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cherkasy Oblast",
-					"longName": "Cherkasy Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Черкаська область",
-					"longName": "Черкаська область"
-				}
-			}
-		},
-		"74": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chernihiv Oblast",
-					"longName": "Chernihiv Oblast"
-				},
-				"uk_UA": {
-					"shortName": "Чернігівська область",
-					"longName": "Чернігівська область"
-				}
-			}
-		},
-		"77": {
-			"locales": {
-				"uk_UA": {
-					"shortName": "Чернівецька область",
-					"longName": "Чернівецька область"
-				},
-				"en_US": {
-					"shortName": "Chernivtsi Oblast",
-					"longName": "Chernivtsi Oblast"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/uk_UA",
-		"id": "uk_UA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Ukraine",
-			"longName": "Ukraine",
-			"postalCode": "Postal Code"
-		},
-		"uk_UA": {
-			"shortName": "Україна",
-			"longName": "Україна",
-			"postalCode": "Поштовий індекс"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "UA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/uk_UA",
+    "id" : "uk_UA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/UAH",
+    "id" : "UAH"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "05" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Вінницька область",
+          "longName" : "Вінницька область"
+        },
+        "en_US" : {
+          "shortName" : "Vinnytsia Oblast",
+          "longName" : "Vinnytsia Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Волинська область",
+          "longName" : "Волинська область"
+        },
+        "en_US" : {
+          "shortName" : "Volyn Oblast",
+          "longName" : "Volyn Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Луганська область",
+          "longName" : "Луганська область"
+        },
+        "en_US" : {
+          "shortName" : "Luhansk Oblast",
+          "longName" : "Luhansk Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dnipropetrovsk Oblast",
+          "longName" : "Dnipropetrovsk Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Дніпропетро́вська о́бласть",
+          "longName" : "Дніпропетро́вська о́бласть"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Доне́цька о́бласть",
+          "longName" : "Доне́цька о́бласть"
+        },
+        "en_US" : {
+          "shortName" : "Donetsk Oblast",
+          "longName" : "Donetsk Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zhytomyr Oblast",
+          "longName" : "Zhytomyr Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Житомирська область",
+          "longName" : "Житомирська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zakarpattia Oblast",
+          "longName" : "Zakarpattia Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Закарпатська область",
+          "longName" : "Закарпатська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zaporizhia Oblast",
+          "longName" : "Zaporizhia Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Запорізька область",
+          "longName" : "Запорізька область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ivano-Frankivsk Oblast",
+          "longName" : "Ivano-Frankivsk Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Івано-Франківська область",
+          "longName" : "Івано-Франківська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Київ",
+          "longName" : "Київ"
+        },
+        "en_US" : {
+          "shortName" : "Kiev",
+          "longName" : "Kiev"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Київська область",
+          "longName" : "Київська область"
+        },
+        "en_US" : {
+          "shortName" : "Kiev Oblast",
+          "longName" : "Kiev Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kirovohrad Oblast",
+          "longName" : "Kirovohrad Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Кіровоградська область",
+          "longName" : "Кіровоградська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Севастополь",
+          "longName" : "Севастополь"
+        },
+        "en_US" : {
+          "shortName" : "Sevastopol",
+          "longName" : "Sevastopol"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Автономна Республіка Крим",
+          "longName" : "Автономна Республіка Крим"
+        },
+        "en_US" : {
+          "shortName" : "Autonomous Republic of Crimea",
+          "longName" : "Autonomous Republic of Crimea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Львівська область",
+          "longName" : "Львівська область"
+        },
+        "en_US" : {
+          "shortName" : "Lviv Oblast",
+          "longName" : "Lviv Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mykolaiv Oblast",
+          "longName" : "Mykolaiv Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Миколаївська область",
+          "longName" : "Миколаївська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Odessa Oblast",
+          "longName" : "Odessa Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Одеська область",
+          "longName" : "Одеська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Полтавська область",
+          "longName" : "Полтавська область"
+        },
+        "en_US" : {
+          "shortName" : "Odessa Oblast",
+          "longName" : "Odessa Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rivne Oblast",
+          "longName" : "Rivne Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Рівненська область",
+          "longName" : "Рівненська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Сумська область",
+          "longName" : "Сумська область"
+        },
+        "en_US" : {
+          "shortName" : "Sumy Oblast",
+          "longName" : "Sumy Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Тернопільська область",
+          "longName" : "Тернопільська область"
+        },
+        "en_US" : {
+          "shortName" : "Ternopil Oblast",
+          "longName" : "Ternopil Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kharkiv Oblast",
+          "longName" : "Kharkiv Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Харківська область",
+          "longName" : "Харківська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kherson Oblast",
+          "longName" : "Kherson Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Херсонська область",
+          "longName" : "Херсонська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "68" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khmelnytskyi Oblast",
+          "longName" : "Khmelnytskyi Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Хмельницька область",
+          "longName" : "Хмельницька область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cherkasy Oblast",
+          "longName" : "Cherkasy Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Черкаська область",
+          "longName" : "Черкаська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "74" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chernihiv Oblast",
+          "longName" : "Chernihiv Oblast"
+        },
+        "uk_UA" : {
+          "shortName" : "Чернігівська область",
+          "longName" : "Чернігівська область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "77" : {
+      "locales" : {
+        "uk_UA" : {
+          "shortName" : "Чернівецька область",
+          "longName" : "Чернівецька область"
+        },
+        "en_US" : {
+          "shortName" : "Chernivtsi Oblast",
+          "longName" : "Chernivtsi Oblast"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/uk_UA",
+    "id" : "uk_UA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ukraine",
+      "longName" : "Ukraine",
+      "postalCode" : ""
+    },
+    "uk_UA" : {
+      "shortName" : "Україна",
+      "longName" : "Україна",
+      "postalCode" : "Поштовий індекс"
+    },
+    "de_DE" : {
+      "shortName" : "Ukraine",
+      "longName" : "Ukraine",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ukraine",
+      "longName" : "Ukraine",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Ucrania",
+      "longName" : "Ucrania",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Ukraine",
+      "longName" : "Ukraine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Ucraina",
+      "longName" : "Ucraina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "우크라이나",
+      "longName" : "우크라이나",
+      "postalCode" : ""
+    }
+  }
 }

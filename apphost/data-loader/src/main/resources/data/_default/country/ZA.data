@@ -1,148 +1,184 @@
 {
-	"countryCode": "ZA",
-	"defaultLocale": {
-		"href": "/v1/locales/en_ZA",
-		"id": "en_ZA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ZAR",
-		"id": "ZAR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"EC": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "EC",
-					"longName": "Eastern Cape"
-				},
-                "en_US": {
-					"shortName": "EC",
-					"longName": "Eastern Cape"
-				}
-			}
-		},
-		"FS": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "FS",
-					"longName": "Free State"
-				},
-				"en_US": {
-					"shortName": "FS",
-					"longName": "Free State"
-				}
-			}
-		},
-		"GT": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "GT",
-					"longName": "Gauteng"
-				},
-				"en_US": {
-					"shortName": "GT",
-					"longName": "Gauteng"
-				}
-			}
-		},
-		"LP": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "LP",
-					"longName": "Limpopo"
-				},
-				"en_US": {
-					"shortName": "LP",
-					"longName": "Limpopo"
-				}
-			}
-		},
-		"MP": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "MP",
-					"longName": "Mpumalanga"
-				},
-				"en_US": {
-					"shortName": "MP",
-					"longName": "Mpumalanga"
-				}
-			}
-		},
-		"NC": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "NC",
-					"longName": "Northern Cape"
-				},
-				"en_US": {
-					"shortName": "NC",
-					"longName": "Northern Cape"
-				}
-			}
-		},
-		"NL": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "NL",
-					"longName": "KwaZulu-Natal"
-				},
-				"en_US": {
-					"shortName": "NL",
-					"longName": "KwaZulu-Natal"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "NW",
-					"longName": "North West"
-				},
-				"en_US": {
-					"shortName": "NW",
-					"longName": "North West"
-				}
-			}
-		},
-		"WC": {
-			"locales": {
-				"en_ZA": {
-					"shortName": "WC",
-					"longName": "Western Cape"
-				},
-				"en_US": {
-					"shortName": "WC",
-					"longName": "Western Cape"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_ZA",
-		"id": "en_ZA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "South Africa",
-			"longName": "Republic of South Africa",
-			"postalCode": "Postal Code"
-		},
-		"en_ZA": {
-			"shortName": "South Africa",
-			"longName": "Republic of South Africa",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ZA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_ZA",
+    "id" : "en_ZA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ZAR",
+    "id" : "ZAR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "EC" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "EC",
+          "longName" : "Eastern Cape"
+        },
+        "en_US" : {
+          "shortName" : "EC",
+          "longName" : "Eastern Cape"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FS" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "FS",
+          "longName" : "Free State"
+        },
+        "en_US" : {
+          "shortName" : "FS",
+          "longName" : "Free State"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GT" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "GT",
+          "longName" : "Gauteng"
+        },
+        "en_US" : {
+          "shortName" : "GT",
+          "longName" : "Gauteng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LP" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "LP",
+          "longName" : "Limpopo"
+        },
+        "en_US" : {
+          "shortName" : "LP",
+          "longName" : "Limpopo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MP" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "MP",
+          "longName" : "Mpumalanga"
+        },
+        "en_US" : {
+          "shortName" : "MP",
+          "longName" : "Mpumalanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NC" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "NC",
+          "longName" : "Northern Cape"
+        },
+        "en_US" : {
+          "shortName" : "NC",
+          "longName" : "Northern Cape"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NL" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "NL",
+          "longName" : "KwaZulu-Natal"
+        },
+        "en_US" : {
+          "shortName" : "NL",
+          "longName" : "KwaZulu-Natal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "NW",
+          "longName" : "North West"
+        },
+        "en_US" : {
+          "shortName" : "NW",
+          "longName" : "North West"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WC" : {
+      "locales" : {
+        "en_ZA" : {
+          "shortName" : "WC",
+          "longName" : "Western Cape"
+        },
+        "en_US" : {
+          "shortName" : "WC",
+          "longName" : "Western Cape"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_ZA",
+    "id" : "en_ZA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "South Africa",
+      "longName" : "Republic of South Africa",
+      "postalCode" : ""
+    },
+    "en_ZA" : {
+      "shortName" : "South Africa",
+      "longName" : "Republic of South Africa",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Südafrika",
+      "longName" : "Republik Südafrika",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "South Africa",
+      "longName" : "Republic of South Africa",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sudáfrica",
+      "longName" : "República de Sudáfrica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Afrique du Sud",
+      "longName" : "République d’Afrique du Sud",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sudafrica",
+      "longName" : "Repubblica del Sudafrica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "남아프리카공화국",
+      "longName" : "Republic of South Africa",
+      "postalCode" : ""
+    }
+  }
 }

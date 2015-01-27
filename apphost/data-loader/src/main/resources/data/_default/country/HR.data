@@ -1,289 +1,337 @@
 {
-	"countryCode": "HR",
-	"defaultLocale": {
-		"href": "/v1/locales/hr_HR",
-		"id": "hr_HR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/HRK",
-		"id": "HRK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Zagrebačka županija",
-					"longName": "Zagrebačka županija"
-				},
-				"en_US": {
-					"shortName": "Zagreb County",
-					"longName": "Zagreb County"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Krapina-Zagorje County",
-					"longName": "Krapina-Zagorje County"
-				},
-				"hr_HR": {
-					"shortName": "Krapinsko-zagorska županija",
-					"longName": "Krapinsko-zagorska županija"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Sisačko-moslavačka županija",
-					"longName": "Sisačko-moslavačka županija"
-				},
-				"en_US": {
-					"shortName": "Sisak-Moslavina County",
-					"longName": "Sisak-Moslavina County"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karlovac County",
-					"longName": "Karlovac County"
-				},
-				"hr_HR": {
-					"shortName": "Karlovačka županija",
-					"longName": "Karlovačka županija"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Varaždinska županija",
-					"longName": "Varaždinska županija"
-				},
-				"en_US": {
-					"shortName": "Varaždin County",
-					"longName": "Varaždin County"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koprivnica-Križevci County",
-					"longName": "Koprivnica-Križevci County"
-				},
-				"hr_HR": {
-					"shortName": "Koprivničko-križevačka županija",
-					"longName": "Koprivničko-križevačka županija"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Bjelovarsko-bilogorska županija",
-					"longName": "Bjelovarsko-bilogorska županija"
-				},
-				"en_US": {
-					"shortName": "Bjelovar-Bilogora County",
-					"longName": "Bjelovar-Bilogora County"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Primorje-Gorski Kotar County",
-					"longName": "Primorje-Gorski Kotar County"
-				},
-				"hr_HR": {
-					"shortName": "Primorsko-goranska županija",
-					"longName": "Primorsko-goranska županija"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lika-Senj County",
-					"longName": "Lika-Senj County"
-				},
-				"hr_HR": {
-					"shortName": "Ličko-senjska županija",
-					"longName": "Ličko-senjska županija"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Virovitica-Podravina County",
-					"longName": "Virovitica-Podravina County"
-				},
-				"hr_HR": {
-					"shortName": "Virovitičko-podravska županija",
-					"longName": "Virovitičko-podravska županija"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Požega-Slavonia County",
-					"longName": "Požega-Slavonia County"
-				},
-				"hr_HR": {
-					"shortName": "Požeško-slavonska županija",
-					"longName": "Požeško-slavonska županija"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Brodsko-posavska županija",
-					"longName": "Brodsko-posavska županija"
-				},
-				"en_US": {
-					"shortName": "Požega-Slavonia County",
-					"longName": "Požega-Slavonia County"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zadar County",
-					"longName": "Zadar County"
-				},
-				"hr_HR": {
-					"shortName": "Zadarska županija",
-					"longName": "Zadarska županija"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Osječko-baranjska županija",
-					"longName": "Osječko-baranjska županija"
-				},
-				"en_US": {
-					"shortName": "Osijek-Baranja County",
-					"longName": "Osijek-Baranja County"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Šibensko-kninska županija",
-					"longName": "Šibensko-kninska županija"
-				},
-				"en_US": {
-					"shortName": "Šibenik-Knin County",
-					"longName": "Šibenik-Knin County"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vukovar-Syrmia County",
-					"longName": "Vukovar-Syrmia County"
-				},
-				"hr_HR": {
-					"shortName": "Vukovarsko-srijemska županija",
-					"longName": "Vukovarsko-srijemska županija"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Split-Dalmatia County",
-					"longName": "Split-Dalmatia County"
-				},
-				"hr_HR": {
-					"shortName": "Splitsko-dalmatinska županija",
-					"longName": "Splitsko-dalmatinska županija"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Istria County",
-					"longName": "Istria County"
-				},
-				"hr_HR": {
-					"shortName": "Istarska županija",
-					"longName": "Istarska županija"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dubrovnik-Neretva County",
-					"longName": "Dubrovnik-Neretva County"
-				},
-				"hr_HR": {
-					"shortName": "Dubrovačko-neretvanska županija",
-					"longName": "Dubrovačko-neretvanska županija"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dubrovnik-Neretva County",
-					"longName": "Dubrovnik-Neretva County"
-				},
-				"hr_HR": {
-					"shortName": "Međimurska županija",
-					"longName": "Međimurska županija"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"hr_HR": {
-					"shortName": "Grad Zagreb",
-					"longName": "Grad Zagreb"
-				},
-				"en_US": {
-					"shortName": "Zagreb",
-					"longName": "Zagreb"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/hr_HR",
-		"id": "hr_HR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Croatia",
-			"longName": "Republic of Croatia",
-			"postalCode": "Postal Code"
-		},
-		"hr_HR": {
-			"shortName": "Hrvatska",
-			"longName": "Republika Hrvatska",
-			"postalCode": "Poštanski broj"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "HR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/hr_HR",
+    "id" : "hr_HR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/HRK",
+    "id" : "HRK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Zagrebačka županija",
+          "longName" : "Zagrebačka županija"
+        },
+        "en_US" : {
+          "shortName" : "Zagreb County",
+          "longName" : "Zagreb County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Krapina-Zagorje County",
+          "longName" : "Krapina-Zagorje County"
+        },
+        "hr_HR" : {
+          "shortName" : "Krapinsko-zagorska županija",
+          "longName" : "Krapinsko-zagorska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Sisačko-moslavačka županija",
+          "longName" : "Sisačko-moslavačka županija"
+        },
+        "en_US" : {
+          "shortName" : "Sisak-Moslavina County",
+          "longName" : "Sisak-Moslavina County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karlovac County",
+          "longName" : "Karlovac County"
+        },
+        "hr_HR" : {
+          "shortName" : "Karlovačka županija",
+          "longName" : "Karlovačka županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Varaždinska županija",
+          "longName" : "Varaždinska županija"
+        },
+        "en_US" : {
+          "shortName" : "Varaždin County",
+          "longName" : "Varaždin County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koprivnica-Križevci County",
+          "longName" : "Koprivnica-Križevci County"
+        },
+        "hr_HR" : {
+          "shortName" : "Koprivničko-križevačka županija",
+          "longName" : "Koprivničko-križevačka županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Bjelovarsko-bilogorska županija",
+          "longName" : "Bjelovarsko-bilogorska županija"
+        },
+        "en_US" : {
+          "shortName" : "Bjelovar-Bilogora County",
+          "longName" : "Bjelovar-Bilogora County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Primorje-Gorski Kotar County",
+          "longName" : "Primorje-Gorski Kotar County"
+        },
+        "hr_HR" : {
+          "shortName" : "Primorsko-goranska županija",
+          "longName" : "Primorsko-goranska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lika-Senj County",
+          "longName" : "Lika-Senj County"
+        },
+        "hr_HR" : {
+          "shortName" : "Ličko-senjska županija",
+          "longName" : "Ličko-senjska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Virovitica-Podravina County",
+          "longName" : "Virovitica-Podravina County"
+        },
+        "hr_HR" : {
+          "shortName" : "Virovitičko-podravska županija",
+          "longName" : "Virovitičko-podravska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Požega-Slavonia County",
+          "longName" : "Požega-Slavonia County"
+        },
+        "hr_HR" : {
+          "shortName" : "Požeško-slavonska županija",
+          "longName" : "Požeško-slavonska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Brodsko-posavska županija",
+          "longName" : "Brodsko-posavska županija"
+        },
+        "en_US" : {
+          "shortName" : "Požega-Slavonia County",
+          "longName" : "Požega-Slavonia County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zadar County",
+          "longName" : "Zadar County"
+        },
+        "hr_HR" : {
+          "shortName" : "Zadarska županija",
+          "longName" : "Zadarska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Osječko-baranjska županija",
+          "longName" : "Osječko-baranjska županija"
+        },
+        "en_US" : {
+          "shortName" : "Osijek-Baranja County",
+          "longName" : "Osijek-Baranja County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Šibensko-kninska županija",
+          "longName" : "Šibensko-kninska županija"
+        },
+        "en_US" : {
+          "shortName" : "Šibenik-Knin County",
+          "longName" : "Šibenik-Knin County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vukovar-Syrmia County",
+          "longName" : "Vukovar-Syrmia County"
+        },
+        "hr_HR" : {
+          "shortName" : "Vukovarsko-srijemska županija",
+          "longName" : "Vukovarsko-srijemska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Split-Dalmatia County",
+          "longName" : "Split-Dalmatia County"
+        },
+        "hr_HR" : {
+          "shortName" : "Splitsko-dalmatinska županija",
+          "longName" : "Splitsko-dalmatinska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Istria County",
+          "longName" : "Istria County"
+        },
+        "hr_HR" : {
+          "shortName" : "Istarska županija",
+          "longName" : "Istarska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dubrovnik-Neretva County",
+          "longName" : "Dubrovnik-Neretva County"
+        },
+        "hr_HR" : {
+          "shortName" : "Dubrovačko-neretvanska županija",
+          "longName" : "Dubrovačko-neretvanska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dubrovnik-Neretva County",
+          "longName" : "Dubrovnik-Neretva County"
+        },
+        "hr_HR" : {
+          "shortName" : "Međimurska županija",
+          "longName" : "Međimurska županija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "hr_HR" : {
+          "shortName" : "Grad Zagreb",
+          "longName" : "Grad Zagreb"
+        },
+        "en_US" : {
+          "shortName" : "Zagreb",
+          "longName" : "Zagreb"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/hr_HR",
+    "id" : "hr_HR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Croatia",
+      "longName" : "Republic of Croatia",
+      "postalCode" : ""
+    },
+    "hr_HR" : {
+      "shortName" : "Hrvatska",
+      "longName" : "Republika Hrvatska",
+      "postalCode" : "Poštanski broj"
+    },
+    "de_DE" : {
+      "shortName" : "Kroatien",
+      "longName" : "Republic of Croatia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Croatia",
+      "longName" : "Republic of Croatia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Croacia",
+      "longName" : "República de Croacia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Croatie",
+      "longName" : "République de Croatie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Croazia",
+      "longName" : "Repubblica di Croazia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "크로아티아",
+      "longName" : "Republic of Croatia",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,244 +1,288 @@
 {
-	"countryCode": "NZ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_NZ",
-		"id": "en_NZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NZD",
-		"id": "NZD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/OFLC",
-		"id": "OFLC"
-	}],
-	"subCountries": {
-		"AUK": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "AUK",
-					"longName": "Auckland"
-				},
-                "en_US": {
-					"shortName": "AUK",
-					"longName": "Auckland"
-				}
-			}
-		},
-		"BOP": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "BOP",
-					"longName": "Bay of Plenty"
-				},
-				"en_US": {
-					"shortName": "BOP",
-					"longName": "Bay of Plenty"
-				}
-			}
-		},
-		"CAN": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "CAN",
-					"longName": "Canterbury"
-				},
-				"en_US": {
-					"shortName": "CAN",
-					"longName": "Canterbury"
-				}
-			}
-		},
-		"CIT": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "CIT",
-					"longName": "Chatham Islands Territory"
-				},
-				"en_US": {
-					"shortName": "CIT",
-					"longName": "Chatham Islands Territory"
-				}
-			}
-		},
-		"GIS": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "GIS",
-					"longName": "Gisborne District"
-				},
-				"en_US": {
-					"shortName": "GIS",
-					"longName": "Gisborne District"
-				}
-			}
-		},
-		"HKB": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "HKB",
-					"longName": "Hawke's Bay"
-				},
-				"en_US": {
-					"shortName": "HKB",
-					"longName": "Hawke's Bay"
-				}
-			}
-		},
-		"MBH": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "MBH",
-					"longName": "Marlborough District"
-				},
-				"en_US": {
-					"shortName": "MBH",
-					"longName": "Marlborough District"
-				}
-			}
-		},
-		"MWT": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "MWT",
-					"longName": "Manawatu-Wanganui"
-				},
-				"en_US": {
-					"shortName": "MWT",
-					"longName": "Manawatu-Wanganui"
-				}
-			}
-		},
-		"NSN": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "NSN",
-					"longName": "Nelson City"
-				},
-				"en_US": {
-					"shortName": "NSN",
-					"longName": "Nelson City"
-				}
-			}
-		},
-		"NTL": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "NTL",
-					"longName": "Northland"
-				},
-				"en_US": {
-					"shortName": "NTL",
-					"longName": "Northland"
-				}
-			}
-		},
-		"OTA": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "OTA",
-					"longName": "Otago"
-				},
-				"en_US": {
-					"shortName": "OTA",
-					"longName": "Otago"
-				}
-			}
-		},
-		"STL": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "STL",
-					"longName": "Southland"
-				},
-				"en_US": {
-					"shortName": "STL",
-					"longName": "Southland"
-				}
-			}
-		},
-		"TAS": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "TAS",
-					"longName": "Tasman District"
-				},
-				"en_US": {
-					"shortName": "TAS",
-					"longName": "Tasman District"
-				}
-			}
-		},
-		"TKI": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "TKI",
-					"longName": "Taranaki"
-				},
-				"en_US": {
-					"shortName": "TKI",
-					"longName": "Taranaki"
-				}
-			}
-		},
-		"WGN": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "WGN",
-					"longName": "Wellington"
-				},
-				"en_US": {
-					"shortName": "WGN",
-					"longName": "Wellington"
-				}
-			}
-		},
-		"WKO": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "WKO",
-					"longName": "Waikato"
-				},
-				"en_US": {
-					"shortName": "WKO",
-					"longName": "Waikato"
-				}
-			}
-		},
-		"WTC": {
-			"locales": {
-				"en_NZ": {
-					"shortName": "WTC",
-					"longName": "West Coast"
-				},
-				"en_US": {
-					"shortName": "WTC",
-					"longName": "West Coast"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_NZ",
-		"id": "en_NZ"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "New Zealand",
-			"longName": "New Zealand",
-			"postalCode": "Postal Code"
-		},
-		"en_NZ": {
-			"shortName": "New Zealand",
-			"longName": "New Zealand",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_NZ",
+    "id" : "en_NZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NZD",
+    "id" : "NZD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/OFLC",
+    "id" : "OFLC"
+  } ],
+  "subCountries" : {
+    "AUK" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "AUK",
+          "longName" : "Auckland"
+        },
+        "en_US" : {
+          "shortName" : "AUK",
+          "longName" : "Auckland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BOP" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "BOP",
+          "longName" : "Bay of Plenty"
+        },
+        "en_US" : {
+          "shortName" : "BOP",
+          "longName" : "Bay of Plenty"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAN" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "CAN",
+          "longName" : "Canterbury"
+        },
+        "en_US" : {
+          "shortName" : "CAN",
+          "longName" : "Canterbury"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CIT" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "CIT",
+          "longName" : "Chatham Islands Territory"
+        },
+        "en_US" : {
+          "shortName" : "CIT",
+          "longName" : "Chatham Islands Territory"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GIS" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "GIS",
+          "longName" : "Gisborne District"
+        },
+        "en_US" : {
+          "shortName" : "GIS",
+          "longName" : "Gisborne District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HKB" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "HKB",
+          "longName" : "Hawke's Bay"
+        },
+        "en_US" : {
+          "shortName" : "HKB",
+          "longName" : "Hawke's Bay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MBH" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "MBH",
+          "longName" : "Marlborough District"
+        },
+        "en_US" : {
+          "shortName" : "MBH",
+          "longName" : "Marlborough District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MWT" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "MWT",
+          "longName" : "Manawatu-Wanganui"
+        },
+        "en_US" : {
+          "shortName" : "MWT",
+          "longName" : "Manawatu-Wanganui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NSN" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "NSN",
+          "longName" : "Nelson City"
+        },
+        "en_US" : {
+          "shortName" : "NSN",
+          "longName" : "Nelson City"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NTL" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "NTL",
+          "longName" : "Northland"
+        },
+        "en_US" : {
+          "shortName" : "NTL",
+          "longName" : "Northland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OTA" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "OTA",
+          "longName" : "Otago"
+        },
+        "en_US" : {
+          "shortName" : "OTA",
+          "longName" : "Otago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "STL" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "STL",
+          "longName" : "Southland"
+        },
+        "en_US" : {
+          "shortName" : "STL",
+          "longName" : "Southland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAS" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "TAS",
+          "longName" : "Tasman District"
+        },
+        "en_US" : {
+          "shortName" : "TAS",
+          "longName" : "Tasman District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TKI" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "TKI",
+          "longName" : "Taranaki"
+        },
+        "en_US" : {
+          "shortName" : "TKI",
+          "longName" : "Taranaki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WGN" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "WGN",
+          "longName" : "Wellington"
+        },
+        "en_US" : {
+          "shortName" : "WGN",
+          "longName" : "Wellington"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WKO" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "WKO",
+          "longName" : "Waikato"
+        },
+        "en_US" : {
+          "shortName" : "WKO",
+          "longName" : "Waikato"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WTC" : {
+      "locales" : {
+        "en_NZ" : {
+          "shortName" : "WTC",
+          "longName" : "West Coast"
+        },
+        "en_US" : {
+          "shortName" : "WTC",
+          "longName" : "West Coast"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_NZ",
+    "id" : "en_NZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "New Zealand",
+      "longName" : "New Zealand",
+      "postalCode" : ""
+    },
+    "en_NZ" : {
+      "shortName" : "New Zealand",
+      "longName" : "New Zealand",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Neuseeland",
+      "longName" : "Neuseeland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "New Zealand",
+      "longName" : "New Zealand",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Nueva Zelanda",
+      "longName" : "Nueva Zelanda",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Nouvelle-Zélande",
+      "longName" : "Nouvelle-Zélande",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Nuova Zelanda",
+      "longName" : "Nuova Zelanda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "뉴질랜드",
+      "longName" : "뉴질랜드",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,671 +1,779 @@
 {
-	"countryCode": "UG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/UGX",
-		"id": "UGX"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"101": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kalangala",
-					"longName": "Kalangala"
-				}
-			}
-		},
-		"102": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kampala",
-					"longName": "Kampala"
-				}
-			}
-		},
-		"103": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kiboga",
-					"longName": "Kiboga"
-				}
-			}
-		},
-		"104": {
-			"locales": {
-				"en_US": {
-					"shortName": "Luwero",
-					"longName": "Luwero"
-				}
-			}
-		},
-		"105": {
-			"locales": {
-				"en_US": {
-					"shortName": "Masaka",
-					"longName": "Masaka"
-				}
-			}
-		},
-		"106": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mpigi",
-					"longName": "Mpigi"
-				}
-			}
-		},
-		"107": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mubende",
-					"longName": "Mubende"
-				}
-			}
-		},
-		"108": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mukono",
-					"longName": "Mukono"
-				}
-			}
-		},
-		"109": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nakasongola",
-					"longName": "Nakasongola"
-				}
-			}
-		},
-		"110": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rakai",
-					"longName": "Rakai"
-				}
-			}
-		},
-		"111": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sembabule",
-					"longName": "Sembabule"
-				}
-			}
-		},
-		"112": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayunga",
-					"longName": "Kayunga"
-				}
-			}
-		},
-		"113": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wakiso",
-					"longName": "Wakiso"
-				}
-			}
-		},
-		"114": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mityana",
-					"longName": "Mityana"
-				}
-			}
-		},
-		"115": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nakaseke",
-					"longName": "Nakaseke"
-				}
-			}
-		},
-		"116": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lyantonde",
-					"longName": "Lyantonde"
-				}
-			}
-		},
-		"201": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bugiri",
-					"longName": "Bugiri"
-				}
-			}
-		},
-		"202": {
-			"locales": {
-				"en_US": {
-					"shortName": "Busia",
-					"longName": "Busia"
-				}
-			}
-		},
-		"203": {
-			"locales": {
-				"en_US": {
-					"shortName": "Iganga",
-					"longName": "Iganga"
-				}
-			}
-		},
-		"204": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jinja",
-					"longName": "Jinja"
-				}
-			}
-		},
-		"205": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kamuli",
-					"longName": "Kamuli"
-				}
-			}
-		},
-		"206": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kapchorwa",
-					"longName": "Kapchorwa"
-				}
-			}
-		},
-		"207": {
-			"locales": {
-				"en_US": {
-					"shortName": "Katakwi",
-					"longName": "Katakwi"
-				}
-			}
-		},
-		"208": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kumi",
-					"longName": "Kumi"
-				}
-			}
-		},
-		"209": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mbale",
-					"longName": "Mbale"
-				}
-			}
-		},
-		"210": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pallisa",
-					"longName": "Pallisa"
-				}
-			}
-		},
-		"211": {
-			"locales": {
-				"en_US": {
-					"shortName": "Soroti",
-					"longName": "Soroti"
-				}
-			}
-		},
-		"212": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tororo",
-					"longName": "Tororo"
-				}
-			}
-		},
-		"213": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kaberamaido",
-					"longName": "Kaberamaido"
-				}
-			}
-		},
-		"214": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mayuge",
-					"longName": "Mayuge"
-				}
-			}
-		},
-		"215": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sironko",
-					"longName": "Sironko"
-				}
-			}
-		},
-		"216": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amuria",
-					"longName": "Amuria"
-				}
-			}
-		},
-		"217": {
-			"locales": {
-				"en_US": {
-					"shortName": "Budaka",
-					"longName": "Budaka"
-				}
-			}
-		},
-		"218": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bukwa",
-					"longName": "Bukwa"
-				}
-			}
-		},
-		"219": {
-			"locales": {
-				"en_US": {
-					"shortName": "Butaleja",
-					"longName": "Butaleja"
-				}
-			}
-		},
-		"220": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kaliro",
-					"longName": "Kaliro"
-				}
-			}
-		},
-		"221": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manafwa",
-					"longName": "Manafwa"
-				}
-			}
-		},
-		"222": {
-			"locales": {
-				"en_US": {
-					"shortName": "Namutumba",
-					"longName": "Namutumba"
-				}
-			}
-		},
-		"223": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bududa",
-					"longName": "Bududa"
-				}
-			}
-		},
-		"224": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bukedea",
-					"longName": "Bukedea"
-				}
-			}
-		},
-		"301": {
-			"locales": {
-				"en_US": {
-					"shortName": "Adjumani",
-					"longName": "Adjumani"
-				}
-			}
-		},
-		"302": {
-			"locales": {
-				"en_US": {
-					"shortName": "Apac",
-					"longName": "Apac"
-				}
-			}
-		},
-		"303": {
-			"locales": {
-				"en_US": {
-					"shortName": "Arua",
-					"longName": "Arua"
-				}
-			}
-		},
-		"304": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gulu",
-					"longName": "Gulu"
-				}
-			}
-		},
-		"305": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kitgum",
-					"longName": "Kitgum"
-				}
-			}
-		},
-		"306": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kotido",
-					"longName": "Kotido"
-				}
-			}
-		},
-		"307": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lira",
-					"longName": "Lira"
-				}
-			}
-		},
-		"308": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moroto",
-					"longName": "Moroto"
-				}
-			}
-		},
-		"309": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moyo",
-					"longName": "Moyo"
-				}
-			}
-		},
-		"310": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nebbi",
-					"longName": "Nebbi"
-				}
-			}
-		},
-		"311": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nakapiripirit",
-					"longName": "Nakapiripirit"
-				}
-			}
-		},
-		"312": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pader",
-					"longName": "Pader"
-				}
-			}
-		},
-		"313": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yumbe",
-					"longName": "Yumbe"
-				}
-			}
-		},
-		"314": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amolatar",
-					"longName": "Amolatar"
-				}
-			}
-		},
-		"315": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kaabong",
-					"longName": "Kaabong"
-				}
-			}
-		},
-		"316": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koboko",
-					"longName": "Koboko"
-				}
-			}
-		},
-		"317": {
-			"locales": {
-				"en_US": {
-					"shortName": "Abim",
-					"longName": "Abim"
-				}
-			}
-		},
-		"318": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dokolo",
-					"longName": "Dokolo"
-				}
-			}
-		},
-		"319": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amuru",
-					"longName": "Amuru"
-				}
-			}
-		},
-		"320": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maracha",
-					"longName": "Maracha"
-				}
-			}
-		},
-		"321": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oyam",
-					"longName": "Oyam"
-				}
-			}
-		},
-		"401": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bundibugyo",
-					"longName": "Bundibugyo"
-				}
-			}
-		},
-		"402": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bushenyi",
-					"longName": "Bushenyi"
-				}
-			}
-		},
-		"403": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hoima",
-					"longName": "Hoima"
-				}
-			}
-		},
-		"404": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kabale",
-					"longName": "Kabale"
-				}
-			}
-		},
-		"405": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kabarole",
-					"longName": "Kabarole"
-				}
-			}
-		},
-		"406": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kasese",
-					"longName": "Kasese"
-				}
-			}
-		},
-		"407": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kibaale",
-					"longName": "Kibaale"
-				}
-			}
-		},
-		"408": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kisoro",
-					"longName": "Kisoro"
-				}
-			}
-		},
-		"409": {
-			"locales": {
-				"en_US": {
-					"shortName": "Masindi",
-					"longName": "Masindi"
-				}
-			}
-		},
-		"410": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mbarara",
-					"longName": "Mbarara"
-				}
-			}
-		},
-		"411": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ntungamo",
-					"longName": "Ntungamo"
-				}
-			}
-		},
-		"412": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rukungiri",
-					"longName": "Rukungiri"
-				}
-			}
-		},
-		"413": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kamwenge",
-					"longName": "Kamwenge"
-				}
-			}
-		},
-		"414": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kanungu",
-					"longName": "Kanungu"
-				}
-			}
-		},
-		"415": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kyenjojo",
-					"longName": "Kyenjojo"
-				}
-			}
-		},
-		"416": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ibanda",
-					"longName": "Ibanda"
-				}
-			}
-		},
-		"417": {
-			"locales": {
-				"en_US": {
-					"shortName": "Isingiro",
-					"longName": "Isingiro"
-				}
-			}
-		},
-		"418": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kiruhura",
-					"longName": "Kiruhura"
-				}
-			}
-		},
-		"419": {
-			"locales": {
-				"en_US": {
-					"shortName": "Buliisa",
-					"longName": "Buliisa"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Uganda",
-			"longName": "Republic of Uganda",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "UG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/UGX",
+    "id" : "UGX"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "101" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kalangala",
+          "longName" : "Kalangala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "102" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kampala",
+          "longName" : "Kampala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "103" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kiboga",
+          "longName" : "Kiboga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "104" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Luwero",
+          "longName" : "Luwero"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "105" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Masaka",
+          "longName" : "Masaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "106" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mpigi",
+          "longName" : "Mpigi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "107" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mubende",
+          "longName" : "Mubende"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "108" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mukono",
+          "longName" : "Mukono"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "109" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nakasongola",
+          "longName" : "Nakasongola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "110" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rakai",
+          "longName" : "Rakai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "111" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sembabule",
+          "longName" : "Sembabule"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "112" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayunga",
+          "longName" : "Kayunga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "113" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wakiso",
+          "longName" : "Wakiso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "114" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mityana",
+          "longName" : "Mityana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "115" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nakaseke",
+          "longName" : "Nakaseke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "116" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lyantonde",
+          "longName" : "Lyantonde"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "201" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bugiri",
+          "longName" : "Bugiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "202" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Busia",
+          "longName" : "Busia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "203" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Iganga",
+          "longName" : "Iganga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "204" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jinja",
+          "longName" : "Jinja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "205" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kamuli",
+          "longName" : "Kamuli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "206" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kapchorwa",
+          "longName" : "Kapchorwa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "207" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Katakwi",
+          "longName" : "Katakwi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "208" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kumi",
+          "longName" : "Kumi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "209" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mbale",
+          "longName" : "Mbale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "210" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pallisa",
+          "longName" : "Pallisa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "211" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Soroti",
+          "longName" : "Soroti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "212" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tororo",
+          "longName" : "Tororo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "213" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kaberamaido",
+          "longName" : "Kaberamaido"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "214" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mayuge",
+          "longName" : "Mayuge"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "215" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sironko",
+          "longName" : "Sironko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "216" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amuria",
+          "longName" : "Amuria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "217" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Budaka",
+          "longName" : "Budaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "218" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bukwa",
+          "longName" : "Bukwa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "219" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Butaleja",
+          "longName" : "Butaleja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "220" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kaliro",
+          "longName" : "Kaliro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "221" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manafwa",
+          "longName" : "Manafwa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "222" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Namutumba",
+          "longName" : "Namutumba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "223" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bududa",
+          "longName" : "Bududa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "224" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bukedea",
+          "longName" : "Bukedea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "301" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Adjumani",
+          "longName" : "Adjumani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "302" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Apac",
+          "longName" : "Apac"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "303" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Arua",
+          "longName" : "Arua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "304" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gulu",
+          "longName" : "Gulu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "305" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kitgum",
+          "longName" : "Kitgum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "306" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kotido",
+          "longName" : "Kotido"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "307" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lira",
+          "longName" : "Lira"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "308" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moroto",
+          "longName" : "Moroto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "309" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moyo",
+          "longName" : "Moyo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "310" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nebbi",
+          "longName" : "Nebbi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "311" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nakapiripirit",
+          "longName" : "Nakapiripirit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "312" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pader",
+          "longName" : "Pader"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "313" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yumbe",
+          "longName" : "Yumbe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "314" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amolatar",
+          "longName" : "Amolatar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "315" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kaabong",
+          "longName" : "Kaabong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "316" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koboko",
+          "longName" : "Koboko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "317" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Abim",
+          "longName" : "Abim"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "318" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dokolo",
+          "longName" : "Dokolo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "319" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amuru",
+          "longName" : "Amuru"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "320" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maracha",
+          "longName" : "Maracha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "321" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oyam",
+          "longName" : "Oyam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "401" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bundibugyo",
+          "longName" : "Bundibugyo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "402" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bushenyi",
+          "longName" : "Bushenyi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "403" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hoima",
+          "longName" : "Hoima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "404" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kabale",
+          "longName" : "Kabale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "405" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kabarole",
+          "longName" : "Kabarole"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "406" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kasese",
+          "longName" : "Kasese"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "407" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kibaale",
+          "longName" : "Kibaale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "408" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kisoro",
+          "longName" : "Kisoro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "409" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Masindi",
+          "longName" : "Masindi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "410" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mbarara",
+          "longName" : "Mbarara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "411" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ntungamo",
+          "longName" : "Ntungamo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "412" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rukungiri",
+          "longName" : "Rukungiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "413" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kamwenge",
+          "longName" : "Kamwenge"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "414" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kanungu",
+          "longName" : "Kanungu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "415" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kyenjojo",
+          "longName" : "Kyenjojo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "416" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ibanda",
+          "longName" : "Ibanda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "417" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Isingiro",
+          "longName" : "Isingiro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "418" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kiruhura",
+          "longName" : "Kiruhura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "419" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Buliisa",
+          "longName" : "Buliisa"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Uganda",
+      "longName" : "Republic of Uganda",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Uganda",
+      "longName" : "Republik Uganda",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Uganda",
+      "longName" : "Republic of Uganda",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Uganda",
+      "longName" : "República de Uganda",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Ouganda",
+      "longName" : "République d’Uganda",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Uganda",
+      "longName" : "Repubblica dell'Uganda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "우간다",
+      "longName" : "Republic of Uganda",
+      "postalCode" : ""
+    }
+  }
 }

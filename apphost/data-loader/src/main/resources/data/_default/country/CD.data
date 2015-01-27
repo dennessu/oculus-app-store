@@ -1,119 +1,158 @@
 {
-	"countryCode": "CD",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CDF",
-		"id": "CDF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bas-Congo",
-					"longName": "Bas-Congo"
-				}
-			}
-		},
-		"BN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bandundu",
-					"longName": "Bandundu"
-				}
-			}
-		},
-		"EQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Équateur",
-					"longName": "Équateur"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Katanga",
-					"longName": "Katanga"
-				}
-			}
-		},
-		"KE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kasai-Oriental",
-					"longName": "Kasai-Oriental"
-				}
-			}
-		},
-		"KN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kinshasa",
-					"longName": "Kinshasa"
-				}
-			}
-		},
-		"KW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kasai-Occidental",
-					"longName": "Kasai-Occidental"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maniema",
-					"longName": "Maniema"
-				}
-			}
-		},
-		"NK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nord-Kivu",
-					"longName": "Nord-Kivu"
-				}
-			}
-		},
-		"OR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Orientale",
-					"longName": "Orientale"
-				}
-			}
-		},
-		"SK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sud-Kivu",
-					"longName": "Sud-Kivu"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Congo-Kinshasa",
-			"longName": "Democratic Republic of the Congo",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CD",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CDF",
+    "id" : "CDF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bas-Congo",
+          "longName" : "Bas-Congo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bandundu",
+          "longName" : "Bandundu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Équateur",
+          "longName" : "Équateur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Katanga",
+          "longName" : "Katanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kasai-Oriental",
+          "longName" : "Kasai-Oriental"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kinshasa",
+          "longName" : "Kinshasa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kasai-Occidental",
+          "longName" : "Kasai-Occidental"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maniema",
+          "longName" : "Maniema"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nord-Kivu",
+          "longName" : "Nord-Kivu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Orientale",
+          "longName" : "Orientale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sud-Kivu",
+          "longName" : "Sud-Kivu"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Congo-Kinshasa",
+      "longName" : "Democratic Republic of the Congo",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Demokratische Republik Kongo",
+      "longName" : "Demokratische Republik Kongo",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Congo-Kinshasa",
+      "longName" : "Democratic Republic of the Congo",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Congo-Kinsasa",
+      "longName" : "República Democrática del Congo",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Congo-Kinshasa",
+      "longName" : "République démocratique du Congo",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Congo-Kinshasa",
+      "longName" : "Repubblica Democratica del Congo",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Congo-Kinshasa",
+      "longName" : "콩고 민주 공화국",
+      "postalCode" : ""
+    }
+  }
 }

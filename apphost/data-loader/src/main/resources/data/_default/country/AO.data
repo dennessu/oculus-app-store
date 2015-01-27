@@ -1,175 +1,221 @@
 {
-	"countryCode": "AO",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AOA",
-		"id": "AOA"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BGO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bengo",
-					"longName": "Bengo"
-				}
-			}
-		},
-		"BGU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Benguela",
-					"longName": "Benguela"
-				}
-			}
-		},
-		"BIE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bié",
-					"longName": "Bié"
-				}
-			}
-		},
-		"CAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cabinda",
-					"longName": "Cabinda"
-				}
-			}
-		},
-		"CCU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cuando-Cubango",
-					"longName": "Cuando-Cubango"
-				}
-			}
-		},
-		"CNN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cunene",
-					"longName": "Cunene"
-				}
-			}
-		},
-		"CNO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cuanza Norte",
-					"longName": "Cuanza Norte"
-				}
-			}
-		},
-		"CUS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cuanza Sul",
-					"longName": "Cuanza Sul"
-				}
-			}
-		},
-		"HUA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Huambo",
-					"longName": "Huambo"
-				}
-			}
-		},
-		"HUI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Huíla",
-					"longName": "Huíla"
-				}
-			}
-		},
-		"LNO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lunda Norte",
-					"longName": "Lunda Norte"
-				}
-			}
-		},
-		"LSU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lunda Sul",
-					"longName": "Lunda Sul"
-				}
-			}
-		},
-		"LUA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Luanda",
-					"longName": "Luanda"
-				}
-			}
-		},
-		"MAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Malange",
-					"longName": "Malange"
-				}
-			}
-		},
-		"MOX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moxico",
-					"longName": "Moxico"
-				}
-			}
-		},
-		"NAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Namibe",
-					"longName": "Namibe"
-				}
-			}
-		},
-		"UIG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uíge",
-					"longName": "Uíge"
-				}
-			}
-		},
-		"ZAI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zaire",
-					"longName": "Zaire"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Angola",
-			"longName": "Republic of Angola",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AOA",
+    "id" : "AOA"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BGO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bengo",
+          "longName" : "Bengo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BGU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Benguela",
+          "longName" : "Benguela"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BIE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bié",
+          "longName" : "Bié"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cabinda",
+          "longName" : "Cabinda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CCU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cuando-Cubango",
+          "longName" : "Cuando-Cubango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CNN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cunene",
+          "longName" : "Cunene"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CNO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cuanza Norte",
+          "longName" : "Cuanza Norte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CUS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cuanza Sul",
+          "longName" : "Cuanza Sul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Huambo",
+          "longName" : "Huambo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Huíla",
+          "longName" : "Huíla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LNO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lunda Norte",
+          "longName" : "Lunda Norte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LSU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lunda Sul",
+          "longName" : "Lunda Sul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LUA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Luanda",
+          "longName" : "Luanda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Malange",
+          "longName" : "Malange"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moxico",
+          "longName" : "Moxico"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Namibe",
+          "longName" : "Namibe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UIG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uíge",
+          "longName" : "Uíge"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zaire",
+          "longName" : "Zaire"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Angola",
+      "longName" : "Republic of Angola",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Angola",
+      "longName" : "Republik Angola",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Angola",
+      "longName" : "Republic of Angola",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Angola",
+      "longName" : "República de Angola",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Angola",
+      "longName" : "République d’Angola",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Angola",
+      "longName" : "Repubblica dell'Angola",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "앙골라",
+      "longName" : "Republic of Angola",
+      "postalCode" : ""
+    }
+  }
 }

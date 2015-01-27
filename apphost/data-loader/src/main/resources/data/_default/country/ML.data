@@ -1,105 +1,142 @@
 {
-	"countryCode": "ML",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_ML",
-		"id": "fr_ML"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayes",
-					"longName": "Kayes"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koulikoro",
-					"longName": "Koulikoro"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sikasso",
-					"longName": "Sikasso"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ségou",
-					"longName": "Ségou"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mopti",
-					"longName": "Mopti"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tombouctou",
-					"longName": "Tombouctou"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gao",
-					"longName": "Gao"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kidal",
-					"longName": "Kidal"
-				}
-			}
-		},
-		"BKO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bamako",
-					"longName": "Bamako"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_ML",
-		"id": "fr_ML"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Mali",
-			"longName": "Republic of Mali",
-			"postalCode": "Postal Code"
-		},
-		"fr_ML": {
-			"shortName": "Mali",
-			"longName": "Republic of Mali",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ML",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_ML",
+    "id" : "fr_ML"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayes",
+          "longName" : "Kayes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koulikoro",
+          "longName" : "Koulikoro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sikasso",
+          "longName" : "Sikasso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ségou",
+          "longName" : "Ségou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mopti",
+          "longName" : "Mopti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tombouctou",
+          "longName" : "Tombouctou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gao",
+          "longName" : "Gao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kidal",
+          "longName" : "Kidal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BKO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bamako",
+          "longName" : "Bamako"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_ML",
+    "id" : "fr_ML"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mali",
+      "longName" : "Republic of Mali",
+      "postalCode" : ""
+    },
+    "fr_ML" : {
+      "shortName" : "Mali",
+      "longName" : "Republic of Mali",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Mali",
+      "longName" : "Republic of Mali",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mali",
+      "longName" : "Republic of Mali",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Mali",
+      "longName" : "República de Mali",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Mali",
+      "longName" : "République du Mali",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Mali",
+      "longName" : "Repubblica del Mali",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "말리",
+      "longName" : "Republic of Mali",
+      "postalCode" : ""
+    }
+  }
 }

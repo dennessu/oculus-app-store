@@ -1,43 +1,68 @@
 {
-	"countryCode": "EH",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_EH",
-		"id": "ar_EH"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MAD",
-		"id": "MAD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_EH",
-		"id": "ar_EH"
-	},
-	{
-		"href": "/v1/locales/es_EH",
-		"id": "es_EH"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Western Sahara",
-			"longName": "Western Sahara",
-			"postalCode": "Postal Code"
-		},
-		"ar_EH": {
-			"shortName": "الصحراء الغربية‎",
-			"longName": "الصحراء الغربية‎",
-			"postalCode": "الرمز البريدي"
-		},
-		"es_EH": {
-			"shortName": "Sahara Occidental",
-			"longName": "Sahara Occidental",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "EH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_EH",
+    "id" : "ar_EH"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MAD",
+    "id" : "MAD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_EH",
+    "id" : "ar_EH"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/es_EH",
+    "id" : "es_EH"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Western Sahara",
+      "longName" : "Western Sahara",
+      "postalCode" : ""
+    },
+    "ar_EH" : {
+      "shortName" : "الصحراء الغربية‎",
+      "longName" : "الصحراء الغربية‎",
+      "postalCode" : "الرمز البريدي"
+    },
+    "es_EH" : {
+      "shortName" : "Sahara Occidental",
+      "longName" : "Sahara Occidental",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Westsahara",
+      "longName" : "Westsahara",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Western Sahara",
+      "longName" : "Western Sahara",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sáhara Occidental",
+      "longName" : "Sáhara Occidental",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Sahara occidental",
+      "longName" : "Sahara occidental",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sahara Occidentale",
+      "longName" : "Sahara Occidentale",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "서사하라",
+      "longName" : "서사하라",
+      "postalCode" : ""
+    }
+  }
 }

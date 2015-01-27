@@ -1,34 +1,60 @@
 {
-	"countryCode": "PN",
-	"defaultLocale": {
-		"href": "/v1/locales/en_PN",
-		"id": "en_PN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NZD",
-		"id": "NZD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_PN",
-		"id": "en_PN"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Pitcairn Islands",
-			"longName": "Pitcairn Group of Islands",
-			"postalCode": "Postal Code"
-		},
-		"en_PN": {
-			"shortName": "Pitcairn Islands",
-			"longName": "Pitcairn Group of Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_PN",
+    "id" : "en_PN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NZD",
+    "id" : "NZD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_PN",
+    "id" : "en_PN"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Pitcairn Islands",
+      "longName" : "Pitcairn Group of Islands",
+      "postalCode" : ""
+    },
+    "en_PN" : {
+      "shortName" : "Pitcairn Islands",
+      "longName" : "Pitcairn Group of Islands",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Pitcairninseln",
+      "longName" : "Pitcairninseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Pitcairn Islands",
+      "longName" : "Pitcairn Group of Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Pitcairn",
+      "longName" : "Grupo de Islas Pitcairn",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Pitcairn",
+      "longName" : "Archipel de Pitcairn",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole di Pitcairn",
+      "longName" : "Isole Pitcairn",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "핏케언 제도",
+      "longName" : "Pitcairn Group of Islands",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,433 +1,493 @@
 {
-	"countryCode": "CO",
-	"defaultLocale": {
-		"href": "/v1/locales/es_CO",
-		"id": "es_CO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/COP",
-		"id": "COP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AMA": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				},
-				"en_US": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				}
-			}
-		},
-		"ANT": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Antioquia",
-					"longName": "Antioquia"
-				},
-				"en_US": {
-					"shortName": "Antioquia",
-					"longName": "Antioquia"
-				}
-			}
-		},
-		"ARA": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Arauca",
-					"longName": "Arauca"
-				},
-				"en_US": {
-					"shortName": "Arauca",
-					"longName": "Arauca"
-				}
-			}
-		},
-		"ATL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Atlántico",
-					"longName": "Atlántico"
-				},
-				"es_CO": {
-					"shortName": "Atlántico",
-					"longName": "Atlántico"
-				}
-			}
-		},
-		"BOL": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Bolívar",
-					"longName": "Bolívar"
-				},
-				"en_US": {
-					"shortName": "Bolívar",
-					"longName": "Bolívar"
-				}
-			}
-		},
-		"BOY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boyacá",
-					"longName": "Boyacá"
-				},
-				"es_CO": {
-					"shortName": "Boyacá",
-					"longName": "Boyacá"
-				}
-			}
-		},
-		"CAL": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Caldas",
-					"longName": "Caldas"
-				},
-				"en_US": {
-					"shortName": "Caldas",
-					"longName": "Caldas"
-				}
-			}
-		},
-		"CAQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Caquetá",
-					"longName": "Caquetá"
-				},
-				"es_CO": {
-					"shortName": "Caquetá",
-					"longName": "Caquetá"
-				}
-			}
-		},
-		"CAS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Casanare",
-					"longName": "Casanare"
-				},
-				"es_CO": {
-					"shortName": "Casanare",
-					"longName": "Casanare"
-				}
-			}
-		},
-		"CAU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cauca",
-					"longName": "Cauca"
-				},
-				"es_CO": {
-					"shortName": "Cauca",
-					"longName": "Cauca"
-				}
-			}
-		},
-		"CES": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Cesar",
-					"longName": "Cesar"
-				},
-				"en_US": {
-					"shortName": "Cesar",
-					"longName": "Cesar"
-				}
-			}
-		},
-		"CHO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chocó",
-					"longName": "Chocó"
-				},
-				"es_CO": {
-					"shortName": "Chocó",
-					"longName": "Chocó"
-				}
-			}
-		},
-		"COR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Córdoba",
-					"longName": "Córdoba"
-				},
-				"es_CO": {
-					"shortName": "Córdoba",
-					"longName": "Córdoba"
-				}
-			}
-		},
-		"CUN": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Cundinamarca",
-					"longName": "Cundinamarca"
-				},
-				"en_US": {
-					"shortName": "Cundinamarca",
-					"longName": "Cundinamarca"
-				}
-			}
-		},
-		"DC": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Distrito Capital de Bogotá",
-					"longName": "Distrito Capital de Bogotá"
-				},
-				"en_US": {
-					"shortName": "Distrito Capital de Bogotá",
-					"longName": "Distrito Capital de Bogotá"
-				}
-			}
-		},
-		"GUA": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Guainía",
-					"longName": "Guainía"
-				},
-				"en_US": {
-					"shortName": "Guainía",
-					"longName": "Guainía"
-				}
-			}
-		},
-		"GUV": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Guaviare",
-					"longName": "Guaviare"
-				},
-				"en_US": {
-					"shortName": "Guaviare",
-					"longName": "Guaviare"
-				}
-			}
-		},
-		"HUI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Huila",
-					"longName": "Huila"
-				},
-				"es_CO": {
-					"shortName": "Huila",
-					"longName": "Huila"
-				}
-			}
-		},
-		"LAG": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Guajira",
-					"longName": "La Guajira"
-				},
-				"es_CO": {
-					"shortName": "La Guajira",
-					"longName": "La Guajira"
-				}
-			}
-		},
-		"MAG": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Magdalena",
-					"longName": "Magdalena"
-				},
-				"en_US": {
-					"shortName": "Magdalena",
-					"longName": "Magdalena"
-				}
-			}
-		},
-		"MET": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Meta",
-					"longName": "Meta"
-				},
-				"en_US": {
-					"shortName": "Meta",
-					"longName": "Meta"
-				}
-			}
-		},
-		"NAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nariño",
-					"longName": "Nariño"
-				},
-				"es_CO": {
-					"shortName": "Nariño",
-					"longName": "Nariño"
-				}
-			}
-		},
-		"NSA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Norte de Santander",
-					"longName": "Norte de Santander"
-				},
-				"es_CO": {
-					"shortName": "Norte de Santander",
-					"longName": "Norte de Santander"
-				}
-			}
-		},
-		"PUT": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Putumayo",
-					"longName": "Putumayo"
-				},
-				"en_US": {
-					"shortName": "Putumayo",
-					"longName": "Putumayo"
-				}
-			}
-		},
-		"QUI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quindío",
-					"longName": "Quindío"
-				},
-				"es_CO": {
-					"shortName": "Quindío",
-					"longName": "Quindío"
-				}
-			}
-		},
-		"RIS": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Risaralda",
-					"longName": "Risaralda"
-				},
-				"en_US": {
-					"shortName": "Risaralda",
-					"longName": "Risaralda"
-				}
-			}
-		},
-		"SAN": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Santander",
-					"longName": "Santander"
-				},
-				"en_US": {
-					"shortName": "Santander",
-					"longName": "Santander"
-				}
-			}
-		},
-		"SAP": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Andrés, Providencia y Santa Catalina",
-					"longName": "San Andrés, Providencia y Santa Catalina"
-				},
-				"es_CO": {
-					"shortName": "San Andrés, Providencia y Santa Catalina",
-					"longName": "San Andrés, Providencia y Santa Catalina"
-				}
-			}
-		},
-		"SUC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sucre",
-					"longName": "Sucre"
-				},
-				"es_CO": {
-					"shortName": "Sucre",
-					"longName": "Sucre"
-				}
-			}
-		},
-		"TOL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tolima",
-					"longName": "Tolima"
-				},
-				"es_CO": {
-					"shortName": "Tolima",
-					"longName": "Tolima"
-				}
-			}
-		},
-		"VAC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valle del Cauca",
-					"longName": "Valle del Cauca"
-				},
-				"es_CO": {
-					"shortName": "Valle del Cauca",
-					"longName": "Valle del Cauca"
-				}
-			}
-		},
-		"VAU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vaupés",
-					"longName": "Vaupés"
-				},
-				"es_CO": {
-					"shortName": "Vaupés",
-					"longName": "Vaupés"
-				}
-			}
-		},
-		"VID": {
-			"locales": {
-				"es_CO": {
-					"shortName": "Vichada",
-					"longName": "Vichada"
-				},
-				"en_US": {
-					"shortName": "Vichada",
-					"longName": "Vichada"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_CO",
-		"id": "es_CO"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Colombia",
-			"longName": "Republic of Colombia",
-			"postalCode": "Postal Code"
-		},
-		"es_CO": {
-			"shortName": "Colombia",
-			"longName": "República de Colombia",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_CO",
+    "id" : "es_CO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/COP",
+    "id" : "COP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AMA" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        },
+        "en_US" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ANT" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Antioquia",
+          "longName" : "Antioquia"
+        },
+        "en_US" : {
+          "shortName" : "Antioquia",
+          "longName" : "Antioquia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ARA" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Arauca",
+          "longName" : "Arauca"
+        },
+        "en_US" : {
+          "shortName" : "Arauca",
+          "longName" : "Arauca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ATL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Atlántico",
+          "longName" : "Atlántico"
+        },
+        "es_CO" : {
+          "shortName" : "Atlántico",
+          "longName" : "Atlántico"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BOL" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Bolívar",
+          "longName" : "Bolívar"
+        },
+        "en_US" : {
+          "shortName" : "Bolívar",
+          "longName" : "Bolívar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BOY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boyacá",
+          "longName" : "Boyacá"
+        },
+        "es_CO" : {
+          "shortName" : "Boyacá",
+          "longName" : "Boyacá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAL" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Caldas",
+          "longName" : "Caldas"
+        },
+        "en_US" : {
+          "shortName" : "Caldas",
+          "longName" : "Caldas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Caquetá",
+          "longName" : "Caquetá"
+        },
+        "es_CO" : {
+          "shortName" : "Caquetá",
+          "longName" : "Caquetá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Casanare",
+          "longName" : "Casanare"
+        },
+        "es_CO" : {
+          "shortName" : "Casanare",
+          "longName" : "Casanare"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cauca",
+          "longName" : "Cauca"
+        },
+        "es_CO" : {
+          "shortName" : "Cauca",
+          "longName" : "Cauca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CES" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Cesar",
+          "longName" : "Cesar"
+        },
+        "en_US" : {
+          "shortName" : "Cesar",
+          "longName" : "Cesar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chocó",
+          "longName" : "Chocó"
+        },
+        "es_CO" : {
+          "shortName" : "Chocó",
+          "longName" : "Chocó"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "COR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Córdoba",
+          "longName" : "Córdoba"
+        },
+        "es_CO" : {
+          "shortName" : "Córdoba",
+          "longName" : "Córdoba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CUN" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Cundinamarca",
+          "longName" : "Cundinamarca"
+        },
+        "en_US" : {
+          "shortName" : "Cundinamarca",
+          "longName" : "Cundinamarca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DC" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Distrito Capital de Bogotá",
+          "longName" : "Distrito Capital de Bogotá"
+        },
+        "en_US" : {
+          "shortName" : "Distrito Capital de Bogotá",
+          "longName" : "Distrito Capital de Bogotá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GUA" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Guainía",
+          "longName" : "Guainía"
+        },
+        "en_US" : {
+          "shortName" : "Guainía",
+          "longName" : "Guainía"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GUV" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Guaviare",
+          "longName" : "Guaviare"
+        },
+        "en_US" : {
+          "shortName" : "Guaviare",
+          "longName" : "Guaviare"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Huila",
+          "longName" : "Huila"
+        },
+        "es_CO" : {
+          "shortName" : "Huila",
+          "longName" : "Huila"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Guajira",
+          "longName" : "La Guajira"
+        },
+        "es_CO" : {
+          "shortName" : "La Guajira",
+          "longName" : "La Guajira"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MAG" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Magdalena",
+          "longName" : "Magdalena"
+        },
+        "en_US" : {
+          "shortName" : "Magdalena",
+          "longName" : "Magdalena"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MET" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Meta",
+          "longName" : "Meta"
+        },
+        "en_US" : {
+          "shortName" : "Meta",
+          "longName" : "Meta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nariño",
+          "longName" : "Nariño"
+        },
+        "es_CO" : {
+          "shortName" : "Nariño",
+          "longName" : "Nariño"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NSA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Norte de Santander",
+          "longName" : "Norte de Santander"
+        },
+        "es_CO" : {
+          "shortName" : "Norte de Santander",
+          "longName" : "Norte de Santander"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PUT" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Putumayo",
+          "longName" : "Putumayo"
+        },
+        "en_US" : {
+          "shortName" : "Putumayo",
+          "longName" : "Putumayo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QUI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quindío",
+          "longName" : "Quindío"
+        },
+        "es_CO" : {
+          "shortName" : "Quindío",
+          "longName" : "Quindío"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RIS" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Risaralda",
+          "longName" : "Risaralda"
+        },
+        "en_US" : {
+          "shortName" : "Risaralda",
+          "longName" : "Risaralda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAN" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Santander",
+          "longName" : "Santander"
+        },
+        "en_US" : {
+          "shortName" : "Santander",
+          "longName" : "Santander"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Andrés, Providencia y Santa Catalina",
+          "longName" : "San Andrés, Providencia y Santa Catalina"
+        },
+        "es_CO" : {
+          "shortName" : "San Andrés, Providencia y Santa Catalina",
+          "longName" : "San Andrés, Providencia y Santa Catalina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SUC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sucre",
+          "longName" : "Sucre"
+        },
+        "es_CO" : {
+          "shortName" : "Sucre",
+          "longName" : "Sucre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TOL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tolima",
+          "longName" : "Tolima"
+        },
+        "es_CO" : {
+          "shortName" : "Tolima",
+          "longName" : "Tolima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VAC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valle del Cauca",
+          "longName" : "Valle del Cauca"
+        },
+        "es_CO" : {
+          "shortName" : "Valle del Cauca",
+          "longName" : "Valle del Cauca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VAU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vaupés",
+          "longName" : "Vaupés"
+        },
+        "es_CO" : {
+          "shortName" : "Vaupés",
+          "longName" : "Vaupés"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VID" : {
+      "locales" : {
+        "es_CO" : {
+          "shortName" : "Vichada",
+          "longName" : "Vichada"
+        },
+        "en_US" : {
+          "shortName" : "Vichada",
+          "longName" : "Vichada"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_CO",
+    "id" : "es_CO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Colombia",
+      "longName" : "Republic of Colombia",
+      "postalCode" : ""
+    },
+    "es_CO" : {
+      "shortName" : "Colombia",
+      "longName" : "República de Colombia",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Kolumbien",
+      "longName" : "Republic of Colombia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Colombia",
+      "longName" : "Republic of Colombia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Colombia",
+      "longName" : "República de Colombia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Colombie",
+      "longName" : "République de Colombie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Colombia",
+      "longName" : "Repubblica di Colombia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "콜롬비아",
+      "longName" : "Republic of Colombia",
+      "postalCode" : ""
+    }
+  }
 }

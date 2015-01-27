@@ -1,34 +1,60 @@
 {
-	"countryCode": "KY",
-	"defaultLocale": {
-		"href": "/v1/locales/en_KY",
-		"id": "en_KY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KYD",
-		"id": "KYD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_KY",
-		"id": "en_KY"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Cayman Islands",
-			"longName": "Cayman Islands",
-			"postalCode": "Postal Code"
-		},
-		"en_KY": {
-			"shortName": "Cayman Islands",
-			"longName": "Cayman Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_KY",
+    "id" : "en_KY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KYD",
+    "id" : "KYD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_KY",
+    "id" : "en_KY"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Cayman Islands",
+      "longName" : "Cayman Islands",
+      "postalCode" : ""
+    },
+    "en_KY" : {
+      "shortName" : "Cayman Islands",
+      "longName" : "Cayman Islands",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Kaiman-Inseln",
+      "longName" : "Kaiman-Inseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Cayman Islands",
+      "longName" : "Cayman Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Caimán",
+      "longName" : "Islas Caimán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Cayman",
+      "longName" : "Îles Cayman",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Cayman",
+      "longName" : "Isole Cayman",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "케이맨 제도",
+      "longName" : "케이맨 제도",
+      "postalCode" : ""
+    }
+  }
 }

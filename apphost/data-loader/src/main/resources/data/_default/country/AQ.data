@@ -1,29 +1,55 @@
 {
-	"countryCode": "AQ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Antarctica",
-			"longName": "Antarctica",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AQ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Antarctica",
+      "longName" : "Antarctica",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Antarktis",
+      "longName" : "Antarktis",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Antarctica",
+      "longName" : "Antarctica",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Antártida",
+      "longName" : "Antártica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Antarctique",
+      "longName" : "Antarctique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Antartide",
+      "longName" : "Antartide",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "남극대륙",
+      "longName" : "남극대륙",
+      "postalCode" : ""
+    }
+  }
 }

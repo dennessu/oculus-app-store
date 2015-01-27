@@ -1,325 +1,376 @@
 {
-	"countryCode": "AR",
-	"defaultLocale": {
-		"href": "/v1/locales/es_AR",
-		"id": "es_AR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ARS",
-		"id": "ARS"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Salta",
-					"longName": "Salta"
-				},
-				"en_US": {
-					"shortName": "Salta",
-					"longName": "Salta"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Buenos Aires",
-					"longName": "Buenos Aires"
-				},
-				"en_US": {
-					"shortName": "Buenos Aires",
-					"longName": "Buenos Aires"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Autonomous City of Buenos Aires",
-					"longName": "Autonomous City of Buenos Aires"
-				},
-				"es_AR": {
-					"shortName": "Ciudad Autónoma de Buenos Aires",
-					"longName": "Ciudad Autónoma de Buenos Aires"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"es_AR": {
-					"shortName": "San Luis",
-					"longName": "San Luis"
-				},
-				"en_US": {
-					"shortName": "San Luis",
-					"longName": "San Luis"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Entre Ríos",
-					"longName": "Entre Ríos"
-				},
-				"en_US": {
-					"shortName": "Entre Ríos",
-					"longName": "Entre Ríos"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Rioja",
-					"longName": "La Rioja"
-				},
-				"es_AR": {
-					"shortName": "La Rioja",
-					"longName": "La Rioja"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Santiago del Estero",
-					"longName": "Santiago del Estero"
-				},
-				"en_US": {
-					"shortName": "Santiago del Estero",
-					"longName": "Santiago del Estero"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chaco",
-					"longName": "Chaco"
-				},
-				"es_AR": {
-					"shortName": "Chaco",
-					"longName": "Chaco"
-				}
-			}
-		},
-		"J": {
-			"locales": {
-				"es_AR": {
-					"shortName": "San Juan",
-					"longName": "San Juan"
-				},
-				"en_US": {
-					"shortName": "San Juan",
-					"longName": "San Juan"
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"en_US": {
-					"shortName": "Catamarca",
-					"longName": "Catamarca"
-				},
-				"es_AR": {
-					"shortName": "Catamarca",
-					"longName": "Catamarca"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"es_AR": {
-					"shortName": "La Pampa",
-					"longName": "La Pampa"
-				},
-				"en_US": {
-					"shortName": "La Pampa",
-					"longName": "La Pampa"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mendoza",
-					"longName": "Mendoza"
-				},
-				"es_AR": {
-					"shortName": "Mendoza",
-					"longName": "Mendoza"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Misiones",
-					"longName": "Misiones"
-				},
-				"es_AR": {
-					"shortName": "Misiones",
-					"longName": "Misiones"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Formosa",
-					"longName": "Formosa"
-				},
-				"es_AR": {
-					"shortName": "Formosa",
-					"longName": "Formosa"
-				}
-			}
-		},
-		"Q": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Neuquén",
-					"longName": "Neuquén"
-				},
-				"en_US": {
-					"shortName": "Neuquén",
-					"longName": "Neuquén"
-				}
-			}
-		},
-		"R": {
-			"locales": {
-				"en_US": {
-					"shortName": "Río Negro",
-					"longName": "Río Negro"
-				},
-				"es_AR": {
-					"shortName": "Río Negro",
-					"longName": "Río Negro"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Santa Fe",
-					"longName": "Santa Fe"
-				},
-				"en_US": {
-					"shortName": "Santa Fe",
-					"longName": "Santa Fe"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Tucumán",
-					"longName": "Tucumán"
-				},
-				"en_US": {
-					"shortName": "Tucumán",
-					"longName": "Tucumán"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chubut",
-					"longName": "Chubut"
-				},
-				"es_AR": {
-					"shortName": "Chubut",
-					"longName": "Chubut"
-				}
-			}
-		},
-		"V": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tierra del Fuego",
-					"longName": "Tierra del Fuego"
-				},
-				"es_AR": {
-					"shortName": "Tierra del Fuego",
-					"longName": "Tierra del Fuego"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"en_US": {
-					"shortName": "Corrientes",
-					"longName": "Corrientes"
-				},
-				"es_AR": {
-					"shortName": "Corrientes",
-					"longName": "Corrientes"
-				}
-			}
-		},
-		"X": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cordoba !Córdoba",
-					"longName": "Cordoba !Córdoba"
-				},
-				"es_AR": {
-					"shortName": "Cordoba !Córdoba",
-					"longName": "Cordoba !Córdoba"
-				}
-			}
-		},
-		"Y": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jujuy",
-					"longName": "Jujuy"
-				},
-				"es_AR": {
-					"shortName": "Jujuy",
-					"longName": "Jujuy"
-				}
-			}
-		},
-		"Z": {
-			"locales": {
-				"es_AR": {
-					"shortName": "Santa Cruz",
-					"longName": "Santa Cruz"
-				},
-				"en_US": {
-					"shortName": "Santa Cruz",
-					"longName": "Santa Cruz"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-        "href": "/v1/locales/es_AR",
-        "id": "es_AR"
+  "futureExpansion" : { },
+  "countryCode" : "AR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_AR",
+    "id" : "es_AR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ARS",
+    "id" : "ARS"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Salta",
+          "longName" : "Salta"
+        },
+        "en_US" : {
+          "shortName" : "Salta",
+          "longName" : "Salta"
+        }
+      },
+      "localeAccuracy" : null
     },
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Argentina",
-			"longName": "Argentine Republic",
-			"postalCode": "Postal Code"
-		},
-		"es_AR": {
-			"shortName": "Argentina",
-			"longName": "República Argentina",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+    "B" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Buenos Aires",
+          "longName" : "Buenos Aires"
+        },
+        "en_US" : {
+          "shortName" : "Buenos Aires",
+          "longName" : "Buenos Aires"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Autonomous City of Buenos Aires",
+          "longName" : "Autonomous City of Buenos Aires"
+        },
+        "es_AR" : {
+          "shortName" : "Ciudad Autónoma de Buenos Aires",
+          "longName" : "Ciudad Autónoma de Buenos Aires"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "San Luis",
+          "longName" : "San Luis"
+        },
+        "en_US" : {
+          "shortName" : "San Luis",
+          "longName" : "San Luis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Entre Ríos",
+          "longName" : "Entre Ríos"
+        },
+        "en_US" : {
+          "shortName" : "Entre Ríos",
+          "longName" : "Entre Ríos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Rioja",
+          "longName" : "La Rioja"
+        },
+        "es_AR" : {
+          "shortName" : "La Rioja",
+          "longName" : "La Rioja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Santiago del Estero",
+          "longName" : "Santiago del Estero"
+        },
+        "en_US" : {
+          "shortName" : "Santiago del Estero",
+          "longName" : "Santiago del Estero"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chaco",
+          "longName" : "Chaco"
+        },
+        "es_AR" : {
+          "shortName" : "Chaco",
+          "longName" : "Chaco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "J" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "San Juan",
+          "longName" : "San Juan"
+        },
+        "en_US" : {
+          "shortName" : "San Juan",
+          "longName" : "San Juan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Catamarca",
+          "longName" : "Catamarca"
+        },
+        "es_AR" : {
+          "shortName" : "Catamarca",
+          "longName" : "Catamarca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "La Pampa",
+          "longName" : "La Pampa"
+        },
+        "en_US" : {
+          "shortName" : "La Pampa",
+          "longName" : "La Pampa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mendoza",
+          "longName" : "Mendoza"
+        },
+        "es_AR" : {
+          "shortName" : "Mendoza",
+          "longName" : "Mendoza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Misiones",
+          "longName" : "Misiones"
+        },
+        "es_AR" : {
+          "shortName" : "Misiones",
+          "longName" : "Misiones"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Formosa",
+          "longName" : "Formosa"
+        },
+        "es_AR" : {
+          "shortName" : "Formosa",
+          "longName" : "Formosa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Q" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Neuquén",
+          "longName" : "Neuquén"
+        },
+        "en_US" : {
+          "shortName" : "Neuquén",
+          "longName" : "Neuquén"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "R" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Río Negro",
+          "longName" : "Río Negro"
+        },
+        "es_AR" : {
+          "shortName" : "Río Negro",
+          "longName" : "Río Negro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Santa Fe",
+          "longName" : "Santa Fe"
+        },
+        "en_US" : {
+          "shortName" : "Santa Fe",
+          "longName" : "Santa Fe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Tucumán",
+          "longName" : "Tucumán"
+        },
+        "en_US" : {
+          "shortName" : "Tucumán",
+          "longName" : "Tucumán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chubut",
+          "longName" : "Chubut"
+        },
+        "es_AR" : {
+          "shortName" : "Chubut",
+          "longName" : "Chubut"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "V" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tierra del Fuego",
+          "longName" : "Tierra del Fuego"
+        },
+        "es_AR" : {
+          "shortName" : "Tierra del Fuego",
+          "longName" : "Tierra del Fuego"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Corrientes",
+          "longName" : "Corrientes"
+        },
+        "es_AR" : {
+          "shortName" : "Corrientes",
+          "longName" : "Corrientes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "X" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cordoba !Córdoba",
+          "longName" : "Cordoba !Córdoba"
+        },
+        "es_AR" : {
+          "shortName" : "Cordoba !Córdoba",
+          "longName" : "Cordoba !Córdoba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Y" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jujuy",
+          "longName" : "Jujuy"
+        },
+        "es_AR" : {
+          "shortName" : "Jujuy",
+          "longName" : "Jujuy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Z" : {
+      "locales" : {
+        "es_AR" : {
+          "shortName" : "Santa Cruz",
+          "longName" : "Santa Cruz"
+        },
+        "en_US" : {
+          "shortName" : "Santa Cruz",
+          "longName" : "Santa Cruz"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_AR",
+    "id" : "es_AR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Argentina",
+      "longName" : "Argentine Republic",
+      "postalCode" : ""
+    },
+    "es_AR" : {
+      "shortName" : "Argentina",
+      "longName" : "República Argentina",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Argentinien",
+      "longName" : "Argentine Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Argentina",
+      "longName" : "Argentine Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Argentina",
+      "longName" : "República Argentina",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Argentine",
+      "longName" : "République argentine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Argentina",
+      "longName" : "Repubblica Argentina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아르헨티나",
+      "longName" : "Argentine Republic",
+      "postalCode" : ""
+    }
+  }
 }

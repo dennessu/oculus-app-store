@@ -1,103 +1,140 @@
 {
-	"countryCode": "GA",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XAF",
-		"id": "XAF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"en_US": {
-					"shortName": "Estuaire",
-					"longName": "Estuaire"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haut-Ogooué",
-					"longName": "Haut-Ogooué"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moyen-Ogooué",
-					"longName": "Moyen-Ogooué"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngounié",
-					"longName": "Ngounié"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nyanga",
-					"longName": "Nyanga"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ogooué-Ivindo",
-					"longName": "Ogooué-Ivindo"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ogooué-Lolo",
-					"longName": "Ogooué-Lolo"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ogooué-Maritime",
-					"longName": "Ogooué-Maritime"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"en_US": {
-					"shortName": "Woleu-Ntem",
-					"longName": "Woleu-Ntem"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Gabon",
-			"longName": "Gabonese Republic",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XAF",
+    "id" : "XAF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Estuaire",
+          "longName" : "Estuaire"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haut-Ogooué",
+          "longName" : "Haut-Ogooué"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moyen-Ogooué",
+          "longName" : "Moyen-Ogooué"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngounié",
+          "longName" : "Ngounié"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nyanga",
+          "longName" : "Nyanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ogooué-Ivindo",
+          "longName" : "Ogooué-Ivindo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ogooué-Lolo",
+          "longName" : "Ogooué-Lolo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ogooué-Maritime",
+          "longName" : "Ogooué-Maritime"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Woleu-Ntem",
+          "longName" : "Woleu-Ntem"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Gabon",
+      "longName" : "Gabonese Republic",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Gabun",
+      "longName" : "Gabonese Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Gabon",
+      "longName" : "Gabonese Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Gabón",
+      "longName" : "República Gabonesa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Gabon",
+      "longName" : "République gabonaise",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Gabon",
+      "longName" : "Repubblica Gabonese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "가봉",
+      "longName" : "Gabonese Republic",
+      "postalCode" : ""
+    }
+  }
 }

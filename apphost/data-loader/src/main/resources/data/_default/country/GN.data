@@ -1,295 +1,356 @@
 {
-	"countryCode": "GN",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GNF",
-		"id": "GNF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beyla",
-					"longName": "Beyla"
-				}
-			}
-		},
-		"BF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boffa",
-					"longName": "Boffa"
-				}
-			}
-		},
-		"BK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boké",
-					"longName": "Boké"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Coyah",
-					"longName": "Coyah"
-				}
-			}
-		},
-		"DB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dabola",
-					"longName": "Dabola"
-				}
-			}
-		},
-		"DI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dinguiraye",
-					"longName": "Dinguiraye"
-				}
-			}
-		},
-		"DL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dalaba",
-					"longName": "Dalaba"
-				}
-			}
-		},
-		"DU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dubréka",
-					"longName": "Dubréka"
-				}
-			}
-		},
-		"FA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Faranah",
-					"longName": "Faranah"
-				}
-			}
-		},
-		"FO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Forécariah",
-					"longName": "Forécariah"
-				}
-			}
-		},
-		"FR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fria",
-					"longName": "Fria"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gaoual",
-					"longName": "Gaoual"
-				}
-			}
-		},
-		"GU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guékédou",
-					"longName": "Guékédou"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kankan",
-					"longName": "Kankan"
-				}
-			}
-		},
-		"KB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koubia",
-					"longName": "Koubia"
-				}
-			}
-		},
-		"KD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kindia",
-					"longName": "Kindia"
-				}
-			}
-		},
-		"KE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kérouané",
-					"longName": "Kérouané"
-				}
-			}
-		},
-		"KN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koundara",
-					"longName": "Koundara"
-				}
-			}
-		},
-		"KO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kouroussa",
-					"longName": "Kouroussa"
-				}
-			}
-		},
-		"KS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kissidougou",
-					"longName": "Kissidougou"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Labé",
-					"longName": "Labé"
-				}
-			}
-		},
-		"LE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lélouma",
-					"longName": "Lélouma"
-				}
-			}
-		},
-		"LO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lola",
-					"longName": "Lola"
-				}
-			}
-		},
-		"MC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Macenta",
-					"longName": "Macenta"
-				}
-			}
-		},
-		"MD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mandiana",
-					"longName": "Mandiana"
-				}
-			}
-		},
-		"ML": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mali",
-					"longName": "Mali"
-				}
-			}
-		},
-		"MM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mamou",
-					"longName": "Mamou"
-				}
-			}
-		},
-		"NZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nzérékoré",
-					"longName": "Nzérékoré"
-				}
-			}
-		},
-		"PI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pita",
-					"longName": "Pita"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Siguiri",
-					"longName": "Siguiri"
-				}
-			}
-		},
-		"TE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Télimélé",
-					"longName": "Télimélé"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tougué",
-					"longName": "Tougué"
-				}
-			}
-		},
-		"YO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yomou",
-					"longName": "Yomou"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Guinea",
-			"longName": "Republic of Guinea",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GNF",
+    "id" : "GNF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beyla",
+          "longName" : "Beyla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boffa",
+          "longName" : "Boffa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boké",
+          "longName" : "Boké"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Coyah",
+          "longName" : "Coyah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dabola",
+          "longName" : "Dabola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dinguiraye",
+          "longName" : "Dinguiraye"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dalaba",
+          "longName" : "Dalaba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dubréka",
+          "longName" : "Dubréka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Faranah",
+          "longName" : "Faranah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Forécariah",
+          "longName" : "Forécariah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fria",
+          "longName" : "Fria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gaoual",
+          "longName" : "Gaoual"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guékédou",
+          "longName" : "Guékédou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kankan",
+          "longName" : "Kankan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koubia",
+          "longName" : "Koubia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kindia",
+          "longName" : "Kindia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kérouané",
+          "longName" : "Kérouané"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koundara",
+          "longName" : "Koundara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kouroussa",
+          "longName" : "Kouroussa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kissidougou",
+          "longName" : "Kissidougou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Labé",
+          "longName" : "Labé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lélouma",
+          "longName" : "Lélouma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lola",
+          "longName" : "Lola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Macenta",
+          "longName" : "Macenta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mandiana",
+          "longName" : "Mandiana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ML" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mali",
+          "longName" : "Mali"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mamou",
+          "longName" : "Mamou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nzérékoré",
+          "longName" : "Nzérékoré"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pita",
+          "longName" : "Pita"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Siguiri",
+          "longName" : "Siguiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Télimélé",
+          "longName" : "Télimélé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tougué",
+          "longName" : "Tougué"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yomou",
+          "longName" : "Yomou"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Guinea",
+      "longName" : "Republic of Guinea",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Guinea",
+      "longName" : "Republic of Guinea",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Guinea",
+      "longName" : "Republic of Guinea",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guinea",
+      "longName" : "República de Guinea",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guinée",
+      "longName" : "République de Guinée",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guinea",
+      "longName" : "Repubblica di Guinea",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "기니",
+      "longName" : "Republic of Guinea",
+      "postalCode" : ""
+    }
+  }
 }

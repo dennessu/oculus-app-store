@@ -1,316 +1,366 @@
 {
-	"countryCode": "TW",
-	"defaultLocale": {
-		"href": "/v1/locales/zh_TW",
-		"id": "zh_TW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TWD",
-		"id": "TWD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/TWAR",
-		"id": "TWAR"
-	}],
-	"subCountries": {
-		"CHA": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "CHA",
-					"longName": "彰化縣"
-				},
-				"en_US": {
-					"shortName": "CHA",
-					"longName": "Changhua"
-				}
-			}
-		},
-		"CYI": {
-			"locales": {
-				"en_US": {
-					"shortName": "CYI",
-					"longName": "Chiayi"
-				},
-				"zh_TW": {
-					"shortName": "CYI",
-					"longName": "嘉義市"
-				}
-			}
-		},
-		"CYQ": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "CYQ",
-					"longName": "嘉義縣"
-				},
-				"en_US": {
-					"shortName": "CYQ",
-					"longName": "Chiayi"
-				}
-			}
-		},
-		"HSQ": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "HSQ",
-					"longName": "新竹縣"
-				},
-				"en_US": {
-					"shortName": "HSQ",
-					"longName": "Hsinchu"
-				}
-			}
-		},
-		"HSZ": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "HSZ",
-					"longName": "新竹市"
-				},
-				"en_US": {
-					"shortName": "HSZ",
-					"longName": "Hsinchu"
-				}
-			}
-		},
-		"HUA": {
-			"locales": {
-				"en_US": {
-					"shortName": "HUA",
-					"longName": "Hualien"
-				},
-				"zh_TW": {
-					"shortName": "HUA",
-					"longName": "花蓮縣"
-				}
-			}
-		},
-		"ILA": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "ILA",
-					"longName": "宜蘭縣"
-				},
-				"en_US": {
-					"shortName": "ILA",
-					"longName": "Ilan"
-				}
-			}
-		},
-		"KEE": {
-			"locales": {
-				"en_US": {
-					"shortName": "KEE",
-					"longName": "Keelung"
-				},
-				"zh_TW": {
-					"shortName": "KEE",
-					"longName": "基隆市"
-				}
-			}
-		},
-		"KHH": {
-			"locales": {
-				"en_US": {
-					"shortName": "KHH",
-					"longName": "Kaohsiung"
-				},
-				"zh_TW": {
-					"shortName": "KHH",
-					"longName": "高雄市"
-				}
-			}
-		},
-		"KHQ": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "KHQ",
-					"longName": "高雄縣"
-				},
-				"en_US": {
-					"shortName": "KHQ",
-					"longName": "Kaohsiung"
-				}
-			}
-		},
-		"MIA": {
-			"locales": {
-				"en_US": {
-					"shortName": "MIA",
-					"longName": "Miaoli"
-				},
-				"zh_TW": {
-					"shortName": "MIA",
-					"longName": "苗栗縣"
-				}
-			}
-		},
-		"NAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "NAN",
-					"longName": "Nantou"
-				},
-				"zh_TW": {
-					"shortName": "NAN",
-					"longName": "南投縣"
-				}
-			}
-		},
-		"PEN": {
-			"locales": {
-				"en_US": {
-					"shortName": "PEN",
-					"longName": "Penghu"
-				},
-				"zh_TW": {
-					"shortName": "PEN",
-					"longName": "澎湖縣"
-				}
-			}
-		},
-		"PIF": {
-			"locales": {
-				"en_US": {
-					"shortName": "PIF",
-					"longName": "Pingtung"
-				},
-				"zh_TW": {
-					"shortName": "PIF",
-					"longName": "屏東縣"
-				}
-			}
-		},
-		"TAO": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "TAO",
-					"longName": "桃園縣"
-				},
-				"en_US": {
-					"shortName": "TAO",
-					"longName": "Taoyuan"
-				}
-			}
-		},
-		"TNN": {
-			"locales": {
-				"en_US": {
-					"shortName": "TNN",
-					"longName": "Tainan"
-				},
-				"zh_TW": {
-					"shortName": "TNN",
-					"longName": "臺南市"
-				}
-			}
-		},
-		"TNQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "TNQ",
-					"longName": "Tainan"
-				},
-				"zh_TW": {
-					"shortName": "TNQ",
-					"longName": "臺南縣"
-				}
-			}
-		},
-		"TPE": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "TPE",
-					"longName": "臺北市"
-				},
-				"en_US": {
-					"shortName": "TPE",
-					"longName": "Taipei"
-				}
-			}
-		},
-		"TPQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "TPQ",
-					"longName": "Taipei"
-				},
-				"zh_TW": {
-					"shortName": "TPQ",
-					"longName": "臺北縣"
-				}
-			}
-		},
-		"TTT": {
-			"locales": {
-				"en_US": {
-					"shortName": "TTT",
-					"longName": "Taitung"
-				},
-				"zh_TW": {
-					"shortName": "TTT",
-					"longName": "台東縣"
-				}
-			}
-		},
-		"TXG": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "TXG",
-					"longName": "臺中市"
-				},
-				"en_US": {
-					"shortName": "TXG",
-					"longName": "Taichung"
-				}
-			}
-		},
-		"TXQ": {
-			"locales": {
-				"zh_TW": {
-					"shortName": "TXQ",
-					"longName": "臺中縣"
-				},
-				"en_US": {
-					"shortName": "TXQ",
-					"longName": "Taichung"
-				}
-			}
-		},
-		"YUN": {
-			"locales": {
-				"en_US": {
-					"shortName": "YUN",
-					"longName": "Yunlin"
-				},
-				"zh_TW": {
-					"shortName": "YUN",
-					"longName": "雲林縣"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/zh_TW",
-		"id": "zh_TW"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Taiwan",
-			"longName": "Republic of China",
-			"postalCode": "Postal Code"
-		},
-		"zh_TW": {
-			"shortName": "台灣",
-			"longName": "中華民國",
-			"postalCode": "郵政編碼"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/zh_TW",
+    "id" : "zh_TW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TWD",
+    "id" : "TWD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/TWAR",
+    "id" : "TWAR"
+  } ],
+  "subCountries" : {
+    "CHA" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "CHA",
+          "longName" : "彰化縣"
+        },
+        "en_US" : {
+          "shortName" : "CHA",
+          "longName" : "Changhua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CYI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CYI",
+          "longName" : "Chiayi"
+        },
+        "zh_TW" : {
+          "shortName" : "CYI",
+          "longName" : "嘉義市"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CYQ" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "CYQ",
+          "longName" : "嘉義縣"
+        },
+        "en_US" : {
+          "shortName" : "CYQ",
+          "longName" : "Chiayi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HSQ" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "HSQ",
+          "longName" : "新竹縣"
+        },
+        "en_US" : {
+          "shortName" : "HSQ",
+          "longName" : "Hsinchu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HSZ" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "HSZ",
+          "longName" : "新竹市"
+        },
+        "en_US" : {
+          "shortName" : "HSZ",
+          "longName" : "Hsinchu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HUA",
+          "longName" : "Hualien"
+        },
+        "zh_TW" : {
+          "shortName" : "HUA",
+          "longName" : "花蓮縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ILA" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "ILA",
+          "longName" : "宜蘭縣"
+        },
+        "en_US" : {
+          "shortName" : "ILA",
+          "longName" : "Ilan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KEE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KEE",
+          "longName" : "Keelung"
+        },
+        "zh_TW" : {
+          "shortName" : "KEE",
+          "longName" : "基隆市"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KHH",
+          "longName" : "Kaohsiung"
+        },
+        "zh_TW" : {
+          "shortName" : "KHH",
+          "longName" : "高雄市"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHQ" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "KHQ",
+          "longName" : "高雄縣"
+        },
+        "en_US" : {
+          "shortName" : "KHQ",
+          "longName" : "Kaohsiung"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MIA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MIA",
+          "longName" : "Miaoli"
+        },
+        "zh_TW" : {
+          "shortName" : "MIA",
+          "longName" : "苗栗縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NAN",
+          "longName" : "Nantou"
+        },
+        "zh_TW" : {
+          "shortName" : "NAN",
+          "longName" : "南投縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PEN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PEN",
+          "longName" : "Penghu"
+        },
+        "zh_TW" : {
+          "shortName" : "PEN",
+          "longName" : "澎湖縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PIF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PIF",
+          "longName" : "Pingtung"
+        },
+        "zh_TW" : {
+          "shortName" : "PIF",
+          "longName" : "屏東縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAO" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "TAO",
+          "longName" : "桃園縣"
+        },
+        "en_US" : {
+          "shortName" : "TAO",
+          "longName" : "Taoyuan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TNN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TNN",
+          "longName" : "Tainan"
+        },
+        "zh_TW" : {
+          "shortName" : "TNN",
+          "longName" : "臺南市"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TNQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TNQ",
+          "longName" : "Tainan"
+        },
+        "zh_TW" : {
+          "shortName" : "TNQ",
+          "longName" : "臺南縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TPE" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "TPE",
+          "longName" : "臺北市"
+        },
+        "en_US" : {
+          "shortName" : "TPE",
+          "longName" : "Taipei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TPQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TPQ",
+          "longName" : "Taipei"
+        },
+        "zh_TW" : {
+          "shortName" : "TPQ",
+          "longName" : "臺北縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TTT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TTT",
+          "longName" : "Taitung"
+        },
+        "zh_TW" : {
+          "shortName" : "TTT",
+          "longName" : "台東縣"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TXG" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "TXG",
+          "longName" : "臺中市"
+        },
+        "en_US" : {
+          "shortName" : "TXG",
+          "longName" : "Taichung"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TXQ" : {
+      "locales" : {
+        "zh_TW" : {
+          "shortName" : "TXQ",
+          "longName" : "臺中縣"
+        },
+        "en_US" : {
+          "shortName" : "TXQ",
+          "longName" : "Taichung"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YUN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "YUN",
+          "longName" : "Yunlin"
+        },
+        "zh_TW" : {
+          "shortName" : "YUN",
+          "longName" : "雲林縣"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/zh_TW",
+    "id" : "zh_TW"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Taiwan",
+      "longName" : "Republic of China",
+      "postalCode" : ""
+    },
+    "zh_TW" : {
+      "shortName" : "台灣",
+      "longName" : "中華民國",
+      "postalCode" : "郵政編碼"
+    },
+    "de_DE" : {
+      "shortName" : "Taiwan",
+      "longName" : "Republic of China",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Taiwan",
+      "longName" : "Republic of China",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Taiwán",
+      "longName" : "República de China",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Taïwan",
+      "longName" : "République de Chine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Taiwan",
+      "longName" : "Repubblica di Cina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "대만",
+      "longName" : "Republic of China",
+      "postalCode" : ""
+    }
+  }
 }

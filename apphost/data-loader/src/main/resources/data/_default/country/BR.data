@@ -1,364 +1,418 @@
 {
-	"countryCode": "BR",
-	"defaultLocale": {
-		"href": "/v1/locales/pt_BR",
-		"id": "pt_BR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BRL",
-		"id": "BRL"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/DJCTQ",
-		"id": "DJCTQ"
-	}],
-	"subCountries": {
-		"AC": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Acre",
-					"longName": "Acre"
-				},
-				"en_US": {
-					"shortName": "Acre",
-					"longName": "Acre"
-				}
-			}
-		},
-		"AL": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Alagoas",
-					"longName": "Alagoas"
-				},
-				"en_US": {
-					"shortName": "Alagoas",
-					"longName": "Alagoas"
-				}
-			}
-		},
-		"AM": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				},
-				"en_US": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				}
-			}
-		},
-		"AP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amapá",
-					"longName": "Amapá"
-				},
-				"pt_BR": {
-					"shortName": "Amapá",
-					"longName": "Amapá"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Bahia",
-					"longName": "Bahia"
-				},
-				"en_US": {
-					"shortName": "Bahia",
-					"longName": "Bahia"
-				}
-			}
-		},
-		"CE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ceará",
-					"longName": "Ceará"
-				},
-				"pt_BR": {
-					"shortName": "Ceará",
-					"longName": "Ceará"
-				}
-			}
-		},
-		"DF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Distrito Federal",
-					"longName": "Distrito Federal"
-				},
-				"pt_BR": {
-					"shortName": "Distrito Federal",
-					"longName": "Distrito Federal"
-				}
-			}
-		},
-		"ES": {
-			"locales": {
-				"en_US": {
-					"shortName": "Holy Spirit",
-					"longName": "Holy Spirit"
-				},
-				"pt_BR": {
-					"shortName": "Espírito Santo",
-					"longName": "Espírito Santo"
-				}
-			}
-		},
-		"GO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Goiás",
-					"longName": "Goiás"
-				},
-				"pt_BR": {
-					"shortName": "Goiás",
-					"longName": "Goiás"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Maranhão",
-					"longName": "Maranhão"
-				},
-				"en_US": {
-					"shortName": "Maranhão",
-					"longName": "Maranhão"
-				}
-			}
-		},
-		"MG": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Minas Gerais",
-					"longName": "Minas Gerais"
-				},
-				"en_US": {
-					"shortName": "Minas Gerais",
-					"longName": "Minas Gerais"
-				}
-			}
-		},
-		"MS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mato Grosso do Sul",
-					"longName": "Mato Grosso do Sul"
-				},
-				"pt_BR": {
-					"shortName": "Mato Grosso do Sul",
-					"longName": "Mato Grosso do Sul"
-				}
-			}
-		},
-		"MT": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Mato Grosso",
-					"longName": "Mato Grosso"
-				},
-				"en_US": {
-					"shortName": "Mato Grosso",
-					"longName": "Mato Grosso"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Pará",
-					"longName": "Pará"
-				},
-				"en_US": {
-					"shortName": "Pará",
-					"longName": "Pará"
-				}
-			}
-		},
-		"PB": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Paraíba",
-					"longName": "Paraíba"
-				},
-				"en_US": {
-					"shortName": "Paraíba",
-					"longName": "Paraíba"
-				}
-			}
-		},
-		"PE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pernambuco",
-					"longName": "Pernambuco"
-				},
-				"pt_BR": {
-					"shortName": "Pernambuco",
-					"longName": "Pernambuco"
-				}
-			}
-		},
-		"PI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Piauí",
-					"longName": "Piauí"
-				},
-				"pt_BR": {
-					"shortName": "Piauí",
-					"longName": "Piauí"
-				}
-			}
-		},
-		"PR": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Paraná",
-					"longName": "Paraná"
-				},
-				"en_US": {
-					"shortName": "Paraná",
-					"longName": "Paraná"
-				}
-			}
-		},
-		"RJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rio de Janeiro",
-					"longName": "Rio de Janeiro"
-				},
-				"pt_BR": {
-					"shortName": "Rio de Janeiro",
-					"longName": "Rio de Janeiro"
-				}
-			}
-		},
-		"RN": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Rio Grande do Norte",
-					"longName": "Rio Grande do Norte"
-				},
-				"en_US": {
-					"shortName": "Rio Grande do Norte",
-					"longName": "Rio Grande do Norte"
-				}
-			}
-		},
-		"RO": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Rondônia",
-					"longName": "Rondônia"
-				},
-				"en_US": {
-					"shortName": "Rondônia",
-					"longName": "Rondônia"
-				}
-			}
-		},
-		"RR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Roraima",
-					"longName": "Roraima"
-				},
-				"pt_BR": {
-					"shortName": "Roraima",
-					"longName": "Roraima"
-				}
-			}
-		},
-		"RS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rio Grande do Sul",
-					"longName": "Rio Grande do Sul"
-				},
-				"pt_BR": {
-					"shortName": "Rio Grande do Sul",
-					"longName": "Rio Grande do Sul"
-				}
-			}
-		},
-		"SC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Santa Catarina",
-					"longName": "Santa Catarina"
-				},
-				"pt_BR": {
-					"shortName": "Santa Catarina",
-					"longName": "Santa Catarina"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sergipe",
-					"longName": "Sergipe"
-				},
-				"pt_BR": {
-					"shortName": "Sergipe",
-					"longName": "Sergipe"
-				}
-			}
-		},
-		"SP": {
-			"locales": {
-				"en_US": {
-					"shortName": "São Paulo",
-					"longName": "São Paulo"
-				},
-				"pt_BR": {
-					"shortName": "São Paulo",
-					"longName": "São Paulo"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"pt_BR": {
-					"shortName": "Tocantins",
-					"longName": "Tocantins"
-				},
-				"en_US": {
-					"shortName": "Tocantins",
-					"longName": "Tocantins"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pt_BR",
-		"id": "pt_BR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Brazil",
-			"longName": "Federative Republic of Brazil",
-			"postalCode": "CEP"
-		},
-		"pt_BR": {
-			"shortName": "Brasil",
-			"longName": "República Federativa do Brasil",
-			"postalCode": "CEP"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pt_BR",
+    "id" : "pt_BR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BRL",
+    "id" : "BRL"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/DJCTQ",
+    "id" : "DJCTQ"
+  } ],
+  "subCountries" : {
+    "AC" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Acre",
+          "longName" : "Acre"
+        },
+        "en_US" : {
+          "shortName" : "Acre",
+          "longName" : "Acre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AL" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Alagoas",
+          "longName" : "Alagoas"
+        },
+        "en_US" : {
+          "shortName" : "Alagoas",
+          "longName" : "Alagoas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AM" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        },
+        "en_US" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amapá",
+          "longName" : "Amapá"
+        },
+        "pt_BR" : {
+          "shortName" : "Amapá",
+          "longName" : "Amapá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Bahia",
+          "longName" : "Bahia"
+        },
+        "en_US" : {
+          "shortName" : "Bahia",
+          "longName" : "Bahia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ceará",
+          "longName" : "Ceará"
+        },
+        "pt_BR" : {
+          "shortName" : "Ceará",
+          "longName" : "Ceará"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Distrito Federal",
+          "longName" : "Distrito Federal"
+        },
+        "pt_BR" : {
+          "shortName" : "Distrito Federal",
+          "longName" : "Distrito Federal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ES" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Holy Spirit",
+          "longName" : "Holy Spirit"
+        },
+        "pt_BR" : {
+          "shortName" : "Espírito Santo",
+          "longName" : "Espírito Santo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Goiás",
+          "longName" : "Goiás"
+        },
+        "pt_BR" : {
+          "shortName" : "Goiás",
+          "longName" : "Goiás"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Maranhão",
+          "longName" : "Maranhão"
+        },
+        "en_US" : {
+          "shortName" : "Maranhão",
+          "longName" : "Maranhão"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MG" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Minas Gerais",
+          "longName" : "Minas Gerais"
+        },
+        "en_US" : {
+          "shortName" : "Minas Gerais",
+          "longName" : "Minas Gerais"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mato Grosso do Sul",
+          "longName" : "Mato Grosso do Sul"
+        },
+        "pt_BR" : {
+          "shortName" : "Mato Grosso do Sul",
+          "longName" : "Mato Grosso do Sul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MT" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Mato Grosso",
+          "longName" : "Mato Grosso"
+        },
+        "en_US" : {
+          "shortName" : "Mato Grosso",
+          "longName" : "Mato Grosso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Pará",
+          "longName" : "Pará"
+        },
+        "en_US" : {
+          "shortName" : "Pará",
+          "longName" : "Pará"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PB" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Paraíba",
+          "longName" : "Paraíba"
+        },
+        "en_US" : {
+          "shortName" : "Paraíba",
+          "longName" : "Paraíba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pernambuco",
+          "longName" : "Pernambuco"
+        },
+        "pt_BR" : {
+          "shortName" : "Pernambuco",
+          "longName" : "Pernambuco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Piauí",
+          "longName" : "Piauí"
+        },
+        "pt_BR" : {
+          "shortName" : "Piauí",
+          "longName" : "Piauí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PR" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Paraná",
+          "longName" : "Paraná"
+        },
+        "en_US" : {
+          "shortName" : "Paraná",
+          "longName" : "Paraná"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rio de Janeiro",
+          "longName" : "Rio de Janeiro"
+        },
+        "pt_BR" : {
+          "shortName" : "Rio de Janeiro",
+          "longName" : "Rio de Janeiro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RN" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Rio Grande do Norte",
+          "longName" : "Rio Grande do Norte"
+        },
+        "en_US" : {
+          "shortName" : "Rio Grande do Norte",
+          "longName" : "Rio Grande do Norte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RO" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Rondônia",
+          "longName" : "Rondônia"
+        },
+        "en_US" : {
+          "shortName" : "Rondônia",
+          "longName" : "Rondônia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Roraima",
+          "longName" : "Roraima"
+        },
+        "pt_BR" : {
+          "shortName" : "Roraima",
+          "longName" : "Roraima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rio Grande do Sul",
+          "longName" : "Rio Grande do Sul"
+        },
+        "pt_BR" : {
+          "shortName" : "Rio Grande do Sul",
+          "longName" : "Rio Grande do Sul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Santa Catarina",
+          "longName" : "Santa Catarina"
+        },
+        "pt_BR" : {
+          "shortName" : "Santa Catarina",
+          "longName" : "Santa Catarina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sergipe",
+          "longName" : "Sergipe"
+        },
+        "pt_BR" : {
+          "shortName" : "Sergipe",
+          "longName" : "Sergipe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "São Paulo",
+          "longName" : "São Paulo"
+        },
+        "pt_BR" : {
+          "shortName" : "São Paulo",
+          "longName" : "São Paulo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "pt_BR" : {
+          "shortName" : "Tocantins",
+          "longName" : "Tocantins"
+        },
+        "en_US" : {
+          "shortName" : "Tocantins",
+          "longName" : "Tocantins"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pt_BR",
+    "id" : "pt_BR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Brazil",
+      "longName" : "Federative Republic of Brazil",
+      "postalCode" : ""
+    },
+    "pt_BR" : {
+      "shortName" : "Brasil",
+      "longName" : "República Federativa do Brasil",
+      "postalCode" : "CEP"
+    },
+    "de_DE" : {
+      "shortName" : "Brasilien",
+      "longName" : "Federative Republic of Brazil",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Brazil",
+      "longName" : "Federative Republic of Brazil",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Brasil",
+      "longName" : "República Federativa de Brasil",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Brésil",
+      "longName" : "République fédérale du Brésil",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Brasile",
+      "longName" : "Repubblica Federale del Brasile",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "브라질",
+      "longName" : "Federative Republic of Brazil",
+      "postalCode" : ""
+    }
+  }
 }

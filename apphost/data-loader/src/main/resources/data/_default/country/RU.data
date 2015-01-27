@@ -1,1036 +1,1146 @@
 {
-	"countryCode": "RU",
-	"defaultLocale": {
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/RUB",
-		"id": "RUB"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"AD": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "AD",
-					"longName": "Адыгея, Республиканский"
-				},
-				"en_US": {
-					"shortName": "AD",
-					"longName": "Adygeya, Republican"
-				}
-			}
-		},
-		"AL": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "AL",
-					"longName": "Алтайский край, Республиканский"
-				},
-				"en_US": {
-					"shortName": "AL",
-					"longName": "Altay, Republican"
-				}
-			}
-		},
-		"ALT": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "ALT",
-					"longName": "Алтайский край"
-				},
-				"en_US": {
-					"shortName": "ALT",
-					"longName": "Altayskiy Kray"
-				}
-			}
-		},
-		"AMU": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "AMU",
-					"longName": "Амурская область"
-				},
-				"en_US": {
-					"shortName": "AMU",
-					"longName": "Amurskaya oblast '"
-				}
-			}
-		},
-		"ARK": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "ARK",
-					"longName": "Архангельская область"
-				},
-				"en_US": {
-					"shortName": "ARK",
-					"longName": "Arkhangel'skaya oblast '"
-				}
-			}
-		},
-		"AST": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "AST",
-					"longName": "Астраханская область"
-				},
-				"en_US": {
-					"shortName": "AST",
-					"longName": "Astrakhanskaya oblast '"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "BA",
-					"longName": "Bashkortostan, Republican"
-				},
-				"ru_RU": {
-					"shortName": "BA",
-					"longName": "Башкортостан, Республиканский"
-				}
-			}
-		},
-		"BEL": {
-			"locales": {
-				"en_US": {
-					"shortName": "BEL",
-					"longName": "Belgorodskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "BEL",
-					"longName": "Белгородская область"
-				}
-			}
-		},
-		"BRY": {
-			"locales": {
-				"en_US": {
-					"shortName": "BRY",
-					"longName": "Bryanskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "BRY",
-					"longName": "Брянская область"
-				}
-			}
-		},
-		"BU": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "BU",
-					"longName": "Бурятия, Республиканская"
-				},
-				"en_US": {
-					"shortName": "BU",
-					"longName": "Buryatiya, Republican"
-				}
-			}
-		},
-		"CE": {
-			"locales": {
-				"en_US": {
-					"shortName": "CE",
-					"longName": "Chechenskaya Republican"
-				},
-				"ru_RU": {
-					"shortName": "CE",
-					"longName": "Чеченская республиканская"
-				}
-			}
-		},
-		"CHE": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "CHE",
-					"longName": "Челябинская область"
-				},
-				"en_US": {
-					"shortName": "CHE",
-					"longName": "Chelyabinskaya oblast '"
-				}
-			}
-		},
-		"CHU": {
-			"locales": {
-				"en_US": {
-					"shortName": "CHU",
-					"longName": "Chukotskiy avtonomnyy okrug"
-				},
-				"ru_RU": {
-					"shortName": "CHU",
-					"longName": "Чукотский автономный округ"
-				}
-			}
-		},
-		"CU": {
-			"locales": {
-				"en_US": {
-					"shortName": "CU",
-					"longName": "Chuvashskaya Republican"
-				},
-				"ru_RU": {
-					"shortName": "CU",
-					"longName": "Чувашская республиканская"
-				}
-			}
-		},
-		"DA": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "DA",
-					"longName": "Дагестан, Республиканский"
-				},
-				"en_US": {
-					"shortName": "DA",
-					"longName": "Dagestan, Republican"
-				}
-			}
-		},
-		"IN": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "IN",
-					"longName": "Ингушетия, Республиканский"
-				},
-				"en_US": {
-					"shortName": "IN",
-					"longName": "Ingushetiya, Republican"
-				}
-			}
-		},
-		"IRK": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "IRK",
-					"longName": "Иркутская область"
-				},
-				"en_US": {
-					"shortName": "IRK",
-					"longName": "Irkutskaya oblast '"
-				}
-			}
-		},
-		"IVA": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "IVA",
-					"longName": "Ивановская область"
-				},
-				"en_US": {
-					"shortName": "IVA",
-					"longName": "Ivanovskaya oblast '"
-				}
-			}
-		},
-		"KAM": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KAM",
-					"longName": "Камчатский край"
-				},
-				"en_US": {
-					"shortName": "KAM",
-					"longName": "Kamchatskiy Kray"
-				}
-			}
-		},
-		"KB": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KB",
-					"longName": "Кабардино-Балкарская республиканская"
-				},
-				"en_US": {
-					"shortName": "KB",
-					"longName": "Kabardino-Balkarskaya Republican"
-				}
-			}
-		},
-		"KC": {
-			"locales": {
-				"en_US": {
-					"shortName": "KC",
-					"longName": "Karachayevo-Cherkesskaya Republican"
-				},
-				"ru_RU": {
-					"shortName": "KC",
-					"longName": "Карачаево-Черкесская республиканская"
-				}
-			}
-		},
-		"KDA": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KDA",
-					"longName": "Краснодарский край"
-				},
-				"en_US": {
-					"shortName": "KDA",
-					"longName": "Krasnodarskiy Kray"
-				}
-			}
-		},
-		"KEM": {
-			"locales": {
-				"en_US": {
-					"shortName": "KEM",
-					"longName": "Kemerovskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "KEM",
-					"longName": "Кемеровская область"
-				}
-			}
-		},
-		"KGD": {
-			"locales": {
-				"en_US": {
-					"shortName": "KGD",
-					"longName": "Kaliningradskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "KGD",
-					"longName": "Калининградская область"
-				}
-			}
-		},
-		"KGN": {
-			"locales": {
-				"en_US": {
-					"shortName": "KGN",
-					"longName": "Kurganskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "KGN",
-					"longName": "Курганская область"
-				}
-			}
-		},
-		"KHA": {
-			"locales": {
-				"en_US": {
-					"shortName": "KHA",
-					"longName": "Khabarovskiy Kray"
-				},
-				"ru_RU": {
-					"shortName": "KHA",
-					"longName": "Хабаровский край"
-				}
-			}
-		},
-		"KHM": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KHM",
-					"longName": "Ханты-Мансийский автономный округ-Югра"
-				},
-				"en_US": {
-					"shortName": "KHM",
-					"longName": "Khanty-Mansiyskiy avtonomnyy okrug-Yugra"
-				}
-			}
-		},
-		"KIR": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KIR",
-					"longName": "Кировская область"
-				},
-				"en_US": {
-					"shortName": "KIR",
-					"longName": "Kirovskaya oblast '"
-				}
-			}
-		},
-		"KK": {
-			"locales": {
-				"en_US": {
-					"shortName": "KK",
-					"longName": "Khakasiya, Republican"
-				},
-				"ru_RU": {
-					"shortName": "KK",
-					"longName": "Хакасия, Республиканский"
-				}
-			}
-		},
-		"KL": {
-			"locales": {
-				"en_US": {
-					"shortName": "KL",
-					"longName": "Kalmykiya, Republican"
-				},
-				"ru_RU": {
-					"shortName": "KL",
-					"longName": "Калмыкия, Республиканский"
-				}
-			}
-		},
-		"KLU": {
-			"locales": {
-				"en_US": {
-					"shortName": "KLU",
-					"longName": "Kaluzhskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "KLU",
-					"longName": "Калужская область"
-				}
-			}
-		},
-		"KO": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KO",
-					"longName": "Коми, Республиканский"
-				},
-				"en_US": {
-					"shortName": "KO",
-					"longName": "Komi, Republican"
-				}
-			}
-		},
-		"KOS": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KOS",
-					"longName": "Костромская область"
-				},
-				"en_US": {
-					"shortName": "KOS",
-					"longName": "Kostromskaya oblast '"
-				}
-			}
-		},
-		"KR": {
-			"locales": {
-				"en_US": {
-					"shortName": "KR",
-					"longName": "Kareliya, Republican"
-				},
-				"ru_RU": {
-					"shortName": "KR",
-					"longName": "Карелия, Республиканский"
-				}
-			}
-		},
-		"KRS": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KRS",
-					"longName": "Курская область"
-				},
-				"en_US": {
-					"shortName": "KRS",
-					"longName": "Kurskaya oblast '"
-				}
-			}
-		},
-		"KYA": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "KYA",
-					"longName": "Красноярский край"
-				},
-				"en_US": {
-					"shortName": "KYA",
-					"longName": "Krasnoyarskiy Kray"
-				}
-			}
-		},
-		"LEN": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "LEN",
-					"longName": "Ленинградская область"
-				},
-				"en_US": {
-					"shortName": "LEN",
-					"longName": "Leningradskaya Oblast '"
-				}
-			}
-		},
-		"LIP": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "LIP",
-					"longName": "Липецкая область"
-				},
-				"en_US": {
-					"shortName": "LIP",
-					"longName": "Lipetskaya oblast '"
-				}
-			}
-		},
-		"MAG": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "MAG",
-					"longName": "Магаданская область"
-				},
-				"en_US": {
-					"shortName": "MAG",
-					"longName": "Magadanskaya oblast '"
-				}
-			}
-		},
-		"ME": {
-			"locales": {
-				"en_US": {
-					"shortName": "ME",
-					"longName": "Mariy El Republican"
-				},
-				"ru_RU": {
-					"shortName": "ME",
-					"longName": "Марий Эл Республиканский"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "MO",
-					"longName": "Мордовия, Республиканская"
-				},
-				"en_US": {
-					"shortName": "MO",
-					"longName": "Mordoviya, Republican"
-				}
-			}
-		},
-		"MOS": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "MOS",
-					"longName": "Московская область"
-				},
-				"en_US": {
-					"shortName": "MOS",
-					"longName": "Moskovskaya oblast '"
-				}
-			}
-		},
-		"MOW": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "MOW",
-					"longName": "Москва"
-				},
-				"en_US": {
-					"shortName": "MOW",
-					"longName": "Moscow"
-				}
-			}
-		},
-		"MUR": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "MUR",
-					"longName": "Мурманская область"
-				},
-				"en_US": {
-					"shortName": "MUR",
-					"longName": "Murmanskaya oblast '"
-				}
-			}
-		},
-		"NEN": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "NEN",
-					"longName": "Ненецкий автономный округ"
-				},
-				"en_US": {
-					"shortName": "NEN",
-					"longName": "Nenetskiy avtonomnyy okrug"
-				}
-			}
-		},
-		"NGR": {
-			"locales": {
-				"en_US": {
-					"shortName": "NGR",
-					"longName": "Novgorodskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "NGR",
-					"longName": "Новгородская область"
-				}
-			}
-		},
-		"NIZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "NIZ",
-					"longName": "Nizhegorodskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "NIZ",
-					"longName": "Нижегородская область"
-				}
-			}
-		},
-		"NVS": {
-			"locales": {
-				"en_US": {
-					"shortName": "NVS",
-					"longName": "Novosibirskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "NVS",
-					"longName": "Новосибирская область"
-				}
-			}
-		},
-		"OMS": {
-			"locales": {
-				"en_US": {
-					"shortName": "OMS",
-					"longName": "Omskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "OMS",
-					"longName": "Омская область"
-				}
-			}
-		},
-		"ORE": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "ORE",
-					"longName": "Оренбургская область"
-				},
-				"en_US": {
-					"shortName": "ORE",
-					"longName": "Orenburgskaya oblast '"
-				}
-			}
-		},
-		"ORL": {
-			"locales": {
-				"en_US": {
-					"shortName": "ORL",
-					"longName": "Orlovskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "ORL",
-					"longName": "Орловская область"
-				}
-			}
-		},
-		"PER": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "PER",
-					"longName": "Пермский край"
-				},
-				"en_US": {
-					"shortName": "PER",
-					"longName": "Permskiy Kray"
-				}
-			}
-		},
-		"PNZ": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "PNZ",
-					"longName": "Пензенская область"
-				},
-				"en_US": {
-					"shortName": "PNZ",
-					"longName": "Penzenskaya oblast '"
-				}
-			}
-		},
-		"PRI": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "PRI",
-					"longName": "Приморский край"
-				},
-				"en_US": {
-					"shortName": "PRI",
-					"longName": "Primorskiy Kray"
-				}
-			}
-		},
-		"PSK": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "PSK",
-					"longName": "Псковская область"
-				},
-				"en_US": {
-					"shortName": "PSK",
-					"longName": "Pskovskaya oblast '"
-				}
-			}
-		},
-		"ROS": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "ROS",
-					"longName": "Ростовская область"
-				},
-				"en_US": {
-					"shortName": "ROS",
-					"longName": "Rostovskaya oblast '"
-				}
-			}
-		},
-		"RYA": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "RYA",
-					"longName": "Рязанская область"
-				},
-				"en_US": {
-					"shortName": "RYA",
-					"longName": "Ryazanskaya oblast '"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "SA",
-					"longName": "Sakha, Republican [Yakutiya]"
-				},
-				"ru_RU": {
-					"shortName": "SA",
-					"longName": "Саха, Республиканская [Якутия]"
-				}
-			}
-		},
-		"SAK": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "SAK",
-					"longName": "Сахалинская область"
-				},
-				"en_US": {
-					"shortName": "SAK",
-					"longName": "Sakhalinskaya oblast '"
-				}
-			}
-		},
-		"SAM": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "SAM",
-					"longName": "Самарская область"
-				},
-				"en_US": {
-					"shortName": "SAM",
-					"longName": "Samarskaya oblast '"
-				}
-			}
-		},
-		"SAR": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "SAR",
-					"longName": "Саратовская область"
-				},
-				"en_US": {
-					"shortName": "SAR",
-					"longName": "Saratovskaya oblast '"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "SE",
-					"longName": "Severnaya Osetiya-Alaniya, Republican"
-				},
-				"ru_RU": {
-					"shortName": "SE",
-					"longName": "Северная Осетия-Алания, Республиканский"
-				}
-			}
-		},
-		"SMO": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "SMO",
-					"longName": "Смоленская область"
-				},
-				"en_US": {
-					"shortName": "SMO",
-					"longName": "Smolenskaya oblast '"
-				}
-			}
-		},
-		"SPE": {
-			"locales": {
-				"en_US": {
-					"shortName": "SPE",
-					"longName": "Sankt-Peterburg"
-				},
-				"ru_RU": {
-					"shortName": "SPE",
-					"longName": "Санкт-Петербург"
-				}
-			}
-		},
-		"STA": {
-			"locales": {
-				"en_US": {
-					"shortName": "STA",
-					"longName": "Stavropol'skiy Kray"
-				},
-				"ru_RU": {
-					"shortName": "STA",
-					"longName": "Ставропольский край"
-				}
-			}
-		},
-		"SVE": {
-			"locales": {
-				"en_US": {
-					"shortName": "SVE",
-					"longName": "Sverdlovskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "SVE",
-					"longName": "Свердловская область"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "TA",
-					"longName": "Tatarstan, Republican"
-				},
-				"ru_RU": {
-					"shortName": "TA",
-					"longName": "Татарстан, Республиканский"
-				}
-			}
-		},
-		"TAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "TAM",
-					"longName": "Tambovskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "TAM",
-					"longName": "Тамбовская область"
-				}
-			}
-		},
-		"TOM": {
-			"locales": {
-				"en_US": {
-					"shortName": "TOM",
-					"longName": "Tomskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "TOM",
-					"longName": "Томская область"
-				}
-			}
-		},
-		"TUL": {
-			"locales": {
-				"en_US": {
-					"shortName": "TUL",
-					"longName": "Tul'skaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "TUL",
-					"longName": "Тульская область"
-				}
-			}
-		},
-		"TVE": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "TVE",
-					"longName": "Тверская область"
-				},
-				"en_US": {
-					"shortName": "TVE",
-					"longName": "Tverskaya oblast '"
-				}
-			}
-		},
-		"TY": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "TY",
-					"longName": "Тыва, Республиканская [Тува]"
-				},
-				"en_US": {
-					"shortName": "TY",
-					"longName": "Tyva, Republican [Tuva]"
-				}
-			}
-		},
-		"TYU": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "TYU",
-					"longName": "Тюменская область"
-				},
-				"en_US": {
-					"shortName": "TYU",
-					"longName": "Tyumenskaya oblast '"
-				}
-			}
-		},
-		"UD": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "UD",
-					"longName": "Удмуртская республиканская"
-				},
-				"en_US": {
-					"shortName": "UD",
-					"longName": "Udmurtskaya Republican"
-				}
-			}
-		},
-		"ULY": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "ULY",
-					"longName": "Ульяновская область"
-				},
-				"en_US": {
-					"shortName": "ULY",
-					"longName": "Ul'yanovskaya oblast '"
-				}
-			}
-		},
-		"VGG": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "VGG",
-					"longName": "Волгоградская область"
-				},
-				"en_US": {
-					"shortName": "VGG",
-					"longName": "Volgogradskaya oblast '"
-				}
-			}
-		},
-		"VLA": {
-			"locales": {
-				"en_US": {
-					"shortName": "VLA",
-					"longName": "Vladimirskaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "VLA",
-					"longName": "Владимирская область"
-				}
-			}
-		},
-		"VLG": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "VLG",
-					"longName": "Вологодская область"
-				},
-				"en_US": {
-					"shortName": "VLG",
-					"longName": "Vologodskaya oblast '"
-				}
-			}
-		},
-		"VOR": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "VOR",
-					"longName": "Воронежская область"
-				},
-				"en_US": {
-					"shortName": "VOR",
-					"longName": "Voronezhskaya oblast '"
-				}
-			}
-		},
-		"YAN": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "YAN",
-					"longName": "Ямало-Ненецкий автономный округ"
-				},
-				"en_US": {
-					"shortName": "YAN",
-					"longName": "Yamalo-Nenetskiy avtonomnyy okrug"
-				}
-			}
-		},
-		"YAR": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "YAR",
-					"longName": "Ярославская область"
-				},
-				"en_US": {
-					"shortName": "YAR",
-					"longName": "Yaroslavskaya oblast '"
-				}
-			}
-		},
-		"YEV": {
-			"locales": {
-				"en_US": {
-					"shortName": "YEV",
-					"longName": "Yevreyskaya avtonomnaya oblast '"
-				},
-				"ru_RU": {
-					"shortName": "YEV",
-					"longName": "Еврейская автономная область"
-				}
-			}
-		},
-		"ZAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "ZAB",
-					"longName": "Zabaykal'skiy Kray"
-				},
-				"ru_RU": {
-					"shortName": "ZAB",
-					"longName": "Забайкальский край"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Russia",
-			"longName": "Russian Federation",
-			"postalCode": "Postal Code"
-		},
-		"ru_RU": {
-			"shortName": "Россия",
-			"longName": "Российская Федерация",
-			"postalCode": "Почтовый индекс"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "RU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/RUB",
+    "id" : "RUB"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "AD" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "AD",
+          "longName" : "Адыгея, Республиканский"
+        },
+        "en_US" : {
+          "shortName" : "AD",
+          "longName" : "Adygeya, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AL" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "AL",
+          "longName" : "Алтайский край, Республиканский"
+        },
+        "en_US" : {
+          "shortName" : "AL",
+          "longName" : "Altay, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ALT" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "ALT",
+          "longName" : "Алтайский край"
+        },
+        "en_US" : {
+          "shortName" : "ALT",
+          "longName" : "Altayskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AMU" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "AMU",
+          "longName" : "Амурская область"
+        },
+        "en_US" : {
+          "shortName" : "AMU",
+          "longName" : "Amurskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ARK" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "ARK",
+          "longName" : "Архангельская область"
+        },
+        "en_US" : {
+          "shortName" : "ARK",
+          "longName" : "Arkhangel'skaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AST" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "AST",
+          "longName" : "Астраханская область"
+        },
+        "en_US" : {
+          "shortName" : "AST",
+          "longName" : "Astrakhanskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BA",
+          "longName" : "Bashkortostan, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "BA",
+          "longName" : "Башкортостан, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BEL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BEL",
+          "longName" : "Belgorodskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "BEL",
+          "longName" : "Белгородская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BRY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BRY",
+          "longName" : "Bryanskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "BRY",
+          "longName" : "Брянская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BU" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "BU",
+          "longName" : "Бурятия, Республиканская"
+        },
+        "en_US" : {
+          "shortName" : "BU",
+          "longName" : "Buryatiya, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CE",
+          "longName" : "Chechenskaya Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "CE",
+          "longName" : "Чеченская республиканская"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHE" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "CHE",
+          "longName" : "Челябинская область"
+        },
+        "en_US" : {
+          "shortName" : "CHE",
+          "longName" : "Chelyabinskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CHU",
+          "longName" : "Chukotskiy avtonomnyy okrug"
+        },
+        "ru_RU" : {
+          "shortName" : "CHU",
+          "longName" : "Чукотский автономный округ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CU",
+          "longName" : "Chuvashskaya Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "CU",
+          "longName" : "Чувашская республиканская"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DA" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "DA",
+          "longName" : "Дагестан, Республиканский"
+        },
+        "en_US" : {
+          "shortName" : "DA",
+          "longName" : "Dagestan, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IN" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "IN",
+          "longName" : "Ингушетия, Республиканский"
+        },
+        "en_US" : {
+          "shortName" : "IN",
+          "longName" : "Ingushetiya, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IRK" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "IRK",
+          "longName" : "Иркутская область"
+        },
+        "en_US" : {
+          "shortName" : "IRK",
+          "longName" : "Irkutskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IVA" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "IVA",
+          "longName" : "Ивановская область"
+        },
+        "en_US" : {
+          "shortName" : "IVA",
+          "longName" : "Ivanovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAM" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KAM",
+          "longName" : "Камчатский край"
+        },
+        "en_US" : {
+          "shortName" : "KAM",
+          "longName" : "Kamchatskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KB" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KB",
+          "longName" : "Кабардино-Балкарская республиканская"
+        },
+        "en_US" : {
+          "shortName" : "KB",
+          "longName" : "Kabardino-Balkarskaya Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KC",
+          "longName" : "Karachayevo-Cherkesskaya Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "KC",
+          "longName" : "Карачаево-Черкесская республиканская"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KDA" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KDA",
+          "longName" : "Краснодарский край"
+        },
+        "en_US" : {
+          "shortName" : "KDA",
+          "longName" : "Krasnodarskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KEM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KEM",
+          "longName" : "Kemerovskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "KEM",
+          "longName" : "Кемеровская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KGD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KGD",
+          "longName" : "Kaliningradskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "KGD",
+          "longName" : "Калининградская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KGN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KGN",
+          "longName" : "Kurganskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "KGN",
+          "longName" : "Курганская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KHA",
+          "longName" : "Khabarovskiy Kray"
+        },
+        "ru_RU" : {
+          "shortName" : "KHA",
+          "longName" : "Хабаровский край"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHM" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KHM",
+          "longName" : "Ханты-Мансийский автономный округ-Югра"
+        },
+        "en_US" : {
+          "shortName" : "KHM",
+          "longName" : "Khanty-Mansiyskiy avtonomnyy okrug-Yugra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KIR" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KIR",
+          "longName" : "Кировская область"
+        },
+        "en_US" : {
+          "shortName" : "KIR",
+          "longName" : "Kirovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KK",
+          "longName" : "Khakasiya, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "KK",
+          "longName" : "Хакасия, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KL",
+          "longName" : "Kalmykiya, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "KL",
+          "longName" : "Калмыкия, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KLU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KLU",
+          "longName" : "Kaluzhskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "KLU",
+          "longName" : "Калужская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KO" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KO",
+          "longName" : "Коми, Республиканский"
+        },
+        "en_US" : {
+          "shortName" : "KO",
+          "longName" : "Komi, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KOS" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KOS",
+          "longName" : "Костромская область"
+        },
+        "en_US" : {
+          "shortName" : "KOS",
+          "longName" : "Kostromskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "KR",
+          "longName" : "Kareliya, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "KR",
+          "longName" : "Карелия, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KRS" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KRS",
+          "longName" : "Курская область"
+        },
+        "en_US" : {
+          "shortName" : "KRS",
+          "longName" : "Kurskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KYA" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "KYA",
+          "longName" : "Красноярский край"
+        },
+        "en_US" : {
+          "shortName" : "KYA",
+          "longName" : "Krasnoyarskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LEN" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "LEN",
+          "longName" : "Ленинградская область"
+        },
+        "en_US" : {
+          "shortName" : "LEN",
+          "longName" : "Leningradskaya Oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LIP" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "LIP",
+          "longName" : "Липецкая область"
+        },
+        "en_US" : {
+          "shortName" : "LIP",
+          "longName" : "Lipetskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MAG" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "MAG",
+          "longName" : "Магаданская область"
+        },
+        "en_US" : {
+          "shortName" : "MAG",
+          "longName" : "Magadanskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ME" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ME",
+          "longName" : "Mariy El Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "ME",
+          "longName" : "Марий Эл Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "MO",
+          "longName" : "Мордовия, Республиканская"
+        },
+        "en_US" : {
+          "shortName" : "MO",
+          "longName" : "Mordoviya, Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOS" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "MOS",
+          "longName" : "Московская область"
+        },
+        "en_US" : {
+          "shortName" : "MOS",
+          "longName" : "Moskovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOW" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "MOW",
+          "longName" : "Москва"
+        },
+        "en_US" : {
+          "shortName" : "MOW",
+          "longName" : "Moscow"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MUR" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "MUR",
+          "longName" : "Мурманская область"
+        },
+        "en_US" : {
+          "shortName" : "MUR",
+          "longName" : "Murmanskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NEN" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "NEN",
+          "longName" : "Ненецкий автономный округ"
+        },
+        "en_US" : {
+          "shortName" : "NEN",
+          "longName" : "Nenetskiy avtonomnyy okrug"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NGR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NGR",
+          "longName" : "Novgorodskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "NGR",
+          "longName" : "Новгородская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NIZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NIZ",
+          "longName" : "Nizhegorodskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "NIZ",
+          "longName" : "Нижегородская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NVS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NVS",
+          "longName" : "Novosibirskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "NVS",
+          "longName" : "Новосибирская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OMS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OMS",
+          "longName" : "Omskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "OMS",
+          "longName" : "Омская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ORE" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "ORE",
+          "longName" : "Оренбургская область"
+        },
+        "en_US" : {
+          "shortName" : "ORE",
+          "longName" : "Orenburgskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ORL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ORL",
+          "longName" : "Orlovskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "ORL",
+          "longName" : "Орловская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PER" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "PER",
+          "longName" : "Пермский край"
+        },
+        "en_US" : {
+          "shortName" : "PER",
+          "longName" : "Permskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PNZ" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "PNZ",
+          "longName" : "Пензенская область"
+        },
+        "en_US" : {
+          "shortName" : "PNZ",
+          "longName" : "Penzenskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PRI" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "PRI",
+          "longName" : "Приморский край"
+        },
+        "en_US" : {
+          "shortName" : "PRI",
+          "longName" : "Primorskiy Kray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PSK" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "PSK",
+          "longName" : "Псковская область"
+        },
+        "en_US" : {
+          "shortName" : "PSK",
+          "longName" : "Pskovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ROS" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "ROS",
+          "longName" : "Ростовская область"
+        },
+        "en_US" : {
+          "shortName" : "ROS",
+          "longName" : "Rostovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RYA" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "RYA",
+          "longName" : "Рязанская область"
+        },
+        "en_US" : {
+          "shortName" : "RYA",
+          "longName" : "Ryazanskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SA",
+          "longName" : "Sakha, Republican [Yakutiya]"
+        },
+        "ru_RU" : {
+          "shortName" : "SA",
+          "longName" : "Саха, Республиканская [Якутия]"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAK" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "SAK",
+          "longName" : "Сахалинская область"
+        },
+        "en_US" : {
+          "shortName" : "SAK",
+          "longName" : "Sakhalinskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAM" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "SAM",
+          "longName" : "Самарская область"
+        },
+        "en_US" : {
+          "shortName" : "SAM",
+          "longName" : "Samarskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAR" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "SAR",
+          "longName" : "Саратовская область"
+        },
+        "en_US" : {
+          "shortName" : "SAR",
+          "longName" : "Saratovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SE",
+          "longName" : "Severnaya Osetiya-Alaniya, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "SE",
+          "longName" : "Северная Осетия-Алания, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SMO" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "SMO",
+          "longName" : "Смоленская область"
+        },
+        "en_US" : {
+          "shortName" : "SMO",
+          "longName" : "Smolenskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SPE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SPE",
+          "longName" : "Sankt-Peterburg"
+        },
+        "ru_RU" : {
+          "shortName" : "SPE",
+          "longName" : "Санкт-Петербург"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "STA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "STA",
+          "longName" : "Stavropol'skiy Kray"
+        },
+        "ru_RU" : {
+          "shortName" : "STA",
+          "longName" : "Ставропольский край"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SVE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SVE",
+          "longName" : "Sverdlovskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "SVE",
+          "longName" : "Свердловская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TA",
+          "longName" : "Tatarstan, Republican"
+        },
+        "ru_RU" : {
+          "shortName" : "TA",
+          "longName" : "Татарстан, Республиканский"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TAM",
+          "longName" : "Tambovskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "TAM",
+          "longName" : "Тамбовская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TOM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TOM",
+          "longName" : "Tomskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "TOM",
+          "longName" : "Томская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TUL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TUL",
+          "longName" : "Tul'skaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "TUL",
+          "longName" : "Тульская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TVE" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "TVE",
+          "longName" : "Тверская область"
+        },
+        "en_US" : {
+          "shortName" : "TVE",
+          "longName" : "Tverskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TY" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "TY",
+          "longName" : "Тыва, Республиканская [Тува]"
+        },
+        "en_US" : {
+          "shortName" : "TY",
+          "longName" : "Tyva, Republican [Tuva]"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TYU" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "TYU",
+          "longName" : "Тюменская область"
+        },
+        "en_US" : {
+          "shortName" : "TYU",
+          "longName" : "Tyumenskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UD" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "UD",
+          "longName" : "Удмуртская республиканская"
+        },
+        "en_US" : {
+          "shortName" : "UD",
+          "longName" : "Udmurtskaya Republican"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ULY" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "ULY",
+          "longName" : "Ульяновская область"
+        },
+        "en_US" : {
+          "shortName" : "ULY",
+          "longName" : "Ul'yanovskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VGG" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "VGG",
+          "longName" : "Волгоградская область"
+        },
+        "en_US" : {
+          "shortName" : "VGG",
+          "longName" : "Volgogradskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VLA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VLA",
+          "longName" : "Vladimirskaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "VLA",
+          "longName" : "Владимирская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VLG" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "VLG",
+          "longName" : "Вологодская область"
+        },
+        "en_US" : {
+          "shortName" : "VLG",
+          "longName" : "Vologodskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VOR" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "VOR",
+          "longName" : "Воронежская область"
+        },
+        "en_US" : {
+          "shortName" : "VOR",
+          "longName" : "Voronezhskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAN" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "YAN",
+          "longName" : "Ямало-Ненецкий автономный округ"
+        },
+        "en_US" : {
+          "shortName" : "YAN",
+          "longName" : "Yamalo-Nenetskiy avtonomnyy okrug"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAR" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "YAR",
+          "longName" : "Ярославская область"
+        },
+        "en_US" : {
+          "shortName" : "YAR",
+          "longName" : "Yaroslavskaya oblast '"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YEV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "YEV",
+          "longName" : "Yevreyskaya avtonomnaya oblast '"
+        },
+        "ru_RU" : {
+          "shortName" : "YEV",
+          "longName" : "Еврейская автономная область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ZAB",
+          "longName" : "Zabaykal'skiy Kray"
+        },
+        "ru_RU" : {
+          "shortName" : "ZAB",
+          "longName" : "Забайкальский край"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Russia",
+      "longName" : "Russian Federation",
+      "postalCode" : ""
+    },
+    "ru_RU" : {
+      "shortName" : "Россия",
+      "longName" : "Российская Федерация",
+      "postalCode" : "Почтовый индекс"
+    },
+    "de_DE" : {
+      "shortName" : "Russland",
+      "longName" : "Russian Federation",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Russia",
+      "longName" : "Russian Federation",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Rusia",
+      "longName" : "Federación Rusa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Russie",
+      "longName" : "Fédération russe",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Russia",
+      "longName" : "Federazione Russa",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "러시아",
+      "longName" : "Russian Federation",
+      "postalCode" : ""
+    }
+  }
 }

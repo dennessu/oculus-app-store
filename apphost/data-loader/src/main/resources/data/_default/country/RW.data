@@ -1,71 +1,104 @@
 {
-	"countryCode": "RW",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/RWF",
-		"id": "RWF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kigali",
-					"longName": "Kigali"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Rwanda",
-			"longName": "Republic of Rwanda",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "RW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/RWF",
+    "id" : "RWF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kigali",
+          "longName" : "Kigali"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Rwanda",
+      "longName" : "Republic of Rwanda",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Ruanda",
+      "longName" : "Republik Ruanda",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Rwanda",
+      "longName" : "Republic of Rwanda",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Ruanda",
+      "longName" : "República de Ruanda",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Rwanda",
+      "longName" : "République du Rwanda",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Ruanda",
+      "longName" : "Repubblica di Ruanda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "르완다",
+      "longName" : "Republic of Rwanda",
+      "postalCode" : ""
+    }
+  }
 }

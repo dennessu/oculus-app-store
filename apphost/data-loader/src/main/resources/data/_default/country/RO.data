@@ -1,541 +1,610 @@
 {
-	"countryCode": "RO",
-	"defaultLocale": {
-		"href": "/v1/locales/ro_RO",
-		"id": "ro_RO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/RON",
-		"id": "RON"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Alba",
-					"longName": "Alba"
-				},
-				"en_US": {
-					"shortName": "Alba",
-					"longName": "Alba"
-				}
-			}
-		},
-		"AG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Arges",
-					"longName": "Arges"
-				},
-				"ro_RO": {
-					"shortName": "Argeș",
-					"longName": "Argeș"
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Arad",
-					"longName": "Arad"
-				},
-				"en_US": {
-					"shortName": "Arad",
-					"longName": "Arad"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bucharest",
-					"longName": "Bucharest"
-				},
-				"ro_RO": {
-					"shortName": "București",
-					"longName": "București"
-				}
-			}
-		},
-		"BC": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Bacău",
-					"longName": "Bacău"
-				},
-				"en_US": {
-					"shortName": "Bacau",
-					"longName": "Bacau"
-				}
-			}
-		},
-		"BH": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Bihor",
-					"longName": "Bihor"
-				},
-				"en_US": {
-					"shortName": "Bihar",
-					"longName": "Bihar"
-				}
-			}
-		},
-		"BN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maharashtra",
-					"longName": "Maharashtra"
-				},
-				"ro_RO": {
-					"shortName": "Bistrița-Năsăud",
-					"longName": "Bistrița-Năsăud"
-				}
-			}
-		},
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Braila",
-					"longName": "Braila"
-				},
-				"ro_RO": {
-					"shortName": "Brăila",
-					"longName": "Brăila"
-				}
-			}
-		},
-		"BT": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Botoșani",
-					"longName": "Botoșani"
-				},
-				"en_US": {
-					"shortName": "Botosani",
-					"longName": "Botosani"
-				}
-			}
-		},
-		"BV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brasov",
-					"longName": "Brasov"
-				},
-				"ro_RO": {
-					"shortName": "Brașov",
-					"longName": "Brașov"
-				}
-			}
-		},
-		"BZ": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Buzău",
-					"longName": "Buzău"
-				},
-				"en_US": {
-					"shortName": "Buzau",
-					"longName": "Buzau"
-				}
-			}
-		},
-		"CJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cluj",
-					"longName": "Cluj"
-				},
-				"ro_RO": {
-					"shortName": "Cluj",
-					"longName": "Cluj"
-				}
-			}
-		},
-		"CL": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Călărași",
-					"longName": "Călărași"
-				},
-				"en_US": {
-					"shortName": "Calarasi",
-					"longName": "Calarasi"
-				}
-			}
-		},
-		"CS": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Caraș-Severin",
-					"longName": "Caraș-Severin"
-				},
-				"en_US": {
-					"shortName": "Caras-Severin",
-					"longName": "Caras-Severin"
-				}
-			}
-		},
-		"CT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Constanta",
-					"longName": "Constanta"
-				},
-				"ro_RO": {
-					"shortName": "Constanța",
-					"longName": "Constanța"
-				}
-			}
-		},
-		"CV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Covasna",
-					"longName": "Covasna"
-				},
-				"ro_RO": {
-					"shortName": "Covasna",
-					"longName": "Covasna"
-				}
-			}
-		},
-		"DB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dâmboviţa",
-					"longName": "Dâmboviţa"
-				},
-				"ro_RO": {
-					"shortName": "Dâmbovița",
-					"longName": "Dâmbovița"
-				}
-			}
-		},
-		"DJ": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Dolj",
-					"longName": "Dolj"
-				},
-				"en_US": {
-					"shortName": "Dolj",
-					"longName": "Dolj"
-				}
-			}
-		},
-		"GJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gorj",
-					"longName": "Gorj"
-				},
-				"ro_RO": {
-					"shortName": "Gorj",
-					"longName": "Gorj"
-				}
-			}
-		},
-		"GL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Galati",
-					"longName": "Galati"
-				},
-				"ro_RO": {
-					"shortName": "Galați",
-					"longName": "Galați"
-				}
-			}
-		},
-		"GR": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Giurgiu",
-					"longName": "Giurgiu"
-				},
-				"en_US": {
-					"shortName": "Giurgiu",
-					"longName": "Giurgiu"
-				}
-			}
-		},
-		"HD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hunedoara",
-					"longName": "Hunedoara"
-				},
-				"ro_RO": {
-					"shortName": "Hunedoara",
-					"longName": "Hunedoara"
-				}
-			}
-		},
-		"HR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Harghita",
-					"longName": "Harghita"
-				},
-				"ro_RO": {
-					"shortName": "Harghita",
-					"longName": "Harghita"
-				}
-			}
-		},
-		"IF": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Ilfov",
-					"longName": "Ilfov"
-				},
-				"en_US": {
-					"shortName": "Ilfov",
-					"longName": "Ilfov"
-				}
-			}
-		},
-		"IL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ialomita",
-					"longName": "Ialomita"
-				},
-				"ro_RO": {
-					"shortName": "Ialomița",
-					"longName": "Ialomița"
-				}
-			}
-		},
-		"IS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Science",
-					"longName": "Science"
-				},
-				"ro_RO": {
-					"shortName": "Iași",
-					"longName": "Iași"
-				}
-			}
-		},
-		"MH": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Mehedinți",
-					"longName": "Mehedinți"
-				},
-				"en_US": {
-					"shortName": "Mehedinti",
-					"longName": "Mehedinti"
-				}
-			}
-		},
-		"MM": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Maramureș",
-					"longName": "Maramureș"
-				},
-				"en_US": {
-					"shortName": "Maramures",
-					"longName": "Maramures"
-				}
-			}
-		},
-		"MS": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Mureș",
-					"longName": "Mureș"
-				},
-				"en_US": {
-					"shortName": "Mures",
-					"longName": "Mures"
-				}
-			}
-		},
-		"NT": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Neamț",
-					"longName": "Neamț"
-				},
-				"en_US": {
-					"shortName": "German",
-					"longName": "German"
-				}
-			}
-		},
-		"OT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Olt",
-					"longName": "Olt"
-				},
-				"ro_RO": {
-					"shortName": "Olt",
-					"longName": "Olt"
-				}
-			}
-		},
-		"PH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prahova",
-					"longName": "Prahova"
-				},
-				"ro_RO": {
-					"shortName": "Prahova",
-					"longName": "Prahova"
-				}
-			}
-		},
-		"SB": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Sibiu",
-					"longName": "Sibiu"
-				},
-				"en_US": {
-					"shortName": "Sibiu",
-					"longName": "Sibiu"
-				}
-			}
-		},
-		"SJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salaj",
-					"longName": "Salaj"
-				},
-				"ro_RO": {
-					"shortName": "Sălaj",
-					"longName": "Sălaj"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Satu Mare",
-					"longName": "Satu Mare"
-				},
-				"en_US": {
-					"shortName": "SatuMare",
-					"longName": "SatuMare"
-				}
-			}
-		},
-		"SV": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Suceava",
-					"longName": "Suceava"
-				},
-				"en_US": {
-					"shortName": "Suceava",
-					"longName": "Suceava"
-				}
-			}
-		},
-		"TL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tulcea",
-					"longName": "Tulcea"
-				},
-				"ro_RO": {
-					"shortName": "Tulcea",
-					"longName": "Tulcea"
-				}
-			}
-		},
-		"TM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Timis",
-					"longName": "Timis"
-				},
-				"ro_RO": {
-					"shortName": "Timiș",
-					"longName": "Timiș"
-				}
-			}
-		},
-		"TR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Virginia",
-					"longName": "Virginia"
-				},
-				"ro_RO": {
-					"shortName": "Teleorman",
-					"longName": "Teleorman"
-				}
-			}
-		},
-		"VL": {
-			"locales": {
-				"en_US": {
-					"shortName": "dale",
-					"longName": "dale"
-				},
-				"ro_RO": {
-					"shortName": "Vâlcea",
-					"longName": "Vâlcea"
-				}
-			}
-		},
-		"VN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vrancea",
-					"longName": "Vrancea"
-				},
-				"ro_RO": {
-					"shortName": "Vrancea",
-					"longName": "Vrancea"
-				}
-			}
-		},
-		"VS": {
-			"locales": {
-				"ro_RO": {
-					"shortName": "Vaslui",
-					"longName": "Vaslui"
-				},
-				"en_US": {
-					"shortName": "Vaslui",
-					"longName": "Vaslui"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ro_RO",
-		"id": "ro_RO"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Romania",
-			"longName": "Romania",
-			"postalCode": "Postal Code"
-		},
-		"ro_RO": {
-			"shortName": "România",
-			"longName": "România",
-			"postalCode": "Cod poștal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "RO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ro_RO",
+    "id" : "ro_RO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/RON",
+    "id" : "RON"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Alba",
+          "longName" : "Alba"
+        },
+        "en_US" : {
+          "shortName" : "Alba",
+          "longName" : "Alba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Arges",
+          "longName" : "Arges"
+        },
+        "ro_RO" : {
+          "shortName" : "Argeș",
+          "longName" : "Argeș"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Arad",
+          "longName" : "Arad"
+        },
+        "en_US" : {
+          "shortName" : "Arad",
+          "longName" : "Arad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bucharest",
+          "longName" : "Bucharest"
+        },
+        "ro_RO" : {
+          "shortName" : "București",
+          "longName" : "București"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BC" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Bacău",
+          "longName" : "Bacău"
+        },
+        "en_US" : {
+          "shortName" : "Bacau",
+          "longName" : "Bacau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BH" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Bihor",
+          "longName" : "Bihor"
+        },
+        "en_US" : {
+          "shortName" : "Bihar",
+          "longName" : "Bihar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maharashtra",
+          "longName" : "Maharashtra"
+        },
+        "ro_RO" : {
+          "shortName" : "Bistrița-Năsăud",
+          "longName" : "Bistrița-Năsăud"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Braila",
+          "longName" : "Braila"
+        },
+        "ro_RO" : {
+          "shortName" : "Brăila",
+          "longName" : "Brăila"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BT" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Botoșani",
+          "longName" : "Botoșani"
+        },
+        "en_US" : {
+          "shortName" : "Botosani",
+          "longName" : "Botosani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brasov",
+          "longName" : "Brasov"
+        },
+        "ro_RO" : {
+          "shortName" : "Brașov",
+          "longName" : "Brașov"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BZ" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Buzău",
+          "longName" : "Buzău"
+        },
+        "en_US" : {
+          "shortName" : "Buzau",
+          "longName" : "Buzau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cluj",
+          "longName" : "Cluj"
+        },
+        "ro_RO" : {
+          "shortName" : "Cluj",
+          "longName" : "Cluj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CL" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Călărași",
+          "longName" : "Călărași"
+        },
+        "en_US" : {
+          "shortName" : "Calarasi",
+          "longName" : "Calarasi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CS" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Caraș-Severin",
+          "longName" : "Caraș-Severin"
+        },
+        "en_US" : {
+          "shortName" : "Caras-Severin",
+          "longName" : "Caras-Severin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Constanta",
+          "longName" : "Constanta"
+        },
+        "ro_RO" : {
+          "shortName" : "Constanța",
+          "longName" : "Constanța"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Covasna",
+          "longName" : "Covasna"
+        },
+        "ro_RO" : {
+          "shortName" : "Covasna",
+          "longName" : "Covasna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dâmboviţa",
+          "longName" : "Dâmboviţa"
+        },
+        "ro_RO" : {
+          "shortName" : "Dâmbovița",
+          "longName" : "Dâmbovița"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DJ" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Dolj",
+          "longName" : "Dolj"
+        },
+        "en_US" : {
+          "shortName" : "Dolj",
+          "longName" : "Dolj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gorj",
+          "longName" : "Gorj"
+        },
+        "ro_RO" : {
+          "shortName" : "Gorj",
+          "longName" : "Gorj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Galati",
+          "longName" : "Galati"
+        },
+        "ro_RO" : {
+          "shortName" : "Galați",
+          "longName" : "Galați"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GR" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Giurgiu",
+          "longName" : "Giurgiu"
+        },
+        "en_US" : {
+          "shortName" : "Giurgiu",
+          "longName" : "Giurgiu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hunedoara",
+          "longName" : "Hunedoara"
+        },
+        "ro_RO" : {
+          "shortName" : "Hunedoara",
+          "longName" : "Hunedoara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Harghita",
+          "longName" : "Harghita"
+        },
+        "ro_RO" : {
+          "shortName" : "Harghita",
+          "longName" : "Harghita"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IF" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Ilfov",
+          "longName" : "Ilfov"
+        },
+        "en_US" : {
+          "shortName" : "Ilfov",
+          "longName" : "Ilfov"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ialomita",
+          "longName" : "Ialomita"
+        },
+        "ro_RO" : {
+          "shortName" : "Ialomița",
+          "longName" : "Ialomița"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Science",
+          "longName" : "Science"
+        },
+        "ro_RO" : {
+          "shortName" : "Iași",
+          "longName" : "Iași"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MH" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Mehedinți",
+          "longName" : "Mehedinți"
+        },
+        "en_US" : {
+          "shortName" : "Mehedinti",
+          "longName" : "Mehedinti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MM" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Maramureș",
+          "longName" : "Maramureș"
+        },
+        "en_US" : {
+          "shortName" : "Maramures",
+          "longName" : "Maramures"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MS" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Mureș",
+          "longName" : "Mureș"
+        },
+        "en_US" : {
+          "shortName" : "Mures",
+          "longName" : "Mures"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NT" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Neamț",
+          "longName" : "Neamț"
+        },
+        "en_US" : {
+          "shortName" : "German",
+          "longName" : "German"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Olt",
+          "longName" : "Olt"
+        },
+        "ro_RO" : {
+          "shortName" : "Olt",
+          "longName" : "Olt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prahova",
+          "longName" : "Prahova"
+        },
+        "ro_RO" : {
+          "shortName" : "Prahova",
+          "longName" : "Prahova"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SB" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Sibiu",
+          "longName" : "Sibiu"
+        },
+        "en_US" : {
+          "shortName" : "Sibiu",
+          "longName" : "Sibiu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salaj",
+          "longName" : "Salaj"
+        },
+        "ro_RO" : {
+          "shortName" : "Sălaj",
+          "longName" : "Sălaj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Satu Mare",
+          "longName" : "Satu Mare"
+        },
+        "en_US" : {
+          "shortName" : "SatuMare",
+          "longName" : "SatuMare"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SV" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Suceava",
+          "longName" : "Suceava"
+        },
+        "en_US" : {
+          "shortName" : "Suceava",
+          "longName" : "Suceava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tulcea",
+          "longName" : "Tulcea"
+        },
+        "ro_RO" : {
+          "shortName" : "Tulcea",
+          "longName" : "Tulcea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Timis",
+          "longName" : "Timis"
+        },
+        "ro_RO" : {
+          "shortName" : "Timiș",
+          "longName" : "Timiș"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Virginia",
+          "longName" : "Virginia"
+        },
+        "ro_RO" : {
+          "shortName" : "Teleorman",
+          "longName" : "Teleorman"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "dale",
+          "longName" : "dale"
+        },
+        "ro_RO" : {
+          "shortName" : "Vâlcea",
+          "longName" : "Vâlcea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vrancea",
+          "longName" : "Vrancea"
+        },
+        "ro_RO" : {
+          "shortName" : "Vrancea",
+          "longName" : "Vrancea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VS" : {
+      "locales" : {
+        "ro_RO" : {
+          "shortName" : "Vaslui",
+          "longName" : "Vaslui"
+        },
+        "en_US" : {
+          "shortName" : "Vaslui",
+          "longName" : "Vaslui"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ro_RO",
+    "id" : "ro_RO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Romania",
+      "longName" : "Romania",
+      "postalCode" : ""
+    },
+    "ro_RO" : {
+      "shortName" : "România",
+      "longName" : "România",
+      "postalCode" : "Cod poștal"
+    },
+    "de_DE" : {
+      "shortName" : "Rumänien",
+      "longName" : "Rumänien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Romania",
+      "longName" : "Romania",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Rumanía",
+      "longName" : "Rumanía",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Roumanie",
+      "longName" : "Roumanie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Romania",
+      "longName" : "Romania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "루마니아",
+      "longName" : "루마니아",
+      "postalCode" : ""
+    }
+  }
 }

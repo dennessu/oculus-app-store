@@ -1,97 +1,133 @@
 {
-	"countryCode": "NE",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_NE",
-		"id": "fr_NE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"en_US": {
-					"shortName": "Agadez",
-					"longName": "Agadez"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Diffa",
-					"longName": "Diffa"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dosso",
-					"longName": "Dosso"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maradi",
-					"longName": "Maradi"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tahoua",
-					"longName": "Tahoua"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tillabéri",
-					"longName": "Tillabéri"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zinder",
-					"longName": "Zinder"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Niamey",
-					"longName": "Niamey"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_NE",
-		"id": "fr_NE"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Niger",
-			"longName": "Republic of Niger",
-			"postalCode": "Postal Code"
-		},
-		"fr_NE": {
-			"shortName": "Niger",
-			"longName": "République du Niger",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_NE",
+    "id" : "fr_NE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Agadez",
+          "longName" : "Agadez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Diffa",
+          "longName" : "Diffa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dosso",
+          "longName" : "Dosso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maradi",
+          "longName" : "Maradi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tahoua",
+          "longName" : "Tahoua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tillabéri",
+          "longName" : "Tillabéri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zinder",
+          "longName" : "Zinder"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Niamey",
+          "longName" : "Niamey"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_NE",
+    "id" : "fr_NE"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Niger",
+      "longName" : "Republic of Niger",
+      "postalCode" : ""
+    },
+    "fr_NE" : {
+      "shortName" : "Niger",
+      "longName" : "République du Niger",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Niger",
+      "longName" : "Republic of Niger",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Niger",
+      "longName" : "Republic of Niger",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Níger",
+      "longName" : "República del Níger",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Niger",
+      "longName" : "République du Niger",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Niger",
+      "longName" : "Repubblica del Niger",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "니제르",
+      "longName" : "Republic of Niger",
+      "postalCode" : ""
+    }
+  }
 }

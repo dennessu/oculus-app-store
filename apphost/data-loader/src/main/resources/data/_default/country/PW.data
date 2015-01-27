@@ -1,161 +1,205 @@
 {
-	"countryCode": "PW",
-	"defaultLocale": {
-		"href": "/v1/locales/en_PW",
-		"id": "en_PW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"002": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aimeliik",
-					"longName": "Aimeliik"
-				}
-			}
-		},
-		"004": {
-			"locales": {
-				"en_US": {
-					"shortName": "Airai",
-					"longName": "Airai"
-				}
-			}
-		},
-		"010": {
-			"locales": {
-				"en_US": {
-					"shortName": "Angaur",
-					"longName": "Angaur"
-				}
-			}
-		},
-		"050": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hatobohei",
-					"longName": "Hatobohei"
-				}
-			}
-		},
-		"100": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayangel",
-					"longName": "Kayangel"
-				}
-			}
-		},
-		"150": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koror",
-					"longName": "Koror"
-				}
-			}
-		},
-		"212": {
-			"locales": {
-				"en_US": {
-					"shortName": "Melekeok",
-					"longName": "Melekeok"
-				}
-			}
-		},
-		"214": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngaraard",
-					"longName": "Ngaraard"
-				}
-			}
-		},
-		"218": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngarchelong",
-					"longName": "Ngarchelong"
-				}
-			}
-		},
-		"222": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngardmau",
-					"longName": "Ngardmau"
-				}
-			}
-		},
-		"224": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngatpang",
-					"longName": "Ngatpang"
-				}
-			}
-		},
-		"226": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngchesar",
-					"longName": "Ngchesar"
-				}
-			}
-		},
-		"227": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngeremlengui",
-					"longName": "Ngeremlengui"
-				}
-			}
-		},
-		"228": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngiwal",
-					"longName": "Ngiwal"
-				}
-			}
-		},
-		"350": {
-			"locales": {
-				"en_US": {
-					"shortName": "Peleliu",
-					"longName": "Peleliu"
-				}
-			}
-		},
-		"370": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sonsorol",
-					"longName": "Sonsorol"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_PW",
-		"id": "en_PW"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Palau",
-			"longName": "Republic of Palau",
-			"postalCode": "Postal Code"
-		},
-		"pau_PW": {
-			"shortName": "Belau",
-			"longName": "Beluu er a Belau",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_PW",
+    "id" : "en_PW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "002" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aimeliik",
+          "longName" : "Aimeliik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "004" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Airai",
+          "longName" : "Airai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "010" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Angaur",
+          "longName" : "Angaur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "050" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hatobohei",
+          "longName" : "Hatobohei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "100" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayangel",
+          "longName" : "Kayangel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "150" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koror",
+          "longName" : "Koror"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "212" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Melekeok",
+          "longName" : "Melekeok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "214" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngaraard",
+          "longName" : "Ngaraard"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "218" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngarchelong",
+          "longName" : "Ngarchelong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "222" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngardmau",
+          "longName" : "Ngardmau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "224" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngatpang",
+          "longName" : "Ngatpang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "226" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngchesar",
+          "longName" : "Ngchesar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "227" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngeremlengui",
+          "longName" : "Ngeremlengui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "228" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngiwal",
+          "longName" : "Ngiwal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "350" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Peleliu",
+          "longName" : "Peleliu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "370" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sonsorol",
+          "longName" : "Sonsorol"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_PW",
+    "id" : "en_PW"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Palau",
+      "longName" : "Republic of Palau",
+      "postalCode" : ""
+    },
+    "pau_PW" : {
+      "shortName" : "Belau",
+      "longName" : "Beluu er a Belau",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Belau",
+      "longName" : "Republic of Palau",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Palau",
+      "longName" : "Republic of Palau",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Palaos",
+      "longName" : "República de Palaos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Palau",
+      "longName" : "République de Palau",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Palau",
+      "longName" : "Repubblica di Palau",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "팔라우",
+      "longName" : "Republic of Palau",
+      "postalCode" : ""
+    }
+  }
 }

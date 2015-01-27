@@ -1,111 +1,149 @@
 {
-	"countryCode": "ZW",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ZWD",
-		"id": "ZWD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bulawayo",
-					"longName": "Bulawayo"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Harare",
-					"longName": "Harare"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manicaland",
-					"longName": "Manicaland"
-				}
-			}
-		},
-		"MC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mashonaland Central",
-					"longName": "Mashonaland Central"
-				}
-			}
-		},
-		"ME": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mashonaland East",
-					"longName": "Mashonaland East"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Midlands",
-					"longName": "Midlands"
-				}
-			}
-		},
-		"MN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Matabeleland North",
-					"longName": "Matabeleland North"
-				}
-			}
-		},
-		"MS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Matabeleland South",
-					"longName": "Matabeleland South"
-				}
-			}
-		},
-		"MV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Masvingo",
-					"longName": "Masvingo"
-				}
-			}
-		},
-		"MW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mashonaland West",
-					"longName": "Mashonaland West"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Zimbabwe",
-			"longName": "Republic of Zimbabwe",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ZW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ZWD",
+    "id" : "ZWD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bulawayo",
+          "longName" : "Bulawayo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Harare",
+          "longName" : "Harare"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manicaland",
+          "longName" : "Manicaland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mashonaland Central",
+          "longName" : "Mashonaland Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ME" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mashonaland East",
+          "longName" : "Mashonaland East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Midlands",
+          "longName" : "Midlands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Matabeleland North",
+          "longName" : "Matabeleland North"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Matabeleland South",
+          "longName" : "Matabeleland South"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Masvingo",
+          "longName" : "Masvingo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mashonaland West",
+          "longName" : "Mashonaland West"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Zimbabwe",
+      "longName" : "Republic of Zimbabwe",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Simbabwe",
+      "longName" : "Republic of Zimbabwe",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Zimbabwe",
+      "longName" : "Republic of Zimbabwe",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Zimbabue",
+      "longName" : "República de Zimbabue",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Zimbabwe",
+      "longName" : "République du Zimbabwe",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Zimbabwe",
+      "longName" : "Repubblica dello Zimbabwe",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "짐바브웨",
+      "longName" : "Republic of Zimbabwe",
+      "postalCode" : ""
+    }
+  }
 }

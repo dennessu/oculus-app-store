@@ -1,34 +1,60 @@
 {
-	"countryCode": "MP",
-	"defaultLocale": {
-		"href": "/v1/locales/en_MP",
-		"id": "en_MP"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_MP",
-		"id": "en_MP"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Northern Mariana Islands",
-			"longName": "Commonwealth of the Northern Mariana Islands",
-			"postalCode": "Postal Code"
-		},
-		"en_MP": {
-			"shortName": "Northern Mariana Islands",
-			"longName": "Commonwealth of the Northern Mariana Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MP",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_MP",
+    "id" : "en_MP"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_MP",
+    "id" : "en_MP"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Northern Mariana Islands",
+      "longName" : "Commonwealth of the Northern Mariana Islands",
+      "postalCode" : ""
+    },
+    "en_MP" : {
+      "shortName" : "Northern Mariana Islands",
+      "longName" : "Commonwealth of the Northern Mariana Islands",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Nördliche Marianen",
+      "longName" : "Commonwealth of the Northern Mariana Islands",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Northern Mariana Islands",
+      "longName" : "Commonwealth of the Northern Mariana Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Marianas del Norte",
+      "longName" : "Commonwealth de las Islas Marianas del Norte",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Mariannes (Archipel Nord)",
+      "longName" : "Commonwealth des îles Mariannes du Nord",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Marianne Settentrionali",
+      "longName" : "Commonwealth delle Isole Marianne Settentrionali",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "북 마리아나 섬",
+      "longName" : "Commonwealth of the Northern Mariana Islands",
+      "postalCode" : ""
+    }
+  }
 }

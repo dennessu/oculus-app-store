@@ -1,34 +1,60 @@
 {
-	"countryCode": "MF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_MF",
-		"id": "fr_MF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_MF",
-		"id": "fr_MF"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Saint Martin",
-			"longName": "Collectivity of Saint Martin",
-			"postalCode": "Postal Code"
-		},
-		"fr_MF": {
-			"shortName": "Saint Martin",
-			"longName": "Collectivity of Saint Martin",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_MF",
+    "id" : "fr_MF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_MF",
+    "id" : "fr_MF"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saint Martin",
+      "longName" : "Collectivity of Saint Martin",
+      "postalCode" : ""
+    },
+    "fr_MF" : {
+      "shortName" : "Saint Martin",
+      "longName" : "Collectivity of Saint Martin",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "St. Martin",
+      "longName" : "Collectivity of Saint Martin",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saint Martin",
+      "longName" : "Collectivity of Saint Martin",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Martín",
+      "longName" : "Colectividad de San Martín",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint-Martin",
+      "longName" : "Collectivité de Saint Martin",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Saint Martin",
+      "longName" : "Collettività di Saint-Martin",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "세인트 마틴",
+      "longName" : "Collectivity of Saint Martin",
+      "postalCode" : ""
+    }
+  }
 }

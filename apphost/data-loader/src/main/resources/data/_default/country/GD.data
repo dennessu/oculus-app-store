@@ -1,84 +1,119 @@
 {
-	"countryCode": "GD",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Andrew",
-					"longName": "Saint Andrew"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint David",
-					"longName": "Saint David"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint George",
-					"longName": "Saint George"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint John",
-					"longName": "Saint John"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Mark",
-					"longName": "Saint Mark"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Patrick",
-					"longName": "Saint Patrick"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Grenadine Islands",
-					"longName": "Southern Grenadine Islands"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Grenada",
-			"longName": "Grenada",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GD",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Andrew",
+          "longName" : "Saint Andrew"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint David",
+          "longName" : "Saint David"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint George",
+          "longName" : "Saint George"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint John",
+          "longName" : "Saint John"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Mark",
+          "longName" : "Saint Mark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Patrick",
+          "longName" : "Saint Patrick"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Grenadine Islands",
+          "longName" : "Southern Grenadine Islands"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Grenada",
+      "longName" : "Grenada",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Grenada",
+      "longName" : "Grenada",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Grenada",
+      "longName" : "Grenada",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Granada",
+      "longName" : "Granada",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Grenade",
+      "longName" : "Grenade",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Grenada",
+      "longName" : "Grenada",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "그레나다",
+      "longName" : "그레나다",
+      "postalCode" : ""
+    }
+  }
 }

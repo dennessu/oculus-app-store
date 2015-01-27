@@ -1,100 +1,132 @@
 {
-	"countryCode": "DK",
-	"defaultLocale": {
-		"href": "/v1/locales/da_DK",
-		"id": "da_DK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/DKK",
-		"id": "DKK"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"81": {
-			"locales": {
-				"da_DK": {
-					"shortName": "Nordjylland",
-					"longName": "Region Nordjylland"
-				},
-				"en_US": {
-					"shortName": "North Denmark",
-					"longName": "North Denmark Region"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"da_DK": {
-					"shortName": "Midtjylland",
-					"longName": "Region Midtjylland"
-				},
-				"en_US": {
-					"shortName": "Central Denmark",
-					"longName": "Central Denmark Region"
-				}
-			}
-		},
-		"83": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Denmark",
-					"longName": "Region of Southern Denmark"
-				},
-				"da_DK": {
-					"shortName": "Syddanmark",
-					"longName": "Region Syddanmark"
-				}
-			}
-		},
-		"84": {
-			"locales": {
-				"en_US": {
-					"shortName": "Capital Region of Denmark",
-					"longName": "Capital Region of Denmark"
-				},
-				"da_DK": {
-					"shortName": "Hovedstaden",
-					"longName": "Region Hovedstaden"
-				}
-			}
-		},
-		"85": {
-			"locales": {
-				"da_DK": {
-					"shortName": "Sjælland",
-					"longName": "Region Sjælland"
-				},
-				"en_US": {
-					"shortName": "Zealand",
-					"longName": "Region Zealand"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/da_DK",
-		"id": "da_DK"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Denmark",
-			"longName": "Kingdom of Denmark",
-			"postalCode": "Postal Code"
-		},
-		"da_DK": {
-			"shortName": "Danmark",
-			"longName": "Kongeriget Danmark",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "DK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/da_DK",
+    "id" : "da_DK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/DKK",
+    "id" : "DKK"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "81" : {
+      "locales" : {
+        "da_DK" : {
+          "shortName" : "Nordjylland",
+          "longName" : "Region Nordjylland"
+        },
+        "en_US" : {
+          "shortName" : "North Denmark",
+          "longName" : "North Denmark Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "da_DK" : {
+          "shortName" : "Midtjylland",
+          "longName" : "Region Midtjylland"
+        },
+        "en_US" : {
+          "shortName" : "Central Denmark",
+          "longName" : "Central Denmark Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "83" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Denmark",
+          "longName" : "Region of Southern Denmark"
+        },
+        "da_DK" : {
+          "shortName" : "Syddanmark",
+          "longName" : "Region Syddanmark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "84" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Capital Region of Denmark",
+          "longName" : "Capital Region of Denmark"
+        },
+        "da_DK" : {
+          "shortName" : "Hovedstaden",
+          "longName" : "Region Hovedstaden"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "85" : {
+      "locales" : {
+        "da_DK" : {
+          "shortName" : "Sjælland",
+          "longName" : "Region Sjælland"
+        },
+        "en_US" : {
+          "shortName" : "Zealand",
+          "longName" : "Region Zealand"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/da_DK",
+    "id" : "da_DK"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Denmark",
+      "longName" : "Kingdom of Denmark",
+      "postalCode" : ""
+    },
+    "da_DK" : {
+      "shortName" : "Danmark",
+      "longName" : "Kongeriget Danmark",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Dänemark",
+      "longName" : "Kingdom of Denmark",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Denmark",
+      "longName" : "Kingdom of Denmark",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Dinamarca",
+      "longName" : "Reino de Dinamarca",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Danemark",
+      "longName" : "Royaume du Danemark",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Danimarca",
+      "longName" : "Regno di Danimarca",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "덴마크",
+      "longName" : "Kingdom of Denmark",
+      "postalCode" : ""
+    }
+  }
 }

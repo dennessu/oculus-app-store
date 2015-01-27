@@ -1,145 +1,181 @@
 {
-	"countryCode": "BO",
-	"defaultLocale": {
-		"href": "/v1/locales/es_BO",
-		"id": "es_BO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BOB",
-		"id": "BOB"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"B": {
-			"locales": {
-				"es_BO": {
-					"shortName": "El Beni",
-					"longName": "El Beni"
-				},
-				"en_US": {
-					"shortName": "El Beni",
-					"longName": "El Beni"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"es_BO": {
-					"shortName": "Cochabamba",
-					"longName": "Cochabamba"
-				},
-				"en_US": {
-					"shortName": "Cochabamba",
-					"longName": "Cochabamba"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chuquisaca",
-					"longName": "Chuquisaca"
-				},
-				"es_BO": {
-					"shortName": "Chuquisaca",
-					"longName": "Chuquisaca"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				},
-				"es_BO": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pando",
-					"longName": "Pando"
-				},
-				"es_BO": {
-					"shortName": "Pando",
-					"longName": "Pando"
-				}
-			}
-		},
-		"O": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oruro",
-					"longName": "Oruro"
-				},
-				"es_BO": {
-					"shortName": "Oruro",
-					"longName": "Oruro"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Potosí",
-					"longName": "Potosí"
-				},
-				"es_BO": {
-					"shortName": "Potosí",
-					"longName": "Potosí"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "Santa Cruz",
-					"longName": "Santa Cruz"
-				},
-				"es_BO": {
-					"shortName": "Santa Cruz",
-					"longName": "Santa Cruz"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"es_BO": {
-					"shortName": "Tarija",
-					"longName": "Tarija"
-				},
-				"en_US": {
-					"shortName": "Tarija",
-					"longName": "Tarija"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_BO",
-		"id": "es_BO"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Bolivia",
-			"longName": "Plurinational State of Bolivia",
-			"postalCode": "Postal Code"
-		},
-		"es_BO": {
-			"shortName": "Bolivia",
-			"longName": "Estado Plurinacional de Bolivia",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_BO",
+    "id" : "es_BO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BOB",
+    "id" : "BOB"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "B" : {
+      "locales" : {
+        "es_BO" : {
+          "shortName" : "El Beni",
+          "longName" : "El Beni"
+        },
+        "en_US" : {
+          "shortName" : "El Beni",
+          "longName" : "El Beni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "es_BO" : {
+          "shortName" : "Cochabamba",
+          "longName" : "Cochabamba"
+        },
+        "en_US" : {
+          "shortName" : "Cochabamba",
+          "longName" : "Cochabamba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chuquisaca",
+          "longName" : "Chuquisaca"
+        },
+        "es_BO" : {
+          "shortName" : "Chuquisaca",
+          "longName" : "Chuquisaca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        },
+        "es_BO" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pando",
+          "longName" : "Pando"
+        },
+        "es_BO" : {
+          "shortName" : "Pando",
+          "longName" : "Pando"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "O" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oruro",
+          "longName" : "Oruro"
+        },
+        "es_BO" : {
+          "shortName" : "Oruro",
+          "longName" : "Oruro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Potosí",
+          "longName" : "Potosí"
+        },
+        "es_BO" : {
+          "shortName" : "Potosí",
+          "longName" : "Potosí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Santa Cruz",
+          "longName" : "Santa Cruz"
+        },
+        "es_BO" : {
+          "shortName" : "Santa Cruz",
+          "longName" : "Santa Cruz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "es_BO" : {
+          "shortName" : "Tarija",
+          "longName" : "Tarija"
+        },
+        "en_US" : {
+          "shortName" : "Tarija",
+          "longName" : "Tarija"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_BO",
+    "id" : "es_BO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bolivia",
+      "longName" : "Plurinational State of Bolivia",
+      "postalCode" : ""
+    },
+    "es_BO" : {
+      "shortName" : "Bolivia",
+      "longName" : "Estado Plurinacional de Bolivia",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Bolivien",
+      "longName" : "Plurinationaler Staat Bolivien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bolivia",
+      "longName" : "Plurinational State of Bolivia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bolivia",
+      "longName" : "Estado Plurinacional de Bolivia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bolivie",
+      "longName" : "État plurinational de Bolivie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bolivia",
+      "longName" : "Stato Plurinazionale della Bolivia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "볼리비아",
+      "longName" : "Plurinational State of Bolivia",
+      "postalCode" : ""
+    }
+  }
 }

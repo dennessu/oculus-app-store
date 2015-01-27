@@ -1,208 +1,249 @@
 {
-	"countryCode": "MM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MMK",
-		"id": "MMK"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"my_MM": {
-					"shortName": "စစ်ကိုင်းတိုင်းဒေသကြီး",
-					"longName": "စစ်ကိုင်းတိုင်းဒေသကြီး"
-				},
-				"en_US": {
-					"shortName": "Sagaing",
-					"longName": "Sagaing"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"my_MM": {
-					"shortName": "ပဲခူးတိုင်းဒေသကြီး",
-					"longName": "ပဲခူးတိုင်းဒေသကြီး"
-				},
-				"en_US": {
-					"shortName": "Bago",
-					"longName": "Bago"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Magway",
-					"longName": "Magway"
-				},
-				"my_MM": {
-					"shortName": "မကွေးတိုင်းဒေသကြီး",
-					"longName": "မကွေးတိုင်းဒေသကြီး"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"my_MM": {
-					"shortName": "မန္တလေးတိုင်းဒေသကြီး",
-					"longName": "မန္တလေးတိုင်းဒေသကြီး"
-				},
-				"en_US": {
-					"shortName": "Mandalay",
-					"longName": "Mandalay"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"my_MM": {
-					"shortName": "တနင်္သာရီတိုင်းဒေသကြီး",
-					"longName": "တနင်္သာရီတိုင်းဒေသကြီး"
-				},
-				"en_US": {
-					"shortName": "Tanintharyi",
-					"longName": "Tanintharyi"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yangon",
-					"longName": "Yangon"
-				},
-				"my_MM": {
-					"shortName": "ရန်ကုန်တိုင်းဒေသကြီး",
-					"longName": "ရန်ကုန်တိုင်းဒေသကြီး"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ayeyarwady",
-					"longName": "Ayeyarwady"
-				},
-				"my_MM": {
-					"shortName": "ဧရာဝတီတိုင်းဒေသကြီး",
-					"longName": "ဧရာဝတီတိုင်းဒေသကြီး"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"my_MM": {
-					"shortName": "ကချင်ပြည်နယ်",
-					"longName": "ကချင်ပြည်နယ်"
-				},
-				"en_US": {
-					"shortName": "Kachin",
-					"longName": "Kachin"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayah",
-					"longName": "Kayah"
-				},
-				"my_MM": {
-					"shortName": "ကယားပြည်နယ်",
-					"longName": "ကယားပြည်နယ်"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayin",
-					"longName": "Kayin"
-				},
-				"my_MM": {
-					"shortName": "ကရင်ပြည်နယ်",
-					"longName": "ကရင်ပြည်နယ်"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chin",
-					"longName": "Chin"
-				},
-				"my_MM": {
-					"shortName": "ချင်းပြည်နယ်",
-					"longName": "ချင်းပြည်နယ်"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mon",
-					"longName": "Mon"
-				},
-				"my_MM": {
-					"shortName": "မွန်ပြည်နယ်",
-					"longName": "မွန်ပြည်နယ်"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rakhine",
-					"longName": "Rakhine"
-				},
-				"my_MM": {
-					"shortName": "ရခိုင်ပြည်နယ်",
-					"longName": "ရခိုင်ပြည်နယ်"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"my_MM": {
-					"shortName": "ရှမ်းပြည်နယ်",
-					"longName": "ရှမ်းပြည်နယ်"
-				},
-				"en_US": {
-					"shortName": "Shan",
-					"longName": "Shan"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	{
-		"href": "/v1/locales/my_MM",
-		"id": "my_MM"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Myanmar",
-			"longName": "Republic of the Union of Myanmar",
-			"postalCode": "Postal Code"
-		},
-		"my_MM": {
-			"shortName": "မြန်မာနိုင်ငံတော်",
-			"longName": "ပြည်ထောင်စု သမ္မတ မြန်မာနိုင်ငံတော်",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MMK",
+    "id" : "MMK"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "စစ်ကိုင်းတိုင်းဒေသကြီး",
+          "longName" : "စစ်ကိုင်းတိုင်းဒေသကြီး"
+        },
+        "en_US" : {
+          "shortName" : "Sagaing",
+          "longName" : "Sagaing"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "ပဲခူးတိုင်းဒေသကြီး",
+          "longName" : "ပဲခူးတိုင်းဒေသကြီး"
+        },
+        "en_US" : {
+          "shortName" : "Bago",
+          "longName" : "Bago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Magway",
+          "longName" : "Magway"
+        },
+        "my_MM" : {
+          "shortName" : "မကွေးတိုင်းဒေသကြီး",
+          "longName" : "မကွေးတိုင်းဒေသကြီး"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "မန္တလေးတိုင်းဒေသကြီး",
+          "longName" : "မန္တလေးတိုင်းဒေသကြီး"
+        },
+        "en_US" : {
+          "shortName" : "Mandalay",
+          "longName" : "Mandalay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "တနင်္သာရီတိုင်းဒေသကြီး",
+          "longName" : "တနင်္သာရီတိုင်းဒေသကြီး"
+        },
+        "en_US" : {
+          "shortName" : "Tanintharyi",
+          "longName" : "Tanintharyi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yangon",
+          "longName" : "Yangon"
+        },
+        "my_MM" : {
+          "shortName" : "ရန်ကုန်တိုင်းဒေသကြီး",
+          "longName" : "ရန်ကုန်တိုင်းဒေသကြီး"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ayeyarwady",
+          "longName" : "Ayeyarwady"
+        },
+        "my_MM" : {
+          "shortName" : "ဧရာဝတီတိုင်းဒေသကြီး",
+          "longName" : "ဧရာဝတီတိုင်းဒေသကြီး"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "ကချင်ပြည်နယ်",
+          "longName" : "ကချင်ပြည်နယ်"
+        },
+        "en_US" : {
+          "shortName" : "Kachin",
+          "longName" : "Kachin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayah",
+          "longName" : "Kayah"
+        },
+        "my_MM" : {
+          "shortName" : "ကယားပြည်နယ်",
+          "longName" : "ကယားပြည်နယ်"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayin",
+          "longName" : "Kayin"
+        },
+        "my_MM" : {
+          "shortName" : "ကရင်ပြည်နယ်",
+          "longName" : "ကရင်ပြည်နယ်"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chin",
+          "longName" : "Chin"
+        },
+        "my_MM" : {
+          "shortName" : "ချင်းပြည်နယ်",
+          "longName" : "ချင်းပြည်နယ်"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mon",
+          "longName" : "Mon"
+        },
+        "my_MM" : {
+          "shortName" : "မွန်ပြည်နယ်",
+          "longName" : "မွန်ပြည်နယ်"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rakhine",
+          "longName" : "Rakhine"
+        },
+        "my_MM" : {
+          "shortName" : "ရခိုင်ပြည်နယ်",
+          "longName" : "ရခိုင်ပြည်နယ်"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "my_MM" : {
+          "shortName" : "ရှမ်းပြည်နယ်",
+          "longName" : "ရှမ်းပြည်နယ်"
+        },
+        "en_US" : {
+          "shortName" : "Shan",
+          "longName" : "Shan"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/my_MM",
+    "id" : "my_MM"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Myanmar",
+      "longName" : "Republic of the Union of Myanmar",
+      "postalCode" : ""
+    },
+    "my_MM" : {
+      "shortName" : "မြန်မာနိုင်ငံတော်",
+      "longName" : "ပြည်ထောင်စု သမ္မတ မြန်မာနိုင်ငံတော်",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Myanmar",
+      "longName" : "Republic of the Union of Myanmar",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Burma (Myanmar)",
+      "longName" : "Republic of the Union of Myanmar",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Myanmar/Birmania",
+      "longName" : "República de la Unión de Myanmar",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Birmanie",
+      "longName" : "République de l’Union du Myanmar",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Birmania",
+      "longName" : "Repubblica dell'Unione della Birmania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "미얀마",
+      "longName" : "Republic of the Union of Myanmar",
+      "postalCode" : ""
+    }
+  }
 }

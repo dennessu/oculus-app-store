@@ -1,85 +1,114 @@
 {
-	"countryCode": "LU",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_LU",
-		"id": "fr_LU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"D": {
-			"locales": {
-				"fr_LU": {
-					"shortName": "Diekirch District",
-					"longName": "Diekirch District"
-				},
-				"en_US": {
-					"shortName": "Diekirch District",
-					"longName": "Diekirch District"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"fr_LU": {
-					"shortName": "Grevenmacher District",
-					"longName": "Grevenmacher District"
-				},
-				"en_US": {
-					"shortName": "Grevenmacher District",
-					"longName": "Grevenmacher District"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"fr_LU": {
-					"shortName": "Luxembourg District",
-					"longName": "Luxembourg District"
-				},
-				"en_US": {
-					"shortName": "Luxembourg District",
-					"longName": "Luxembourg District"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/de_LU",
-		"id": "de_LU"
-	},
-	{
-		"href": "/v1/locales/fr_LU",
-		"id": "fr_LU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Luxembourg",
-			"longName": "Grand Duchy of Luxembourg",
-			"postalCode": "Postal Code"
-		},
-		"fr_LU": {
-			"shortName": "Luxembourg",
-			"longName": "Grand-Duché de Luxembourg",
-			"postalCode": "code postal"
-		},
-		"de_LU": {
-			"shortName": "Luxembourg",
-			"longName": "Großherzogtum Luxemburg",
-			"postalCode": "Postleitzahl"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_LU",
+    "id" : "fr_LU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "D" : {
+      "locales" : {
+        "fr_LU" : {
+          "shortName" : "Diekirch District",
+          "longName" : "Diekirch District"
+        },
+        "en_US" : {
+          "shortName" : "Diekirch District",
+          "longName" : "Diekirch District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "fr_LU" : {
+          "shortName" : "Grevenmacher District",
+          "longName" : "Grevenmacher District"
+        },
+        "en_US" : {
+          "shortName" : "Grevenmacher District",
+          "longName" : "Grevenmacher District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "fr_LU" : {
+          "shortName" : "Luxembourg District",
+          "longName" : "Luxembourg District"
+        },
+        "en_US" : {
+          "shortName" : "Luxembourg District",
+          "longName" : "Luxembourg District"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/de_LU",
+    "id" : "de_LU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/fr_LU",
+    "id" : "fr_LU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Luxembourg",
+      "longName" : "Grand Duchy of Luxembourg",
+      "postalCode" : ""
+    },
+    "fr_LU" : {
+      "shortName" : "Luxembourg",
+      "longName" : "Grand-Duché de Luxembourg",
+      "postalCode" : "code postal"
+    },
+    "de_LU" : {
+      "shortName" : "Luxembourg",
+      "longName" : "Großherzogtum Luxemburg",
+      "postalCode" : "Postleitzahl"
+    },
+    "de_DE" : {
+      "shortName" : "Luxemburg",
+      "longName" : "Großherzogtum Luxemburg",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Luxembourg",
+      "longName" : "Grand Duchy of Luxembourg",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Luxemburgo",
+      "longName" : "Gran Ducado de Luxemburgo",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Luxembourg",
+      "longName" : "Grand-Duché du Luxembourg",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Lussemburgo",
+      "longName" : "Granducato di Lussemburgo",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "룩셈부르크",
+      "longName" : "Grand Duchy of Luxembourg",
+      "postalCode" : ""
+    }
+  }
 }

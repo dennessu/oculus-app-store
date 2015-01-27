@@ -1,29 +1,55 @@
 {
-	"countryCode": "AI",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Anguilla",
-			"longName": "Anguilla",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Anguilla",
+      "longName" : "Anguilla",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Anguilla",
+      "longName" : "Anguilla",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Anguilla",
+      "longName" : "Anguilla",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Anguila",
+      "longName" : "Anguila",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Anguilla",
+      "longName" : "Anguilla",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Anguilla",
+      "longName" : "Anguilla",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "앙귈라",
+      "longName" : "앙귈라",
+      "postalCode" : ""
+    }
+  }
 }

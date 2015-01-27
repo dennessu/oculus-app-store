@@ -1,205 +1,246 @@
 {
-	"countryCode": "CZ",
-	"defaultLocale": {
-		"href": "/v1/locales/cs_CZ",
-		"id": "cs_CZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CZK",
-		"id": "CZK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"JC": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Jihočeský kraj",
-					"longName": "Jihočeský kraj"
-				},
-				"en_US": {
-					"shortName": "South Bohemian Region",
-					"longName": "South Bohemian Region"
-				}
-			}
-		},
-		"JM": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Jihomoravský kraj",
-					"longName": "Jihomoravský kraj"
-				},
-				"en_US": {
-					"shortName": "South Moravian Region",
-					"longName": "South Moravian Region"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karlovy Vary Region",
-					"longName": "Karlovy Vary Region"
-				},
-				"cs_CZ": {
-					"shortName": "Karlovarský kraj",
-					"longName": "Karlovarský kraj"
-				}
-			}
-		},
-		"KR": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Královéhradecký kraj",
-					"longName": "Královéhradecký kraj"
-				},
-				"en_US": {
-					"shortName": "Hradec Králové Region",
-					"longName": "Hradec Králové Region"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Liberecký kraj",
-					"longName": "Liberecký kraj"
-				},
-				"en_US": {
-					"shortName": "Liberec Region",
-					"longName": "Liberec Region"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moravian-Silesian Region",
-					"longName": "Moravian-Silesian Region"
-				},
-				"cs_CZ": {
-					"shortName": "Moravskoslezský kraj",
-					"longName": "Moravskoslezský kraj"
-				}
-			}
-		},
-		"OL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Olomouc Region",
-					"longName": "Olomouc Region"
-				},
-				"cs_CZ": {
-					"shortName": "Olomoucký kraj",
-					"longName": "Olomoucký kraj"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Pardubický kraj",
-					"longName": "Pardubický kraj"
-				},
-				"en_US": {
-					"shortName": "Pardubice Region",
-					"longName": "Pardubice Region"
-				}
-			}
-		},
-		"PL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plzeň Region",
-					"longName": "Plzeň Region"
-				},
-				"cs_CZ": {
-					"shortName": "Plzeňský kraj",
-					"longName": "Plzeňský kraj"
-				}
-			}
-		},
-		"PR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prague",
-					"longName": "Prague"
-				},
-				"cs_CZ": {
-					"shortName": "Praha",
-					"longName": "Praha"
-				}
-			}
-		},
-		"ST": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Bohemian Region",
-					"longName": "Central Bohemian Region"
-				},
-				"cs_CZ": {
-					"shortName": "Středočeský kraj",
-					"longName": "Středočeský kraj"
-				}
-			}
-		},
-		"US": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ústí nad Labem Region",
-					"longName": "Ústí nad Labem Region"
-				},
-				"cs_CZ": {
-					"shortName": "Ústecký kraj",
-					"longName": "Ústecký kraj"
-				}
-			}
-		},
-		"VY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vysočina Region",
-					"longName": "Vysočina Region"
-				},
-				"cs_CZ": {
-					"shortName": "Kraj Vysočina",
-					"longName": "Kraj Vysočina"
-				}
-			}
-		},
-		"ZL": {
-			"locales": {
-				"cs_CZ": {
-					"shortName": "Zlínský kraj",
-					"longName": "Zlínský kraj"
-				},
-				"en_US": {
-					"shortName": "Zlín Region",
-					"longName": "Zlín Region"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/cs_CZ",
-		"id": "cs_CZ"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Czech",
-			"longName": "Czech Republic",
-			"postalCode": "Postal Code"
-		},
-		"cs_CZ": {
-			"shortName": "Česko",
-			"longName": "Česká republika",
-			"postalCode": "PSČ"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/cs_CZ",
+    "id" : "cs_CZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CZK",
+    "id" : "CZK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "JC" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Jihočeský kraj",
+          "longName" : "Jihočeský kraj"
+        },
+        "en_US" : {
+          "shortName" : "South Bohemian Region",
+          "longName" : "South Bohemian Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JM" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Jihomoravský kraj",
+          "longName" : "Jihomoravský kraj"
+        },
+        "en_US" : {
+          "shortName" : "South Moravian Region",
+          "longName" : "South Moravian Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karlovy Vary Region",
+          "longName" : "Karlovy Vary Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Karlovarský kraj",
+          "longName" : "Karlovarský kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KR" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Královéhradecký kraj",
+          "longName" : "Královéhradecký kraj"
+        },
+        "en_US" : {
+          "shortName" : "Hradec Králové Region",
+          "longName" : "Hradec Králové Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Liberecký kraj",
+          "longName" : "Liberecký kraj"
+        },
+        "en_US" : {
+          "shortName" : "Liberec Region",
+          "longName" : "Liberec Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moravian-Silesian Region",
+          "longName" : "Moravian-Silesian Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Moravskoslezský kraj",
+          "longName" : "Moravskoslezský kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Olomouc Region",
+          "longName" : "Olomouc Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Olomoucký kraj",
+          "longName" : "Olomoucký kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Pardubický kraj",
+          "longName" : "Pardubický kraj"
+        },
+        "en_US" : {
+          "shortName" : "Pardubice Region",
+          "longName" : "Pardubice Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plzeň Region",
+          "longName" : "Plzeň Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Plzeňský kraj",
+          "longName" : "Plzeňský kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prague",
+          "longName" : "Prague"
+        },
+        "cs_CZ" : {
+          "shortName" : "Praha",
+          "longName" : "Praha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ST" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Bohemian Region",
+          "longName" : "Central Bohemian Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Středočeský kraj",
+          "longName" : "Středočeský kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "US" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ústí nad Labem Region",
+          "longName" : "Ústí nad Labem Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Ústecký kraj",
+          "longName" : "Ústecký kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vysočina Region",
+          "longName" : "Vysočina Region"
+        },
+        "cs_CZ" : {
+          "shortName" : "Kraj Vysočina",
+          "longName" : "Kraj Vysočina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZL" : {
+      "locales" : {
+        "cs_CZ" : {
+          "shortName" : "Zlínský kraj",
+          "longName" : "Zlínský kraj"
+        },
+        "en_US" : {
+          "shortName" : "Zlín Region",
+          "longName" : "Zlín Region"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/cs_CZ",
+    "id" : "cs_CZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Czech",
+      "longName" : "Czech Republic",
+      "postalCode" : ""
+    },
+    "cs_CZ" : {
+      "shortName" : "Česko",
+      "longName" : "Česká republika",
+      "postalCode" : "PSČ"
+    },
+    "de_DE" : {
+      "shortName" : "Tschechisch",
+      "longName" : "Tschechische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Czech",
+      "longName" : "Czech Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Chequia",
+      "longName" : "República Checa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tchéquie",
+      "longName" : "République Tchèque",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Repubblica Ceca",
+      "longName" : "Repubblica Ceca",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "체코어",
+      "longName" : "체코공화국",
+      "postalCode" : ""
+    }
+  }
 }

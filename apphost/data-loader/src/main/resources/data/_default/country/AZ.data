@@ -1,647 +1,752 @@
 {
-	"countryCode": "AZ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AZN",
-		"id": "AZN"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"ABS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Abşeron",
-					"longName": "Abşeron"
-				}
-			}
-		},
-		"AGA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağstafa",
-					"longName": "Ağstafa"
-				}
-			}
-		},
-		"AGC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağcabədi",
-					"longName": "Ağcabədi"
-				}
-			}
-		},
-		"AGM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağdam",
-					"longName": "Ağdam"
-				}
-			}
-		},
-		"AGS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağdaş",
-					"longName": "Ağdaş"
-				}
-			}
-		},
-		"AGU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağsu",
-					"longName": "Ağsu"
-				}
-			}
-		},
-		"AST": {
-			"locales": {
-				"en_US": {
-					"shortName": "Astara",
-					"longName": "Astara"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bakı",
-					"longName": "Bakı"
-				}
-			}
-		},
-		"BAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Babək",
-					"longName": "Babək"
-				}
-			}
-		},
-		"BAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Balakən",
-					"longName": "Balakən"
-				}
-			}
-		},
-		"BAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bərdə",
-					"longName": "Bərdə"
-				}
-			}
-		},
-		"BEY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beyləqan",
-					"longName": "Beyləqan"
-				}
-			}
-		},
-		"BIL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Biləsuvar",
-					"longName": "Biləsuvar"
-				}
-			}
-		},
-		"CAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cəbrayıl",
-					"longName": "Cəbrayıl"
-				}
-			}
-		},
-		"CAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cəlilabab",
-					"longName": "Cəlilabab"
-				}
-			}
-		},
-		"CUL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Culfa",
-					"longName": "Culfa"
-				}
-			}
-		},
-		"DAS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Daşkəsən",
-					"longName": "Daşkəsən"
-				}
-			}
-		},
-		"FUZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Füzuli",
-					"longName": "Füzuli"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gəncə",
-					"longName": "Gəncə"
-				}
-			}
-		},
-		"GAD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gədəbəy",
-					"longName": "Gədəbəy"
-				}
-			}
-		},
-		"GOR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Goranboy",
-					"longName": "Goranboy"
-				}
-			}
-		},
-		"GOY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Göyçay",
-					"longName": "Göyçay"
-				}
-			}
-		},
-		"GYG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Göygöl",
-					"longName": "Göygöl"
-				}
-			}
-		},
-		"HAC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hacıqabul",
-					"longName": "Hacıqabul"
-				}
-			}
-		},
-		"IMI": {
-			"locales": {
-				"en_US": {
-					"shortName": "İmişli",
-					"longName": "İmişli"
-				}
-			}
-		},
-		"ISM": {
-			"locales": {
-				"en_US": {
-					"shortName": "İsmayıllı",
-					"longName": "İsmayıllı"
-				}
-			}
-		},
-		"KAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kəlbəcər",
-					"longName": "Kəlbəcər"
-				}
-			}
-		},
-		"KAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kǝngǝrli",
-					"longName": "Kǝngǝrli"
-				}
-			}
-		},
-		"KUR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kürdəmir",
-					"longName": "Kürdəmir"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lənkəran",
-					"longName": "Lənkəran"
-				}
-			}
-		},
-		"LAC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Laçın",
-					"longName": "Laçın"
-				}
-			}
-		},
-		"LAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lənkəran",
-					"longName": "Lənkəran"
-				}
-			}
-		},
-		"LER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lerik",
-					"longName": "Lerik"
-				}
-			}
-		},
-		"MAS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Masallı",
-					"longName": "Masallı"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mingəçevir",
-					"longName": "Mingəçevir"
-				}
-			}
-		},
-		"NA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naftalan",
-					"longName": "Naftalan"
-				}
-			}
-		},
-		"NEF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Neftçala",
-					"longName": "Neftçala"
-				}
-			}
-		},
-		"NV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naxçıvan",
-					"longName": "Naxçıvan"
-				}
-			}
-		},
-		"OGU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oğuz",
-					"longName": "Oğuz"
-				}
-			}
-		},
-		"ORD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ordubad",
-					"longName": "Ordubad"
-				}
-			}
-		},
-		"QAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qəbələ",
-					"longName": "Qəbələ"
-				}
-			}
-		},
-		"QAX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qax",
-					"longName": "Qax"
-				}
-			}
-		},
-		"QAZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qazax",
-					"longName": "Qazax"
-				}
-			}
-		},
-		"QBA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quba",
-					"longName": "Quba"
-				}
-			}
-		},
-		"QBI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qubadlı",
-					"longName": "Qubadlı"
-				}
-			}
-		},
-		"QOB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qobustan",
-					"longName": "Qobustan"
-				}
-			}
-		},
-		"QUS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qusar",
-					"longName": "Qusar"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şəki",
-					"longName": "Şəki"
-				}
-			}
-		},
-		"SAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sabirabad",
-					"longName": "Sabirabad"
-				}
-			}
-		},
-		"SAD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sədərək",
-					"longName": "Sədərək"
-				}
-			}
-		},
-		"SAH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şahbuz",
-					"longName": "Şahbuz"
-				}
-			}
-		},
-		"SAK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şəki",
-					"longName": "Şəki"
-				}
-			}
-		},
-		"SAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salyan",
-					"longName": "Salyan"
-				}
-			}
-		},
-		"SAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şərur",
-					"longName": "Şərur"
-				}
-			}
-		},
-		"SAT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saatlı",
-					"longName": "Saatlı"
-				}
-			}
-		},
-		"SBN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şabran",
-					"longName": "Şabran"
-				}
-			}
-		},
-		"SIY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Siyəzən",
-					"longName": "Siyəzən"
-				}
-			}
-		},
-		"SKR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şəmkir",
-					"longName": "Şəmkir"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sumqayıt",
-					"longName": "Sumqayıt"
-				}
-			}
-		},
-		"SMI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şamaxı",
-					"longName": "Şamaxı"
-				}
-			}
-		},
-		"SMX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samux",
-					"longName": "Samux"
-				}
-			}
-		},
-		"SR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şirvan",
-					"longName": "Şirvan"
-				}
-			}
-		},
-		"SUS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şuşa",
-					"longName": "Şuşa"
-				}
-			}
-		},
-		"TAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tərtər",
-					"longName": "Tərtər"
-				}
-			}
-		},
-		"TOV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tovuz",
-					"longName": "Tovuz"
-				}
-			}
-		},
-		"UCA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ucar",
-					"longName": "Ucar"
-				}
-			}
-		},
-		"XA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xankəndi",
-					"longName": "Xankəndi"
-				}
-			}
-		},
-		"XAC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xaçmaz",
-					"longName": "Xaçmaz"
-				}
-			}
-		},
-		"XCI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xocalı",
-					"longName": "Xocalı"
-				}
-			}
-		},
-		"XIZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xızı",
-					"longName": "Xızı"
-				}
-			}
-		},
-		"XVD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xocavənd",
-					"longName": "Xocavənd"
-				}
-			}
-		},
-		"YAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yardımlı",
-					"longName": "Yardımlı"
-				}
-			}
-		},
-		"YE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yevlax",
-					"longName": "Yevlax"
-				}
-			}
-		},
-		"YEV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yevlax",
-					"longName": "Yevlax"
-				}
-			}
-		},
-		"ZAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zəngilan",
-					"longName": "Zəngilan"
-				}
-			}
-		},
-		"ZAQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zaqatala",
-					"longName": "Zaqatala"
-				}
-			}
-		},
-		"ZAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zərdab",
-					"longName": "Zərdab"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Azerbaijan",
-			"longName": "Republic of Azerbaijan",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AZN",
+    "id" : "AZN"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "ABS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Abşeron",
+          "longName" : "Abşeron"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AGA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağstafa",
+          "longName" : "Ağstafa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AGC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağcabədi",
+          "longName" : "Ağcabədi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AGM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağdam",
+          "longName" : "Ağdam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AGS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağdaş",
+          "longName" : "Ağdaş"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AGU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağsu",
+          "longName" : "Ağsu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AST" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Astara",
+          "longName" : "Astara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bakı",
+          "longName" : "Bakı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Babək",
+          "longName" : "Babək"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Balakən",
+          "longName" : "Balakən"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bərdə",
+          "longName" : "Bərdə"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BEY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beyləqan",
+          "longName" : "Beyləqan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BIL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Biləsuvar",
+          "longName" : "Biləsuvar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cəbrayıl",
+          "longName" : "Cəbrayıl"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cəlilabab",
+          "longName" : "Cəlilabab"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CUL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Culfa",
+          "longName" : "Culfa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DAS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Daşkəsən",
+          "longName" : "Daşkəsən"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FUZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Füzuli",
+          "longName" : "Füzuli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gəncə",
+          "longName" : "Gəncə"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GAD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gədəbəy",
+          "longName" : "Gədəbəy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GOR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Goranboy",
+          "longName" : "Goranboy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GOY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Göyçay",
+          "longName" : "Göyçay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GYG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Göygöl",
+          "longName" : "Göygöl"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HAC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hacıqabul",
+          "longName" : "Hacıqabul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IMI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "İmişli",
+          "longName" : "İmişli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ISM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "İsmayıllı",
+          "longName" : "İsmayıllı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kəlbəcər",
+          "longName" : "Kəlbəcər"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kǝngǝrli",
+          "longName" : "Kǝngǝrli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KUR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kürdəmir",
+          "longName" : "Kürdəmir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lənkəran",
+          "longName" : "Lənkəran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Laçın",
+          "longName" : "Laçın"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lənkəran",
+          "longName" : "Lənkəran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lerik",
+          "longName" : "Lerik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MAS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Masallı",
+          "longName" : "Masallı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mingəçevir",
+          "longName" : "Mingəçevir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naftalan",
+          "longName" : "Naftalan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NEF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Neftçala",
+          "longName" : "Neftçala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naxçıvan",
+          "longName" : "Naxçıvan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OGU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oğuz",
+          "longName" : "Oğuz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ORD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ordubad",
+          "longName" : "Ordubad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qəbələ",
+          "longName" : "Qəbələ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QAX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qax",
+          "longName" : "Qax"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QAZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qazax",
+          "longName" : "Qazax"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QBA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quba",
+          "longName" : "Quba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QBI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qubadlı",
+          "longName" : "Qubadlı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QOB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qobustan",
+          "longName" : "Qobustan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QUS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qusar",
+          "longName" : "Qusar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şəki",
+          "longName" : "Şəki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sabirabad",
+          "longName" : "Sabirabad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sədərək",
+          "longName" : "Sədərək"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şahbuz",
+          "longName" : "Şahbuz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şəki",
+          "longName" : "Şəki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salyan",
+          "longName" : "Salyan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şərur",
+          "longName" : "Şərur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saatlı",
+          "longName" : "Saatlı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SBN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şabran",
+          "longName" : "Şabran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Siyəzən",
+          "longName" : "Siyəzən"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SKR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şəmkir",
+          "longName" : "Şəmkir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sumqayıt",
+          "longName" : "Sumqayıt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SMI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şamaxı",
+          "longName" : "Şamaxı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SMX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samux",
+          "longName" : "Samux"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şirvan",
+          "longName" : "Şirvan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SUS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şuşa",
+          "longName" : "Şuşa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tərtər",
+          "longName" : "Tərtər"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TOV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tovuz",
+          "longName" : "Tovuz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UCA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ucar",
+          "longName" : "Ucar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xankəndi",
+          "longName" : "Xankəndi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XAC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xaçmaz",
+          "longName" : "Xaçmaz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XCI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xocalı",
+          "longName" : "Xocalı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XIZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xızı",
+          "longName" : "Xızı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "XVD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xocavənd",
+          "longName" : "Xocavənd"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yardımlı",
+          "longName" : "Yardımlı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yevlax",
+          "longName" : "Yevlax"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YEV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yevlax",
+          "longName" : "Yevlax"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zəngilan",
+          "longName" : "Zəngilan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zaqatala",
+          "longName" : "Zaqatala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zərdab",
+          "longName" : "Zərdab"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Azerbaijan",
+      "longName" : "Republic of Azerbaijan",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Aserbaidschan",
+      "longName" : "Republic of Azerbaijan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Azerbaijan",
+      "longName" : "Republic of Azerbaijan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Azerbaiyán",
+      "longName" : "República de Azerbaiyán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Azerbaïdjan",
+      "longName" : "République d’Azerbaïdjan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Azerbaigian",
+      "longName" : "Repubblica dell'Azerbaigian",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아제르바이잔",
+      "longName" : "Republic of Azerbaijan",
+      "postalCode" : ""
+    }
+  }
 }

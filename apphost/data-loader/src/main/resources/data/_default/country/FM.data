@@ -1,60 +1,92 @@
 {
-	"countryCode": "FM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"KSA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kosrae",
-					"longName": "Kosrae"
-				}
-			}
-		},
-		"PNI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pohnpei",
-					"longName": "Pohnpei"
-				}
-			}
-		},
-		"TRK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chuuk",
-					"longName": "Chuuk"
-				}
-			}
-		},
-		"YAP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yap",
-					"longName": "Yap"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Federated States of Micronesia",
-			"longName": "Federated States of Micronesia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "FM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "KSA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kosrae",
+          "longName" : "Kosrae"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PNI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pohnpei",
+          "longName" : "Pohnpei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TRK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chuuk",
+          "longName" : "Chuuk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yap",
+          "longName" : "Yap"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Federated States of Micronesia",
+      "longName" : "Federated States of Micronesia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Föderierte Staaten von Mikronesien",
+      "longName" : "Föderierte Staaten von Mikronesien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Federated States of Micronesia",
+      "longName" : "Federated States of Micronesia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Micronesia",
+      "longName" : "Estados Federados de Micronesia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "États Fédérés de Micronésie",
+      "longName" : "États Fédérés de Micronésie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Stati Federati di Micronesia",
+      "longName" : "Stati Federati di Micronesia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "미크로네시아연방",
+      "longName" : "미크로네시아연방",
+      "postalCode" : ""
+    }
+  }
 }

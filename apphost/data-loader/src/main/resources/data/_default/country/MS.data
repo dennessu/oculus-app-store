@@ -1,34 +1,60 @@
 {
-	"countryCode": "MS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_MS",
-		"id": "en_MS"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_MS",
-		"id": "en_MS"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Montserrat",
-			"longName": "Montserrat",
-			"postalCode": "Postal Code"
-		},
-		"en_MS": {
-			"shortName": "Montserrat",
-			"longName": "Montserrat",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_MS",
+    "id" : "en_MS"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_MS",
+    "id" : "en_MS"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "en_MS" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Montserrat",
+      "longName" : "Montserrat",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "몬세라트",
+      "longName" : "몬세라트",
+      "postalCode" : ""
+    }
+  }
 }

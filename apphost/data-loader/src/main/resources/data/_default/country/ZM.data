@@ -1,103 +1,140 @@
 {
-	"countryCode": "ZM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ZMK",
-		"id": "ZMK"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Luapula",
-					"longName": "Luapula"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "North-Western",
-					"longName": "North-Western"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Copperbelt",
-					"longName": "Copperbelt"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lusaka",
-					"longName": "Lusaka"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Zambia",
-			"longName": "Republic of Zambia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ZM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ZMK",
+    "id" : "ZMK"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Luapula",
+          "longName" : "Luapula"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North-Western",
+          "longName" : "North-Western"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Copperbelt",
+          "longName" : "Copperbelt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lusaka",
+          "longName" : "Lusaka"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Zambia",
+      "longName" : "Republic of Zambia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Sambia",
+      "longName" : "Republic of Zambia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Zambia",
+      "longName" : "Republic of Zambia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Zambia",
+      "longName" : "República de Zambia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Zambie",
+      "longName" : "République de Zambie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Zambia",
+      "longName" : "Repubblica dello Zambia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "잠비아",
+      "longName" : "Republic of Zambia",
+      "postalCode" : ""
+    }
+  }
 }

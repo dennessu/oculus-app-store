@@ -1,38 +1,63 @@
 {
-	"countryCode": "MO",
-	"defaultLocale": {
-		"href": "/v1/locales/zh_HK",
-		"id": "zh_HK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MOP",
-		"id": "MOP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/zh_HK",
-		"id": "zh_HK"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Macao",
-			"longName": "Macao Special Administrative Region of the People's Republic of China",
-			"postalCode": "Postal Code"
-		},
-		"zh_HK": {
-			"shortName": "澳門",
-			"longName": "中華人民共和國澳門特別行政區",
-			"postalCode": "郵政編碼"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/zh_HK",
+    "id" : "zh_HK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MOP",
+    "id" : "MOP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/zh_HK",
+    "id" : "zh_HK"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Macao",
+      "longName" : "Macao Special Administrative Region of the People's Republic of China",
+      "postalCode" : ""
+    },
+    "zh_HK" : {
+      "shortName" : "澳門",
+      "longName" : "中華人民共和國澳門特別行政區",
+      "postalCode" : "郵政編碼"
+    },
+    "de_DE" : {
+      "shortName" : "Macau",
+      "longName" : "Macao Special Administrative Region of the People's Republic of China",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Macao",
+      "longName" : "Macao Special Administrative Region of the People's Republic of China",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Macao",
+      "longName" : "Región Administrativa Especial de Macao de la República Popular China",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Macao",
+      "longName" : "Région administrative spéciale de Macao de la République populaire de Chine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Macao",
+      "longName" : "Regione Amministrativa Speciale di Macao della Repubblica Popolare Cinese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Macao",
+      "longName" : "Macao Special Administrative Region of the People's Republic of China",
+      "postalCode" : ""
+    }
+  }
 }

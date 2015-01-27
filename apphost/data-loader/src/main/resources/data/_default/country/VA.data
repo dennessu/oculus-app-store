@@ -1,34 +1,60 @@
 {
-	"countryCode": "VA",
-	"defaultLocale": {
-		"href": "/v1/locales/it_VA",
-		"id": "it_VA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/it_VA",
-		"id": "it_VA"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Vatican City",
-			"longName": "Vatican City",
-			"postalCode": "Postal Code"
-		},
-		"it_VA": {
-			"shortName": "Stato della Città del Vaticano",
-			"longName": "Stato della Città del Vaticano",
-			"postalCode": "Codice Postale"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/it_VA",
+    "id" : "it_VA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/it_VA",
+    "id" : "it_VA"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Vatican City",
+      "longName" : "Vatican City",
+      "postalCode" : ""
+    },
+    "it_VA" : {
+      "shortName" : "Stato della Città del Vaticano",
+      "longName" : "Stato della Città del Vaticano",
+      "postalCode" : "Codice Postale"
+    },
+    "de_DE" : {
+      "shortName" : "Vatikanstadt",
+      "longName" : "Vatikanstadt",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Vatican City",
+      "longName" : "Vatican City",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Ciudad del Vaticano",
+      "longName" : "Ciudad del Vaticano",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Cité du Vatican",
+      "longName" : "Cité du Vatican",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Città del Vaticano",
+      "longName" : "Città del Vaticano",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "바티칸시국",
+      "longName" : "바티칸시국",
+      "postalCode" : ""
+    }
+  }
 }

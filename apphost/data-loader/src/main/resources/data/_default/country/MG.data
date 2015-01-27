@@ -1,79 +1,113 @@
 {
-	"countryCode": "MG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MGA",
-		"id": "MGA"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"en_US": {
-					"shortName": "Toamasina",
-					"longName": "Toamasina"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"en_US": {
-					"shortName": "Antsiranana",
-					"longName": "Antsiranana"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fianarantsoa",
-					"longName": "Fianarantsoa"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mahajanga",
-					"longName": "Mahajanga"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"en_US": {
-					"shortName": "Antananarivo",
-					"longName": "Antananarivo"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_US": {
-					"shortName": "Toliara",
-					"longName": "Toliara"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Madagascar",
-			"longName": "Republic of Madagascar",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MGA",
+    "id" : "MGA"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Toamasina",
+          "longName" : "Toamasina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Antsiranana",
+          "longName" : "Antsiranana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fianarantsoa",
+          "longName" : "Fianarantsoa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mahajanga",
+          "longName" : "Mahajanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Antananarivo",
+          "longName" : "Antananarivo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Toliara",
+          "longName" : "Toliara"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Madagascar",
+      "longName" : "Republic of Madagascar",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Madagaskar",
+      "longName" : "Republic of Madagascar",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Madagascar",
+      "longName" : "Republic of Madagascar",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Madagascar",
+      "longName" : "República de Madagascar",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Madagascar",
+      "longName" : "République de Madagascar",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Madagascar",
+      "longName" : "Repubblica del Madagascar",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "마다가스카르",
+      "longName" : "Republic of Madagascar",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,328 +1,379 @@
 {
-	"countryCode": "TN",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_TN",
-		"id": "ar_TN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TND",
-		"id": "TND"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"11": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية تونس‎",
-					"longName": "ولاية تونس‎"
-				},
-				"en_US": {
-					"shortName": "Tunis",
-					"longName": "Tunis"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "أريانة",
-					"longName": "أريانة"
-				},
-				"en_US": {
-					"shortName": "Ariana",
-					"longName": "Ariana"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ben Arous",
-					"longName": "Ben Arous"
-				},
-				"ar_TN": {
-					"shortName": "بن عروس",
-					"longName": "بن عروس"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية منوبة",
-					"longName": "ولاية منوبة"
-				},
-				"en_US": {
-					"shortName": "Manouba",
-					"longName": "Manouba"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية نابل",
-					"longName": "ولاية نابل"
-				},
-				"en_US": {
-					"shortName": "Nabeul",
-					"longName": "Nabeul"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zaghouan",
-					"longName": "Zaghouan"
-				},
-				"ar_TN": {
-					"shortName": "ولاية زغوان",
-					"longName": "ولاية زغوان"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "بنزرت",
-					"longName": "بنزرت"
-				},
-				"en_US": {
-					"shortName": "Bizerte",
-					"longName": "Bizerte"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Béja",
-					"longName": "Béja"
-				},
-				"ar_TN": {
-					"shortName": "باجة",
-					"longName": "باجة"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "جندوبة",
-					"longName": "جندوبة"
-				},
-				"en_US": {
-					"shortName": "Jendouba",
-					"longName": "Jendouba"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kef",
-					"longName": "Kef"
-				},
-				"ar_TN": {
-					"shortName": "ولاية الكاف",
-					"longName": "ولاية الكاف"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية سليانة",
-					"longName": "ولاية سليانة"
-				},
-				"en_US": {
-					"shortName": "Siliana",
-					"longName": "Siliana"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kairouan",
-					"longName": "Kairouan"
-				},
-				"ar_TN": {
-					"shortName": "القيروان",
-					"longName": "القيروان"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kasserine",
-					"longName": "Kasserine"
-				},
-				"ar_TN": {
-					"shortName": "القصرين",
-					"longName": "القصرين"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sidi Bouzid",
-					"longName": "Sidi Bouzid"
-				},
-				"ar_TN": {
-					"shortName": "ولاية سيدي بوزيد",
-					"longName": "ولاية سيدي بوزيد"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية سوسة",
-					"longName": "ولاية سوسة"
-				},
-				"en_US": {
-					"shortName": "Sousse",
-					"longName": "Sousse"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"en_US": {
-					"shortName": "Monastir",
-					"longName": "Monastir"
-				},
-				"ar_TN": {
-					"shortName": "ولاية المنستير",
-					"longName": "ولاية المنستير"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية المهدية",
-					"longName": "ولاية المهدية"
-				},
-				"en_US": {
-					"shortName": "Mahdia",
-					"longName": "Mahdia"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية صفاقس",
-					"longName": "ولاية صفاقس"
-				},
-				"en_US": {
-					"shortName": "Sfax",
-					"longName": "Sfax"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gafsa",
-					"longName": "Gafsa"
-				},
-				"ar_TN": {
-					"shortName": "قفصة",
-					"longName": "قفصة"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tozeur",
-					"longName": "Tozeur"
-				},
-				"ar_TN": {
-					"shortName": "ولاية توزر",
-					"longName": "ولاية توزر"
-				}
-			}
-		},
-		"73": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kebili",
-					"longName": "Kebili"
-				},
-				"ar_TN": {
-					"shortName": "قبلي",
-					"longName": "قبلي"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gabès",
-					"longName": "Gabès"
-				},
-				"ar_TN": {
-					"shortName": "قابس",
-					"longName": "قابس"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"en_US": {
-					"shortName": "Medenine",
-					"longName": "Medenine"
-				},
-				"ar_TN": {
-					"shortName": "مدنين",
-					"longName": "مدنين"
-				}
-			}
-		},
-		"83": {
-			"locales": {
-				"ar_TN": {
-					"shortName": "ولاية تطاوين",
-					"longName": "ولاية تطاوين"
-				},
-				"en_US": {
-					"shortName": "Tataouine",
-					"longName": "Tataouine"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_TN",
-		"id": "ar_TN"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Tunisia",
-			"longName": "Tunisian Republic",
-			"postalCode": "Postal Code"
-		},
-		"ar_TN": {
-			"shortName": "تونس",
-			"longName": "الجمهورية التونسية",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_TN",
+    "id" : "ar_TN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TND",
+    "id" : "TND"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "11" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية تونس‎",
+          "longName" : "ولاية تونس‎"
+        },
+        "en_US" : {
+          "shortName" : "Tunis",
+          "longName" : "Tunis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "أريانة",
+          "longName" : "أريانة"
+        },
+        "en_US" : {
+          "shortName" : "Ariana",
+          "longName" : "Ariana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ben Arous",
+          "longName" : "Ben Arous"
+        },
+        "ar_TN" : {
+          "shortName" : "بن عروس",
+          "longName" : "بن عروس"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية منوبة",
+          "longName" : "ولاية منوبة"
+        },
+        "en_US" : {
+          "shortName" : "Manouba",
+          "longName" : "Manouba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية نابل",
+          "longName" : "ولاية نابل"
+        },
+        "en_US" : {
+          "shortName" : "Nabeul",
+          "longName" : "Nabeul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zaghouan",
+          "longName" : "Zaghouan"
+        },
+        "ar_TN" : {
+          "shortName" : "ولاية زغوان",
+          "longName" : "ولاية زغوان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "بنزرت",
+          "longName" : "بنزرت"
+        },
+        "en_US" : {
+          "shortName" : "Bizerte",
+          "longName" : "Bizerte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Béja",
+          "longName" : "Béja"
+        },
+        "ar_TN" : {
+          "shortName" : "باجة",
+          "longName" : "باجة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "جندوبة",
+          "longName" : "جندوبة"
+        },
+        "en_US" : {
+          "shortName" : "Jendouba",
+          "longName" : "Jendouba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kef",
+          "longName" : "Kef"
+        },
+        "ar_TN" : {
+          "shortName" : "ولاية الكاف",
+          "longName" : "ولاية الكاف"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية سليانة",
+          "longName" : "ولاية سليانة"
+        },
+        "en_US" : {
+          "shortName" : "Siliana",
+          "longName" : "Siliana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kairouan",
+          "longName" : "Kairouan"
+        },
+        "ar_TN" : {
+          "shortName" : "القيروان",
+          "longName" : "القيروان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kasserine",
+          "longName" : "Kasserine"
+        },
+        "ar_TN" : {
+          "shortName" : "القصرين",
+          "longName" : "القصرين"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sidi Bouzid",
+          "longName" : "Sidi Bouzid"
+        },
+        "ar_TN" : {
+          "shortName" : "ولاية سيدي بوزيد",
+          "longName" : "ولاية سيدي بوزيد"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية سوسة",
+          "longName" : "ولاية سوسة"
+        },
+        "en_US" : {
+          "shortName" : "Sousse",
+          "longName" : "Sousse"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Monastir",
+          "longName" : "Monastir"
+        },
+        "ar_TN" : {
+          "shortName" : "ولاية المنستير",
+          "longName" : "ولاية المنستير"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية المهدية",
+          "longName" : "ولاية المهدية"
+        },
+        "en_US" : {
+          "shortName" : "Mahdia",
+          "longName" : "Mahdia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية صفاقس",
+          "longName" : "ولاية صفاقس"
+        },
+        "en_US" : {
+          "shortName" : "Sfax",
+          "longName" : "Sfax"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gafsa",
+          "longName" : "Gafsa"
+        },
+        "ar_TN" : {
+          "shortName" : "قفصة",
+          "longName" : "قفصة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tozeur",
+          "longName" : "Tozeur"
+        },
+        "ar_TN" : {
+          "shortName" : "ولاية توزر",
+          "longName" : "ولاية توزر"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "73" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kebili",
+          "longName" : "Kebili"
+        },
+        "ar_TN" : {
+          "shortName" : "قبلي",
+          "longName" : "قبلي"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gabès",
+          "longName" : "Gabès"
+        },
+        "ar_TN" : {
+          "shortName" : "قابس",
+          "longName" : "قابس"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Medenine",
+          "longName" : "Medenine"
+        },
+        "ar_TN" : {
+          "shortName" : "مدنين",
+          "longName" : "مدنين"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "83" : {
+      "locales" : {
+        "ar_TN" : {
+          "shortName" : "ولاية تطاوين",
+          "longName" : "ولاية تطاوين"
+        },
+        "en_US" : {
+          "shortName" : "Tataouine",
+          "longName" : "Tataouine"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_TN",
+    "id" : "ar_TN"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Tunisia",
+      "longName" : "Tunisian Republic",
+      "postalCode" : ""
+    },
+    "ar_TN" : {
+      "shortName" : "تونس",
+      "longName" : "الجمهورية التونسية",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Tunesien",
+      "longName" : "Tunisian Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Tunisia",
+      "longName" : "Tunisian Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Túnez",
+      "longName" : "República de Túnez",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tunisie",
+      "longName" : "République tunisienne",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Tunisia",
+      "longName" : "Repubblica Tunisina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "튀니지",
+      "longName" : "Tunisian Republic",
+      "postalCode" : ""
+    }
+  }
 }

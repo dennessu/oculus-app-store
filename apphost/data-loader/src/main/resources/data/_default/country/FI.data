@@ -1,268 +1,314 @@
 {
-	"countryCode": "FI",
-	"defaultLocale": {
-		"href": "/v1/locales/fi_FI",
-		"id": "fi_FI"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Ahvenanmaan maakunta",
-					"longName": "Ahvenanmaan maakunta"
-				},
-				"en_US": {
-					"shortName": "Åland",
-					"longName": "Åland"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Karelia",
-					"longName": "South Karelia"
-				},
-				"fi_FI": {
-					"shortName": "Etelä-Karjala",
-					"longName": "Etelä-Karjala"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Etelä-Pohjanmaa",
-					"longName": "Etelä-Pohjanmaa"
-				},
-				"en_US": {
-					"shortName": "Southern Ostrobothnia",
-					"longName": "Southern Ostrobothnia"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Savonia",
-					"longName": "Southern Savonia"
-				},
-				"fi_FI": {
-					"shortName": "Etelä-Savo",
-					"longName": "Etelä-Savo"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Kainuu",
-					"longName": "Kainuu"
-				},
-				"en_US": {
-					"shortName": "Kainuu",
-					"longName": "Kainuu"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tavastia Proper",
-					"longName": "Tavastia Proper"
-				},
-				"fi_FI": {
-					"shortName": "Kanta-Häme",
-					"longName": "Kanta-Häme"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Keski-Pohjanmaa",
-					"longName": "Keski-Pohjanmaa"
-				},
-				"en_US": {
-					"shortName": "Central Ostrobothnia",
-					"longName": "Central Ostrobothnia"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Finland",
-					"longName": "Central Finland"
-				},
-				"fi_FI": {
-					"shortName": "Keski-Suomi",
-					"longName": "Keski-Suomi"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kymenlaakso",
-					"longName": "Kymenlaakso"
-				},
-				"fi_FI": {
-					"shortName": "Kymenlaakso",
-					"longName": "Kymenlaakso"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lapland",
-					"longName": "Lapland"
-				},
-				"fi_FI": {
-					"shortName": "Lappi",
-					"longName": "Lappi"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pirkanmaa",
-					"longName": "Pirkanmaa"
-				},
-				"fi_FI": {
-					"shortName": "Pirkanmaa",
-					"longName": "Pirkanmaa"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ostrobothnia",
-					"longName": "Ostrobothnia"
-				},
-				"fi_FI": {
-					"shortName": "Pohjanmaa",
-					"longName": "Pohjanmaa"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Pohjois-Karjala",
-					"longName": "Pohjois-Karjala"
-				},
-				"en_US": {
-					"shortName": "North Karelia",
-					"longName": "North Karelia"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Ostrobothnia",
-					"longName": "Northern Ostrobothnia"
-				},
-				"fi_FI": {
-					"shortName": "Pohjois-Pohjanmaa",
-					"longName": "Pohjois-Pohjanmaa"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Savonia",
-					"longName": "Northern Savonia"
-				},
-				"fi_FI": {
-					"shortName": "Pohjois-Savo",
-					"longName": "Pohjois-Savo"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Päijänne Tavastia",
-					"longName": "Päijänne Tavastia"
-				},
-				"fi_FI": {
-					"shortName": "Päijät-Häme",
-					"longName": "Päijät-Häme"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Satakunta",
-					"longName": "Satakunta"
-				},
-				"fi_FI": {
-					"shortName": "Satakunta",
-					"longName": "Satakunta"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uusimaa",
-					"longName": "Uusimaa"
-				},
-				"fi_FI": {
-					"shortName": "Uusimaa",
-					"longName": "Uusimaa"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"fi_FI": {
-					"shortName": "Varsinais-Suomi",
-					"longName": "Varsinais-Suomi"
-				},
-				"en_US": {
-					"shortName": "Finland Proper",
-					"longName": "Finland Proper"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fi_FI",
-		"id": "fi_FI"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Finland",
-			"longName": "Republic of Finland",
-			"postalCode": "Postal Code"
-		},
-		"fi_FI": {
-			"shortName": "Suomi",
-			"longName": "Suomen tasavalta",
-			"postalCode": "postinumero"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "FI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fi_FI",
+    "id" : "fi_FI"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Ahvenanmaan maakunta",
+          "longName" : "Ahvenanmaan maakunta"
+        },
+        "en_US" : {
+          "shortName" : "Åland",
+          "longName" : "Åland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Karelia",
+          "longName" : "South Karelia"
+        },
+        "fi_FI" : {
+          "shortName" : "Etelä-Karjala",
+          "longName" : "Etelä-Karjala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Etelä-Pohjanmaa",
+          "longName" : "Etelä-Pohjanmaa"
+        },
+        "en_US" : {
+          "shortName" : "Southern Ostrobothnia",
+          "longName" : "Southern Ostrobothnia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Savonia",
+          "longName" : "Southern Savonia"
+        },
+        "fi_FI" : {
+          "shortName" : "Etelä-Savo",
+          "longName" : "Etelä-Savo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Kainuu",
+          "longName" : "Kainuu"
+        },
+        "en_US" : {
+          "shortName" : "Kainuu",
+          "longName" : "Kainuu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tavastia Proper",
+          "longName" : "Tavastia Proper"
+        },
+        "fi_FI" : {
+          "shortName" : "Kanta-Häme",
+          "longName" : "Kanta-Häme"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Keski-Pohjanmaa",
+          "longName" : "Keski-Pohjanmaa"
+        },
+        "en_US" : {
+          "shortName" : "Central Ostrobothnia",
+          "longName" : "Central Ostrobothnia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Finland",
+          "longName" : "Central Finland"
+        },
+        "fi_FI" : {
+          "shortName" : "Keski-Suomi",
+          "longName" : "Keski-Suomi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kymenlaakso",
+          "longName" : "Kymenlaakso"
+        },
+        "fi_FI" : {
+          "shortName" : "Kymenlaakso",
+          "longName" : "Kymenlaakso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lapland",
+          "longName" : "Lapland"
+        },
+        "fi_FI" : {
+          "shortName" : "Lappi",
+          "longName" : "Lappi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pirkanmaa",
+          "longName" : "Pirkanmaa"
+        },
+        "fi_FI" : {
+          "shortName" : "Pirkanmaa",
+          "longName" : "Pirkanmaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ostrobothnia",
+          "longName" : "Ostrobothnia"
+        },
+        "fi_FI" : {
+          "shortName" : "Pohjanmaa",
+          "longName" : "Pohjanmaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Pohjois-Karjala",
+          "longName" : "Pohjois-Karjala"
+        },
+        "en_US" : {
+          "shortName" : "North Karelia",
+          "longName" : "North Karelia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Ostrobothnia",
+          "longName" : "Northern Ostrobothnia"
+        },
+        "fi_FI" : {
+          "shortName" : "Pohjois-Pohjanmaa",
+          "longName" : "Pohjois-Pohjanmaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Savonia",
+          "longName" : "Northern Savonia"
+        },
+        "fi_FI" : {
+          "shortName" : "Pohjois-Savo",
+          "longName" : "Pohjois-Savo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Päijänne Tavastia",
+          "longName" : "Päijänne Tavastia"
+        },
+        "fi_FI" : {
+          "shortName" : "Päijät-Häme",
+          "longName" : "Päijät-Häme"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Satakunta",
+          "longName" : "Satakunta"
+        },
+        "fi_FI" : {
+          "shortName" : "Satakunta",
+          "longName" : "Satakunta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uusimaa",
+          "longName" : "Uusimaa"
+        },
+        "fi_FI" : {
+          "shortName" : "Uusimaa",
+          "longName" : "Uusimaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "fi_FI" : {
+          "shortName" : "Varsinais-Suomi",
+          "longName" : "Varsinais-Suomi"
+        },
+        "en_US" : {
+          "shortName" : "Finland Proper",
+          "longName" : "Finland Proper"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fi_FI",
+    "id" : "fi_FI"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Finland",
+      "longName" : "Republic of Finland",
+      "postalCode" : ""
+    },
+    "fi_FI" : {
+      "shortName" : "Suomi",
+      "longName" : "Suomen tasavalta",
+      "postalCode" : "postinumero"
+    },
+    "de_DE" : {
+      "shortName" : "Finnland",
+      "longName" : "Republic of Finland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Finland",
+      "longName" : "Republic of Finland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Finlandia",
+      "longName" : "República de Finlandia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Finlande",
+      "longName" : "République de Finlande",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Finlandia",
+      "longName" : "Repubblica di Finlandia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "핀란드",
+      "longName" : "Republic of Finland",
+      "postalCode" : ""
+    }
+  }
 }

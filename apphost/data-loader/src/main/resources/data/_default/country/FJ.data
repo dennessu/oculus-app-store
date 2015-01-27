@@ -1,68 +1,101 @@
 {
-	"countryCode": "FJ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/FJD",
-		"id": "FJD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Division",
-					"longName": "Central Division"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern Division",
-					"longName": "Eastern Division"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Division",
-					"longName": "Northern Division"
-				}
-			}
-		},
-		"R": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rotuma",
-					"longName": "Rotuma Island"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western Division",
-					"longName": "Western Division"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Fiji",
-			"longName": "Republic of Fiji",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "FJ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/FJD",
+    "id" : "FJD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Division",
+          "longName" : "Central Division"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern Division",
+          "longName" : "Eastern Division"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Division",
+          "longName" : "Northern Division"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "R" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rotuma",
+          "longName" : "Rotuma Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western Division",
+          "longName" : "Western Division"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Fiji",
+      "longName" : "Republic of Fiji",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Fidschi",
+      "longName" : "Republic of Fiji",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Fiji",
+      "longName" : "Republic of Fiji",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Fiyi",
+      "longName" : "República de Fiyi",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Fidji",
+      "longName" : "République de Fidji",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Fiji",
+      "longName" : "Repubblica delle Fiji",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "피지",
+      "longName" : "Republic of Fiji",
+      "postalCode" : ""
+    }
+  }
 }

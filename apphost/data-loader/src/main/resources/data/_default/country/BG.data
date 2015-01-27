@@ -1,373 +1,428 @@
 {
-	"countryCode": "BG",
-	"defaultLocale": {
-		"href": "/v1/locales/bg_BG",
-		"id": "bg_BG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BGN",
-		"id": "BGN"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Благоевград",
-					"longName": "Област Благоевград"
-				},
-				"en_US": {
-					"shortName": "Blagoevgrad",
-					"longName": "Blagoevgrad"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Burgas",
-					"longName": "Burgas"
-				},
-				"bg_BG": {
-					"shortName": "Област Бургас",
-					"longName": "Област Бургас"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Varna",
-					"longName": "Varna"
-				},
-				"bg_BG": {
-					"shortName": "Област Варна",
-					"longName": "Област Варна"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Veliko Tarnovo",
-					"longName": "Veliko Tarnovo"
-				},
-				"bg_BG": {
-					"shortName": "Област Велико Търново",
-					"longName": "Област Велико Търново"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vidin",
-					"longName": "Vidin"
-				},
-				"bg_BG": {
-					"shortName": "Област Видин",
-					"longName": "Област Видин"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Враца",
-					"longName": "Област Враца"
-				},
-				"en_US": {
-					"shortName": "Vratsa",
-					"longName": "Vratsa"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Габрово",
-					"longName": "Област Габрово"
-				},
-				"en_US": {
-					"shortName": "Gabrovo",
-					"longName": "Gabrovo"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Добрич",
-					"longName": "Област Добрич"
-				},
-				"en_US": {
-					"shortName": "Dobrich",
-					"longName": "Dobrich"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kardzhali",
-					"longName": "Kardzhali"
-				},
-				"bg_BG": {
-					"shortName": "Област Кърджали",
-					"longName": "Област Кърджали"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Кърджали",
-					"longName": "Област Кърджали"
-				},
-				"en_US": {
-					"shortName": "Kyustendil",
-					"longName": "Kyustendil"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Oбласт Ловеч",
-					"longName": "Oбласт Ловеч"
-				},
-				"en_US": {
-					"shortName": "Lovech",
-					"longName": "Lovech"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Монтана",
-					"longName": "Област Монтана"
-				},
-				"en_US": {
-					"shortName": "Montana",
-					"longName": "Montana"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Пазарджик",
-					"longName": "Област Пазарджик"
-				},
-				"en_US": {
-					"shortName": "Pazardzhik",
-					"longName": "Pazardzhik"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pernik",
-					"longName": "Pernik"
-				},
-				"bg_BG": {
-					"shortName": "Област Перник",
-					"longName": "Област Перник"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pleven",
-					"longName": "Pleven"
-				},
-				"bg_BG": {
-					"shortName": "Област Плевен",
-					"longName": "Област Плевен"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Пловдив",
-					"longName": "Област Пловдив"
-				},
-				"en_US": {
-					"shortName": "Plovdiv",
-					"longName": "Plovdiv"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Razgrad",
-					"longName": "Razgrad"
-				},
-				"bg_BG": {
-					"shortName": "Област Разград",
-					"longName": "Област Разград"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ruse",
-					"longName": "Ruse"
-				},
-				"bg_BG": {
-					"shortName": "Област Русе",
-					"longName": "Област Русе"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Силистра",
-					"longName": "Област Силистра"
-				},
-				"en_US": {
-					"shortName": "Silistra",
-					"longName": "Silistra"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sliven",
-					"longName": "Sliven"
-				},
-				"bg_BG": {
-					"shortName": "Област Сливен",
-					"longName": "Област Сливен"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Смолян",
-					"longName": "Област Смолян"
-				},
-				"en_US": {
-					"shortName": "Smolyan",
-					"longName": "Smolyan"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "София",
-					"longName": "София"
-				},
-				"en_US": {
-					"shortName": "Sofia",
-					"longName": "Sofia"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sofia Province",
-					"longName": "Sofia Province"
-				},
-				"bg_BG": {
-					"shortName": "Софийска област",
-					"longName": "Софийска област"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Stara Zagora",
-					"longName": "Stara Zagora"
-				},
-				"bg_BG": {
-					"shortName": "Област Стара Загора",
-					"longName": "Област Стара Загора"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Targovishte",
-					"longName": "Targovishte"
-				},
-				"bg_BG": {
-					"shortName": "Област Търговище",
-					"longName": "Област Търговище"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haskovo",
-					"longName": "Haskovo"
-				},
-				"bg_BG": {
-					"shortName": "Област Хасково",
-					"longName": "Област Хасково"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shumen",
-					"longName": "Shumen"
-				},
-				"bg_BG": {
-					"shortName": "Област Шумен",
-					"longName": "Област Шумен"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"bg_BG": {
-					"shortName": "Област Ямбол",
-					"longName": "Област Ямбол"
-				},
-				"en_US": {
-					"shortName": "Yambol",
-					"longName": "Yambol"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/bg_BG",
-		"id": "bg_BG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Bulgaria",
-			"longName": "Republic of Bulgaria",
-			"postalCode": "Postal Code"
-		},
-		"bg_BG": {
-			"shortName": "България",
-			"longName": "Република България",
-			"postalCode": "Пощенски код"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/bg_BG",
+    "id" : "bg_BG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BGN",
+    "id" : "BGN"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Благоевград",
+          "longName" : "Област Благоевград"
+        },
+        "en_US" : {
+          "shortName" : "Blagoevgrad",
+          "longName" : "Blagoevgrad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Burgas",
+          "longName" : "Burgas"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Бургас",
+          "longName" : "Област Бургас"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Varna",
+          "longName" : "Varna"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Варна",
+          "longName" : "Област Варна"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Veliko Tarnovo",
+          "longName" : "Veliko Tarnovo"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Велико Търново",
+          "longName" : "Област Велико Търново"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vidin",
+          "longName" : "Vidin"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Видин",
+          "longName" : "Област Видин"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Враца",
+          "longName" : "Област Враца"
+        },
+        "en_US" : {
+          "shortName" : "Vratsa",
+          "longName" : "Vratsa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Габрово",
+          "longName" : "Област Габрово"
+        },
+        "en_US" : {
+          "shortName" : "Gabrovo",
+          "longName" : "Gabrovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Добрич",
+          "longName" : "Област Добрич"
+        },
+        "en_US" : {
+          "shortName" : "Dobrich",
+          "longName" : "Dobrich"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kardzhali",
+          "longName" : "Kardzhali"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Кърджали",
+          "longName" : "Област Кърджали"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Кърджали",
+          "longName" : "Област Кърджали"
+        },
+        "en_US" : {
+          "shortName" : "Kyustendil",
+          "longName" : "Kyustendil"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Oбласт Ловеч",
+          "longName" : "Oбласт Ловеч"
+        },
+        "en_US" : {
+          "shortName" : "Lovech",
+          "longName" : "Lovech"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Монтана",
+          "longName" : "Област Монтана"
+        },
+        "en_US" : {
+          "shortName" : "Montana",
+          "longName" : "Montana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Пазарджик",
+          "longName" : "Област Пазарджик"
+        },
+        "en_US" : {
+          "shortName" : "Pazardzhik",
+          "longName" : "Pazardzhik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pernik",
+          "longName" : "Pernik"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Перник",
+          "longName" : "Област Перник"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pleven",
+          "longName" : "Pleven"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Плевен",
+          "longName" : "Област Плевен"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Пловдив",
+          "longName" : "Област Пловдив"
+        },
+        "en_US" : {
+          "shortName" : "Plovdiv",
+          "longName" : "Plovdiv"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Razgrad",
+          "longName" : "Razgrad"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Разград",
+          "longName" : "Област Разград"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ruse",
+          "longName" : "Ruse"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Русе",
+          "longName" : "Област Русе"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Силистра",
+          "longName" : "Област Силистра"
+        },
+        "en_US" : {
+          "shortName" : "Silistra",
+          "longName" : "Silistra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sliven",
+          "longName" : "Sliven"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Сливен",
+          "longName" : "Област Сливен"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Смолян",
+          "longName" : "Област Смолян"
+        },
+        "en_US" : {
+          "shortName" : "Smolyan",
+          "longName" : "Smolyan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "София",
+          "longName" : "София"
+        },
+        "en_US" : {
+          "shortName" : "Sofia",
+          "longName" : "Sofia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sofia Province",
+          "longName" : "Sofia Province"
+        },
+        "bg_BG" : {
+          "shortName" : "Софийска област",
+          "longName" : "Софийска област"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Stara Zagora",
+          "longName" : "Stara Zagora"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Стара Загора",
+          "longName" : "Област Стара Загора"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Targovishte",
+          "longName" : "Targovishte"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Търговище",
+          "longName" : "Област Търговище"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haskovo",
+          "longName" : "Haskovo"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Хасково",
+          "longName" : "Област Хасково"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shumen",
+          "longName" : "Shumen"
+        },
+        "bg_BG" : {
+          "shortName" : "Област Шумен",
+          "longName" : "Област Шумен"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "bg_BG" : {
+          "shortName" : "Област Ямбол",
+          "longName" : "Област Ямбол"
+        },
+        "en_US" : {
+          "shortName" : "Yambol",
+          "longName" : "Yambol"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/bg_BG",
+    "id" : "bg_BG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bulgaria",
+      "longName" : "Republic of Bulgaria",
+      "postalCode" : ""
+    },
+    "bg_BG" : {
+      "shortName" : "България",
+      "longName" : "Република България",
+      "postalCode" : "Пощенски код"
+    },
+    "de_DE" : {
+      "shortName" : "Bulgarien",
+      "longName" : "Republic of Bulgaria",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bulgaria",
+      "longName" : "Republic of Bulgaria",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bulgaria",
+      "longName" : "República de Bulgaria",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bulgarie",
+      "longName" : "République de Bulgarie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bulgaria",
+      "longName" : "Repubblica di Bulgaria",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "불가리아",
+      "longName" : "Republic of Bulgaria",
+      "postalCode" : ""
+    }
+  }
 }

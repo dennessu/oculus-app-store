@@ -1,34 +1,60 @@
 {
-	"countryCode": "PF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_PF",
-		"id": "fr_PF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XPF",
-		"id": "XPF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_PF",
-		"id": "fr_PF"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "French Polynesia",
-			"longName": "French Polynesia",
-			"postalCode": "Postal Code"
-		},
-		"fr_PF": {
-			"shortName": "Polynésie française",
-			"longName": "Polynésie française",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_PF",
+    "id" : "fr_PF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XPF",
+    "id" : "XPF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_PF",
+    "id" : "fr_PF"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "French Polynesia",
+      "longName" : "French Polynesia",
+      "postalCode" : ""
+    },
+    "fr_PF" : {
+      "shortName" : "Polynésie française",
+      "longName" : "Polynésie française",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Französisch-Polynesien",
+      "longName" : "Französisch-Polynesien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "French Polynesia",
+      "longName" : "French Polynesia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Polinesia Francesa",
+      "longName" : "Polinesia Francesa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Polynésie française",
+      "longName" : "Polynésie française",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Polinesia francese",
+      "longName" : "Polinesia francese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "프랑스령 폴리네시아",
+      "longName" : "프랑스령 폴리네시아",
+      "postalCode" : ""
+    }
+  }
 }

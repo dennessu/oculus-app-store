@@ -1,268 +1,309 @@
 {
-	"countryCode": "ES",
-	"defaultLocale": {
-		"href": "/v1/locales/es_ES",
-		"id": "es_ES"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"AN": {
-			"locales": {
-				"es_ES": {
-					"shortName": "AN",
-					"longName": "Andalucía"
-				},
-				"en_US": {
-					"shortName": "AN",
-					"longName": "Andalusia "
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"es_ES": {
-					"shortName": "AR",
-					"longName": "Aragón"
-				},
-				"en_US": {
-					"shortName": "AR",
-					"longName": "Aragon "
-				}
-			}
-		},
-		"AS": {
-			"locales": {
-				"es_ES": {
-					"shortName": "AS",
-					"longName": "Asturias, Principado de"
-				},
-				"en_US": {
-					"shortName": "AS",
-					"longName": "Asturias, "
-				}
-			}
-		},
-		"CB": {
-			"locales": {
-				"en_US": {
-					"shortName": "CB",
-					"longName": "Cantabria "
-				},
-				"es_ES": {
-					"shortName": "CB",
-					"longName": "Cantabria"
-				}
-			}
-		},
-		"CE": {
-			"locales": {
-				"es_ES": {
-					"shortName": "CE",
-					"longName": "Ceuta"
-				},
-				"en_US": {
-					"shortName": "CE",
-					"longName": "Ceuta "
-				}
-			}
-		},
-		"CL": {
-			"locales": {
-				"en_US": {
-					"shortName": "CL",
-					"longName": "Castile and León "
-				},
-				"es_ES": {
-					"shortName": "CL",
-					"longName": "Castilla y León"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"es_ES": {
-					"shortName": "CM",
-					"longName": "Castilla La Mancha"
-				},
-				"en_US": {
-					"shortName": "CM",
-					"longName": "Castilla La Mancha "
-				}
-			}
-		},
-		"CN": {
-			"locales": {
-				"en_US": {
-					"shortName": "CN",
-					"longName": "Canary Islands "
-				},
-				"es_ES": {
-					"shortName": "CN",
-					"longName": "Canarias"
-				}
-			}
-		},
-		"CT": {
-			"locales": {
-				"en_US": {
-					"shortName": "CT",
-					"longName": "Catalunya "
-				},
-				"es_ES": {
-					"shortName": "CT",
-					"longName": "Catalunya"
-				}
-			}
-		},
-		"EX": {
-			"locales": {
-				"en_US": {
-					"shortName": "EX",
-					"longName": "Estremadura "
-				},
-				"es_ES": {
-					"shortName": "EX",
-					"longName": "Extremadura"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "GA",
-					"longName": "Galicia "
-				},
-				"es_ES": {
-					"shortName": "GA",
-					"longName": "Galicia"
-				}
-			}
-		},
-		"IB": {
-			"locales": {
-				"es_ES": {
-					"shortName": "IB",
-					"longName": "Illes Balears"
-				},
-				"en_US": {
-					"shortName": "IB",
-					"longName": "Illes Balears "
-				}
-			}
-		},
-		"MC": {
-			"locales": {
-				"en_US": {
-					"shortName": "MC",
-					"longName": "Murcia, Region of "
-				},
-				"es_ES": {
-					"shortName": "MC",
-					"longName": "Murcia, Región de"
-				}
-			}
-		},
-		"MD": {
-			"locales": {
-				"es_ES": {
-					"shortName": "MD",
-					"longName": "Madrid, Comunidad de"
-				},
-				"en_US": {
-					"shortName": "MD",
-					"longName": "Madrid, Community of "
-				}
-			}
-		},
-		"ML": {
-			"locales": {
-				"es_ES": {
-					"shortName": "ML",
-					"longName": "Melilla"
-				},
-				"en_US": {
-					"shortName": "ML",
-					"longName": "Melilla"
-				}
-			}
-		},
-		"NC": {
-			"locales": {
-				"es_ES": {
-					"shortName": "NC",
-					"longName": "Navarra, Comunidad Foral de"
-				},
-				"en_US": {
-					"shortName": "NC",
-					"longName": "Navarra Foral Community "
-				}
-			}
-		},
-		"PV": {
-			"locales": {
-				"en_US": {
-					"shortName": "PV",
-					"longName": "the Basque Country "
-				},
-				"es_ES": {
-					"shortName": "PV",
-					"longName": "País Vasco"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "RI",
-					"longName": "Rioja "
-				},
-				"es_ES": {
-					"shortName": "RI",
-					"longName": "La Rioja"
-				}
-			}
-		},
-		"VC": {
-			"locales": {
-				"en_US": {
-					"shortName": "VC",
-					"longName": "Valencian Community "
-				},
-				"es_ES": {
-					"shortName": "VC",
-					"longName": "Valenciana, Comunidad"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_ES",
-		"id": "es_ES"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Spain",
-			"longName": "Kingdom of Spain",
-			"postalCode": "Postal Code"
-		},
-		"es_ES": {
-			"shortName": "España",
-			"longName": "Reino de España",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ES",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_ES",
+    "id" : "es_ES"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "AN" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "AN",
+          "longName" : "Andalucía"
+        },
+        "en_US" : {
+          "shortName" : "AN",
+          "longName" : "Andalusia "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "AR",
+          "longName" : "Aragón"
+        },
+        "en_US" : {
+          "shortName" : "AR",
+          "longName" : "Aragon "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AS" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "AS",
+          "longName" : "Asturias, Principado de"
+        },
+        "en_US" : {
+          "shortName" : "AS",
+          "longName" : "Asturias, "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CB",
+          "longName" : "Cantabria "
+        },
+        "es_ES" : {
+          "shortName" : "CB",
+          "longName" : "Cantabria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CE" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "CE",
+          "longName" : "Ceuta"
+        },
+        "en_US" : {
+          "shortName" : "CE",
+          "longName" : "Ceuta "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CL",
+          "longName" : "Castile and León "
+        },
+        "es_ES" : {
+          "shortName" : "CL",
+          "longName" : "Castilla y León"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "CM",
+          "longName" : "Castilla La Mancha"
+        },
+        "en_US" : {
+          "shortName" : "CM",
+          "longName" : "Castilla La Mancha "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CN",
+          "longName" : "Canary Islands "
+        },
+        "es_ES" : {
+          "shortName" : "CN",
+          "longName" : "Canarias"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CT",
+          "longName" : "Catalunya "
+        },
+        "es_ES" : {
+          "shortName" : "CT",
+          "longName" : "Catalunya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "EX",
+          "longName" : "Estremadura "
+        },
+        "es_ES" : {
+          "shortName" : "EX",
+          "longName" : "Extremadura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GA",
+          "longName" : "Galicia "
+        },
+        "es_ES" : {
+          "shortName" : "GA",
+          "longName" : "Galicia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IB" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "IB",
+          "longName" : "Illes Balears"
+        },
+        "en_US" : {
+          "shortName" : "IB",
+          "longName" : "Illes Balears "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MC",
+          "longName" : "Murcia, Region of "
+        },
+        "es_ES" : {
+          "shortName" : "MC",
+          "longName" : "Murcia, Región de"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MD" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "MD",
+          "longName" : "Madrid, Comunidad de"
+        },
+        "en_US" : {
+          "shortName" : "MD",
+          "longName" : "Madrid, Community of "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ML" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "ML",
+          "longName" : "Melilla"
+        },
+        "en_US" : {
+          "shortName" : "ML",
+          "longName" : "Melilla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NC" : {
+      "locales" : {
+        "es_ES" : {
+          "shortName" : "NC",
+          "longName" : "Navarra, Comunidad Foral de"
+        },
+        "en_US" : {
+          "shortName" : "NC",
+          "longName" : "Navarra Foral Community "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PV",
+          "longName" : "the Basque Country "
+        },
+        "es_ES" : {
+          "shortName" : "PV",
+          "longName" : "País Vasco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "RI",
+          "longName" : "Rioja "
+        },
+        "es_ES" : {
+          "shortName" : "RI",
+          "longName" : "La Rioja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VC",
+          "longName" : "Valencian Community "
+        },
+        "es_ES" : {
+          "shortName" : "VC",
+          "longName" : "Valenciana, Comunidad"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_ES",
+    "id" : "es_ES"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Spain",
+      "longName" : "Kingdom of Spain",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "España",
+      "longName" : "Reino de España",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Spanien",
+      "longName" : "Kingdom of Spain",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Spain",
+      "longName" : "Kingdom of Spain",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Espagne",
+      "longName" : "Royaume d’Espagne",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Spagna",
+      "longName" : "Regno di Spagna",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "스페인",
+      "longName" : "Kingdom of Spain",
+      "postalCode" : ""
+    }
+  }
 }

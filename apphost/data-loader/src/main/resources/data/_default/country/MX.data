@@ -1,424 +1,483 @@
 {
-	"countryCode": "MX",
-	"defaultLocale": {
-		"href": "/v1/locales/es_MX",
-		"id": "es_MX"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MXN",
-		"id": "MXN"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/ESRB",
-		"id": "ESRB"
-	}],
-	"subCountries": {
-		"AGU": {
-			"locales": {
-				"en_US": {
-					"shortName": "AGU",
-					"longName": "Aguascalientes"
-				},
-				"es_MX": {
-					"shortName": "AGU",
-					"longName": "Aguascalientes"
-				}
-			}
-		},
-		"BCN": {
-			"locales": {
-				"es_MX": {
-					"shortName": "BCN",
-					"longName": "Baja California"
-				},
-				"en_US": {
-					"shortName": "BCN",
-					"longName": "Baja California"
-				}
-			}
-		},
-		"BCS": {
-			"locales": {
-				"es_MX": {
-					"shortName": "BCS",
-					"longName": "Baja California Sur"
-				},
-				"en_US": {
-					"shortName": "BCS",
-					"longName": "Baja California Sur"
-				}
-			}
-		},
-		"CAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "CAM",
-					"longName": "Campeche"
-				},
-				"es_MX": {
-					"shortName": "CAM",
-					"longName": "Campeche"
-				}
-			}
-		},
-		"CHH": {
-			"locales": {
-				"es_MX": {
-					"shortName": "CHH",
-					"longName": "Chihuahua"
-				},
-				"en_US": {
-					"shortName": "CHH",
-					"longName": "Chihuahua"
-				}
-			}
-		},
-		"CHP": {
-			"locales": {
-				"es_MX": {
-					"shortName": "CHP",
-					"longName": "Chiapas"
-				},
-				"en_US": {
-					"shortName": "CHP",
-					"longName": "Chiapas"
-				}
-			}
-		},
-		"COA": {
-			"locales": {
-				"en_US": {
-					"shortName": "COA",
-					"longName": "Coahuila"
-				},
-				"es_MX": {
-					"shortName": "COA",
-					"longName": "Coahuila"
-				}
-			}
-		},
-		"COL": {
-			"locales": {
-				"es_MX": {
-					"shortName": "COL",
-					"longName": "Colima"
-				},
-				"en_US": {
-					"shortName": "COL",
-					"longName": "Colima"
-				}
-			}
-		},
-		"DIF": {
-			"locales": {
-				"es_MX": {
-					"shortName": "DIF",
-					"longName": "Distrito Federal"
-				},
-				"en_US": {
-					"shortName": "DIF",
-					"longName": "Distrito Federal"
-				}
-			}
-		},
-		"DUR": {
-			"locales": {
-				"es_MX": {
-					"shortName": "DUR",
-					"longName": "Durango"
-				},
-				"en_US": {
-					"shortName": "DUR",
-					"longName": "Durango"
-				}
-			}
-		},
-		"GRO": {
-			"locales": {
-				"es_MX": {
-					"shortName": "GRO",
-					"longName": "Guerrero"
-				},
-				"en_US": {
-					"shortName": "GRO",
-					"longName": "Guerrero"
-				}
-			}
-		},
-		"GUA": {
-			"locales": {
-				"en_US": {
-					"shortName": "GUA",
-					"longName": "Guanajuato"
-				},
-				"es_MX": {
-					"shortName": "GUA",
-					"longName": "Guanajuato"
-				}
-			}
-		},
-		"HID": {
-			"locales": {
-				"en_US": {
-					"shortName": "HID",
-					"longName": "Hidalgo"
-				},
-				"es_MX": {
-					"shortName": "HID",
-					"longName": "Hidalgo"
-				}
-			}
-		},
-		"JAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "JAL",
-					"longName": "Jalisco"
-				},
-				"es_MX": {
-					"shortName": "JAL",
-					"longName": "Jalisco"
-				}
-			}
-		},
-		"MEX": {
-			"locales": {
-				"en_US": {
-					"shortName": "MEX",
-					"longName": "México"
-				},
-				"es_MX": {
-					"shortName": "MEX",
-					"longName": "México"
-				}
-			}
-		},
-		"MIC": {
-			"locales": {
-				"en_US": {
-					"shortName": "MIC",
-					"longName": "Michoacán"
-				},
-				"es_MX": {
-					"shortName": "MIC",
-					"longName": "Michoacán"
-				}
-			}
-		},
-		"MOR": {
-			"locales": {
-				"en_US": {
-					"shortName": "MOR",
-					"longName": "Morelos"
-				},
-				"es_MX": {
-					"shortName": "MOR",
-					"longName": "Morelos"
-				}
-			}
-		},
-		"NAY": {
-			"locales": {
-				"es_MX": {
-					"shortName": "NAY",
-					"longName": "Nayarit"
-				},
-				"en_US": {
-					"shortName": "NAY",
-					"longName": "Nayarit"
-				}
-			}
-		},
-		"NLE": {
-			"locales": {
-				"en_US": {
-					"shortName": "NLE",
-					"longName": "Nuevo León"
-				},
-				"es_MX": {
-					"shortName": "NLE",
-					"longName": "Nuevo León"
-				}
-			}
-		},
-		"OAX": {
-			"locales": {
-				"es_MX": {
-					"shortName": "OAX",
-					"longName": "Oaxaca"
-				},
-				"en_US": {
-					"shortName": "OAX",
-					"longName": "Oaxaca"
-				}
-			}
-		},
-		"PUE": {
-			"locales": {
-				"en_US": {
-					"shortName": "PUE",
-					"longName": "Puebla"
-				},
-				"es_MX": {
-					"shortName": "PUE",
-					"longName": "Puebla"
-				}
-			}
-		},
-		"QUE": {
-			"locales": {
-				"en_US": {
-					"shortName": "QUE",
-					"longName": "Querétaro"
-				},
-				"es_MX": {
-					"shortName": "QUE",
-					"longName": "Querétaro"
-				}
-			}
-		},
-		"ROO": {
-			"locales": {
-				"es_MX": {
-					"shortName": "ROO",
-					"longName": "Quintana Roo"
-				},
-				"en_US": {
-					"shortName": "ROO",
-					"longName": "Quintana Roo"
-				}
-			}
-		},
-		"SIN": {
-			"locales": {
-				"en_US": {
-					"shortName": "SIN",
-					"longName": "Sinaloa"
-				},
-				"es_MX": {
-					"shortName": "SIN",
-					"longName": "Sinaloa"
-				}
-			}
-		},
-		"SLP": {
-			"locales": {
-				"es_MX": {
-					"shortName": "SLP",
-					"longName": "San Luis Potosí"
-				},
-				"en_US": {
-					"shortName": "SLP",
-					"longName": "San Luis Potosí"
-				}
-			}
-		},
-		"SON": {
-			"locales": {
-				"es_MX": {
-					"shortName": "SON",
-					"longName": "Sonora"
-				},
-				"en_US": {
-					"shortName": "SON",
-					"longName": "Sonora"
-				}
-			}
-		},
-		"TAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "TAB",
-					"longName": "Tabasco"
-				},
-				"es_MX": {
-					"shortName": "TAB",
-					"longName": "Tabasco"
-				}
-			}
-		},
-		"TAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "TAM",
-					"longName": "Tamaulipas"
-				},
-				"es_MX": {
-					"shortName": "TAM",
-					"longName": "Tamaulipas"
-				}
-			}
-		},
-		"TLA": {
-			"locales": {
-				"en_US": {
-					"shortName": "TLA",
-					"longName": "Tlaxcala"
-				},
-				"es_MX": {
-					"shortName": "TLA",
-					"longName": "Tlaxcala"
-				}
-			}
-		},
-		"VER": {
-			"locales": {
-				"en_US": {
-					"shortName": "VER",
-					"longName": "Veracruz"
-				},
-				"es_MX": {
-					"shortName": "VER",
-					"longName": "Veracruz"
-				}
-			}
-		},
-		"YUC": {
-			"locales": {
-				"en_US": {
-					"shortName": "YUC",
-					"longName": "Yucatán"
-				},
-				"es_MX": {
-					"shortName": "YUC",
-					"longName": "Yucatán"
-				}
-			}
-		},
-		"ZAC": {
-			"locales": {
-				"es_MX": {
-					"shortName": "ZAC",
-					"longName": "Zacatecas"
-				},
-				"en_US": {
-					"shortName": "ZAC",
-					"longName": "Zacatecas"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_MX",
-		"id": "es_MX"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Mexico",
-			"longName": "United Mexican States",
-			"postalCode": "Postal Code"
-		},
-		"es_MX": {
-			"shortName": "México",
-			"longName": "Estados Unidos Mexicanos",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MX",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_MX",
+    "id" : "es_MX"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MXN",
+    "id" : "MXN"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/ESRB",
+    "id" : "ESRB"
+  } ],
+  "subCountries" : {
+    "AGU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AGU",
+          "longName" : "Aguascalientes"
+        },
+        "es_MX" : {
+          "shortName" : "AGU",
+          "longName" : "Aguascalientes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BCN" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "BCN",
+          "longName" : "Baja California"
+        },
+        "en_US" : {
+          "shortName" : "BCN",
+          "longName" : "Baja California"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BCS" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "BCS",
+          "longName" : "Baja California Sur"
+        },
+        "en_US" : {
+          "shortName" : "BCS",
+          "longName" : "Baja California Sur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CAM",
+          "longName" : "Campeche"
+        },
+        "es_MX" : {
+          "shortName" : "CAM",
+          "longName" : "Campeche"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHH" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "CHH",
+          "longName" : "Chihuahua"
+        },
+        "en_US" : {
+          "shortName" : "CHH",
+          "longName" : "Chihuahua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHP" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "CHP",
+          "longName" : "Chiapas"
+        },
+        "en_US" : {
+          "shortName" : "CHP",
+          "longName" : "Chiapas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "COA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "COA",
+          "longName" : "Coahuila"
+        },
+        "es_MX" : {
+          "shortName" : "COA",
+          "longName" : "Coahuila"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "COL" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "COL",
+          "longName" : "Colima"
+        },
+        "en_US" : {
+          "shortName" : "COL",
+          "longName" : "Colima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DIF" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "DIF",
+          "longName" : "Distrito Federal"
+        },
+        "en_US" : {
+          "shortName" : "DIF",
+          "longName" : "Distrito Federal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DUR" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "DUR",
+          "longName" : "Durango"
+        },
+        "en_US" : {
+          "shortName" : "DUR",
+          "longName" : "Durango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GRO" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "GRO",
+          "longName" : "Guerrero"
+        },
+        "en_US" : {
+          "shortName" : "GRO",
+          "longName" : "Guerrero"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GUA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GUA",
+          "longName" : "Guanajuato"
+        },
+        "es_MX" : {
+          "shortName" : "GUA",
+          "longName" : "Guanajuato"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HID" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "HID",
+          "longName" : "Hidalgo"
+        },
+        "es_MX" : {
+          "shortName" : "HID",
+          "longName" : "Hidalgo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "JAL",
+          "longName" : "Jalisco"
+        },
+        "es_MX" : {
+          "shortName" : "JAL",
+          "longName" : "Jalisco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MEX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MEX",
+          "longName" : "México"
+        },
+        "es_MX" : {
+          "shortName" : "MEX",
+          "longName" : "México"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MIC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MIC",
+          "longName" : "Michoacán"
+        },
+        "es_MX" : {
+          "shortName" : "MIC",
+          "longName" : "Michoacán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MOR",
+          "longName" : "Morelos"
+        },
+        "es_MX" : {
+          "shortName" : "MOR",
+          "longName" : "Morelos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAY" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "NAY",
+          "longName" : "Nayarit"
+        },
+        "en_US" : {
+          "shortName" : "NAY",
+          "longName" : "Nayarit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NLE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NLE",
+          "longName" : "Nuevo León"
+        },
+        "es_MX" : {
+          "shortName" : "NLE",
+          "longName" : "Nuevo León"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OAX" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "OAX",
+          "longName" : "Oaxaca"
+        },
+        "en_US" : {
+          "shortName" : "OAX",
+          "longName" : "Oaxaca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PUE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PUE",
+          "longName" : "Puebla"
+        },
+        "es_MX" : {
+          "shortName" : "PUE",
+          "longName" : "Puebla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QUE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "QUE",
+          "longName" : "Querétaro"
+        },
+        "es_MX" : {
+          "shortName" : "QUE",
+          "longName" : "Querétaro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ROO" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "ROO",
+          "longName" : "Quintana Roo"
+        },
+        "en_US" : {
+          "shortName" : "ROO",
+          "longName" : "Quintana Roo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SIN",
+          "longName" : "Sinaloa"
+        },
+        "es_MX" : {
+          "shortName" : "SIN",
+          "longName" : "Sinaloa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SLP" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "SLP",
+          "longName" : "San Luis Potosí"
+        },
+        "en_US" : {
+          "shortName" : "SLP",
+          "longName" : "San Luis Potosí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SON" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "SON",
+          "longName" : "Sonora"
+        },
+        "en_US" : {
+          "shortName" : "SON",
+          "longName" : "Sonora"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TAB",
+          "longName" : "Tabasco"
+        },
+        "es_MX" : {
+          "shortName" : "TAB",
+          "longName" : "Tabasco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TAM",
+          "longName" : "Tamaulipas"
+        },
+        "es_MX" : {
+          "shortName" : "TAM",
+          "longName" : "Tamaulipas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TLA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TLA",
+          "longName" : "Tlaxcala"
+        },
+        "es_MX" : {
+          "shortName" : "TLA",
+          "longName" : "Tlaxcala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VER",
+          "longName" : "Veracruz"
+        },
+        "es_MX" : {
+          "shortName" : "VER",
+          "longName" : "Veracruz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YUC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "YUC",
+          "longName" : "Yucatán"
+        },
+        "es_MX" : {
+          "shortName" : "YUC",
+          "longName" : "Yucatán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAC" : {
+      "locales" : {
+        "es_MX" : {
+          "shortName" : "ZAC",
+          "longName" : "Zacatecas"
+        },
+        "en_US" : {
+          "shortName" : "ZAC",
+          "longName" : "Zacatecas"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_MX",
+    "id" : "es_MX"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mexico",
+      "longName" : "United Mexican States",
+      "postalCode" : ""
+    },
+    "es_MX" : {
+      "shortName" : "México",
+      "longName" : "Estados Unidos Mexicanos",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Mexiko",
+      "longName" : "Vereinigte Mexikanische Staaten",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mexico",
+      "longName" : "United Mexican States",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "México",
+      "longName" : "Estados Unidos Mexicanos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Mexique",
+      "longName" : "États-Unis du Mexique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Messico",
+      "longName" : "Stati Uniti del Messico",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "멕시코",
+      "longName" : "United Mexican States",
+      "postalCode" : ""
+    }
+  }
 }

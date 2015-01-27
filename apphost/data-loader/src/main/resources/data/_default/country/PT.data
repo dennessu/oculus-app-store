@@ -1,280 +1,327 @@
 {
-	"countryCode": "PT",
-	"defaultLocale": {
-		"href": "/v1/locales/pt_PT",
-		"id": "pt_PT"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI_PT",
-		"id": "PEGI_PT"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"pt_PT": {
-					"shortName": "Aveiro",
-					"longName": "Aveiro"
-				},
-				"en_US": {
-					"shortName": "Aveiro",
-					"longName": "Aveiro"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beja",
-					"longName": "Beja"
-				},
-				"pt_PT": {
-					"shortName": "Beja",
-					"longName": "Beja"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"pt_PT": {
-					"shortName": "Braga",
-					"longName": "Braga"
-				},
-				"en_US": {
-					"shortName": "Braga",
-					"longName": "Braga"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bragança",
-					"longName": "Bragança"
-				},
-				"pt_PT": {
-					"shortName": "Bragança",
-					"longName": "Bragança"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Castelo Branco",
-					"longName": "Castelo Branco"
-				},
-				"pt_PT": {
-					"shortName": "Castelo Branco",
-					"longName": "Castelo Branco"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"pt_PT": {
-					"shortName": "Coimbra",
-					"longName": "Coimbra"
-				},
-				"en_US": {
-					"shortName": "Coimbra",
-					"longName": "Coimbra"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Évora",
-					"longName": "Évora"
-				},
-				"pt_PT": {
-					"shortName": "Évora",
-					"longName": "Évora"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Faro",
-					"longName": "Faro"
-				},
-				"pt_PT": {
-					"shortName": "Faro",
-					"longName": "Faro"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guarda",
-					"longName": "Guarda"
-				},
-				"pt_PT": {
-					"shortName": "Guarda",
-					"longName": "Guarda"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Leiria",
-					"longName": "Leiria"
-				},
-				"pt_PT": {
-					"shortName": "Leiria",
-					"longName": "Leiria"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lisboa",
-					"longName": "Lisboa"
-				},
-				"pt_PT": {
-					"shortName": "Lisboa",
-					"longName": "Lisboa"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Portalegre",
-					"longName": "Portalegre"
-				},
-				"pt_PT": {
-					"shortName": "Portalegre",
-					"longName": "Portalegre"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Porto",
-					"longName": "Porto"
-				},
-				"pt_PT": {
-					"shortName": "Porto",
-					"longName": "Porto"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"pt_PT": {
-					"shortName": "Santarém",
-					"longName": "Santarém"
-				},
-				"en_US": {
-					"shortName": "Santarém",
-					"longName": "Santarém"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Setúbal",
-					"longName": "Setúbal"
-				},
-				"pt_PT": {
-					"shortName": "Setúbal",
-					"longName": "Setúbal"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viana do Castelo",
-					"longName": "Viana do Castelo"
-				},
-				"pt_PT": {
-					"shortName": "Viana do Castelo",
-					"longName": "Viana do Castelo"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vila Real",
-					"longName": "Vila Real"
-				},
-				"pt_PT": {
-					"shortName": "Vila Real",
-					"longName": "Vila Real"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viseu",
-					"longName": "Viseu"
-				},
-				"pt_PT": {
-					"shortName": "Viseu",
-					"longName": "Viseu"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Azores",
-					"longName": "Autonomous Region of the Azores"
-				},
-				"pt_PT": {
-					"shortName": "Açores",
-					"longName": "Região Autónoma dos Açores"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"pt_PT": {
-					"shortName": "Madeira",
-					"longName": "Região Autónoma da Madeira"
-				},
-				"en_US": {
-					"shortName": "Madeira",
-					"longName": "Madeira"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pt_PT",
-		"id": "pt_PT"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Portugal",
-			"longName": "Portuguese Republic",
-			"postalCode": "Postal Code"
-		},
-		"pt_PT": {
-			"shortName": "Portugal",
-			"longName": "República Portuguesa",
-			"postalCode": "código postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pt_PT",
+    "id" : "pt_PT"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI_PT",
+    "id" : "PEGI_PT"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "pt_PT" : {
+          "shortName" : "Aveiro",
+          "longName" : "Aveiro"
+        },
+        "en_US" : {
+          "shortName" : "Aveiro",
+          "longName" : "Aveiro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beja",
+          "longName" : "Beja"
+        },
+        "pt_PT" : {
+          "shortName" : "Beja",
+          "longName" : "Beja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "pt_PT" : {
+          "shortName" : "Braga",
+          "longName" : "Braga"
+        },
+        "en_US" : {
+          "shortName" : "Braga",
+          "longName" : "Braga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bragança",
+          "longName" : "Bragança"
+        },
+        "pt_PT" : {
+          "shortName" : "Bragança",
+          "longName" : "Bragança"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Castelo Branco",
+          "longName" : "Castelo Branco"
+        },
+        "pt_PT" : {
+          "shortName" : "Castelo Branco",
+          "longName" : "Castelo Branco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "pt_PT" : {
+          "shortName" : "Coimbra",
+          "longName" : "Coimbra"
+        },
+        "en_US" : {
+          "shortName" : "Coimbra",
+          "longName" : "Coimbra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Évora",
+          "longName" : "Évora"
+        },
+        "pt_PT" : {
+          "shortName" : "Évora",
+          "longName" : "Évora"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Faro",
+          "longName" : "Faro"
+        },
+        "pt_PT" : {
+          "shortName" : "Faro",
+          "longName" : "Faro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guarda",
+          "longName" : "Guarda"
+        },
+        "pt_PT" : {
+          "shortName" : "Guarda",
+          "longName" : "Guarda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Leiria",
+          "longName" : "Leiria"
+        },
+        "pt_PT" : {
+          "shortName" : "Leiria",
+          "longName" : "Leiria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lisboa",
+          "longName" : "Lisboa"
+        },
+        "pt_PT" : {
+          "shortName" : "Lisboa",
+          "longName" : "Lisboa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Portalegre",
+          "longName" : "Portalegre"
+        },
+        "pt_PT" : {
+          "shortName" : "Portalegre",
+          "longName" : "Portalegre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Porto",
+          "longName" : "Porto"
+        },
+        "pt_PT" : {
+          "shortName" : "Porto",
+          "longName" : "Porto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "pt_PT" : {
+          "shortName" : "Santarém",
+          "longName" : "Santarém"
+        },
+        "en_US" : {
+          "shortName" : "Santarém",
+          "longName" : "Santarém"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Setúbal",
+          "longName" : "Setúbal"
+        },
+        "pt_PT" : {
+          "shortName" : "Setúbal",
+          "longName" : "Setúbal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viana do Castelo",
+          "longName" : "Viana do Castelo"
+        },
+        "pt_PT" : {
+          "shortName" : "Viana do Castelo",
+          "longName" : "Viana do Castelo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vila Real",
+          "longName" : "Vila Real"
+        },
+        "pt_PT" : {
+          "shortName" : "Vila Real",
+          "longName" : "Vila Real"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viseu",
+          "longName" : "Viseu"
+        },
+        "pt_PT" : {
+          "shortName" : "Viseu",
+          "longName" : "Viseu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Azores",
+          "longName" : "Autonomous Region of the Azores"
+        },
+        "pt_PT" : {
+          "shortName" : "Açores",
+          "longName" : "Região Autónoma dos Açores"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "pt_PT" : {
+          "shortName" : "Madeira",
+          "longName" : "Região Autónoma da Madeira"
+        },
+        "en_US" : {
+          "shortName" : "Madeira",
+          "longName" : "Madeira"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pt_PT",
+    "id" : "pt_PT"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Portugal",
+      "longName" : "Portuguese Republic",
+      "postalCode" : ""
+    },
+    "pt_PT" : {
+      "shortName" : "Portugal",
+      "longName" : "República Portuguesa",
+      "postalCode" : "código postal"
+    },
+    "de_DE" : {
+      "shortName" : "Portugal",
+      "longName" : "Portuguese Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Portugal",
+      "longName" : "Portuguese Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Portugal",
+      "longName" : "República Portuguesa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Portugal",
+      "longName" : "République portugaise",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Portogallo",
+      "longName" : "Repubblica Portoghese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "포르투갈",
+      "longName" : "Portuguese Republic",
+      "postalCode" : ""
+    }
+  }
 }

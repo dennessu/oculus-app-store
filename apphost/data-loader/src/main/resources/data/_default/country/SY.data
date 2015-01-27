@@ -1,205 +1,246 @@
 {
-	"countryCode": "SY",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_SY",
-		"id": "ar_SY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SYP",
-		"id": "SYP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"DI": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "مُحافظة دمشق",
-					"longName": "مُحافظة دمشق"
-				},
-				"en_US": {
-					"shortName": "Damascus",
-					"longName": "Damascus"
-				}
-			}
-		},
-		"DR": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "مُحافظة درعا‎",
-					"longName": "مُحافظة درعا‎"
-				},
-				"en_US": {
-					"shortName": "Daraa",
-					"longName": "Daraa"
-				}
-			}
-		},
-		"DY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Deir ez-Zor",
-					"longName": "Deir ez-Zor"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة دير الزور",
-					"longName": "مُحافظة دير الزور"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "الحسكة",
-					"longName": "الحسكة"
-				},
-				"en_US": {
-					"shortName": "Al-Hasakah",
-					"longName": "Al-Hasakah"
-				}
-			}
-		},
-		"HI": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "مُحافظة حمص‎",
-					"longName": "مُحافظة حمص‎"
-				},
-				"en_US": {
-					"shortName": "Homs",
-					"longName": "Homs"
-				}
-			}
-		},
-		"HL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aleppo",
-					"longName": "Aleppo"
-				},
-				"ar_SY": {
-					"shortName": "محافظة حلب",
-					"longName": "محافظة حلب"
-				}
-			}
-		},
-		"HM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hama",
-					"longName": "Hama"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة حماه‎",
-					"longName": "مُحافظة حماه‎"
-				}
-			}
-		},
-		"ID": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "مُحافظة ادلب‎",
-					"longName": "مُحافظة ادلب‎"
-				},
-				"en_US": {
-					"shortName": "Idlib",
-					"longName": "Idlib"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Latakia",
-					"longName": "Latakia"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة اللاذقية",
-					"longName": "مُحافظة اللاذقية"
-				}
-			}
-		},
-		"QU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quneitra",
-					"longName": "Quneitra"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة القنيطرة",
-					"longName": "مُحافظة القنيطرة"
-				}
-			}
-		},
-		"RA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ar-Raqqah",
-					"longName": "Ar-Raqqah"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة الرقة",
-					"longName": "مُحافظة الرقة"
-				}
-			}
-		},
-		"RD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rif Dimashq",
-					"longName": "Rif Dimashq"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة ريف دمشق",
-					"longName": "مُحافظة ريف دمشق"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "As-Suwayda",
-					"longName": "As-Suwayda"
-				},
-				"ar_SY": {
-					"shortName": "مُحافظة السويداء",
-					"longName": "مُحافظة السويداء"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"ar_SY": {
-					"shortName": "مُحافظة طرطوس",
-					"longName": "مُحافظة طرطوس"
-				},
-				"en_US": {
-					"shortName": "Tartus",
-					"longName": "Tartus"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_SY",
-		"id": "ar_SY"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Syria",
-			"longName": "Syrian Arab Republic",
-			"postalCode": "Postal Code"
-		},
-		"ar_SY": {
-			"shortName": "سوريا",
-			"longName": "الجمهورية العربية السورية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_SY",
+    "id" : "ar_SY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SYP",
+    "id" : "SYP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "DI" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "مُحافظة دمشق",
+          "longName" : "مُحافظة دمشق"
+        },
+        "en_US" : {
+          "shortName" : "Damascus",
+          "longName" : "Damascus"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DR" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "مُحافظة درعا‎",
+          "longName" : "مُحافظة درعا‎"
+        },
+        "en_US" : {
+          "shortName" : "Daraa",
+          "longName" : "Daraa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Deir ez-Zor",
+          "longName" : "Deir ez-Zor"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة دير الزور",
+          "longName" : "مُحافظة دير الزور"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "الحسكة",
+          "longName" : "الحسكة"
+        },
+        "en_US" : {
+          "shortName" : "Al-Hasakah",
+          "longName" : "Al-Hasakah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HI" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "مُحافظة حمص‎",
+          "longName" : "مُحافظة حمص‎"
+        },
+        "en_US" : {
+          "shortName" : "Homs",
+          "longName" : "Homs"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aleppo",
+          "longName" : "Aleppo"
+        },
+        "ar_SY" : {
+          "shortName" : "محافظة حلب",
+          "longName" : "محافظة حلب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hama",
+          "longName" : "Hama"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة حماه‎",
+          "longName" : "مُحافظة حماه‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ID" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "مُحافظة ادلب‎",
+          "longName" : "مُحافظة ادلب‎"
+        },
+        "en_US" : {
+          "shortName" : "Idlib",
+          "longName" : "Idlib"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Latakia",
+          "longName" : "Latakia"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة اللاذقية",
+          "longName" : "مُحافظة اللاذقية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quneitra",
+          "longName" : "Quneitra"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة القنيطرة",
+          "longName" : "مُحافظة القنيطرة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ar-Raqqah",
+          "longName" : "Ar-Raqqah"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة الرقة",
+          "longName" : "مُحافظة الرقة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rif Dimashq",
+          "longName" : "Rif Dimashq"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة ريف دمشق",
+          "longName" : "مُحافظة ريف دمشق"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "As-Suwayda",
+          "longName" : "As-Suwayda"
+        },
+        "ar_SY" : {
+          "shortName" : "مُحافظة السويداء",
+          "longName" : "مُحافظة السويداء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "ar_SY" : {
+          "shortName" : "مُحافظة طرطوس",
+          "longName" : "مُحافظة طرطوس"
+        },
+        "en_US" : {
+          "shortName" : "Tartus",
+          "longName" : "Tartus"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_SY",
+    "id" : "ar_SY"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Syria",
+      "longName" : "Syrian Arab Republic",
+      "postalCode" : ""
+    },
+    "ar_SY" : {
+      "shortName" : "سوريا",
+      "longName" : "الجمهورية العربية السورية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Syrien",
+      "longName" : "Arabische Republik Syrien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Syria",
+      "longName" : "Syrian Arab Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Siria",
+      "longName" : "República Árabe Siria",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Syrie",
+      "longName" : "République arabe syrienne",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Siria",
+      "longName" : "Repubblica Araba di Siria",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "시리아",
+      "longName" : "Syrian Arab Republic",
+      "postalCode" : ""
+    }
+  }
 }

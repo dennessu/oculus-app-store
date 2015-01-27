@@ -1,217 +1,259 @@
 {
-	"countryCode": "CL",
-	"defaultLocale": {
-		"href": "/v1/locales/es_CL",
-		"id": "es_CL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CLP",
-		"id": "CLP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AI": {
-			"locales": {
-				"es_CL": {
-					"shortName": "Región Aysén",
-					"longName": "XI Región Aysén del General Carlos Ibáñez del Campo"
-				},
-				"en_US": {
-					"shortName": "Aysén Region",
-					"longName": "XI Aysén del General Carlos Ibáñez del Campo Region"
-				}
-			}
-		},
-		"AN": {
-			"locales": {
-				"es_CL": {
-					"shortName": "II Región de Antofagasta",
-					"longName": "II Región de Antofagasta"
-				},
-				"en_US": {
-					"shortName": "Antofagasta Region",
-					"longName": "Antofagasta Region"
-				}
-			}
-		},
-		"AP": {
-			"locales": {
-				"es_CL": {
-					"shortName": "XV Región de Arica y Parinacota",
-					"longName": "XV Región de Arica y Parinacota"
-				},
-				"en_US": {
-					"shortName": "Arica and Parinacota Region",
-					"longName": "Arica and Parinacota Region"
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Araucanía Region",
-					"longName": "Araucanía Region"
-				},
-				"es_CL": {
-					"shortName": "IX Región de La Araucanía",
-					"longName": "IX Región de La Araucanía"
-				}
-			}
-		},
-		"AT": {
-			"locales": {
-				"es_CL": {
-					"shortName": "III Región de Atacama",
-					"longName": "III Región de Atacama"
-				},
-				"en_US": {
-					"shortName": "Atacama Region",
-					"longName": "Atacama Region"
-				}
-			}
-		},
-		"BI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bío Bío Region",
-					"longName": "Bío Bío Region"
-				},
-				"es_CL": {
-					"shortName": "VIII Región del Bio Bío",
-					"longName": "VIII Región del Bio Bío"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"es_CL": {
-					"shortName": "IV Región de Coquimbo",
-					"longName": "IV Región de Coquimbo"
-				},
-				"en_US": {
-					"shortName": "Coquimbo Region",
-					"longName": "Coquimbo Region"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"en_US": {
-					"shortName": "O'Higgins Region",
-					"longName": "VI Libertador General Bernardo O'Higgins Region"
-				},
-				"es_CL": {
-					"shortName": "Región de O'Higgins",
-					"longName": "VI Región del Libertador General Bernardo O'Higgins"
-				}
-			}
-		},
-		"LL": {
-			"locales": {
-				"es_CL": {
-					"shortName": "X Región de Los Lagos",
-					"longName": "X Región de Los Lagos"
-				},
-				"en_US": {
-					"shortName": "Los Lagos Region",
-					"longName": "Los Lagos Region"
-				}
-			}
-		},
-		"LR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Los Ríos Region",
-					"longName": "Los Ríos Region"
-				},
-				"es_CL": {
-					"shortName": "XIV Región de Los Ríos",
-					"longName": "XIV Región de Los Ríos"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Region of Magallanes",
-					"longName": "XII Region of Magallanes and Chilean Antarctica"
-				},
-				"es_CL": {
-					"shortName": "Región de Magallanes",
-					"longName": "XII Región de Magallanes y de la Antártica Chilena"
-				}
-			}
-		},
-		"ML": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maule Region",
-					"longName": "Maule Region"
-				},
-				"es_CL": {
-					"shortName": "VII Región del Maule",
-					"longName": "VII Región del Maule"
-				}
-			}
-		},
-		"RM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Metropolitan Region",
-					"longName": "Santiago Metropolitan Region"
-				},
-				"es_CL": {
-					"shortName": "Región Metropolitana de Santiago",
-					"longName": "Región Metropolitana de Santiago"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Región Metropolitana de Santiago",
-					"longName": "Región Metropolitana de Santiago"
-				},
-				"es_CL": {
-					"shortName": "I Región de Tarapacá",
-					"longName": "I Región de Tarapacá"
-				}
-			}
-		},
-		"VS": {
-			"locales": {
-				"es_CL": {
-					"shortName": "V Región de Valparaíso",
-					"longName": "V Región de Valparaíso"
-				},
-				"en_US": {
-					"shortName": "Valparaíso Region",
-					"longName": "Valparaíso Region"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_CL",
-		"id": "es_CL"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Chile",
-			"longName": "Republic of Chile",
-			"postalCode": "Postal Code"
-		},
-		"es_CL": {
-			"shortName": "Chile",
-			"longName": "República de Chile",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_CL",
+    "id" : "es_CL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CLP",
+    "id" : "CLP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AI" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "Región Aysén",
+          "longName" : "XI Región Aysén del General Carlos Ibáñez del Campo"
+        },
+        "en_US" : {
+          "shortName" : "Aysén Region",
+          "longName" : "XI Aysén del General Carlos Ibáñez del Campo Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AN" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "II Región de Antofagasta",
+          "longName" : "II Región de Antofagasta"
+        },
+        "en_US" : {
+          "shortName" : "Antofagasta Region",
+          "longName" : "Antofagasta Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AP" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "XV Región de Arica y Parinacota",
+          "longName" : "XV Región de Arica y Parinacota"
+        },
+        "en_US" : {
+          "shortName" : "Arica and Parinacota Region",
+          "longName" : "Arica and Parinacota Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Araucanía Region",
+          "longName" : "Araucanía Region"
+        },
+        "es_CL" : {
+          "shortName" : "IX Región de La Araucanía",
+          "longName" : "IX Región de La Araucanía"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AT" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "III Región de Atacama",
+          "longName" : "III Región de Atacama"
+        },
+        "en_US" : {
+          "shortName" : "Atacama Region",
+          "longName" : "Atacama Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bío Bío Region",
+          "longName" : "Bío Bío Region"
+        },
+        "es_CL" : {
+          "shortName" : "VIII Región del Bio Bío",
+          "longName" : "VIII Región del Bio Bío"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "IV Región de Coquimbo",
+          "longName" : "IV Región de Coquimbo"
+        },
+        "en_US" : {
+          "shortName" : "Coquimbo Region",
+          "longName" : "Coquimbo Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "O'Higgins Region",
+          "longName" : "VI Libertador General Bernardo O'Higgins Region"
+        },
+        "es_CL" : {
+          "shortName" : "Región de O'Higgins",
+          "longName" : "VI Región del Libertador General Bernardo O'Higgins"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LL" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "X Región de Los Lagos",
+          "longName" : "X Región de Los Lagos"
+        },
+        "en_US" : {
+          "shortName" : "Los Lagos Region",
+          "longName" : "Los Lagos Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Los Ríos Region",
+          "longName" : "Los Ríos Region"
+        },
+        "es_CL" : {
+          "shortName" : "XIV Región de Los Ríos",
+          "longName" : "XIV Región de Los Ríos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Region of Magallanes",
+          "longName" : "XII Region of Magallanes and Chilean Antarctica"
+        },
+        "es_CL" : {
+          "shortName" : "Región de Magallanes",
+          "longName" : "XII Región de Magallanes y de la Antártica Chilena"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ML" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maule Region",
+          "longName" : "Maule Region"
+        },
+        "es_CL" : {
+          "shortName" : "VII Región del Maule",
+          "longName" : "VII Región del Maule"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Metropolitan Region",
+          "longName" : "Santiago Metropolitan Region"
+        },
+        "es_CL" : {
+          "shortName" : "Región Metropolitana de Santiago",
+          "longName" : "Región Metropolitana de Santiago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Región Metropolitana de Santiago",
+          "longName" : "Región Metropolitana de Santiago"
+        },
+        "es_CL" : {
+          "shortName" : "I Región de Tarapacá",
+          "longName" : "I Región de Tarapacá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VS" : {
+      "locales" : {
+        "es_CL" : {
+          "shortName" : "V Región de Valparaíso",
+          "longName" : "V Región de Valparaíso"
+        },
+        "en_US" : {
+          "shortName" : "Valparaíso Region",
+          "longName" : "Valparaíso Region"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_CL",
+    "id" : "es_CL"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Chile",
+      "longName" : "Republic of Chile",
+      "postalCode" : ""
+    },
+    "es_CL" : {
+      "shortName" : "Chile",
+      "longName" : "República de Chile",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Chile",
+      "longName" : "Republik Chile",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Chile",
+      "longName" : "Republic of Chile",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Chile",
+      "longName" : "República de Chile",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Chili",
+      "longName" : "République du Chili",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Cile",
+      "longName" : "Repubblica del Cile",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "칠레",
+      "longName" : "Republic of Chile",
+      "postalCode" : ""
+    }
+  }
 }

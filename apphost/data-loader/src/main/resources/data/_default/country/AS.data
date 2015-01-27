@@ -1,29 +1,55 @@
 {
-	"countryCode": "AS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "American Samoa",
-			"longName": "American Samoa",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "American Samoa",
+      "longName" : "American Samoa",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Amerikanisch-Samoa",
+      "longName" : "Amerikanisch-Samoa",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "American Samoa",
+      "longName" : "American Samoa",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Samoa Americana",
+      "longName" : "Territorio de Samoa Americana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Samoa américaine",
+      "longName" : "Samoa américaine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Samoa Americane",
+      "longName" : "Samoa Americane",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "미국령 사모아",
+      "longName" : "미국령 사모아",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,616 +1,691 @@
 {
-	"countryCode": "DZ",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_DZ",
-		"id": "ar_DZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/DZD",
-		"id": "DZD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية أدرار",
-					"longName": "ولاية أدرار"
-				},
-				"en_US": {
-					"shortName": "Adrar",
-					"longName": "Adrar"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية الشلف‎",
-					"longName": "ولاية الشلف‎"
-				},
-				"en_US": {
-					"shortName": "Chlef",
-					"longName": "Chlef"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Laghouat",
-					"longName": "Laghouat"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية الأغواط",
-					"longName": "ولاية الأغواط"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية أم البواقي",
-					"longName": "ولاية أم البواقي"
-				},
-				"en_US": {
-					"shortName": "Oum El Bouaghi",
-					"longName": "Oum El Bouaghi"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية باتنة‎",
-					"longName": "ولاية باتنة‎"
-				},
-				"en_US": {
-					"shortName": "Batna",
-					"longName": "Batna"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Béjaïa",
-					"longName": "Béjaïa"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية بجاية",
-					"longName": "ولاية بجاية"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Biskra",
-					"longName": "Biskra"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية بسكرة‎",
-					"longName": "ولاية بسكرة‎"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Béchar",
-					"longName": "Béchar"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية بشار",
-					"longName": "ولاية بشار"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية البليدة‎",
-					"longName": "ولاية البليدة‎"
-				},
-				"en_US": {
-					"shortName": "Blida",
-					"longName": "Blida"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية البويرة‎",
-					"longName": "ولاية البويرة‎"
-				},
-				"en_US": {
-					"shortName": "Bouïra",
-					"longName": "Bouïra"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tamanrasset",
-					"longName": "Tamanrasset"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية تمنراست‎",
-					"longName": "ولاية تمنراست‎"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية تبسة‎",
-					"longName": "ولاية تبسة‎"
-				},
-				"en_US": {
-					"shortName": "Tébessa",
-					"longName": "Tébessa"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tlemcen",
-					"longName": "Tlemcen"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية تلمسان",
-					"longName": "ولاية تلمسان"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية تيارت",
-					"longName": "ولاية تيارت"
-				},
-				"en_US": {
-					"shortName": "Tiaret",
-					"longName": "Tiaret"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية تيزي وزو",
-					"longName": "ولاية تيزي وزو"
-				},
-				"en_US": {
-					"shortName": "Tizi Ouzou",
-					"longName": "Tizi Ouzou"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Algiers",
-					"longName": "Algiers"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية الجزائر",
-					"longName": "ولاية الجزائر"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية الجلفة",
-					"longName": "ولاية الجلفة"
-				},
-				"en_US": {
-					"shortName": "Djelfa",
-					"longName": "Djelfa"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية جيجل",
-					"longName": "ولاية جيجل"
-				},
-				"en_US": {
-					"shortName": "Jijel",
-					"longName": "Jijel"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية سطيف",
-					"longName": "ولاية سطيف"
-				},
-				"en_US": {
-					"shortName": "Sétif",
-					"longName": "Sétif"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية سعيدة‎",
-					"longName": "ولاية سعيدة‎"
-				},
-				"en_US": {
-					"shortName": "Saïda",
-					"longName": "Saïda"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية سكيكدة‎",
-					"longName": "ولاية سكيكدة‎"
-				},
-				"en_US": {
-					"shortName": "Skikda",
-					"longName": "Skikda"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sidi Bel Abbès",
-					"longName": "Sidi Bel Abbès"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية سيدي بلعباس‎",
-					"longName": "ولاية سيدي بلعباس‎"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية عنابة‎",
-					"longName": "ولاية عنابة‎"
-				},
-				"en_US": {
-					"shortName": "Annaba",
-					"longName": "Annaba"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Annaba",
-					"longName": "Annaba"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية قالمة",
-					"longName": "ولاية قالمة"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Constantine",
-					"longName": "Constantine"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية قسنطينة",
-					"longName": "ولاية قسنطينة"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Médéa",
-					"longName": "Médéa"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية المدية",
-					"longName": "ولاية المدية"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية مستغانم‎",
-					"longName": "ولاية مستغانم‎"
-				},
-				"en_US": {
-					"shortName": "Mostaganem",
-					"longName": "Mostaganem"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية المسيلة",
-					"longName": "ولاية المسيلة"
-				},
-				"en_US": {
-					"shortName": "M'Sila",
-					"longName": "M'Sila"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية معسكر‎",
-					"longName": "ولاية معسكر‎"
-				},
-				"en_US": {
-					"shortName": "Mascara",
-					"longName": "Mascara"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية ورقلة‎",
-					"longName": "ولاية ورقلة‎"
-				},
-				"en_US": {
-					"shortName": "Ouargla",
-					"longName": "Ouargla"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oran",
-					"longName": "Oran"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية وهران",
-					"longName": "ولاية وهران"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية البيض",
-					"longName": "ولاية البيض"
-				},
-				"en_US": {
-					"shortName": "El Bayadh",
-					"longName": "El Bayadh"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Illizi",
-					"longName": "Illizi"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية اليزي",
-					"longName": "ولاية اليزي"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bordj Bou Arréridj",
-					"longName": "Bordj Bou Arréridj"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية برج بوعريريج",
-					"longName": "ولاية برج بوعريريج"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية بومرداس‎",
-					"longName": "ولاية بومرداس‎"
-				},
-				"en_US": {
-					"shortName": "Boumerdès",
-					"longName": "Boumerdès"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية الطارف‎",
-					"longName": "ولاية الطارف‎"
-				},
-				"en_US": {
-					"shortName": "El Taref",
-					"longName": "El Taref"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tindouf",
-					"longName": "Tindouf"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية تندوف",
-					"longName": "ولاية تندوف"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tissemsilt",
-					"longName": "Tissemsilt"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية تسمسيلت",
-					"longName": "ولاية تسمسيلت"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية الوادي‎",
-					"longName": "ولاية الوادي‎"
-				},
-				"en_US": {
-					"shortName": "El Oued",
-					"longName": "El Oued"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khenchela",
-					"longName": "Khenchela"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية خنشلة‎",
-					"longName": "ولاية خنشلة‎"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية سوق أهراس‎",
-					"longName": "ولاية سوق أهراس‎"
-				},
-				"en_US": {
-					"shortName": "Souk Ahras",
-					"longName": "Souk Ahras"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية تيبازة‎",
-					"longName": "ولاية تيبازة‎"
-				},
-				"en_US": {
-					"shortName": "Tipaza",
-					"longName": "Tipaza"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mila",
-					"longName": "Mila"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية ميلة‎",
-					"longName": "ولاية ميلة‎"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aïn Defla",
-					"longName": "Aïn Defla"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية عين الدفلى‎",
-					"longName": "ولاية عين الدفلى‎"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naâma",
-					"longName": "Naâma"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية النعامة‎",
-					"longName": "ولاية النعامة‎"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aïn Témouchent",
-					"longName": "Aïn Témouchent"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية عين تموشنت",
-					"longName": "ولاية عين تموشنت"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ghardaïa",
-					"longName": "Ghardaïa"
-				},
-				"ar_DZ": {
-					"shortName": "ولاية غرداية‎",
-					"longName": "ولاية غرداية‎"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"ar_DZ": {
-					"shortName": "ولاية غليزان",
-					"longName": "ولاية غليزان"
-				},
-				"en_US": {
-					"shortName": "Relizane",
-					"longName": "Relizane"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_DZ",
-		"id": "ar_DZ"
-	},
-	{
-      	"href": "/v1/locales/en_US",
-       	"id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Algeria",
-			"longName": "People's Democratic Republic of Algeria",
-			"postalCode": "Postal Code"
-		},
-		"ar_DZ": {
-			"shortName": "الجزائر",
-			"longName": "جمهورية الجزائر الديمقراطية الشعبية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "DZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_DZ",
+    "id" : "ar_DZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/DZD",
+    "id" : "DZD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية أدرار",
+          "longName" : "ولاية أدرار"
+        },
+        "en_US" : {
+          "shortName" : "Adrar",
+          "longName" : "Adrar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية الشلف‎",
+          "longName" : "ولاية الشلف‎"
+        },
+        "en_US" : {
+          "shortName" : "Chlef",
+          "longName" : "Chlef"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Laghouat",
+          "longName" : "Laghouat"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية الأغواط",
+          "longName" : "ولاية الأغواط"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية أم البواقي",
+          "longName" : "ولاية أم البواقي"
+        },
+        "en_US" : {
+          "shortName" : "Oum El Bouaghi",
+          "longName" : "Oum El Bouaghi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية باتنة‎",
+          "longName" : "ولاية باتنة‎"
+        },
+        "en_US" : {
+          "shortName" : "Batna",
+          "longName" : "Batna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Béjaïa",
+          "longName" : "Béjaïa"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية بجاية",
+          "longName" : "ولاية بجاية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Biskra",
+          "longName" : "Biskra"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية بسكرة‎",
+          "longName" : "ولاية بسكرة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Béchar",
+          "longName" : "Béchar"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية بشار",
+          "longName" : "ولاية بشار"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية البليدة‎",
+          "longName" : "ولاية البليدة‎"
+        },
+        "en_US" : {
+          "shortName" : "Blida",
+          "longName" : "Blida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية البويرة‎",
+          "longName" : "ولاية البويرة‎"
+        },
+        "en_US" : {
+          "shortName" : "Bouïra",
+          "longName" : "Bouïra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tamanrasset",
+          "longName" : "Tamanrasset"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية تمنراست‎",
+          "longName" : "ولاية تمنراست‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية تبسة‎",
+          "longName" : "ولاية تبسة‎"
+        },
+        "en_US" : {
+          "shortName" : "Tébessa",
+          "longName" : "Tébessa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tlemcen",
+          "longName" : "Tlemcen"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية تلمسان",
+          "longName" : "ولاية تلمسان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية تيارت",
+          "longName" : "ولاية تيارت"
+        },
+        "en_US" : {
+          "shortName" : "Tiaret",
+          "longName" : "Tiaret"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية تيزي وزو",
+          "longName" : "ولاية تيزي وزو"
+        },
+        "en_US" : {
+          "shortName" : "Tizi Ouzou",
+          "longName" : "Tizi Ouzou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Algiers",
+          "longName" : "Algiers"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية الجزائر",
+          "longName" : "ولاية الجزائر"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية الجلفة",
+          "longName" : "ولاية الجلفة"
+        },
+        "en_US" : {
+          "shortName" : "Djelfa",
+          "longName" : "Djelfa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية جيجل",
+          "longName" : "ولاية جيجل"
+        },
+        "en_US" : {
+          "shortName" : "Jijel",
+          "longName" : "Jijel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية سطيف",
+          "longName" : "ولاية سطيف"
+        },
+        "en_US" : {
+          "shortName" : "Sétif",
+          "longName" : "Sétif"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية سعيدة‎",
+          "longName" : "ولاية سعيدة‎"
+        },
+        "en_US" : {
+          "shortName" : "Saïda",
+          "longName" : "Saïda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية سكيكدة‎",
+          "longName" : "ولاية سكيكدة‎"
+        },
+        "en_US" : {
+          "shortName" : "Skikda",
+          "longName" : "Skikda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sidi Bel Abbès",
+          "longName" : "Sidi Bel Abbès"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية سيدي بلعباس‎",
+          "longName" : "ولاية سيدي بلعباس‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية عنابة‎",
+          "longName" : "ولاية عنابة‎"
+        },
+        "en_US" : {
+          "shortName" : "Annaba",
+          "longName" : "Annaba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Annaba",
+          "longName" : "Annaba"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية قالمة",
+          "longName" : "ولاية قالمة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Constantine",
+          "longName" : "Constantine"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية قسنطينة",
+          "longName" : "ولاية قسنطينة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Médéa",
+          "longName" : "Médéa"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية المدية",
+          "longName" : "ولاية المدية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية مستغانم‎",
+          "longName" : "ولاية مستغانم‎"
+        },
+        "en_US" : {
+          "shortName" : "Mostaganem",
+          "longName" : "Mostaganem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية المسيلة",
+          "longName" : "ولاية المسيلة"
+        },
+        "en_US" : {
+          "shortName" : "M'Sila",
+          "longName" : "M'Sila"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية معسكر‎",
+          "longName" : "ولاية معسكر‎"
+        },
+        "en_US" : {
+          "shortName" : "Mascara",
+          "longName" : "Mascara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية ورقلة‎",
+          "longName" : "ولاية ورقلة‎"
+        },
+        "en_US" : {
+          "shortName" : "Ouargla",
+          "longName" : "Ouargla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oran",
+          "longName" : "Oran"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية وهران",
+          "longName" : "ولاية وهران"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية البيض",
+          "longName" : "ولاية البيض"
+        },
+        "en_US" : {
+          "shortName" : "El Bayadh",
+          "longName" : "El Bayadh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Illizi",
+          "longName" : "Illizi"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية اليزي",
+          "longName" : "ولاية اليزي"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bordj Bou Arréridj",
+          "longName" : "Bordj Bou Arréridj"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية برج بوعريريج",
+          "longName" : "ولاية برج بوعريريج"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية بومرداس‎",
+          "longName" : "ولاية بومرداس‎"
+        },
+        "en_US" : {
+          "shortName" : "Boumerdès",
+          "longName" : "Boumerdès"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية الطارف‎",
+          "longName" : "ولاية الطارف‎"
+        },
+        "en_US" : {
+          "shortName" : "El Taref",
+          "longName" : "El Taref"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tindouf",
+          "longName" : "Tindouf"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية تندوف",
+          "longName" : "ولاية تندوف"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tissemsilt",
+          "longName" : "Tissemsilt"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية تسمسيلت",
+          "longName" : "ولاية تسمسيلت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية الوادي‎",
+          "longName" : "ولاية الوادي‎"
+        },
+        "en_US" : {
+          "shortName" : "El Oued",
+          "longName" : "El Oued"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khenchela",
+          "longName" : "Khenchela"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية خنشلة‎",
+          "longName" : "ولاية خنشلة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية سوق أهراس‎",
+          "longName" : "ولاية سوق أهراس‎"
+        },
+        "en_US" : {
+          "shortName" : "Souk Ahras",
+          "longName" : "Souk Ahras"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية تيبازة‎",
+          "longName" : "ولاية تيبازة‎"
+        },
+        "en_US" : {
+          "shortName" : "Tipaza",
+          "longName" : "Tipaza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mila",
+          "longName" : "Mila"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية ميلة‎",
+          "longName" : "ولاية ميلة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aïn Defla",
+          "longName" : "Aïn Defla"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية عين الدفلى‎",
+          "longName" : "ولاية عين الدفلى‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naâma",
+          "longName" : "Naâma"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية النعامة‎",
+          "longName" : "ولاية النعامة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aïn Témouchent",
+          "longName" : "Aïn Témouchent"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية عين تموشنت",
+          "longName" : "ولاية عين تموشنت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ghardaïa",
+          "longName" : "Ghardaïa"
+        },
+        "ar_DZ" : {
+          "shortName" : "ولاية غرداية‎",
+          "longName" : "ولاية غرداية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "ar_DZ" : {
+          "shortName" : "ولاية غليزان",
+          "longName" : "ولاية غليزان"
+        },
+        "en_US" : {
+          "shortName" : "Relizane",
+          "longName" : "Relizane"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_DZ",
+    "id" : "ar_DZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Algeria",
+      "longName" : "People's Democratic Republic of Algeria",
+      "postalCode" : ""
+    },
+    "ar_DZ" : {
+      "shortName" : "الجزائر",
+      "longName" : "جمهورية الجزائر الديمقراطية الشعبية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Algerien",
+      "longName" : "People's Democratic Republic of Algeria",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Algeria",
+      "longName" : "People's Democratic Republic of Algeria",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Argelia",
+      "longName" : "República Argelina Democrática y Popular",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Algérie",
+      "longName" : "République démocratique populaire d’Algérie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Algeria",
+      "longName" : "Repubblica democratica popolare d'Algeria",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "알제리",
+      "longName" : "People's Democratic Republic of Algeria",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,167 +1,212 @@
 {
-	"countryCode": "MU",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MUR",
-		"id": "MUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Agalega Islands",
-					"longName": "Agalega Islands"
-				}
-			}
-		},
-		"BL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Black River",
-					"longName": "Black River"
-				}
-			}
-		},
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beau Bassin-Rose Hill",
-					"longName": "Beau Bassin-Rose Hill"
-				}
-			}
-		},
-		"CC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cargados Carajos Shoals [Saint Brandon Islands]",
-					"longName": "Cargados Carajos Shoals [Saint Brandon Islands]"
-				}
-			}
-		},
-		"CU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Curepipe",
-					"longName": "Curepipe"
-				}
-			}
-		},
-		"FL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Flacq",
-					"longName": "Flacq"
-				}
-			}
-		},
-		"GP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Port",
-					"longName": "Grand Port"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moka",
-					"longName": "Moka"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pamplemousses",
-					"longName": "Pamplemousses"
-				}
-			}
-		},
-		"PL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Port Louis",
-					"longName": "Port Louis"
-				}
-			}
-		},
-		"PU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Port Louis",
-					"longName": "Port Louis"
-				}
-			}
-		},
-		"PW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plaines Wilhems",
-					"longName": "Plaines Wilhems"
-				}
-			}
-		},
-		"QB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quatre Bornes",
-					"longName": "Quatre Bornes"
-				}
-			}
-		},
-		"RO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rodrigues Island",
-					"longName": "Rodrigues Island"
-				}
-			}
-		},
-		"RR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rivière du Rempart",
-					"longName": "Rivière du Rempart"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Savanne",
-					"longName": "Savanne"
-				}
-			}
-		},
-		"VP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vacoas-Phoenix",
-					"longName": "Vacoas-Phoenix"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Mauritius",
-			"longName": "Republic of Mauritius",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MUR",
+    "id" : "MUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Agalega Islands",
+          "longName" : "Agalega Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Black River",
+          "longName" : "Black River"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beau Bassin-Rose Hill",
+          "longName" : "Beau Bassin-Rose Hill"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cargados Carajos Shoals [Saint Brandon Islands]",
+          "longName" : "Cargados Carajos Shoals [Saint Brandon Islands]"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Curepipe",
+          "longName" : "Curepipe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Flacq",
+          "longName" : "Flacq"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Port",
+          "longName" : "Grand Port"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moka",
+          "longName" : "Moka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pamplemousses",
+          "longName" : "Pamplemousses"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Port Louis",
+          "longName" : "Port Louis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Port Louis",
+          "longName" : "Port Louis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plaines Wilhems",
+          "longName" : "Plaines Wilhems"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quatre Bornes",
+          "longName" : "Quatre Bornes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rodrigues Island",
+          "longName" : "Rodrigues Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rivière du Rempart",
+          "longName" : "Rivière du Rempart"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Savanne",
+          "longName" : "Savanne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vacoas-Phoenix",
+          "longName" : "Vacoas-Phoenix"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mauritius",
+      "longName" : "Republic of Mauritius",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Mauritius",
+      "longName" : "Republic of Mauritius",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mauritius",
+      "longName" : "Republic of Mauritius",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Mauricio",
+      "longName" : "República de Mauricio",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Île Maurice",
+      "longName" : "République de Maurice",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Mauritius",
+      "longName" : "Repubblica delle Mauritius",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "모리셔스",
+      "longName" : "Republic of Mauritius",
+      "postalCode" : ""
+    }
+  }
 }

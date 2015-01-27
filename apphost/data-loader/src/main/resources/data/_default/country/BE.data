@@ -1,84 +1,112 @@
 {
-	"countryCode": "BE",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_BE",
-		"id": "fr_BE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"BRU": {
-			"locales": {
-				"nl_BE": {
-					"shortName": "Brussel",
-					"longName": "Brussels Hoofdstedelijk Gewest"
-				},
-				"en_US": {
-					"shortName": "Brussels",
-					"longName": "Brussels-Capital Region"
-				}
-			}
-		},
-		"VLG": {
-			"locales": {
-				"nl_BE": {
-					"shortName": "Vlaams",
-					"longName": "Vlaams Gewest"
-				},
-				"en_US": {
-					"shortName": "Flemish",
-					"longName": "Flemish Region"
-				}
-			}
-		},
-		"WAL": {
-			"locales": {
-				"nl_BE": {
-					"shortName": "Walloon Region",
-					"longName": "Walloon Region"
-				},
-				"en_US": {
-					"shortName": "Wallonia",
-					"longName": "Walloon Region"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_BE",
-		"id": "fr_BE"
-	},
-	{
-		"href": "/v1/locales/nl_BE",
-		"id": "nl_BE"
-	},
-	{
-		"href": "/v1/locales/de_BE",
-		"id": "de_BE"
-	},
-    {
-    	"href": "/v1/locales/en_US",
-    	"id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Belgium",
-			"longName": "Kingdom of Belgium",
-			"postalCode": "Postal Code"
-		},
-		"nl_BE": {
-			"shortName": "België",
-			"longName": "Koninkrijk België",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_BE",
+    "id" : "fr_BE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "BRU" : {
+      "locales" : {
+        "nl_BE" : {
+          "shortName" : "Brussel",
+          "longName" : "Brussels Hoofdstedelijk Gewest"
+        },
+        "en_US" : {
+          "shortName" : "Brussels",
+          "longName" : "Brussels-Capital Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VLG" : {
+      "locales" : {
+        "nl_BE" : {
+          "shortName" : "Vlaams",
+          "longName" : "Vlaams Gewest"
+        },
+        "en_US" : {
+          "shortName" : "Flemish",
+          "longName" : "Flemish Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WAL" : {
+      "locales" : {
+        "nl_BE" : {
+          "shortName" : "Walloon Region",
+          "longName" : "Walloon Region"
+        },
+        "en_US" : {
+          "shortName" : "Wallonia",
+          "longName" : "Walloon Region"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_BE",
+    "id" : "fr_BE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/nl_BE",
+    "id" : "nl_BE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/de_BE",
+    "id" : "de_BE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Belgium",
+      "longName" : "Kingdom of Belgium",
+      "postalCode" : ""
+    },
+    "nl_BE" : {
+      "shortName" : "België",
+      "longName" : "Koninkrijk België",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Belgien",
+      "longName" : "Kingdom of Belgium",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Belgium",
+      "longName" : "Kingdom of Belgium",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bélgica",
+      "longName" : "Reino de Bélgica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Belgique",
+      "longName" : "Royaume de Belgique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Belgio",
+      "longName" : "Regno del Belgio",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "벨기에",
+      "longName" : "Kingdom of Belgium",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,193 +1,233 @@
 {
-	"countryCode": "GR",
-	"defaultLocale": {
-		"href": "/v1/locales/el_GR",
-		"id": "el_GR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Ανατολικής Μακεδονίαςn και Θράκης",
-					"longName": "Περιφέρεια Ανατολικής Μακεδονίαςn και Θράκης"
-				},
-				"en_US": {
-					"shortName": "East Macedonia and Thrace",
-					"longName": "East Macedonia and Thrace"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Κεντρικής Μακεδονίας",
-					"longName": "Περιφέρεια Κεντρικής Μακεδονίας"
-				},
-				"en_US": {
-					"shortName": "Central Macedonia",
-					"longName": "Central Macedonia"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Δυτικής Μακεδονίας",
-					"longName": "Περιφέρεια Δυτικής Μακεδονίας"
-				},
-				"en_US": {
-					"shortName": "West Macedonia",
-					"longName": "West Macedonia"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Ηπείρου",
-					"longName": "Περιφέρεια Ηπείρου"
-				},
-				"en_US": {
-					"shortName": "Epirus",
-					"longName": "Epirus"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Θεσσαλίας",
-					"longName": "Περιφέρεια Θεσσαλίας"
-				},
-				"en_US": {
-					"shortName": "Thessaly",
-					"longName": "Thessaly"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Ιονίων Νήσων",
-					"longName": "Περιφέρεια Ιονίων Νήσων"
-				},
-				"en_US": {
-					"shortName": "Ionian Islands",
-					"longName": "Ionian Islands"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"en_US": {
-					"shortName": "West Greece",
-					"longName": "West Greece"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Δυτικής Ελλάδος",
-					"longName": "Περιφέρεια Δυτικής Ελλάδος"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Greece",
-					"longName": "Central Greece"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Στερεάς Ελλάδας",
-					"longName": "Περιφέρεια Στερεάς Ελλάδας"
-				}
-			}
-		},
-		"I": {
-			"locales": {
-				"en_US": {
-					"shortName": "Attica",
-					"longName": "Attica"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Αττικής",
-					"longName": "Περιφέρεια Αττικής"
-				}
-			}
-		},
-		"J": {
-			"locales": {
-				"en_US": {
-					"shortName": "Peloponnese",
-					"longName": "Peloponnese"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Πελοποννήσου",
-					"longName": "Περιφέρεια Πελοποννήσου"
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Aegean",
-					"longName": "North Aegean"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Βορείου Αιγαίου",
-					"longName": "Περιφέρεια Βορείου Αιγαίου"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Aegean",
-					"longName": "South Aegean"
-				},
-				"el_GR": {
-					"shortName": "Περιφέρεια Νοτίου Αιγαίου",
-					"longName": "Περιφέρεια Νοτίου Αιγαίου"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"el_GR": {
-					"shortName": "Περιφέρεια Κρήτης",
-					"longName": "Περιφέρεια Κρήτης"
-				},
-				"en_US": {
-					"shortName": "Crete",
-					"longName": "Crete"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/el_GR",
-		"id": "el_GR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Greece",
-			"longName": "Hellenic Republic",
-			"postalCode": "Postal Code"
-		},
-		"el_GR": {
-			"shortName": "Ελλάδα",
-			"longName": "Ελληνική Δημοκρατία",
-			"postalCode": "Ταχυδρομικός Κώδικας"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/el_GR",
+    "id" : "el_GR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Ανατολικής Μακεδονίαςn και Θράκης",
+          "longName" : "Περιφέρεια Ανατολικής Μακεδονίαςn και Θράκης"
+        },
+        "en_US" : {
+          "shortName" : "East Macedonia and Thrace",
+          "longName" : "East Macedonia and Thrace"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Κεντρικής Μακεδονίας",
+          "longName" : "Περιφέρεια Κεντρικής Μακεδονίας"
+        },
+        "en_US" : {
+          "shortName" : "Central Macedonia",
+          "longName" : "Central Macedonia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Δυτικής Μακεδονίας",
+          "longName" : "Περιφέρεια Δυτικής Μακεδονίας"
+        },
+        "en_US" : {
+          "shortName" : "West Macedonia",
+          "longName" : "West Macedonia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Ηπείρου",
+          "longName" : "Περιφέρεια Ηπείρου"
+        },
+        "en_US" : {
+          "shortName" : "Epirus",
+          "longName" : "Epirus"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Θεσσαλίας",
+          "longName" : "Περιφέρεια Θεσσαλίας"
+        },
+        "en_US" : {
+          "shortName" : "Thessaly",
+          "longName" : "Thessaly"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Ιονίων Νήσων",
+          "longName" : "Περιφέρεια Ιονίων Νήσων"
+        },
+        "en_US" : {
+          "shortName" : "Ionian Islands",
+          "longName" : "Ionian Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West Greece",
+          "longName" : "West Greece"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Δυτικής Ελλάδος",
+          "longName" : "Περιφέρεια Δυτικής Ελλάδος"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Greece",
+          "longName" : "Central Greece"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Στερεάς Ελλάδας",
+          "longName" : "Περιφέρεια Στερεάς Ελλάδας"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "I" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Attica",
+          "longName" : "Attica"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Αττικής",
+          "longName" : "Περιφέρεια Αττικής"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "J" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Peloponnese",
+          "longName" : "Peloponnese"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Πελοποννήσου",
+          "longName" : "Περιφέρεια Πελοποννήσου"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Aegean",
+          "longName" : "North Aegean"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Βορείου Αιγαίου",
+          "longName" : "Περιφέρεια Βορείου Αιγαίου"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Aegean",
+          "longName" : "South Aegean"
+        },
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Νοτίου Αιγαίου",
+          "longName" : "Περιφέρεια Νοτίου Αιγαίου"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "el_GR" : {
+          "shortName" : "Περιφέρεια Κρήτης",
+          "longName" : "Περιφέρεια Κρήτης"
+        },
+        "en_US" : {
+          "shortName" : "Crete",
+          "longName" : "Crete"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/el_GR",
+    "id" : "el_GR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Greece",
+      "longName" : "Hellenic Republic",
+      "postalCode" : ""
+    },
+    "el_GR" : {
+      "shortName" : "Ελλάδα",
+      "longName" : "Ελληνική Δημοκρατία",
+      "postalCode" : "Ταχυδρομικός Κώδικας"
+    },
+    "de_DE" : {
+      "shortName" : "Griechenland",
+      "longName" : "Hellenische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Greece",
+      "longName" : "Hellenic Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Grecia",
+      "longName" : "República Helénica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Grèce",
+      "longName" : "République hellénique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Grecia",
+      "longName" : "Repubblica Ellenica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "그리스",
+      "longName" : "Hellenic Republic",
+      "postalCode" : ""
+    }
+  }
 }

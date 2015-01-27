@@ -1,34 +1,60 @@
 {
-	"countryCode": "TF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_TF",
-		"id": "fr_TF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_TF",
-		"id": "fr_TF"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "French Southern and Antarctic Lands",
-			"longName": "Territory of the French Southern and Antarctic Lands",
-			"postalCode": "Postal Code"
-		},
-		"fr_TF": {
-			"shortName": "Terres australes et antarctiques françaises",
-			"longName": "Terres australes et antarctiques françaises",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_TF",
+    "id" : "fr_TF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_TF",
+    "id" : "fr_TF"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "French Southern and Antarctic Lands",
+      "longName" : "Territory of the French Southern and Antarctic Lands",
+      "postalCode" : ""
+    },
+    "fr_TF" : {
+      "shortName" : "Terres australes et antarctiques françaises",
+      "longName" : "Terres australes et antarctiques françaises",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Französische Süd- und Antarktisgebiete",
+      "longName" : "Territorium der französischen Süd- und Antarktisgebiete",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "French Southern and Antarctic Lands",
+      "longName" : "Territory of the French Southern and Antarctic Lands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Territorios Australes Franceses",
+      "longName" : "Tierras Australes y Antárticas Francesas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Terres françaises du Sud et antarctiques",
+      "longName" : "Territoire des terres françaises du Sud et antarctiques",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Terre australi e antartiche francesi",
+      "longName" : "Territorio delle Terre australi e antartiche francesi",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "프랑스령 남부와 남극지역",
+      "longName" : "Territory of the French Southern and Antarctic Lands",
+      "postalCode" : ""
+    }
+  }
 }

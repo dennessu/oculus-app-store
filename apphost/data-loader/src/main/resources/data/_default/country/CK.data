@@ -1,41 +1,66 @@
 {
-	"countryCode": "CK",
-	"defaultLocale": {
-		"href": "/v1/locales/en_NZ",
-		"id": "en_NZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NZD",
-		"id": "NZD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/OFLC",
-		"id": "OFLC"
-	}],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_NZ",
-		"id": "en_NZ"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Cook Islands",
-			"longName": "Cook Islands",
-			"postalCode": "Postal Code"
-		},
-		"en_NZ": {
-			"shortName": "Cook Islands",
-			"longName": "Cook Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_NZ",
+    "id" : "en_NZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NZD",
+    "id" : "NZD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/OFLC",
+    "id" : "OFLC"
+  } ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_NZ",
+    "id" : "en_NZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Cook Islands",
+      "longName" : "Cook Islands",
+      "postalCode" : ""
+    },
+    "en_NZ" : {
+      "shortName" : "Cook Islands",
+      "longName" : "Cook Islands",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Cookinseln",
+      "longName" : "Cookinseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Cook Islands",
+      "longName" : "Cook Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Cook",
+      "longName" : "Islas Cook",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Cook",
+      "longName" : "Îles Cook",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Cook",
+      "longName" : "Isole Cook",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "쿡 제도",
+      "longName" : "쿡 제도",
+      "postalCode" : ""
+    }
+  }
 }

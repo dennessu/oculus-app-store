@@ -1,109 +1,142 @@
 {
-	"countryCode": "IL",
-	"defaultLocale": {
-		"href": "/v1/locales/he_IL",
-		"id": "he_IL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ILS",
-		"id": "ILS"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"D": {
-			"locales": {
-				"he_IL": {
-					"shortName": "מחוז הדרום",
-					"longName": "מחוז הדרום"
-				},
-				"en_US": {
-					"shortName": "South District",
-					"longName": "South District"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"he_IL": {
-					"shortName": "מחוז חיפה",
-					"longName": "מחוז חיפה"
-				},
-				"en_US": {
-					"shortName": "Haifa District",
-					"longName": "Haifa District"
-				}
-			}
-		},
-		"JM": {
-			"locales": {
-				"he_IL": {
-					"shortName": "מחוז ירושלים",
-					"longName": "מחוז ירושלים"
-				},
-				"en_US": {
-					"shortName": "Jerusalem District",
-					"longName": "Jerusalem District"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central District",
-					"longName": "Central District"
-				},
-				"he_IL": {
-					"shortName": "מָחוֹז הַמֶרְכָּז",
-					"longName": "מָחוֹז הַמֶרְכָּז"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tel Aviv District",
-					"longName": "Tel Aviv District"
-				},
-				"he_IL": {
-					"shortName": "מָחוֹז תֵּל אָבִיב",
-					"longName": "מָחוֹז תֵּל אָבִיב"
-				}
-			}
-		},
-		"Z": {
-			"locales": {
-				"he_IL": {
-					"shortName": "מחוז הצפון",
-					"longName": "מחוז הצפון"
-				},
-				"en_US": {
-					"shortName": "North District",
-					"longName": "North District"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/he_IL",
-		"id": "he_IL"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Israel",
-			"longName": "State of Israel",
-			"postalCode": "Postal Code"
-		},
-		"he_IL": {
-			"shortName": "יִשְׂרָאֵל",
-			"longName": "מְדִינַת יִשְׂרָאֵל",
-			"postalCode": "מיקוד"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/he_IL",
+    "id" : "he_IL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ILS",
+    "id" : "ILS"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "D" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "מחוז הדרום",
+          "longName" : "מחוז הדרום"
+        },
+        "en_US" : {
+          "shortName" : "South District",
+          "longName" : "South District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "מחוז חיפה",
+          "longName" : "מחוז חיפה"
+        },
+        "en_US" : {
+          "shortName" : "Haifa District",
+          "longName" : "Haifa District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JM" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "מחוז ירושלים",
+          "longName" : "מחוז ירושלים"
+        },
+        "en_US" : {
+          "shortName" : "Jerusalem District",
+          "longName" : "Jerusalem District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central District",
+          "longName" : "Central District"
+        },
+        "he_IL" : {
+          "shortName" : "מָחוֹז הַמֶרְכָּז",
+          "longName" : "מָחוֹז הַמֶרְכָּז"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tel Aviv District",
+          "longName" : "Tel Aviv District"
+        },
+        "he_IL" : {
+          "shortName" : "מָחוֹז תֵּל אָבִיב",
+          "longName" : "מָחוֹז תֵּל אָבִיב"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Z" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "מחוז הצפון",
+          "longName" : "מחוז הצפון"
+        },
+        "en_US" : {
+          "shortName" : "North District",
+          "longName" : "North District"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/he_IL",
+    "id" : "he_IL"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Israel",
+      "longName" : "State of Israel",
+      "postalCode" : ""
+    },
+    "he_IL" : {
+      "shortName" : "יִשְׂרָאֵל",
+      "longName" : "מְדִינַת יִשְׂרָאֵל",
+      "postalCode" : "מיקוד"
+    },
+    "de_DE" : {
+      "shortName" : "Israel",
+      "longName" : "State of Israel",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Israel",
+      "longName" : "State of Israel",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Israel",
+      "longName" : "Estado de Israel",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Israël",
+      "longName" : "État d’Israël",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Israele",
+      "longName" : "Stato d'Israele",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "이스라엘",
+      "longName" : "State of Israel",
+      "postalCode" : ""
+    }
+  }
 }

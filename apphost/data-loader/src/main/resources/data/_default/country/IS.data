@@ -1,145 +1,181 @@
 {
-	"countryCode": "IS",
-	"defaultLocale": {
-		"href": "/v1/locales/is_IS",
-		"id": "is_IS"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ISK",
-		"id": "ISK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"0": {
-			"locales": {
-				"is_IS": {
-					"shortName": "Reykjavíkurborg",
-					"longName": "Reykjavíkurborg"
-				},
-				"en_US": {
-					"shortName": "Reykjavík",
-					"longName": "Reykjavík"
-				}
-			}
-		},
-		"1": {
-			"locales": {
-				"is_IS": {
-					"shortName": "Höfuðborgarsvæðið",
-					"longName": "Höfuðborgarsvæðið"
-				},
-				"en_US": {
-					"shortName": "Capital Region",
-					"longName": "Capital Region"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Peninsula",
-					"longName": "Southern Peninsula"
-				},
-				"is_IS": {
-					"shortName": "Suðurnes",
-					"longName": "Suðurnes"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				},
-				"is_IS": {
-					"shortName": "Vesturland",
-					"longName": "Vesturland"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Westfjords",
-					"longName": "Westfjords"
-				},
-				"is_IS": {
-					"shortName": "Vestfirðir",
-					"longName": "Vestfirðir"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northwestern",
-					"longName": "Northwestern"
-				},
-				"is_IS": {
-					"shortName": "Norðurland vestra",
-					"longName": "Norðurland vestra"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northeastern",
-					"longName": "Northeastern"
-				},
-				"is_IS": {
-					"shortName": "Norðurland eystra",
-					"longName": "Norðurland eystra"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				},
-				"is_IS": {
-					"shortName": "Austurfirðir",
-					"longName": "Austurfirðir"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"is_IS": {
-					"shortName": "Suðurland",
-					"longName": "Suðurland"
-				},
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/is_IS",
-		"id": "is_IS"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Iceland",
-			"longName": "Republic of Iceland",
-			"postalCode": "Postal Code"
-		},
-		"is_IS": {
-			"shortName": "Ísland",
-			"longName": "Lýðveldið Ísland",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/is_IS",
+    "id" : "is_IS"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ISK",
+    "id" : "ISK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "0" : {
+      "locales" : {
+        "is_IS" : {
+          "shortName" : "Reykjavíkurborg",
+          "longName" : "Reykjavíkurborg"
+        },
+        "en_US" : {
+          "shortName" : "Reykjavík",
+          "longName" : "Reykjavík"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "1" : {
+      "locales" : {
+        "is_IS" : {
+          "shortName" : "Höfuðborgarsvæðið",
+          "longName" : "Höfuðborgarsvæðið"
+        },
+        "en_US" : {
+          "shortName" : "Capital Region",
+          "longName" : "Capital Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Peninsula",
+          "longName" : "Southern Peninsula"
+        },
+        "is_IS" : {
+          "shortName" : "Suðurnes",
+          "longName" : "Suðurnes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        },
+        "is_IS" : {
+          "shortName" : "Vesturland",
+          "longName" : "Vesturland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Westfjords",
+          "longName" : "Westfjords"
+        },
+        "is_IS" : {
+          "shortName" : "Vestfirðir",
+          "longName" : "Vestfirðir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northwestern",
+          "longName" : "Northwestern"
+        },
+        "is_IS" : {
+          "shortName" : "Norðurland vestra",
+          "longName" : "Norðurland vestra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northeastern",
+          "longName" : "Northeastern"
+        },
+        "is_IS" : {
+          "shortName" : "Norðurland eystra",
+          "longName" : "Norðurland eystra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        },
+        "is_IS" : {
+          "shortName" : "Austurfirðir",
+          "longName" : "Austurfirðir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "is_IS" : {
+          "shortName" : "Suðurland",
+          "longName" : "Suðurland"
+        },
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/is_IS",
+    "id" : "is_IS"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Iceland",
+      "longName" : "Republic of Iceland",
+      "postalCode" : ""
+    },
+    "is_IS" : {
+      "shortName" : "Ísland",
+      "longName" : "Lýðveldið Ísland",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Island",
+      "longName" : "Republic of Iceland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Iceland",
+      "longName" : "Republic of Iceland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islandia",
+      "longName" : "República de Islandia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Islande",
+      "longName" : "République d’Islande",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Islanda",
+      "longName" : "Repubblica di Islanda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아이슬란드",
+      "longName" : "Republic of Iceland",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,29 +1,55 @@
 {
-	"countryCode": "VI",
-	"defaultLocale": {
-		"href": "/v1/locales/en_VI",
-		"id": "en_VI"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_VI",
-		"id": "en_VI"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "United States Virgin Islands",
-			"longName": "Virgin Islands of the United States",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_VI",
+    "id" : "en_VI"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_VI",
+    "id" : "en_VI"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "United States Virgin Islands",
+      "longName" : "Virgin Islands of the United States",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Amerikanische Jungferninseln",
+      "longName" : "Virgin Islands of the United States",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "United States Virgin Islands",
+      "longName" : "Virgin Islands of the United States",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Vírgenes de los Estados Unidos",
+      "longName" : "Islas Vírgenes de los Estados Unidos de América",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles vierges des États-Unis",
+      "longName" : "Îles Vierges des États-Unis",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Vergini americane",
+      "longName" : "Isole Vergini degli Stati Uniti",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "미국령 버진 제도",
+      "longName" : "Virgin Islands of the United States",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,34 +1,60 @@
 {
-	"countryCode": "FO",
-	"defaultLocale": {
-		"href": "/v1/locales/da_FO",
-		"id": "da_FO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/DKK",
-		"id": "DKK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/da_FO",
-		"id": "da_FO"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Faroe Islands",
-			"longName": "Faroe Islands",
-			"postalCode": "Postal Code"
-		},
-		"da_FO": {
-			"shortName": "Færøerne",
-			"longName": "Færøerne",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "FO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/da_FO",
+    "id" : "da_FO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/DKK",
+    "id" : "DKK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/da_FO",
+    "id" : "da_FO"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Faroe Islands",
+      "longName" : "Faroe Islands",
+      "postalCode" : ""
+    },
+    "da_FO" : {
+      "shortName" : "Færøerne",
+      "longName" : "Færøerne",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Färöer-Inseln",
+      "longName" : "Färöer",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Faroe Islands",
+      "longName" : "Faroe Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Feroe",
+      "longName" : "Islas Feroe",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Féroé",
+      "longName" : "Îles Féroé",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Fær Øer",
+      "longName" : "Isole Fær Øer",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "페로 제도",
+      "longName" : "페로 제도",
+      "postalCode" : ""
+    }
+  }
 }

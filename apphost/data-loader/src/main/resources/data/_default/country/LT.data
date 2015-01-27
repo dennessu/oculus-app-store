@@ -1,157 +1,194 @@
 {
-	"countryCode": "LT",
-	"defaultLocale": {
-		"href": "/v1/locales/lt_LT",
-		"id": "lt_LT"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/LTL",
-		"id": "LTL"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AL": {
-			"locales": {
-				"lt_LT": {
-					"shortName": "Alytaus apskritis",
-					"longName": "Alytaus apskritis"
-				},
-				"en_US": {
-					"shortName": "Alytus County",
-					"longName": "Alytus County"
-				}
-			}
-		},
-		"KL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Klaipėda County",
-					"longName": "Klaipėda County"
-				},
-				"lt_LT": {
-					"shortName": "Klaipėdos apskritis",
-					"longName": "Klaipėdos apskritis"
-				}
-			}
-		},
-		"KU": {
-			"locales": {
-				"lt_LT": {
-					"shortName": "Kauno apskritis",
-					"longName": "Kauno apskritis"
-				},
-				"en_US": {
-					"shortName": "Kaunas County",
-					"longName": "Kaunas County"
-				}
-			}
-		},
-		"MR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marijampolė County",
-					"longName": "Marijampolė County"
-				},
-				"lt_LT": {
-					"shortName": "Marijampolės apskritis",
-					"longName": "Marijampolės apskritis"
-				}
-			}
-		},
-		"PN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Panevėžys County",
-					"longName": "Panevėžys County"
-				},
-				"lt_LT": {
-					"shortName": "Panevėžio apskritis",
-					"longName": "Panevėžio apskritis"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šiauliai County",
-					"longName": "Šiauliai County"
-				},
-				"lt_LT": {
-					"shortName": "Šiaulių apskritis",
-					"longName": "Šiaulių apskritis"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šiauliai County",
-					"longName": "Šiauliai County"
-				},
-				"lt_LT": {
-					"shortName": "Tauragės apskritis",
-					"longName": "Tauragės apskritis"
-				}
-			}
-		},
-		"TE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Telšiai County",
-					"longName": "Telšiai County"
-				},
-				"lt_LT": {
-					"shortName": "Telšių apskritis",
-					"longName": "Telšių apskritis"
-				}
-			}
-		},
-		"UT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Utena County",
-					"longName": "Utena County"
-				},
-				"lt_LT": {
-					"shortName": "Utenos apskritis",
-					"longName": "Utenos apskritis"
-				}
-			}
-		},
-		"VL": {
-			"locales": {
-				"lt_LT": {
-					"shortName": "Vilniaus apskritis",
-					"longName": "Vilniaus apskritis"
-				},
-				"en_US": {
-					"shortName": "Vilnius County",
-					"longName": "Vilnius County"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/lt_LT",
-		"id": "lt_LT"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Lithuania",
-			"longName": "Republic of Lithuania",
-			"postalCode": "Postal Code"
-		},
-		"lt_LT": {
-			"shortName": "Lietuva",
-			"longName": "Lietuvos Respublika",
-			"postalCode": "pašto kodas"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/lt_LT",
+    "id" : "lt_LT"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/LTL",
+    "id" : "LTL"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AL" : {
+      "locales" : {
+        "lt_LT" : {
+          "shortName" : "Alytaus apskritis",
+          "longName" : "Alytaus apskritis"
+        },
+        "en_US" : {
+          "shortName" : "Alytus County",
+          "longName" : "Alytus County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Klaipėda County",
+          "longName" : "Klaipėda County"
+        },
+        "lt_LT" : {
+          "shortName" : "Klaipėdos apskritis",
+          "longName" : "Klaipėdos apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KU" : {
+      "locales" : {
+        "lt_LT" : {
+          "shortName" : "Kauno apskritis",
+          "longName" : "Kauno apskritis"
+        },
+        "en_US" : {
+          "shortName" : "Kaunas County",
+          "longName" : "Kaunas County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marijampolė County",
+          "longName" : "Marijampolė County"
+        },
+        "lt_LT" : {
+          "shortName" : "Marijampolės apskritis",
+          "longName" : "Marijampolės apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Panevėžys County",
+          "longName" : "Panevėžys County"
+        },
+        "lt_LT" : {
+          "shortName" : "Panevėžio apskritis",
+          "longName" : "Panevėžio apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šiauliai County",
+          "longName" : "Šiauliai County"
+        },
+        "lt_LT" : {
+          "shortName" : "Šiaulių apskritis",
+          "longName" : "Šiaulių apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šiauliai County",
+          "longName" : "Šiauliai County"
+        },
+        "lt_LT" : {
+          "shortName" : "Tauragės apskritis",
+          "longName" : "Tauragės apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Telšiai County",
+          "longName" : "Telšiai County"
+        },
+        "lt_LT" : {
+          "shortName" : "Telšių apskritis",
+          "longName" : "Telšių apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Utena County",
+          "longName" : "Utena County"
+        },
+        "lt_LT" : {
+          "shortName" : "Utenos apskritis",
+          "longName" : "Utenos apskritis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VL" : {
+      "locales" : {
+        "lt_LT" : {
+          "shortName" : "Vilniaus apskritis",
+          "longName" : "Vilniaus apskritis"
+        },
+        "en_US" : {
+          "shortName" : "Vilnius County",
+          "longName" : "Vilnius County"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/lt_LT",
+    "id" : "lt_LT"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Lithuania",
+      "longName" : "Republic of Lithuania",
+      "postalCode" : ""
+    },
+    "lt_LT" : {
+      "shortName" : "Lietuva",
+      "longName" : "Lietuvos Respublika",
+      "postalCode" : "pašto kodas"
+    },
+    "de_DE" : {
+      "shortName" : "Litauen",
+      "longName" : "Republik Litauen",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Lithuania",
+      "longName" : "Republic of Lithuania",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Lituania",
+      "longName" : "República de Lituania",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Lituanie",
+      "longName" : "République de Lituanie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Lituania",
+      "longName" : "Repubblica di Lituania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "리투아니아",
+      "longName" : "Republic of Lithuania",
+      "postalCode" : ""
+    }
+  }
 }

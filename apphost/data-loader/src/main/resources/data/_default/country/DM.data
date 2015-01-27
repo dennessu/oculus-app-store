@@ -1,108 +1,146 @@
 {
-	"countryCode": "DM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Andrew",
-					"longName": "Saint Andrew"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint David",
-					"longName": "Saint David"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint George",
-					"longName": "Saint George"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint John",
-					"longName": "Saint John"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Joseph",
-					"longName": "Saint Joseph"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Luke",
-					"longName": "Saint Luke"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Mark",
-					"longName": "Saint Mark"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Patrick",
-					"longName": "Saint Patrick"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Paul",
-					"longName": "Saint Paul"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Peter",
-					"longName": "Saint Peter"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Dominica",
-			"longName": "Commonwealth of Dominica",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "DM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Andrew",
+          "longName" : "Saint Andrew"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint David",
+          "longName" : "Saint David"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint George",
+          "longName" : "Saint George"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint John",
+          "longName" : "Saint John"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Joseph",
+          "longName" : "Saint Joseph"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Luke",
+          "longName" : "Saint Luke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Mark",
+          "longName" : "Saint Mark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Patrick",
+          "longName" : "Saint Patrick"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Paul",
+          "longName" : "Saint Paul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Peter",
+          "longName" : "Saint Peter"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Dominica",
+      "longName" : "Commonwealth of Dominica",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Dominica",
+      "longName" : "Commonwealth of Dominica",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Dominica",
+      "longName" : "Commonwealth of Dominica",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Dominica",
+      "longName" : "Commonwealth de Dominica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Dominique",
+      "longName" : "Commonwealth de la Dominique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Dominica",
+      "longName" : "Commonwealth di Dominica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "도미니카",
+      "longName" : "Commonwealth of Dominica",
+      "postalCode" : ""
+    }
+  }
 }

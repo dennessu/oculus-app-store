@@ -1,88 +1,119 @@
 {
-	"countryCode": "IE",
-	"defaultLocale": {
-		"href": "/v1/locales/en_IE",
-		"id": "en_IE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"C": {
-			"locales": {
-				"en_IE": {
-					"shortName": "Connaught",
-					"longName": "Connaught"
-				},
-				"en_US": {
-					"shortName": "Connaught",
-					"longName": "Connaught"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_IE": {
-					"shortName": "Leinster",
-					"longName": "Leinster"
-				},
-				"en_US": {
-					"shortName": "Leinster",
-					"longName": "Leinster"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_IE": {
-					"shortName": "Munster",
-					"longName": "Munster"
-				},
-				"en_US": {
-					"shortName": "Munster",
-					"longName": "Munster"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_IE": {
-					"shortName": "Ulster",
-					"longName": "Ulster"
-				},
-				"en_US": {
-					"shortName": "Ulster",
-					"longName": "Ulster"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_IE",
-		"id": "en_IE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Ireland",
-			"longName": "Ireland",
-			"postalCode": "Postal Code"
-		},
-		"en_IE": {
-			"shortName": "Ireland",
-			"longName": "Ireland",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_IE",
+    "id" : "en_IE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "C" : {
+      "locales" : {
+        "en_IE" : {
+          "shortName" : "Connaught",
+          "longName" : "Connaught"
+        },
+        "en_US" : {
+          "shortName" : "Connaught",
+          "longName" : "Connaught"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_IE" : {
+          "shortName" : "Leinster",
+          "longName" : "Leinster"
+        },
+        "en_US" : {
+          "shortName" : "Leinster",
+          "longName" : "Leinster"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_IE" : {
+          "shortName" : "Munster",
+          "longName" : "Munster"
+        },
+        "en_US" : {
+          "shortName" : "Munster",
+          "longName" : "Munster"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_IE" : {
+          "shortName" : "Ulster",
+          "longName" : "Ulster"
+        },
+        "en_US" : {
+          "shortName" : "Ulster",
+          "longName" : "Ulster"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_IE",
+    "id" : "en_IE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ireland",
+      "longName" : "Ireland",
+      "postalCode" : ""
+    },
+    "en_IE" : {
+      "shortName" : "Ireland",
+      "longName" : "Ireland",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Irland",
+      "longName" : "Irland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ireland",
+      "longName" : "Ireland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Irlanda",
+      "longName" : "Irlanda",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Irlande",
+      "longName" : "Irlande",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Irlanda",
+      "longName" : "Irlanda",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "아일랜드",
+      "longName" : "아일랜드",
+      "postalCode" : ""
+    }
+  }
 }

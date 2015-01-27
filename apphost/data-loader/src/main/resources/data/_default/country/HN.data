@@ -1,253 +1,298 @@
 {
-	"countryCode": "HN",
-	"defaultLocale": {
-		"href": "/v1/locales/es_HN",
-		"id": "es_HN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/HNL",
-		"id": "HNL"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AT": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Atlántida",
-					"longName": "Atlántida"
-				},
-				"en_US": {
-					"shortName": "Atlántida",
-					"longName": "Atlántida"
-				}
-			}
-		},
-		"CH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Choluteca",
-					"longName": "Choluteca"
-				},
-				"es_HN": {
-					"shortName": "Choluteca",
-					"longName": "Choluteca"
-				}
-			}
-		},
-		"CL": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Colón",
-					"longName": "Colón"
-				},
-				"en_US": {
-					"shortName": "Colón",
-					"longName": "Colón"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Comayagua",
-					"longName": "Comayagua"
-				},
-				"en_US": {
-					"shortName": "Comayagua",
-					"longName": "Comayagua"
-				}
-			}
-		},
-		"CP": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Copán",
-					"longName": "Copán"
-				},
-				"en_US": {
-					"shortName": "Copán",
-					"longName": "Copán"
-				}
-			}
-		},
-		"CR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cortés",
-					"longName": "Cortés"
-				},
-				"es_HN": {
-					"shortName": "Cortés",
-					"longName": "Cortés"
-				}
-			}
-		},
-		"EP": {
-			"locales": {
-				"en_US": {
-					"shortName": "El Paraíso",
-					"longName": "El Paraíso"
-				},
-				"es_HN": {
-					"shortName": "El Paraíso",
-					"longName": "El Paraíso"
-				}
-			}
-		},
-		"FM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Francisco Morazán",
-					"longName": "Francisco Morazán"
-				},
-				"es_HN": {
-					"shortName": "Francisco Morazán",
-					"longName": "Francisco Morazán"
-				}
-			}
-		},
-		"GD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gracias a Dios",
-					"longName": "Gracias a Dios"
-				},
-				"es_HN": {
-					"shortName": "Gracias a Dios",
-					"longName": "Gracias a Dios"
-				}
-			}
-		},
-		"IB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Islas de la Bahía",
-					"longName": "Islas de la Bahía"
-				},
-				"es_HN": {
-					"shortName": "Islas de la Bahía",
-					"longName": "Islas de la Bahía"
-				}
-			}
-		},
-		"IN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Intibucá",
-					"longName": "Intibucá"
-				},
-				"es_HN": {
-					"shortName": "Intibucá",
-					"longName": "Intibucá"
-				}
-			}
-		},
-		"LE": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Lempira",
-					"longName": "Lempira"
-				},
-				"en_US": {
-					"shortName": "Lempira",
-					"longName": "Lempira"
-				}
-			}
-		},
-		"LP": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				},
-				"es_HN": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				}
-			}
-		},
-		"OC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ocotepeque",
-					"longName": "Ocotepeque"
-				},
-				"es_HN": {
-					"shortName": "Ocotepeque",
-					"longName": "Ocotepeque"
-				}
-			}
-		},
-		"OL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Olancho",
-					"longName": "Olancho"
-				},
-				"es_HN": {
-					"shortName": "Olancho",
-					"longName": "Olancho"
-				}
-			}
-		},
-		"SB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Santa Bárbara",
-					"longName": "Santa Bárbara"
-				},
-				"es_HN": {
-					"shortName": "Santa Bárbara",
-					"longName": "Santa Bárbara"
-				}
-			}
-		},
-		"VA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valle",
-					"longName": "Valle"
-				},
-				"es_HN": {
-					"shortName": "Valle",
-					"longName": "Valle"
-				}
-			}
-		},
-		"YO": {
-			"locales": {
-				"es_HN": {
-					"shortName": "Yoro",
-					"longName": "Yoro"
-				},
-				"en_US": {
-					"shortName": "Yoro",
-					"longName": "Yoro"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_HN",
-		"id": "es_HN"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Honduras",
-			"longName": "Republic of Honduras",
-			"postalCode": "Postal Code"
-		},
-		"es_HN": {
-			"shortName": "Honduras",
-			"longName": "República de Honduras",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "HN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_HN",
+    "id" : "es_HN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/HNL",
+    "id" : "HNL"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AT" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Atlántida",
+          "longName" : "Atlántida"
+        },
+        "en_US" : {
+          "shortName" : "Atlántida",
+          "longName" : "Atlántida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Choluteca",
+          "longName" : "Choluteca"
+        },
+        "es_HN" : {
+          "shortName" : "Choluteca",
+          "longName" : "Choluteca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CL" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Colón",
+          "longName" : "Colón"
+        },
+        "en_US" : {
+          "shortName" : "Colón",
+          "longName" : "Colón"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Comayagua",
+          "longName" : "Comayagua"
+        },
+        "en_US" : {
+          "shortName" : "Comayagua",
+          "longName" : "Comayagua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CP" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Copán",
+          "longName" : "Copán"
+        },
+        "en_US" : {
+          "shortName" : "Copán",
+          "longName" : "Copán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cortés",
+          "longName" : "Cortés"
+        },
+        "es_HN" : {
+          "shortName" : "Cortés",
+          "longName" : "Cortés"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "El Paraíso",
+          "longName" : "El Paraíso"
+        },
+        "es_HN" : {
+          "shortName" : "El Paraíso",
+          "longName" : "El Paraíso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Francisco Morazán",
+          "longName" : "Francisco Morazán"
+        },
+        "es_HN" : {
+          "shortName" : "Francisco Morazán",
+          "longName" : "Francisco Morazán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gracias a Dios",
+          "longName" : "Gracias a Dios"
+        },
+        "es_HN" : {
+          "shortName" : "Gracias a Dios",
+          "longName" : "Gracias a Dios"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Islas de la Bahía",
+          "longName" : "Islas de la Bahía"
+        },
+        "es_HN" : {
+          "shortName" : "Islas de la Bahía",
+          "longName" : "Islas de la Bahía"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Intibucá",
+          "longName" : "Intibucá"
+        },
+        "es_HN" : {
+          "shortName" : "Intibucá",
+          "longName" : "Intibucá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LE" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Lempira",
+          "longName" : "Lempira"
+        },
+        "en_US" : {
+          "shortName" : "Lempira",
+          "longName" : "Lempira"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        },
+        "es_HN" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ocotepeque",
+          "longName" : "Ocotepeque"
+        },
+        "es_HN" : {
+          "shortName" : "Ocotepeque",
+          "longName" : "Ocotepeque"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Olancho",
+          "longName" : "Olancho"
+        },
+        "es_HN" : {
+          "shortName" : "Olancho",
+          "longName" : "Olancho"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Santa Bárbara",
+          "longName" : "Santa Bárbara"
+        },
+        "es_HN" : {
+          "shortName" : "Santa Bárbara",
+          "longName" : "Santa Bárbara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valle",
+          "longName" : "Valle"
+        },
+        "es_HN" : {
+          "shortName" : "Valle",
+          "longName" : "Valle"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YO" : {
+      "locales" : {
+        "es_HN" : {
+          "shortName" : "Yoro",
+          "longName" : "Yoro"
+        },
+        "en_US" : {
+          "shortName" : "Yoro",
+          "longName" : "Yoro"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_HN",
+    "id" : "es_HN"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Honduras",
+      "longName" : "Republic of Honduras",
+      "postalCode" : ""
+    },
+    "es_HN" : {
+      "shortName" : "Honduras",
+      "longName" : "República de Honduras",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Honduras",
+      "longName" : "Republic of Honduras",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Honduras",
+      "longName" : "Republic of Honduras",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Honduras",
+      "longName" : "República de Honduras",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Honduras",
+      "longName" : "République du Honduras",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Honduras",
+      "longName" : "Repubblica di Honduras",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "온두라스",
+      "longName" : "Republic of Honduras",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,34 +1,60 @@
 {
-	"countryCode": "NC",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_NC",
-		"id": "fr_NC"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XPF",
-		"id": "XPF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_NC",
-		"id": "fr_NC"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "New Caledonia",
-			"longName": "New Caledonia",
-			"postalCode": "Postal Code"
-		},
-		"fr_NC": {
-			"shortName": "Nouvelle-Calédonie",
-			"longName": "Nouvelle-Calédonie",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NC",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_NC",
+    "id" : "fr_NC"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XPF",
+    "id" : "XPF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_NC",
+    "id" : "fr_NC"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "New Caledonia",
+      "longName" : "New Caledonia",
+      "postalCode" : ""
+    },
+    "fr_NC" : {
+      "shortName" : "Nouvelle-Calédonie",
+      "longName" : "Nouvelle-Calédonie",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Neukaledonien",
+      "longName" : "Neukaledonien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "New Caledonia",
+      "longName" : "New Caledonia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Nueva Caledonia",
+      "longName" : "Nueva Caledonia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Nouvelle-Calédonie",
+      "longName" : "Nouvelle-Calédonie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Nuova Caledonia",
+      "longName" : "Nuova Caledonia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "뉴칼레도니아",
+      "longName" : "뉴칼레도니아",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,325 +1,376 @@
 {
-	"countryCode": "EC",
-	"defaultLocale": {
-		"href": "/v1/locales/es_EC",
-		"id": "es_EC"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Azuay",
-					"longName": "Azuay"
-				},
-				"en_US": {
-					"shortName": "Azuay",
-					"longName": "Azuay"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Bolívar",
-					"longName": "Bolívar"
-				},
-				"en_US": {
-					"shortName": "Bolívar",
-					"longName": "Bolívar"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Carchi",
-					"longName": "Carchi"
-				},
-				"es_EC": {
-					"shortName": "Carchi",
-					"longName": "Carchi"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Orellana",
-					"longName": "Orellana"
-				},
-				"en_US": {
-					"shortName": "Orellana",
-					"longName": "Orellana"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Esmeraldas",
-					"longName": "Esmeraldas"
-				},
-				"en_US": {
-					"shortName": "Esmeraldas",
-					"longName": "Esmeraldas"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cañar",
-					"longName": "Cañar"
-				},
-				"es_EC": {
-					"shortName": "Cañar",
-					"longName": "Cañar"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Guayas",
-					"longName": "Guayas"
-				},
-				"en_US": {
-					"shortName": "Guayas",
-					"longName": "Guayas"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chimborazo",
-					"longName": "Chimborazo"
-				},
-				"es_EC": {
-					"shortName": "Chimborazo",
-					"longName": "Chimborazo"
-				}
-			}
-		},
-		"I": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Imbabura",
-					"longName": "Imbabura"
-				},
-				"en_US": {
-					"shortName": "Imbabura",
-					"longName": "Imbabura"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "Loja",
-					"longName": "Loja"
-				},
-				"es_EC": {
-					"shortName": "Loja",
-					"longName": "Loja"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Manabí",
-					"longName": "Manabí"
-				},
-				"en_US": {
-					"shortName": "Manabí",
-					"longName": "Manabí"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Napo",
-					"longName": "Napo"
-				},
-				"es_EC": {
-					"shortName": "Napo",
-					"longName": "Napo"
-				}
-			}
-		},
-		"O": {
-			"locales": {
-				"en_US": {
-					"shortName": "El Oro",
-					"longName": "El Oro"
-				},
-				"es_EC": {
-					"shortName": "El Oro",
-					"longName": "El Oro"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pichincha",
-					"longName": "Pichincha"
-				},
-				"es_EC": {
-					"shortName": "Pichincha",
-					"longName": "Pichincha"
-				}
-			}
-		},
-		"R": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Los Ríos",
-					"longName": "Los Ríos"
-				},
-				"en_US": {
-					"shortName": "Los Ríos",
-					"longName": "Los Ríos"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "Morona-Santiago",
-					"longName": "Morona-Santiago"
-				},
-				"es_EC": {
-					"shortName": "Morona-Santiago",
-					"longName": "Morona-Santiago"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Santo Domingo de los Tsáchilas",
-					"longName": "Santo Domingo de los Tsáchilas"
-				},
-				"en_US": {
-					"shortName": "Santo Domingo de los Tsáchilas",
-					"longName": "Santo Domingo de los Tsáchilas"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Santa Elena",
-					"longName": "Santa Elena"
-				},
-				"en_US": {
-					"shortName": "Santa Elena",
-					"longName": "Santa Elena"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tungurahua",
-					"longName": "Tungurahua"
-				},
-				"es_EC": {
-					"shortName": "Tungurahua",
-					"longName": "Tungurahua"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sucumbíos",
-					"longName": "Sucumbíos"
-				},
-				"es_EC": {
-					"shortName": "Sucumbíos",
-					"longName": "Sucumbíos"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"en_US": {
-					"shortName": "Galápagos",
-					"longName": "Galápagos"
-				},
-				"es_EC": {
-					"shortName": "Galápagos",
-					"longName": "Galápagos"
-				}
-			}
-		},
-		"X": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cotopaxi",
-					"longName": "Cotopaxi"
-				},
-				"es_EC": {
-					"shortName": "Cotopaxi",
-					"longName": "Cotopaxi"
-				}
-			}
-		},
-		"Y": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pastaza",
-					"longName": "Pastaza"
-				},
-				"es_EC": {
-					"shortName": "Pastaza",
-					"longName": "Pastaza"
-				}
-			}
-		},
-		"Z": {
-			"locales": {
-				"es_EC": {
-					"shortName": "Zamora-Chinchipe",
-					"longName": "Zamora-Chinchipe"
-				},
-				"en_US": {
-					"shortName": "Zamora-Chinchipe",
-					"longName": "Zamora-Chinchipe"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_EC",
-		"id": "es_EC"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Ecuador",
-			"longName": "Republic of Ecuador",
-			"postalCode": "Postal Code"
-		},
-		"es_EC": {
-			"shortName": "Ecuador",
-			"longName": "República del Ecuador",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "EC",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_EC",
+    "id" : "es_EC"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Azuay",
+          "longName" : "Azuay"
+        },
+        "en_US" : {
+          "shortName" : "Azuay",
+          "longName" : "Azuay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Bolívar",
+          "longName" : "Bolívar"
+        },
+        "en_US" : {
+          "shortName" : "Bolívar",
+          "longName" : "Bolívar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Carchi",
+          "longName" : "Carchi"
+        },
+        "es_EC" : {
+          "shortName" : "Carchi",
+          "longName" : "Carchi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Orellana",
+          "longName" : "Orellana"
+        },
+        "en_US" : {
+          "shortName" : "Orellana",
+          "longName" : "Orellana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Esmeraldas",
+          "longName" : "Esmeraldas"
+        },
+        "en_US" : {
+          "shortName" : "Esmeraldas",
+          "longName" : "Esmeraldas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cañar",
+          "longName" : "Cañar"
+        },
+        "es_EC" : {
+          "shortName" : "Cañar",
+          "longName" : "Cañar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Guayas",
+          "longName" : "Guayas"
+        },
+        "en_US" : {
+          "shortName" : "Guayas",
+          "longName" : "Guayas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chimborazo",
+          "longName" : "Chimborazo"
+        },
+        "es_EC" : {
+          "shortName" : "Chimborazo",
+          "longName" : "Chimborazo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "I" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Imbabura",
+          "longName" : "Imbabura"
+        },
+        "en_US" : {
+          "shortName" : "Imbabura",
+          "longName" : "Imbabura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Loja",
+          "longName" : "Loja"
+        },
+        "es_EC" : {
+          "shortName" : "Loja",
+          "longName" : "Loja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Manabí",
+          "longName" : "Manabí"
+        },
+        "en_US" : {
+          "shortName" : "Manabí",
+          "longName" : "Manabí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Napo",
+          "longName" : "Napo"
+        },
+        "es_EC" : {
+          "shortName" : "Napo",
+          "longName" : "Napo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "O" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "El Oro",
+          "longName" : "El Oro"
+        },
+        "es_EC" : {
+          "shortName" : "El Oro",
+          "longName" : "El Oro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pichincha",
+          "longName" : "Pichincha"
+        },
+        "es_EC" : {
+          "shortName" : "Pichincha",
+          "longName" : "Pichincha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "R" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Los Ríos",
+          "longName" : "Los Ríos"
+        },
+        "en_US" : {
+          "shortName" : "Los Ríos",
+          "longName" : "Los Ríos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Morona-Santiago",
+          "longName" : "Morona-Santiago"
+        },
+        "es_EC" : {
+          "shortName" : "Morona-Santiago",
+          "longName" : "Morona-Santiago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Santo Domingo de los Tsáchilas",
+          "longName" : "Santo Domingo de los Tsáchilas"
+        },
+        "en_US" : {
+          "shortName" : "Santo Domingo de los Tsáchilas",
+          "longName" : "Santo Domingo de los Tsáchilas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Santa Elena",
+          "longName" : "Santa Elena"
+        },
+        "en_US" : {
+          "shortName" : "Santa Elena",
+          "longName" : "Santa Elena"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tungurahua",
+          "longName" : "Tungurahua"
+        },
+        "es_EC" : {
+          "shortName" : "Tungurahua",
+          "longName" : "Tungurahua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sucumbíos",
+          "longName" : "Sucumbíos"
+        },
+        "es_EC" : {
+          "shortName" : "Sucumbíos",
+          "longName" : "Sucumbíos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Galápagos",
+          "longName" : "Galápagos"
+        },
+        "es_EC" : {
+          "shortName" : "Galápagos",
+          "longName" : "Galápagos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "X" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cotopaxi",
+          "longName" : "Cotopaxi"
+        },
+        "es_EC" : {
+          "shortName" : "Cotopaxi",
+          "longName" : "Cotopaxi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Y" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pastaza",
+          "longName" : "Pastaza"
+        },
+        "es_EC" : {
+          "shortName" : "Pastaza",
+          "longName" : "Pastaza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Z" : {
+      "locales" : {
+        "es_EC" : {
+          "shortName" : "Zamora-Chinchipe",
+          "longName" : "Zamora-Chinchipe"
+        },
+        "en_US" : {
+          "shortName" : "Zamora-Chinchipe",
+          "longName" : "Zamora-Chinchipe"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_EC",
+    "id" : "es_EC"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ecuador",
+      "longName" : "Republic of Ecuador",
+      "postalCode" : ""
+    },
+    "es_EC" : {
+      "shortName" : "Ecuador",
+      "longName" : "República del Ecuador",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Ecuador",
+      "longName" : "Republic of Ecuador",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ecuador",
+      "longName" : "Republic of Ecuador",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Ecuador",
+      "longName" : "República del Ecuador",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Équateur",
+      "longName" : "République d’Équateur",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Ecuador",
+      "longName" : "Repubblica dell'Ecuador",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "에콰도르",
+      "longName" : "Republic of Ecuador",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,137 +1,178 @@
 {
-	"countryCode": "TL",
-	"defaultLocale": {
-		"href": "/v1/locales/pt_TL",
-		"id": "pt_TL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aileu",
-					"longName": "Aileu"
-				}
-			}
-		},
-		"AN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ainaro",
-					"longName": "Ainaro"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baucau",
-					"longName": "Baucau"
-				}
-			}
-		},
-		"BO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bobonaro",
-					"longName": "Bobonaro"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cova Lima",
-					"longName": "Cova Lima"
-				}
-			}
-		},
-		"DI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Díli",
-					"longName": "Díli"
-				}
-			}
-		},
-		"ER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ermera",
-					"longName": "Ermera"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lautem",
-					"longName": "Lautem"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Liquiça",
-					"longName": "Liquiça"
-				}
-			}
-		},
-		"MF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manufahi",
-					"longName": "Manufahi"
-				}
-			}
-		},
-		"MT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manatuto",
-					"longName": "Manatuto"
-				}
-			}
-		},
-		"OE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oecussi",
-					"longName": "Oecussi"
-				}
-			}
-		},
-		"VI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viqueque",
-					"longName": "Viqueque"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pt_TL",
-		"id": "pt_TL"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "East Timor",
-			"longName": "Democratic Republic of Timor-Leste",
-			"postalCode": "Postal Code"
-		},
-		"pt_TL": {
-			"shortName": "Timor-Leste",
-			"longName": "República Democrática de Timor-Leste",
-			"postalCode": "código postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pt_TL",
+    "id" : "pt_TL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aileu",
+          "longName" : "Aileu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ainaro",
+          "longName" : "Ainaro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baucau",
+          "longName" : "Baucau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bobonaro",
+          "longName" : "Bobonaro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cova Lima",
+          "longName" : "Cova Lima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Díli",
+          "longName" : "Díli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ermera",
+          "longName" : "Ermera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lautem",
+          "longName" : "Lautem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Liquiça",
+          "longName" : "Liquiça"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manufahi",
+          "longName" : "Manufahi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manatuto",
+          "longName" : "Manatuto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oecussi",
+          "longName" : "Oecussi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viqueque",
+          "longName" : "Viqueque"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pt_TL",
+    "id" : "pt_TL"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "East Timor",
+      "longName" : "Democratic Republic of Timor-Leste",
+      "postalCode" : ""
+    },
+    "pt_TL" : {
+      "shortName" : "Timor-Leste",
+      "longName" : "República Democrática de Timor-Leste",
+      "postalCode" : "código postal"
+    },
+    "de_DE" : {
+      "shortName" : "Osttimor",
+      "longName" : "Democratic Republic of Timor-Leste",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "East Timor",
+      "longName" : "Democratic Republic of Timor-Leste",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Timor Oriental",
+      "longName" : "República Democrática de Timor Oriental",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Timor Oriental",
+      "longName" : "République démocratique du Timor oriental",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Timor Est",
+      "longName" : "Repubblica Democratica di Timor Est",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "East Timor",
+      "longName" : "Democratic Republic of Timor-Leste",
+      "postalCode" : ""
+    }
+  }
 }

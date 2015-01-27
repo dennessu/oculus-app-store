@@ -1,38 +1,58 @@
 {
-	"countryCode": "MQ",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Martinique",
-			"longName": "Martinique",
-			"postalCode": "Postal Code"
-		},
-		"fr_FR": {
-			"shortName": "Martinique",
-			"longName": "Martinique",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MQ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Martinique",
+      "longName" : "Martinique",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Martinique",
+      "longName" : "Martinique",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Martinique",
+      "longName" : "Martinique",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Martinique",
+      "longName" : "Martinique",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Martinica",
+      "longName" : "Martinica",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Martinica",
+      "longName" : "Martinica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "마르티니크",
+      "longName" : "마르티니크",
+      "postalCode" : ""
+    }
+  }
 }

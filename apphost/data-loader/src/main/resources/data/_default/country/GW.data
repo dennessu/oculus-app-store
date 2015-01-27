@@ -1,177 +1,217 @@
 {
-	"countryCode": "GW",
-	"defaultLocale": {
-		"href": "/v1/locales/pt_GW",
-		"id": "pt_GW"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BA": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Bafatá",
-					"longName": "Bafatá"
-				},
-				"en _US": {
-					"shortName": "Bafatá",
-					"longName": "Bafatá"
-				}
-			}
-		},
-		"BL": {
-			"locales": {
-				"en _US": {
-					"shortName": "Bolama",
-					"longName": "Bolama"
-				},
-				"pt_GW": {
-					"shortName": "Bolama",
-					"longName": "Bolama"
-				}
-			}
-		},
-		"BM": {
-			"locales": {
-				"en _US": {
-					"shortName": "Biombo",
-					"longName": "Biombo"
-				},
-				"pt_GW": {
-					"shortName": "Biombo",
-					"longName": "Biombo"
-				}
-			}
-		},
-		"BS": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Bissau",
-					"longName": "Bissau"
-				},
-				"en _US": {
-					"shortName": "Bissau",
-					"longName": "Bissau"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Cacheu",
-					"longName": "Cacheu"
-				},
-				"en _US": {
-					"shortName": "Cacheu",
-					"longName": "Cacheu"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Gabú",
-					"longName": "Gabú"
-				},
-				"en _US": {
-					"shortName": "Gabú",
-					"longName": "Gabú"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en _US": {
-					"shortName": "Leste",
-					"longName": "Leste"
-				},
-				"pt_GW": {
-					"shortName": "Leste",
-					"longName": "Leste"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en _US": {
-					"shortName": "Norte",
-					"longName": "Norte"
-				},
-				"pt_GW": {
-					"shortName": "Norte",
-					"longName": "Norte"
-				}
-			}
-		},
-		"OI": {
-			"locales": {
-				"en _US": {
-					"shortName": "Oio",
-					"longName": "Oio"
-				},
-				"pt_GW": {
-					"shortName": "Oio",
-					"longName": "Oio"
-				}
-			}
-		},
-		"QU": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Quinara",
-					"longName": "Quinara"
-				},
-				"en _US": {
-					"shortName": "Quinara",
-					"longName": "Quinara"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en _US": {
-					"shortName": "Sul",
-					"longName": "Sul"
-				},
-				"pt_GW": {
-					"shortName": "Sul",
-					"longName": "Sul"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"pt_GW": {
-					"shortName": "Tombali",
-					"longName": "Tombali"
-				},
-				"en _US": {
-					"shortName": "Tombali",
-					"longName": "Tombali"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pt_GW",
-		"id": "pt_GW"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Guinea-Bissau",
-			"longName": "Republic of Guinea-Bissau",
-			"postalCode": "Postal Code"
-		},
-		"pt_GW": {
-			"shortName": "Guiné-Bissau",
-			"longName": "República da Guiné-Bissau",
-			"postalCode": "código postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pt_GW",
+    "id" : "pt_GW"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BA" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Bafatá",
+          "longName" : "Bafatá"
+        },
+        "en _US" : {
+          "shortName" : "Bafatá",
+          "longName" : "Bafatá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BL" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Bolama",
+          "longName" : "Bolama"
+        },
+        "pt_GW" : {
+          "shortName" : "Bolama",
+          "longName" : "Bolama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BM" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Biombo",
+          "longName" : "Biombo"
+        },
+        "pt_GW" : {
+          "shortName" : "Biombo",
+          "longName" : "Biombo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BS" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Bissau",
+          "longName" : "Bissau"
+        },
+        "en _US" : {
+          "shortName" : "Bissau",
+          "longName" : "Bissau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Cacheu",
+          "longName" : "Cacheu"
+        },
+        "en _US" : {
+          "shortName" : "Cacheu",
+          "longName" : "Cacheu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Gabú",
+          "longName" : "Gabú"
+        },
+        "en _US" : {
+          "shortName" : "Gabú",
+          "longName" : "Gabú"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Leste",
+          "longName" : "Leste"
+        },
+        "pt_GW" : {
+          "shortName" : "Leste",
+          "longName" : "Leste"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Norte",
+          "longName" : "Norte"
+        },
+        "pt_GW" : {
+          "shortName" : "Norte",
+          "longName" : "Norte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OI" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Oio",
+          "longName" : "Oio"
+        },
+        "pt_GW" : {
+          "shortName" : "Oio",
+          "longName" : "Oio"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QU" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Quinara",
+          "longName" : "Quinara"
+        },
+        "en _US" : {
+          "shortName" : "Quinara",
+          "longName" : "Quinara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en _US" : {
+          "shortName" : "Sul",
+          "longName" : "Sul"
+        },
+        "pt_GW" : {
+          "shortName" : "Sul",
+          "longName" : "Sul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "pt_GW" : {
+          "shortName" : "Tombali",
+          "longName" : "Tombali"
+        },
+        "en _US" : {
+          "shortName" : "Tombali",
+          "longName" : "Tombali"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pt_GW",
+    "id" : "pt_GW"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Guinea-Bissau",
+      "longName" : "Republic of Guinea-Bissau",
+      "postalCode" : ""
+    },
+    "pt_GW" : {
+      "shortName" : "Guiné-Bissau",
+      "longName" : "República da Guiné-Bissau",
+      "postalCode" : "código postal"
+    },
+    "de_DE" : {
+      "shortName" : "Guinea-Bissau",
+      "longName" : "Republic of Guinea-Bissau",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Guinea-Bissau",
+      "longName" : "Republic of Guinea-Bissau",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guinea-Bissau",
+      "longName" : "República de Guinea-Bisáu",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guinée-Bissau",
+      "longName" : "République de Guinée-Bissau",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guinea-Bissau",
+      "longName" : "Repubblica di Guinea-Bissau",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "기니비사우",
+      "longName" : "Republic of Guinea-Bissau",
+      "postalCode" : ""
+    }
+  }
 }

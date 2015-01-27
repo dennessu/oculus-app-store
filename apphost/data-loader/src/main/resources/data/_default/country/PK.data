@@ -1,133 +1,168 @@
 {
-	"countryCode": "PK",
-	"defaultLocale": {
-		"href": "/v1/locales/ur_PK",
-		"id": "ur_PK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PKR",
-		"id": "PKR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BA": {
-			"locales": {
-				"ur_PK": {
-					"shortName": "بلوچِستان‎",
-					"longName": "بلوچِستان‎"
-				},
-				"en_US": {
-					"shortName": "Balochistan",
-					"longName": "Balochistan"
-				}
-			}
-		},
-		"GB": {
-			"locales": {
-				"ur_PK": {
-					"shortName": "گلگت بلتستان",
-					"longName": "گلگت بلتستان"
-				},
-				"en_US": {
-					"shortName": "Gilgit-Baltistan",
-					"longName": "Gilgit-Baltistan"
-				}
-			}
-		},
-		"IS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Islamabad",
-					"longName": "Islamabad"
-				},
-				"ur_PK": {
-					"shortName": "وفاقی دارالحکومت",
-					"longName": "وفاقی دارالحکومت"
-				}
-			}
-		},
-		"JK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Azad Kashmir",
-					"longName": "Azad Kashmir"
-				},
-				"ur_PK": {
-					"shortName": "آزاد جموں و کشمیر",
-					"longName": "آزاد جموں و کشمیر"
-				}
-			}
-		},
-		"KP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khyber Pakhtunkhwa",
-					"longName": "Khyber Pakhtunkhwa"
-				},
-				"ur_PK": {
-					"shortName": "خیبر پختونخوا",
-					"longName": "خیبر پختونخوا"
-				}
-			}
-		},
-		"PB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Punjab",
-					"longName": "Punjab"
-				},
-				"ur_PK": {
-					"shortName": "پنجاب‎,",
-					"longName": "پنجاب‎,"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sindh",
-					"longName": "Sindh"
-				},
-				"ur_PK": {
-					"shortName": "سندھ",
-					"longName": "سندھ"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"ur_PK": {
-					"shortName": "قبائلی علاقہ جات",
-					"longName": "قبائلی علاقہ جات"
-				},
-				"en_US": {
-					"shortName": "Federally Administered Tribal Areas",
-					"longName": "Federally Administered Tribal Areas"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	{
-		"href": "/v1/locales/ur_PK",
-		"id": "ur_PK"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Pakistan",
-			"longName": "Islamic Republic of Pakistan",
-			"postalCode": "Postal Code"
-		},
-		"ur_PK": {
-			"shortName": "پاكستان",
-			"longName": "اسلامی جمہوریۂ پاكستان",
-			"postalCode": "پوسٹل کوڈ"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ur_PK",
+    "id" : "ur_PK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PKR",
+    "id" : "PKR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BA" : {
+      "locales" : {
+        "ur_PK" : {
+          "shortName" : "بلوچِستان‎",
+          "longName" : "بلوچِستان‎"
+        },
+        "en_US" : {
+          "shortName" : "Balochistan",
+          "longName" : "Balochistan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GB" : {
+      "locales" : {
+        "ur_PK" : {
+          "shortName" : "گلگت بلتستان",
+          "longName" : "گلگت بلتستان"
+        },
+        "en_US" : {
+          "shortName" : "Gilgit-Baltistan",
+          "longName" : "Gilgit-Baltistan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Islamabad",
+          "longName" : "Islamabad"
+        },
+        "ur_PK" : {
+          "shortName" : "وفاقی دارالحکومت",
+          "longName" : "وفاقی دارالحکومت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Azad Kashmir",
+          "longName" : "Azad Kashmir"
+        },
+        "ur_PK" : {
+          "shortName" : "آزاد جموں و کشمیر",
+          "longName" : "آزاد جموں و کشمیر"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khyber Pakhtunkhwa",
+          "longName" : "Khyber Pakhtunkhwa"
+        },
+        "ur_PK" : {
+          "shortName" : "خیبر پختونخوا",
+          "longName" : "خیبر پختونخوا"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Punjab",
+          "longName" : "Punjab"
+        },
+        "ur_PK" : {
+          "shortName" : "پنجاب‎,",
+          "longName" : "پنجاب‎,"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sindh",
+          "longName" : "Sindh"
+        },
+        "ur_PK" : {
+          "shortName" : "سندھ",
+          "longName" : "سندھ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "ur_PK" : {
+          "shortName" : "قبائلی علاقہ جات",
+          "longName" : "قبائلی علاقہ جات"
+        },
+        "en_US" : {
+          "shortName" : "Federally Administered Tribal Areas",
+          "longName" : "Federally Administered Tribal Areas"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/ur_PK",
+    "id" : "ur_PK"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Pakistan",
+      "longName" : "Islamic Republic of Pakistan",
+      "postalCode" : ""
+    },
+    "ur_PK" : {
+      "shortName" : "پاكستان",
+      "longName" : "اسلامی جمہوریۂ پاكستان",
+      "postalCode" : "پوسٹل کوڈ"
+    },
+    "de_DE" : {
+      "shortName" : "Pakistan",
+      "longName" : "Islamische Republik Pakistan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Pakistan",
+      "longName" : "Islamic Republic of Pakistan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Pakistán",
+      "longName" : "República Islámica de Pakistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Pakistan",
+      "longName" : "République islamique du Pakistan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Pakistan",
+      "longName" : "Repubblica Islamica del Pakistan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "파키스탄",
+      "longName" : "Islamic Republic of Pakistan",
+      "postalCode" : ""
+    }
+  }
 }
