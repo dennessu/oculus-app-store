@@ -130,11 +130,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             parts = locale.split('-')
         }
 
-        String failedUri = UriUtil.replaceLocale(this.failedRedirectUri, locale);
-        String successUri = UriUtil.replaceLocale(this.successRedirectUri, locale);
+        String failedUri = UriUtil.replaceRedirectUriLocale(this.failedRedirectUri, locale)
+        String successUri = UriUtil.replaceRedirectUriLocale(this.successRedirectUri, locale)
 
-        failedUri = failedUri.replaceFirst('/country', '/' + parts[1])
-        successUri = successUri.replaceFirst('/country', '/' + parts[1])
+        failedUri = UriUtil.replaceRedirectUriCountry(failedUri, parts[1])
+        successUri = UriUtil.replaceRedirectUriCountry(successUri, parts[1])
 
         locale = locale.replace('-', '_')
         if (StringUtils.isEmpty(code)) {

@@ -35,11 +35,11 @@ class RedirectToPage implements Action {
 
         String realUrl = new String(pageUrl)
         if (contextWrapper.viewCountry != null) {
-            realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
+            realUrl = UriUtil.replaceRedirectUriCountry(realUrl, contextWrapper.viewCountry)
         }
 
         if (contextWrapper.viewLocale != null) {
-            realUrl = UriUtil.replaceLocale(realUrl, contextWrapper.viewLocale);
+            realUrl = UriUtil.replaceRedirectUriLocale(realUrl, contextWrapper.viewLocale);
         }
 
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
