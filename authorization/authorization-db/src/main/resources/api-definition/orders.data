@@ -5,6 +5,15 @@
             {
                 "precondition": "ownedByCurrentUser",
                 "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "commerce.checkout": [
+            {
+                "precondition": "ownedByCurrentUser",
+                "rights": [
                     "create", "read", "update"
                 ],
                 "scriptType": "SPEL"

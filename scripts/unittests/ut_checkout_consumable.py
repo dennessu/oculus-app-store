@@ -129,7 +129,7 @@ class CheckoutTests(ut.TestBase):
         }
 
     def testCheckout(self):
-        user = oauth.testRegister('identity commerce')
+        user = oauth.testRegister('identity commerce commerce.checkout')
         devinfo = self.testDeveloper()
 
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {

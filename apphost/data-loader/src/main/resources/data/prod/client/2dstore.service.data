@@ -7,8 +7,8 @@
 
   "logout_redirect_uris" : [],
 
-  "scopes" : ["catalog", "identity", "commerce", "identity.pii"],
-  "default_scopes" : ["catalog", "identity", "commerce", "identity.pii"],
+  "scopes" : ["catalog", "identity", "commerce", "commerce.checkout", "identity.pii"],
+  "default_scopes" : ["catalog", "identity", "commerce", "commerce.checkout", "identity.pii"],
 
   "response_types" : [],
   "grant_types" : ["CLIENT_CREDENTIALS", "EXCHANGE"],
