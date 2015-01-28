@@ -17,8 +17,6 @@ public enum PaymentStatus implements Identifiable<Short> {
     AUTH_CREATED((short)1),
     AUTHORIZED((short)2),
     AUTH_DECLINED((short)3),
-    AUTHORIZATION_EXPIRED((short)4),
-    AUTHORIZING((short)5),
     SETTLEMENT_SUBMIT_CREATED((short)6),
     SETTLEMENT_SUBMITTED((short)7),
     SETTLEMENT_SUBMIT_DECLINED((short)8),
@@ -37,7 +35,9 @@ public enum PaymentStatus implements Identifiable<Short> {
     CREDIT_DECLINED((short)21),
     UNRECOGNIZED((short)22),
     CHARGE_BACK((short)23),
-    DISCREPANT((short)24);
+    DISCREPANT((short)24),
+    RISK_PENDING((short)25),
+    RISK_ASYNC_REJECT((short)26);
 
     private final Short id;
 

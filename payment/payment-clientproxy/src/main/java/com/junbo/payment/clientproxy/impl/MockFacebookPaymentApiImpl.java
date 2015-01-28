@@ -86,4 +86,9 @@ public class MockFacebookPaymentApiImpl implements FacebookPaymentApi {
     public Promise<FacebookPayment> modifyPayment(String accessToken, String paymentAccountId, FacebookPayment fbPayment) {
         return facebookPaymentApi.modifyPayment(accessToken, paymentAccountId, fbPayment);
     }
+
+    @Override
+    public Promise<FacebookRiskPayment> getPaymentField(String accessToken, String paymentId) {
+        return Promise.pure(null);
+    }
 }
