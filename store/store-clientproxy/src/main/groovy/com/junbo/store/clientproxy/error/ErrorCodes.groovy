@@ -27,6 +27,7 @@ class ErrorCodes {
         static final String InvalidCredential = '132.103'
         static final String RefreshTokenInvalid = '132.001'
         static final String RefreshTokenExpired = '132.104'
+        static final String SentryLoginError = '132.144'
     }
 
     class Catalog {

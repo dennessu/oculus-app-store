@@ -348,6 +348,9 @@ class LoginResourceImpl implements LoginResource {
                 if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential, ErrorCodes.Identity.MaximumLoginAttempt)) {
                     throw ex
                 }
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.SentryLoginError)) {
+                    throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
+                }
                 appErrorUtils.throwUnknownError('signIn', ex)
             }
         }.then { AuthTokenResponse authTokenResponse ->
