@@ -347,8 +347,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderAlreadyInSettleProcess().exception()
         } else {
             order.tentative = false
-            latest.tentative = false
-            orderRepository.updateOrder(latest, true, false, null)
+            orderRepository.updateOrder(order, true, false, null)
         }
     }
 
@@ -364,8 +363,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             LOGGER.info("name=Already_In_Error_Status. orderId: " + order.getId().value)
         } else {
             order.status = OrderStatus.ERROR.name()
-            latest.status = OrderStatus.ERROR.name()
-            orderRepository.updateOrder(latest, true, false, null)
+            orderRepository.updateOrder(order, true, false, null)
         }
     }
 
@@ -381,8 +379,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             LOGGER.error("name=Already_Tentative. orderId: " + order.getId().value)
         } else {
             order.tentative = true
-            latest.tentative = true
-            orderRepository.updateOrder(latest, true, false, null)
+            orderRepository.updateOrder(order, true, false, null)
         }
     }
 
