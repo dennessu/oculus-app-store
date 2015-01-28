@@ -66,7 +66,7 @@ public class SentryFacadeImpl implements SentryFacade {
             if (response == "[]") {
                 return Promise.pure(new SentryResponse())
             } else {
-                return Promise.pure(ObjectMapperProvider.instance().readValue(response, SentryResponse))
+                return Promise.pure(ObjectMapperProvider.instanceNotStrict().readValue(response, SentryResponse))
             }
         }
     }
@@ -75,8 +75,8 @@ public class SentryFacadeImpl implements SentryFacade {
     SentryRequest createSentryRequest(String category, Map<String, String> textJson) {
         return new SentryRequest(
                 category: category,
-                textJson: ObjectMapperProvider.instance().writeValueAsString(textJson),
-                otherJson: ObjectMapperProvider.instance().writeValueAsString(createOtherJsonMap())
+                textJson: ObjectMapperProvider.instanceNotStrict().writeValueAsString(textJson),
+                otherJson: ObjectMapperProvider.instanceNotStrict().writeValueAsString(createOtherJsonMap())
         )
     }
 
@@ -85,8 +85,8 @@ public class SentryFacadeImpl implements SentryFacade {
         return new SentryRequest(
                 category: category,
                 targetId: targetId,
-                textJson: ObjectMapperProvider.instance().writeValueAsString(textJson),
-                otherJson: ObjectMapperProvider.instance().writeValueAsString(createOtherJsonMap())
+                textJson: ObjectMapperProvider.instanceNotStrict().writeValueAsString(textJson),
+                otherJson: ObjectMapperProvider.instanceNotStrict().writeValueAsString(createOtherJsonMap())
         )
     }
 

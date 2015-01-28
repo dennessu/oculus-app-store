@@ -286,6 +286,6 @@ class ResponseValidatorImpl implements ResponseValidator {
         if (validationContext.violations.isEmpty() || !logInvalidResponse) {
             return
         }
-        LOGGER.error('name=Invalid_Response, type={}, details={}', type.canonicalName, ObjectMapperProvider.instance().writeValueAsString(validationContext.violations))
+        LOGGER.error('name=Invalid_Response, type={}, details={}', type.canonicalName, ObjectMapperProvider.instanceNotStrict().writeValueAsString(validationContext.violations))
     }
 }

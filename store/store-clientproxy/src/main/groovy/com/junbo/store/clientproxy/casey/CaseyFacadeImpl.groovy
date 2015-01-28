@@ -196,7 +196,7 @@ class CaseyFacadeImpl implements CaseyFacade {
             new SewerParam(country: country, locale: locale, expand: CMSPAGE_LIST_EXPAND)
         ).then { CaseyResults<JsonNode> results ->
             if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
-                LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
+                LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instanceNotStrict().writeValueAsString(results))
                 throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
             return Promise.pure(results.items[0] == null ? null :
@@ -455,7 +455,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                     return Promise.pure(user.nickName)
                 }
                 return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo username ->
-                    return Promise.pure(ObjectMapperProvider.instance().treeToValue(username.value, UserLoginName).userName)
+                    return Promise.pure(ObjectMapperProvider.instanceNotStrict().treeToValue(username.value, UserLoginName).userName)
                 }
             }
         }.recover { Throwable e ->
@@ -478,7 +478,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                 return
             }
         }
-        LOGGER.error("name=CaseyResults_Unknown_CursorFormat, payload={}", ObjectMapperProvider.instance().writeValueAsString(caseyResults.rawCursor))
+        LOGGER.error("name=CaseyResults_Unknown_CursorFormat, payload={}", ObjectMapperProvider.instanceNotStrict().writeValueAsString(caseyResults.rawCursor))
     }
 
     private static void wrapAndThrow(Throwable throwable) {

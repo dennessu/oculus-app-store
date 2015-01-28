@@ -411,7 +411,7 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
 
     @Override
     void afterPropertiesSet() throws Exception {
-        initialItemsVersionedMap = (Map <Integer, Map>)ObjectMapperProvider.instance().readValue(initialItemsVersionedMapString,
+        initialItemsVersionedMap = (Map <Integer, Map>)ObjectMapperProvider.instanceNotStrict().readValue(initialItemsVersionedMapString,
                 new TypeReference<Map<Integer, Map>>() {});
     }
 }

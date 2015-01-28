@@ -156,7 +156,7 @@ class EntitlementFacadeImpl implements EntitlementFacade {
             if (sewerEntitlement.itemNode == null || sewerEntitlement.itemNode.isNull()) {
                 return null
             }
-            return ObjectMapperProvider.instance().treeToValue(sewerEntitlement.itemNode, SewerItem)
+            return ObjectMapperProvider.instanceNotStrict().treeToValue(sewerEntitlement.itemNode, SewerItem)
         } catch (JsonProcessingException ex) {
             LOGGER.error('name=Bad_Sewer_Entitlement_ItemNode, payload:\n{}',
                     String.valueOf(sewerEntitlement.itemNode), ex)

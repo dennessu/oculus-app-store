@@ -36,14 +36,16 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     // thread safe
     private static ObjectMapper objectMapper = createObjectMapper();
 
-    private static ObjectMapper objectMapperNoIndent = createObjectMapper(false);
+    private static ObjectMapper objectMapperNoIndent = createObjectMapper(false, true);
+
+    private static ObjectMapper objectMapperNotStrict = createObjectMapper(true, false);
 
     public static ObjectMapper createObjectMapper() {
-        return createObjectMapper(true);
+        return createObjectMapper(true, true);
     }
 
     static ObjectMapper createObjectMapper(
-            boolean indent) {
+            boolean indent, boolean strict) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
                 new CustomDeserializationContext());
@@ -55,7 +57,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         }
 
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, strict);
 
         SimpleModule module = new SimpleModule(ObjectMapperProvider.class.getName()) {
             public void setupModule(SetupContext context) {
@@ -95,6 +97,10 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     public static ObjectMapper instanceNoIndent() {
         return objectMapperNoIndent;
+    }
+
+    public static ObjectMapper instanceNotStrict() {
+        return objectMapperNotStrict;
     }
 
     public static void setInstance(ObjectMapper objectMapper) {

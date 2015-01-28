@@ -49,7 +49,7 @@ class IdentityUtils {
     private AppErrorUtils appErrorUtils
 
     Promise<UserPersonalInfo> createPhoneInfoIfNotExist(UserId userId, PersonalInfo phoneInfo) {
-        PhoneNumber updatePhone = ObjectMapperProvider.instance().treeToValue(phoneInfo.value, PhoneNumber)
+        PhoneNumber updatePhone = ObjectMapperProvider.instanceNotStrict().treeToValue(phoneInfo.value, PhoneNumber)
         return resourceContainer.userPersonalInfoResource.list(new UserPersonalInfoListOptions(type: 'PHONE', phoneNumber: updatePhone.info)).then { Results<UserPersonalInfo> results ->
             UserPersonalInfo result = results.items.find { UserPersonalInfo e -> e.userId == userId }
             if (result == null) {
@@ -117,7 +117,7 @@ class IdentityUtils {
                 throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
             }
 
-            Email email = ObjectMapperProvider.instance().treeToValue(pii.value, Email)
+            Email email = ObjectMapperProvider.instanceNotStrict().treeToValue(pii.value, Email)
             return Promise.pure(email.info)
         }
     }

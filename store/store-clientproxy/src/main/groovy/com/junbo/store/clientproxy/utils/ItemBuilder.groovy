@@ -91,7 +91,7 @@ class ItemBuilder {
     @Value('${store.image.sizeGroups}')
     public void setLengthToImageSizeGroup(String text) {
         lengthToImageSizeGroup = new TreeMap<>()
-        Map<String, String> val = (Map<String, String>) ObjectMapperProvider.instance().readValue(text, new TypeReference<Map<String, String>>() {})
+        Map<String, String> val = (Map<String, String>) ObjectMapperProvider.instanceNotStrict().readValue(text, new TypeReference<Map<String, String>>() {})
         val.each { Map.Entry<String, String> entry ->
             lengthToImageSizeGroup[Integer.parseInt(entry.key)] = entry.value
         }
@@ -132,23 +132,23 @@ class ItemBuilder {
         List<CaseyAggregateRating> aggregateRatingCaseyResults = [] as List
         try {
             if (sewerItem?.currentRevisionNode != null) {
-                currentRevision = ObjectMapperProvider.instance().treeToValue(sewerItem.currentRevisionNode, ItemRevision)
+                currentRevision = ObjectMapperProvider.instanceNotStrict().treeToValue(sewerItem.currentRevisionNode, ItemRevision)
             }
             if (sewerItem?.developerNode != null) {
-                developer = ObjectMapperProvider.instance().treeToValue(sewerItem.developerNode, Organization)
+                developer = ObjectMapperProvider.instanceNotStrict().treeToValue(sewerItem.developerNode, Organization)
             }
             if (sewerItem?.categoriesNode != null) {
                 sewerItem.categoriesNode.each { JsonNode node ->
-                    categories <<  ObjectMapperProvider.instance().treeToValue(node, OfferAttribute)
+                    categories <<  ObjectMapperProvider.instanceNotStrict().treeToValue(node, OfferAttribute)
                 }
             }
             if (sewerItem?.genresNode != null) {
                 sewerItem.genresNode.each { JsonNode node ->
-                    genres <<  ObjectMapperProvider.instance().treeToValue(node, ItemAttribute)
+                    genres <<  ObjectMapperProvider.instanceNotStrict().treeToValue(node, ItemAttribute)
                 }
             }
             if (sewerItem.ratingNode != null) {
-                aggregateRatingCaseyResults = (List<CaseyAggregateRating>) ObjectMapperProvider.instance().readValue(sewerItem.ratingNode.traverse(),
+                aggregateRatingCaseyResults = (List<CaseyAggregateRating>) ObjectMapperProvider.instanceNotStrict().readValue(sewerItem.ratingNode.traverse(),
                         new TypeReference<List<CaseyAggregateRating>>() {})
             }
         } catch (JsonProcessingException ex) {
@@ -402,7 +402,7 @@ class ItemBuilder {
             return [] as List
         }
         try {
-            return ObjectMapperProvider.instance().readValue(jsonNode.traverse(), new TypeReference<List<String>>() {}) as List<String>
+            return ObjectMapperProvider.instanceNotStrict().readValue(jsonNode.traverse(), new TypeReference<List<String>>() {}) as List<String>
         } catch (JsonProcessingException ex) {
             LOGGER.error('name=Invalid_Permission_Value', ex)
             return [] as List
