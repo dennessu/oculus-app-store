@@ -221,7 +221,7 @@ class LoginResourceImpl implements LoginResource {
         CreateUserContext apiContext = new CreateUserContext()
         ErrorContext errorContext = new ErrorContext()
         AuthTokenResponse authTokenResponse
-
+        request.preferredLocale = apiContextBuilder.doLocaleMapping(request.preferredLocale.replace('-', '_'))
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext storeApiContext ->
             apc = storeApiContext
             return Promise.pure(null)
