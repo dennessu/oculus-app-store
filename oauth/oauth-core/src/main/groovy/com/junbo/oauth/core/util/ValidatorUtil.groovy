@@ -19,7 +19,7 @@ class ValidatorUtil {
             throw new IllegalArgumentException('locale is null')
         }
 
-        com.junbo.identity.spec.v1.model.Locale l = localeResource.get(new LocaleId(locale), new LocaleGetOptions()).get()
+        com.junbo.identity.spec.v1.model.Locale l = localeResource.get(new LocaleId(locale.replace('-', '_')), new LocaleGetOptions()).get()
 
         if (l == null) {
             return false

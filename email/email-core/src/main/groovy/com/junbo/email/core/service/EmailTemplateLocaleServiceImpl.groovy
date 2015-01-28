@@ -30,8 +30,12 @@ public class EmailTemplateLocaleServiceImpl implements EmailTemplateLocaleServic
 
     @Override
     public Promise<String> getEmailTemplateLocale(String locale, UserId userId) {
+        String formattedLocale = locale
+        if (!StringUtils.isEmpty(locale)) {
+            formattedLocale = locale.replace('-', '_')
+        }
         if (userId == null) {
-            return Promise.pure(locale)
+            return Promise.pure(formattedLocale)
         }
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
@@ -43,12 +47,12 @@ public class EmailTemplateLocaleServiceImpl implements EmailTemplateLocaleServic
                 return Promise.pure(user.preferredLocale.toString())
             }
 
-            if (JunboHttpContext.acceptableLanguage != null) {
-                return Promise.pure(JunboHttpContext.acceptableLanguage)
+            if (!StringUtils.isEmpty(formattedLocale)) {
+                return Promise.pure(formattedLocale)
             }
 
-            if (!StringUtils.isEmpty(locale)) {
-                return Promise.pure(locale)
+            if (JunboHttpContext.acceptableLanguage != null) {
+                return Promise.pure(JunboHttpContext.acceptableLanguage)
             }
 
             return Promise.pure(defaultLocale)
