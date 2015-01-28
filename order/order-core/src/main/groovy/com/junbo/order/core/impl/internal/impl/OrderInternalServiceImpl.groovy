@@ -22,6 +22,7 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
@@ -202,14 +204,15 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
                         def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                        assert(isRefundable != isCancelable)
-                        if(isRefundable) {
+                        assert (isRefundable != isCancelable)
+                        if (isRefundable) {
                             refundedOrder.status = OrderStatus.REFUNDED.name()
                             refundedOrder.isAudited = false
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
-                            context.refundedOrderItems = diffOrder.orderItems // todo : need to whether it is the right way to set refundedOrderItems
+                            context.refundedOrderItems = diffOrder.orderItems
+                            // todo : need to whether it is the right way to set refundedOrderItems
                             persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
-                        } else if(isCancelable) {
+                        } else if (isCancelable) {
                             refundedOrder.status = OrderStatus.CANCELED.name()
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.CANCEL)
                             persistBillingHistory(refunded, BillingAction.REQUEST_CANCEL, order)
@@ -339,11 +342,43 @@ class OrderInternalServiceImpl implements OrderInternalService {
         if (latest == null) {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
-
-        if (!latest?.tentative) {
-            LOGGER.info("name=Already_Tentative")
+        if (!latest.tentative) {
+            LOGGER.error("name=Already_Non_Tentative. orderId: " + order.getId().value)
+            throw AppErrors.INSTANCE.orderAlreadyInSettleProcess().exception()
         } else {
             order.tentative = false
+            orderRepository.updateOrder(order, true, false, null)
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void markErrorStatus(Order order) {
+        LOGGER.info('name=internal.markErrorStatus')
+        def latest = orderRepository.getOrder(order.getId().value)
+        if (latest == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        if (latest.status == OrderStatus.ERROR.name()) {
+            LOGGER.info("name=Already_In_Error_Status. orderId: " + order.getId().value)
+        } else {
+            order.status = OrderStatus.ERROR.name()
+            orderRepository.updateOrder(order, true, false, null)
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void markTentative(Order order) {
+        LOGGER.info('name=internal.markTentative')
+        def latest = orderRepository.getOrder(order.getId().value)
+        if (latest == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        if (latest.tentative) {
+            LOGGER.error("name=Already_Tentative. orderId: " + order.getId().value)
+        } else {
+            order.tentative = true
             orderRepository.updateOrder(order, true, false, null)
         }
     }
@@ -353,7 +388,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
         LOGGER.info('name=internal.persistBillingHistory')
         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
-        if(action != null) {
+        if (action != null) {
             billingHistory.billingEvent = action.name()
             if (action == BillingAction.REQUEST_REFUND) {
                 billingHistory.note = order.note
@@ -388,7 +423,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances) {
         LOGGER.info('name=internal.checkOrderEventStatus')
         if (event.action == OrderActionType.CHARGE.name()) {
-            switch(event.status) {
+            switch (event.status) {
                 case EventStatus.COMPLETED.name():
                     if (!CoreUtils.isChargeCompleted(balances)) {
                         throw AppErrors.INSTANCE.orderEvenStatusNotMatch().exception()
@@ -523,7 +558,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             LOGGER.info("name=skip_validateDuplicatePurchase")
             return Promise.pure(order)
         }
-        if ( quantity > 1 ) {
+        if (quantity > 1) {
             LOGGER.info("name=dup_purchase. offerId: {}, quantity: {}", offer.getId(), quantity)
             throw AppErrors.INSTANCE.duplicatePurchase().exception()
         }
@@ -577,7 +612,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
 
                 // update to revoked
-                if(completed) {
+                if (completed) {
                     revokeItems?.each { OrderItemRevision oir ->
                         oir.revoked = true
                     }
@@ -589,14 +624,65 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     def savedHistory = orderRepository.createFulfillmentHistory(fulfillmentHistory)
                     if (orderItem.fulfillmentHistories == null) {
                         orderItem.fulfillmentHistories = [savedHistory]
-                    }
-                    else {
+                    } else {
                         orderItem.fulfillmentHistories.add(savedHistory)
                     }
                 }
             }
             return Promise.pure(completed)
+        }
+    }
 
+    @Override
+    Promise<com.junbo.langur.core.webflow.action.ActionResult> immediateSettle(Order order, OrderActionContext context) {
+        String actionResultStr
+        return Promise.pure().then {
+            return transactionHelper.executeInNewTransaction {
+                return facadeContainer.billingFacade.createBalance(CoreBuilder.buildBalance(order, BalanceType.DEBIT), false)
+            }
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Order_Unexpected_Billing_Error_ImmediateSettle', ex)
+            return Promise.pure(null)
+        }.then { Balance balance ->
+            if (balance == null) {
+                LOGGER.error('name=Order_Unexpected_Billing_Error_ImmediateSettle')
+                actionResultStr = 'ERROR'
+                markErrorStatus(order)
+                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        EventStatus.FAILED, actionResultStr))
+            }
+            if (balance.status == BalanceStatus.FAILED.name()) {
+                // declined. indicate to rollback the tentative flag
+                LOGGER.info('name=Order_ImmediateSettle_Declined. orderId: {}', order.getId().value)
+                actionResultStr = 'ROLLBACK'
+                markTentative(order)
+            } else if (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
+                    balance.status != BalanceStatus.COMPLETED.name() &&
+                    balance.status != BalanceStatus.QUEUING.name()) {
+                LOGGER.error('name=Order_ImmediateSettle_UnexpectedStatus.BalanceStatus:' + balance.status)
+                actionResultStr = 'ERROR'
+                markErrorStatus(order)
+            } else {
+                LOGGER.info('name=Order_ImmediateSettle_Success. BalanceStatus:' + balance.status)
+                actionResultStr = 'SUCCESS'
+            }
+            context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
+            CoreBuilder.fillTaxInfo(order, balance)
+            persistBillingHistory(balance, BillingAction.CHARGE, order)
+            return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
+                // TODO: save order level tax
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        BillingEventHistoryBuilder.buildEventStatusFromBalance(balance), actionResultStr)
+            }
+        }.recover { Throwable ex ->
+            transactionHelper.executeInNewTransaction {
+                // catch any exception during processing the balance result
+                LOGGER.error('name=Order_Unexpected_Error_ImmediateSettle', ex)
+                actionResultStr = 'ERROR'
+                markErrorStatus(order)
+                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context,
+                        EventStatus.FAILED, actionResultStr))
+            }
         }
     }
 }

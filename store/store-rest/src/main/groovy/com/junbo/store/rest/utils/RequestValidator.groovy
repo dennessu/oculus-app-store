@@ -262,7 +262,7 @@ class RequestValidator {
                     UserPersonalInfo emailPii = new UserPersonalInfo(
                             userId: user.getId(),
                             type: 'EMAIL',
-                            value: ObjectMapperProvider.instance().valueToTree(email)
+                            value: ObjectMapperProvider.instanceNotStrict().valueToTree(email)
                     )
                     return resourceContainer.userUserPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
                         return facadeContainer.oAuthFacade.sendVerifyEmail(locale.value, country.value, user.getId(), userPersonalInfo.getId()).then {
@@ -504,7 +504,7 @@ class RequestValidator {
                 return Promise.pure(false)
             }   
 
-            Email email = (Email)ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, Email)
+            Email email = (Email)ObjectMapperProvider.instanceNotStrict().treeToValue(userPersonalInfo.value, Email)
             if (email.info == request.userProfile?.email?.value){
                 return Promise.pure(false)
             }

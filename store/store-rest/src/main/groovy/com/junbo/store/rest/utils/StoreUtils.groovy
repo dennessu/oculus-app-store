@@ -39,7 +39,7 @@ class StoreUtils {
         valuesMap.put('sku', item.iapDetails.sku)
         valuesMap.put('type', item.itemType)
         valuesMap.put('signatureTimestamp', System.currentTimeMillis())
-        String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
+        String jsonText = ObjectMapperProvider.instanceNotStrict().writeValueAsString(valuesMap)
 
         item.payload = jsonText
         return resourceContainer.itemCryptoResource.sign(hostItemId.value, new

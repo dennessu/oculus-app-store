@@ -228,7 +228,7 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure(null)
         }.then {
             return resourceContainer.userUserPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
-                userProfile.username = ObjectMapperProvider.instance().treeToValue(usernameInfo.value, UserLoginName).userName
+                userProfile.username = ObjectMapperProvider.instanceNotStrict().treeToValue(usernameInfo.value, UserLoginName).userName
                 return Promise.pure()
             }
         }.then {
@@ -238,7 +238,7 @@ class StoreResourceImpl implements StoreResource {
             }
 
             return resourceContainer.userUserPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo personalInfo ->
-                def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
+                def email = ObjectMapperProvider.instanceNotStrict().treeToValue(personalInfo.value, Email)
 
                 userProfile.email = new StoreUserEmail(
                         value: email.info,

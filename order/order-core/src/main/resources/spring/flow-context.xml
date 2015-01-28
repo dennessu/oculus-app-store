@@ -85,4 +85,10 @@
     <bean id="reverseFulfillmentOrderAction" class="com.junbo.order.core.impl.orderaction.ReverseFulfillmentAction">
         <property name="orderActionType" value="REVERSE_FULFILLMENT"/>
     </bean>
+
+    <bean id="preImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.PreImmediateSettleAction">
+    </bean>
+
+    <bean id="interruptChargeAction" class="com.junbo.order.core.impl.orderaction.InterruptChargeAction">
+    </bean>
 </beans>

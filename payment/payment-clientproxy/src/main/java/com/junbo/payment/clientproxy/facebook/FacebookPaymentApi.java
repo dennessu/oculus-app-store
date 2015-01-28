@@ -42,4 +42,8 @@ public interface FacebookPaymentApi {
     @Path("{payment-id}")
     Promise<FacebookPayment> modifyPayment(@QueryParam("access_token") String accessToken,
                                         @PathParam("payment-id") String paymentId, @BeanParam FacebookPayment fbPayment);
+
+    @GET
+    @Path("{payment-id}/risk")
+    Promise<FacebookRiskPayment> getPaymentField(@QueryParam("access_token") String accessToken, @PathParam("payment-id") String paymentId);
 }

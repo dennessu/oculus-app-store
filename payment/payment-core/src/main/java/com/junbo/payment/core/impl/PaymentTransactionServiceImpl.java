@@ -277,6 +277,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
+        final String currentStatus = existedTransaction.getStatus();
         existedTransaction.setStatus(createStatus.toString());
         addPaymentEvent(existedTransaction, reverseCreateEvent);
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus, false);
@@ -286,8 +287,14 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
-                return handleProviderException(throwable, provider, request, api,
-                        PaymentStatus.REVERSE_DECLINED, eventType);
+                //if any exception, do not affect the current status:
+                try{
+                    handleProviderException(throwable, provider, request, api,PaymentStatus.REVERSE_DECLINED, eventType);
+                }catch(Exception ex){
+                    updatePayment(existedTransaction, PaymentStatus.valueOf(currentStatus), null);
+                    throw ex;
+                }
+                return Promise.pure(null);
             }
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
@@ -308,22 +315,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     public Promise<PaymentTransaction> getTransaction(Long paymentId) {
         final PaymentTransaction result = getPaymentAndEvents(paymentId);
         return Promise.pure(result);
-    }
-
-    private boolean isOpenStatus(String paymentStatus){
-        if(PaymentStatus.AUTH_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.AUTHORIZING.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.SETTLEMENT_SUBMIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.SETTLE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.SETTLING.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.REVERSE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.REFUND_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.CREDIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
-                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus)){
-            return true;
-        }
-        return false;
     }
 
     @Override

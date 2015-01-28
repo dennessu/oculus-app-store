@@ -80,7 +80,7 @@ class InstrumentUtils {
             }
             changed = true
             return resourceContainer.userUserPersonalInfoResource.create(
-                    new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instance().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
+                    new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instanceNotStrict().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
             ).then { UserPersonalInfo info ->
                 oldPaymentInstrument.billingAddressId = info.getId().value
                 return Promise.pure(null)
@@ -90,7 +90,7 @@ class InstrumentUtils {
                 return Promise.pure(null)
             }
             changed = true
-            return identityUtils.createPhoneInfoIfNotExist(user.getId(), new PersonalInfo(value: ObjectMapperProvider.instance().valueToTree(new PhoneNumber(info: instrument.phoneNumber)))).then { PersonalInfo info ->
+            return identityUtils.createPhoneInfoIfNotExist(user.getId(), new PersonalInfo(value: ObjectMapperProvider.instanceNotStrict().valueToTree(new PhoneNumber(info: instrument.phoneNumber)))).then { PersonalInfo info ->
                 oldPaymentInstrument.phoneNumber = info.self.value
                 return Promise.pure(null)
             }
@@ -121,7 +121,7 @@ class InstrumentUtils {
         promise = promise.then {
             if (instrument.billingAddress != null) {
                 return resourceContainer.userUserPersonalInfoResource.create(
-                        new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instance().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
+                        new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instanceNotStrict().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
                 ).syncThen { UserPersonalInfo info ->
                     paymentInstrument.billingAddressId = info.getId().value
                 }
@@ -143,7 +143,7 @@ class InstrumentUtils {
         // create phone
         promise = promise.then {
             if (!StringUtils.isEmpty(instrument.phoneNumber)) {
-                return identityUtils.createPhoneInfoIfNotExist(user.getId(), new PersonalInfo(value: ObjectMapperProvider.instance().valueToTree(new PhoneNumber(info: instrument.phoneNumber)))).then { PersonalInfo info ->
+                return identityUtils.createPhoneInfoIfNotExist(user.getId(), new PersonalInfo(value: ObjectMapperProvider.instanceNotStrict().valueToTree(new PhoneNumber(info: instrument.phoneNumber)))).then { PersonalInfo info ->
                     paymentInstrument.phoneNumber = info.self.value
                     return Promise.pure(null)
                 }
@@ -231,7 +231,7 @@ class InstrumentUtils {
             if (paymentInstrument.billingAddressId != null && paymentInstrument.billingAddressId != 0) {
                 return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.billingAddressId), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
                     instrument.billingAddress = new com.junbo.store.spec.model.Address()
-                    dataConvertor.toAddress(ObjectMapperProvider.instance().treeToValue(info.value, Address), instrument.billingAddress)
+                    dataConvertor.toAddress(ObjectMapperProvider.instanceNotStrict().treeToValue(info.value, Address), instrument.billingAddress)
                 }
             }
             return Promise.pure(null)
@@ -240,7 +240,7 @@ class InstrumentUtils {
         return promise.then {
             if (paymentInstrument.phoneNumber != null && paymentInstrument.phoneNumber != 0) {
                 return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.phoneNumber), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
-                    instrument.phoneNumber = ObjectMapperProvider.instance().treeToValue(info.value, PhoneNumber).info
+                    instrument.phoneNumber = ObjectMapperProvider.instanceNotStrict().treeToValue(info.value, PhoneNumber).info
                 }
             }
             return Promise.pure(null)

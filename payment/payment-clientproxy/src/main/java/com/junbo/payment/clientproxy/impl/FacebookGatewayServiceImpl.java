@@ -107,6 +107,13 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
         });
     }
 
+    @Override
+    public Promise<FacebookRiskPayment> getPaymentRisk(String accessToken, String paymentId) {
+        //TODO: enable this when Facebook API is ready
+        //return facebookPaymentApi.getPaymentField(accessToken, paymentId);
+        return Promise.pure(null);
+    }
+
     public void setFacebookOauthApi(FacebookOauthApi facebookOauthApi) {
         this.facebookOauthApi = facebookOauthApi;
     }

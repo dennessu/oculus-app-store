@@ -1,5 +1,4 @@
 package com.junbo.order.clientproxy.billing.impl
-
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.error.AppError
@@ -15,6 +14,8 @@ import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 /**
@@ -24,26 +25,27 @@ import javax.annotation.Resource
 @TypeChecked
 @Component('orderBillingFacade')
 class BillingFacadeImpl implements BillingFacade {
-    @Resource(name='order.billingBalanceClient')
+    @Resource(name = 'order.billingBalanceClient')
     BalanceResource balanceResource
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
     private static final String PAYMENT_INSUFFICIENT_FUND = '121.117'
 
-
     @Override
     Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
-        balance.isAsyncCharge = isAsyncCharge
-        return balanceResource.postBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
-            throw convertError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+        return Promise.pure().then {
+            balance.isAsyncCharge = isAsyncCharge
+            return balanceResource.postBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
+                return Promise.pure(b)
             }
-            LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
-            return Promise.pure(b)
         }
     }
 
@@ -66,6 +68,7 @@ class BillingFacadeImpl implements BillingFacade {
         }
     }
 
+
     @Override
     Promise<Balance> getBalanceById(Long balanceId) {
         return balanceResource.getBalance(new BalanceId(balanceId)).recover { Throwable ex ->
@@ -77,6 +80,7 @@ class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
         return balanceResource.getBalances(new OrderId(orderId)).recover { Throwable ex ->
             LOGGER.error('name=BillingFacadeImpl_Get_Balances_Error', ex)
@@ -85,6 +89,7 @@ class BillingFacadeImpl implements BillingFacade {
             return results == null ? Collections.emptyList() : results.items
         }
     }
+
 
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
@@ -134,7 +139,7 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
-        if (e != null &&  e.error().code == PAYMENT_INSUFFICIENT_FUND) {
+        if (e != null && e.error().code == PAYMENT_INSUFFICIENT_FUND) {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {

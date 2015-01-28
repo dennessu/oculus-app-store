@@ -2,7 +2,6 @@ package com.junbo.order.jobs
 import com.junbo.common.id.OrderId
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.impl.common.TransactionHelper
-import com.junbo.order.jobs.utils.ftp.FTPUtils
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order

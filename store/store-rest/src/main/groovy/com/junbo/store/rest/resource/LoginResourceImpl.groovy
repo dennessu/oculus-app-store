@@ -348,6 +348,9 @@ class LoginResourceImpl implements LoginResource {
                 if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential, ErrorCodes.Identity.MaximumLoginAttempt)) {
                     throw ex
                 }
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.SentryLoginError)) {
+                    throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
+                }
                 appErrorUtils.throwUnknownError('signIn', ex)
             }
         }.then { AuthTokenResponse authTokenResponse ->
@@ -420,7 +423,7 @@ class LoginResourceImpl implements LoginResource {
                 if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
                 }
-                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTosForChallenge(tosList, localeId), null, localeId));
+                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTos(tosList, localeId), null, localeId));
             }
         }
     }
@@ -437,7 +440,7 @@ class LoginResourceImpl implements LoginResource {
                 if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.tosNotFound().exception()
                 }
-                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTosForChallenge(tosList, localeId), null, localeId));
+                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTos(tosList, localeId), null, localeId));
             }
         }
     }
@@ -543,7 +546,7 @@ class LoginResourceImpl implements LoginResource {
         return resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo -> // todo use expand ?
             return resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
                 return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
-                    userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
+                    userLoginName = ObjectMapperProvider.instanceNotStrict().treeToValue(usernamePersonalinfo.value, UserLoginName)
                     response.username = userLoginName.userName
                     response.userId = tokenInfo.sub
 
@@ -555,7 +558,7 @@ class LoginResourceImpl implements LoginResource {
                         return Promise.pure(response)
                     }
                     return resourceContainer.userPersonalInfoResource.get(defaultEmail.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo emailInfo ->
-                        response.email = new StoreUserEmail(isValidated: emailInfo.isValidated, value: ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email).info)
+                        response.email = new StoreUserEmail(isValidated: emailInfo.isValidated, value: ObjectMapperProvider.instanceNotStrict().treeToValue(emailInfo.value, Email).info)
                         return Promise.pure(response)
                     }
                 }
@@ -625,14 +628,14 @@ class LoginResourceImpl implements LoginResource {
                         new UserPersonalInfo(
                                 type: 'USERNAME',
                                 userId: apiContext.user.getId(),
-                                value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                value: ObjectMapperProvider.instanceNotStrict().valueToTree(new UserLoginName(
                                         userName: createUserRequest.username
                                 ))
                         )
                 ).then { UserPersonalInfo userPersonalInfo ->
                     apiContext.user.username = userPersonalInfo.getId()
                     apiContext.user.isAnonymous = false
-                    apiContext.userLoginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
+                    apiContext.userLoginName = ObjectMapperProvider.instanceNotStrict().treeToValue(userPersonalInfo.value, UserLoginName)
                     return Promise.pure()
                 }.recover { Throwable throwable ->
                     return Promise.pure(throwable)
@@ -647,11 +650,11 @@ class LoginResourceImpl implements LoginResource {
                         new UserPersonalInfo(
                                 type: 'EMAIL',
                                 userId: apiContext.user.getId(),
-                                value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
+                                value: ObjectMapperProvider.instanceNotStrict().valueToTree(new Email(info: createUserRequest.email))
                         )
                 ).then { UserPersonalInfo emailInfo ->
                     userEmail.isValidated = emailInfo.isValidated
-                    userEmail.value = ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email)?.info
+                    userEmail.value = ObjectMapperProvider.instanceNotStrict().treeToValue(emailInfo.value, Email)?.info
                     apiContext.storeUserEmail = userEmail
                     apiContext.user.emails = [
                             new UserPersonalInfoLink(
@@ -676,7 +679,7 @@ class LoginResourceImpl implements LoginResource {
                         new UserPersonalInfo(
                                 userId: apiContext.user.getId(),
                                 type: 'DOB',
-                                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
+                                value: ObjectMapperProvider.instanceNotStrict().valueToTree(new UserDOB(info: createUserRequest.dob))
                         )
                 ).then { UserPersonalInfo dobInfo ->
                     apiContext.user.dob = dobInfo.getId()
@@ -699,7 +702,7 @@ class LoginResourceImpl implements LoginResource {
                         new UserPersonalInfo(
                                 userId: apiContext.user.getId(),
                                 type: 'NAME',
-                                value: ObjectMapperProvider.instance().valueToTree(
+                                value: ObjectMapperProvider.instanceNotStrict().valueToTree(
                                         new UserName(
                                                 givenName: createUserRequest.firstName,
                                                 middleName: createUserRequest.middleName,
@@ -785,7 +788,7 @@ class LoginResourceImpl implements LoginResource {
             Communication communication = communicationResults.items.find { Communication temp ->
                 JsonNode jsonNode = temp?.locales?.get(COMMUNICATION_DEFAULT_LOCALE)
                 if (jsonNode != null) {
-                    CommunicationLocale communicationLocale = ObjectMapperProvider.instance().treeToValue(jsonNode, CommunicationLocale)
+                    CommunicationLocale communicationLocale = ObjectMapperProvider.instanceNotStrict().treeToValue(jsonNode, CommunicationLocale)
                     if (communicationLocale.name.equalsIgnoreCase(registerUserCommunication)) {
                         return true
                     }

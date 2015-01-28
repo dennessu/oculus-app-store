@@ -31,7 +31,8 @@ class TFARequiredView extends AbstractView {
         def userTFA = contextWrapper.userTFA
 
         def modelMap = [
-                'locale': contextWrapper.viewLocale
+                'locale': contextWrapper.viewLocale,
+                'tfaTypes': contextWrapper.TFATypes
         ]
 
         if ((debugEnabled || client.debugEnabled) && userTFA != null) {

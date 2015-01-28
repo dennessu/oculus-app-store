@@ -10,6 +10,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.model.Offer;
 import com.junbo.order.core.impl.order.OrderServiceContext;
+import com.junbo.order.core.impl.orderaction.context.OrderActionContext;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.OrderQueryParam;
@@ -54,4 +55,11 @@ public interface OrderInternalService {
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity);
 
     Promise<Order> reverseFulfillment(Order order);
+
+    void markErrorStatus(Order order);
+
+    void markTentative(Order order);
+
+    Promise<com.junbo.langur.core.webflow.action.ActionResult> immediateSettle(Order order, OrderActionContext context);
+
 }

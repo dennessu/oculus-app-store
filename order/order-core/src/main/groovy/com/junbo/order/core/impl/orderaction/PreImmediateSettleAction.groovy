@@ -1,41 +1,43 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 /**
  * Created by chriszhu on 2/20/14.
  */
 @CompileStatic
 @TypeChecked
-class ImmediateSettleAction extends BaseOrderEventAwareAction {
+class PreImmediateSettleAction implements Action {
+
     @Autowired
     OrderInternalService orderInternalService
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImmediateSettleAction)
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreImmediateSettleAction)
 
     @Override
     @Transactional
-    Promise<ActionResult> doExecute(ActionContext actionContext) {
+    Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        if (order.tentative) {
+        // mark tentative = false
+        orderInternalService.markSettlement(order)
+        // check the billing history
+        if (!CoreUtils.isSafeForImmediateSettle(order)) {
+            // fail the immediate settle to prevent double billing
+            // zombie/settlement job will handle the rest
+            LOGGER.error("name=Order_Already_Has_BillingHistory. orderId: " + order.getId().value)
             throw AppErrors.INSTANCE.orderAlreadyInSettleProcess().exception()
         }
-        CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
-        return orderInternalService.immediateSettle(order, context)
+        return Promise.pure(null)
     }
 }

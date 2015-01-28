@@ -54,11 +54,11 @@ class OAuthTests(ut.TestBase):
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid})
         cid = getqueryparam(location, 'cid')
         if cid:
-            # the TFA flow
-            # TODO:
             view = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid })
             self.assertEqual(view["view"], 'TFARequiredView')
-            pass
+
+            location = curlFormRedirect('POST', ut.test_uri, '/v1/oauth2/authorize',
+                                        data={'cid': cid, 'event': 'verifyPIN', 'pin': user.pin})
 
         auth_code = getqueryparam(location, 'code')
         assert auth_code is not None

@@ -11,9 +11,12 @@ import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * payment callback resource interface.
@@ -28,4 +31,12 @@ public interface PaymentNotificationResource {
     @POST
     @Path("/adyen")
     Promise<Response> receiveAdyenNotification(String request);
+
+    @GET
+    @Path("/facebook-rtu")
+    Promise<Response> receiveFacebookNotification(@Context UriInfo uriInfo);
+
+    @POST
+    @Path("/facebook-rtu")
+    Promise<Response> receiveFacebookNotification(String request);
 }

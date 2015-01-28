@@ -637,7 +637,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     @Override
-    public void updateTos(TosId tosId) throws Exception {
+    public Tos updateTos(TosId tosId) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
@@ -655,21 +655,21 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         newTos.setMinorversion(tos.getMinorversion());
         newTos.setCoveredLocales(tos.getCoveredLocales());
         newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
-        restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
+        return new JsonMessageTranscoder().decode(new TypeReference<Tos>() {}, restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true));
     }
 
     @Override
-    public void updateTos(String type, String status) throws Exception {
-        updateTos(type, null, status);
+    public Tos updateTos(String type, String status) throws Exception {
+        return updateTos(type, null, status);
     }
 
     @Override
-    public void updateTos(String type, List<String> supportLocales, String status) throws Exception {
-        updateTos(type, supportLocales, status, false);
+    public Tos updateTos(String type, List<String> supportLocales, String status) throws Exception {
+        return updateTos(type, supportLocales, status, false);
     }
 
     @Override
-    public void updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception {
+    public Tos updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
@@ -687,7 +687,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Collections.sort(tosList, new Comparator<Tos>() {
             @Override
             public int compare(Tos o1, Tos o2) {
-                return o2.getVersion().compareTo(o1.getVersion());
+                int v = o2.getVersion().compareTo(o1.getVersion());
+                if (v != 0) {
+                    return v;
+                }
+                return o2.getMinorversion().compareTo(o1.getMinorversion());
             }
         });
 
@@ -707,6 +711,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             }
             newTos.setCoveredLocales(localeIds);
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
+            if (increaseMinorVersion) {
+                newTos.setMinorversion(tos.getMinorversion() + 0.1);
+            }
         } else {
             newTos.setCoveredLocales(tos.getCoveredLocales());
             if (increaseMinorVersion) {
@@ -716,7 +723,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
                 newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
             }
         }
-        restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
+        return  new JsonMessageTranscoder().decode(new TypeReference<Tos>() {}, restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true));
     }
 
     @Override

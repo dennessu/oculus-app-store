@@ -155,7 +155,7 @@ class ApiContextBuilder implements InitializingBean {
     @Override
     void afterPropertiesSet() throws Exception {
         if (!StringUtils.isBlank(localeMappingString)) {
-            localeMapping = (Map<String, String>) ObjectMapperProvider.instance().readValue(localeMappingString, new TypeReference<Map<String, String>>() {})
+            localeMapping = (Map<String, String>) ObjectMapperProvider.instanceNotStrict().readValue(localeMappingString, new TypeReference<Map<String, String>>() {})
         }
     }
 }

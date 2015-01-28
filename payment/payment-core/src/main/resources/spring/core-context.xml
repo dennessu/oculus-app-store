@@ -71,6 +71,7 @@
         <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
         <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
         <property name="env" value="${payment.provider.facebook.env}"/>
+        <property name="rtuVerifyToken" value="{payment.provider.facebook.rtu.token}"/>
         <property name="facebookGatewayService" ref="facebookGatewayService"/>
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
         <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>

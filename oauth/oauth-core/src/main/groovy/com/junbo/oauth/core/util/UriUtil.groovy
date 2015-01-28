@@ -182,7 +182,7 @@ class UriUtil {
         localeMap.put("es-VE", "es-MX");
     }
 
-    static String replaceLocale(String uri, String locale) {
+    static String replaceRedirectUriLocale(String uri, String locale) {
         locale = locale.replaceFirst('_', '-')
         String convertedLocale;
         // mapped all known locale , for unknown locale , mapped to en-US,
@@ -195,5 +195,10 @@ class UriUtil {
         }
 
         return uri.replaceFirst('/locale', '/' + convertedLocale);
+    }
+
+    static String replaceRedirectUriCountry(String uri, String country) {
+        // Short term solution, hard code all country to US
+        return uri.replaceFirst('/country', '/US');
     }
 }

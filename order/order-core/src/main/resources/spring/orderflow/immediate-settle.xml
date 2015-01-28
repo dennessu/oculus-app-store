@@ -26,8 +26,16 @@
         </wf:action-state>
 
         <wf:action-state id="charge">
+            <wf:action ref="preImmediateSettleAction"/>
             <wf:action ref="immediateSettleAction"/>
+            <wf:transition on="ERROR" to="interruptCharge"/>
+            <wf:transition on="ROLLBACK" to="interruptCharge"/>
             <wf:transition to="checkasynccharge"/>
+        </wf:action-state>
+
+        <wf:action-state id="interruptCharge">
+            <wf:action ref="interruptChargeAction"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="checkasynccharge">

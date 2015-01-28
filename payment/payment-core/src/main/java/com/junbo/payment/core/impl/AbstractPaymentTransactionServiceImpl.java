@@ -33,12 +33,19 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Abstract Payment Transaction Service Implementation.
  */
 public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTransactionService {
+    private static final PaymentStatus[] OPEN_STATUS = new PaymentStatus[]{
+            PaymentStatus.AUTH_CREATED, PaymentStatus.AUTHORIZED,PaymentStatus.UNCONFIRMED,
+            PaymentStatus.SETTLEMENT_SUBMIT_CREATED, PaymentStatus.SETTLEMENT_SUBMITTED,
+            PaymentStatus.SETTLE_CREATED, PaymentStatus.SETTLED, PaymentStatus.SETTLING,
+            PaymentStatus.REVERSE_CREATED, PaymentStatus.REFUND_CREATED, PaymentStatus.CREDIT_CREATED,
+            PaymentStatus.RISK_PENDING};
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPaymentTransactionServiceImpl.class);
     protected static final String[] FILTER = new String[]{"paymentId", "paymentProvider", "merchantAccount", "status",
             "externalToken", "type","paymentEvents" };
@@ -237,6 +244,19 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         });
     }
 
+    protected PaymentTransaction updatePayment(final PaymentTransaction payment,final PaymentStatus status, final String token){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                if(status != null){
+                    paymentRepositoryFacade.updatePayment(payment.getId(), status, token);
+                }
+                return payment;
+            }
+        });
+    }
+
     protected PaymentEvent createPaymentEvent(PaymentTransaction request,
                                             PaymentEventType eventType, PaymentStatus status, String response) {
         PaymentEvent event = new PaymentEvent();
@@ -265,6 +285,10 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         return service;
+    }
+
+    public boolean isOpenStatus(String paymentStatus){
+        return Arrays.asList(OPEN_STATUS).contains(PaymentStatus.valueOf(paymentStatus));
     }
 
     public void setUserInfoFacade(UserInfoFacade userInfoFacade) {
