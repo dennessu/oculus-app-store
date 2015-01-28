@@ -33,9 +33,8 @@
     </bean>
 
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
-        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
-        <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="orderActionType" value="CHARGE"/>
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 
     <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
