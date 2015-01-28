@@ -851,24 +851,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.postUsernameEmailBlocker(usernameMailBlocker);
     }
 
-    public void UpdateTos(String type, String status) throws Exception {
+    public TosId UpdateTos(String type, String status) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(type, status);
+        return identityClient.updateTos(type, status).getId();
     }
 
-    public void UpdateTos(String type, String status, boolean increaseMinorVersion) throws Exception {
+    public TosId UpdateTos(String type, String status, boolean increaseMinorVersion) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(type, null, status, increaseMinorVersion);
+        return identityClient.updateTos(type, null, status, increaseMinorVersion).getId();
     }
 
-    public void UpdateTos(String type, String status, List<String> supportLocales, boolean increaseMinorVersion) throws Exception {
+    public TosId UpdateTos(String type, String status, List<String> supportLocales, boolean increaseMinorVersion) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(type, supportLocales, status, increaseMinorVersion);
+        return identityClient.updateTos(type, supportLocales, status, increaseMinorVersion).getId();
     }
 
-    public void UpdateTos(TosId tosId) throws Exception {
+    public TosId UpdateTos(TosId tosId) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(tosId);
+        return identityClient.updateTos(tosId).getId();
     }
 
     public void CreateFromExistingTos(String type, List<String> supportLocales, String status) throws Exception {

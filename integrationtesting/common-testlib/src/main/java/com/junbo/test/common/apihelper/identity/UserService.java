@@ -75,13 +75,13 @@ public interface UserService {
 
     void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception;
 
-    void updateTos(TosId tosId) throws Exception;
+    Tos updateTos(TosId tosId) throws Exception;
 
-    void updateTos(String type, String status) throws Exception;
+    Tos updateTos(String type, String status) throws Exception;
 
-    void updateTos(String type, List<String> supportLocales, String status) throws Exception;
+    Tos updateTos(String type, List<String> supportLocales, String status) throws Exception;
 
-    void updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception;
+    Tos updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception;
 
     void deleteTos(String type, List<String> supportLocales) throws Exception;
 

@@ -51,7 +51,7 @@ class IdentityUtils {
     Promise<UserPersonalInfo> createPhoneInfoIfNotExist(UserId userId, PersonalInfo phoneInfo) {
         PhoneNumber updatePhone = ObjectMapperProvider.instance().treeToValue(phoneInfo.value, PhoneNumber)
         return resourceContainer.userPersonalInfoResource.list(new UserPersonalInfoListOptions(type: 'PHONE', phoneNumber: updatePhone.info)).then { Results<UserPersonalInfo> results ->
-            UserPersonalInfo result = results.items.find {UserPersonalInfo e -> e.userId == userId}
+            UserPersonalInfo result = results.items.find { UserPersonalInfo e -> e.userId == userId }
             if (result == null) {
                 return resourceContainer.userUserPersonalInfoResource.create(
                         new UserPersonalInfo(userId: userId, type: 'PHONE', value: phoneInfo.value)
@@ -202,12 +202,43 @@ class IdentityUtils {
 
     }
 
-    public Tos selectTosForChallenge(List<Tos> tosList, LocaleId localeId) {
+    public Tos selectTos(List<Tos> tosList, LocaleId localeId) {
         Assert.notEmpty(tosList)
-        tosList = new ArrayList<Tos>(tosList).sort { Tos t -> return t.minorversion }.reverse()
-        Tos tos = tosList.find {Tos t -> t.coveredLocales != null && t.coveredLocales.contains(localeId)}
-        return tos == null ? tosList.first() : tos
+
+        Map<String, Boolean> circle = new HashMap<>()
+        LocaleId current = localeId
+        LocaleId fallback = null
+        Tos selected = null
+
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(current, new LocaleGetOptions()).get()
+            if (circle.get(locale.getId().toString())) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            for (Tos tos : tosList) {
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
+                        return tosLocaleId == current
+                    } && (selected == null || tos.minorversion > selected.minorversion)) {
+                        selected = tos
+                    }
+                }
+            }
+            if (selected != null) {
+                return selected
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
+        }
+
+        return tosList[0]
     }
+
 
     private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
         if (user != null && user.preferredLocale != null) {

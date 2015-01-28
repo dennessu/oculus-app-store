@@ -420,7 +420,7 @@ class LoginResourceImpl implements LoginResource {
                 if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
                 }
-                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTosForChallenge(tosList, localeId), null, localeId));
+                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTos(tosList, localeId), null, localeId));
             }
         }
     }
@@ -437,7 +437,7 @@ class LoginResourceImpl implements LoginResource {
                 if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.tosNotFound().exception()
                 }
-                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTosForChallenge(tosList, localeId), null, localeId));
+                return Promise.pure(dataConverter.toStoreTos(identityUtils.selectTos(tosList, localeId), null, localeId));
             }
         }
     }

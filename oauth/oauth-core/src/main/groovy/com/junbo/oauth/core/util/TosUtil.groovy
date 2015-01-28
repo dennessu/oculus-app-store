@@ -15,6 +15,7 @@ import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.CountryResource
 import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.identity.spec.v1.resource.TosResource
@@ -87,7 +88,7 @@ class TosUtil {
             Set<TosId> acceptedTosIds = getAcceptedTosIds(user.getId())
             tosList.each { List<Tos> toses ->
                 if (!toses.any {Tos tos -> acceptedTosIds.contains(tos.getId())}) {
-                    unacceptedTosIds << selectTosForChallenge(toses, localeId).getId()
+                    unacceptedTosIds << selectTos(toses, localeId).getId()
                 }
             }
         }
@@ -189,10 +190,40 @@ class TosUtil {
         return null
     }
 
-    private Tos selectTosForChallenge(List<Tos> tosList, LocaleId localeId) {
+    private Tos selectTos(List<Tos> tosList, LocaleId localeId) {
         Assert.notEmpty(tosList)
-        tosList = new ArrayList<Tos>(tosList).sort { Tos t -> return t.minorversion }.reverse()
-        Tos tos = tosList.find {Tos t -> t.coveredLocales != null && t.coveredLocales.contains(localeId)}
-        return tos == null ? tosList.first() : tos
+
+        Map<String, Boolean> circle = new HashMap<>()
+        LocaleId current = localeId
+        LocaleId fallback = null
+        Tos selected = null
+
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = localeResource.get(current, new LocaleGetOptions()).get()
+            if (circle.get(locale.getId().toString())) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            for (Tos tos : tosList) {
+                if (!org.apache.commons.collections.CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
+                        return tosLocaleId == current
+                    } && (selected == null || tos.minorversion > selected.minorversion)) {
+                        selected = tos
+                    }
+                }
+            }
+            if (selected != null) {
+                return selected
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
+        }
+
+        return tosList[0]
     }
 }

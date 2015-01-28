@@ -8,6 +8,7 @@ package com.junbo.test.store;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.TosId;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
@@ -1307,6 +1308,7 @@ public class LoginResourceTesting extends BaseTestClass {
         testDataProvider.CreateUser(createUserRequest, true);
 
         testDataProvider.UpdateTos("TOS", "APPROVED");
+        testDataProvider.UpdateTos("TOS", "APPROVED", Arrays.asList("en_US"), true);
 
         List<String> supportLocales = new ArrayList<>();
         supportLocales.add("zh_CN");
@@ -1518,6 +1520,49 @@ public class LoginResourceTesting extends BaseTestClass {
         testDataProvider.UpdateTos("PP", "APPROVED", true);
         Tos minorVersionNewTos = testDataProvider.lookupTos(200);
         Assert.assertNotEquals(minorVersionNewTos.getTosId(), newTos.getTosId());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "check the correct tos is slected based on the locale"
+            }
+    )
+    @Test
+    public void testGetPrivacyPolicyTosMultiLanguage() throws Exception {
+        com.junbo.store.spec.model.browse.document.Tos tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTitle(), "privacy policy");
+        testDataProvider.UpdateTos("PP", "APPROVED");
+
+        // update minor version
+        Thread.sleep(2000);
+        TosId defaultTosId = testDataProvider.UpdateTos("PP", "APPROVED", Arrays.asList("en_US"), true);
+
+        // update minor version with zh-CH locale
+        Thread.sleep(2000);
+        TosId zhTosId = testDataProvider.UpdateTos("PP", "APPROVED", Arrays.asList("zh_CN"), false);
+
+        TestContext.getData().putHeader("Accept-Language", "en-US");
+        tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTosId(), defaultTosId);
+        TestContext.getData().putHeader("Accept-Language", "es-ES");
+        tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTosId(), defaultTosId);
+
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTosId(), zhTosId);
+
+        // update minor version with zh-CH locale
+        Thread.sleep(2000);
+        zhTosId = testDataProvider.UpdateTos("PP", "APPROVED", Arrays.asList("zh_CN"), true);
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTosId(), zhTosId);
     }
 
     @Test

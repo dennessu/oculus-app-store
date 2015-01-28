@@ -78,7 +78,7 @@ class ChallengeHelperImpl implements ChallengeHelper {
                     return Promise.pure()
                 }
 
-                Tos tos = identityUtils.selectTosForChallenge(tosList, locale)
+                Tos tos = identityUtils.selectTos(tosList, locale)
                 if (challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && challengeAnswer?.acceptedTos == tos.getId()) {
                     return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(
                             userId: userId,
