@@ -15,6 +15,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.ItemEntry
 import com.junbo.order.clientproxy.model.Offer
@@ -25,6 +26,7 @@ import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -387,7 +389,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
         LOGGER.info('name=internal.persistBillingHistory')
-        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+        def billingHistory
+        if (action == BillingAction.CHARGE) {
+            billingHistory = BillingEventHistoryBuilder.buildBillingHistoryForImmediateSettle(balance)
+        } else {
+            billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+        }
         if (action != null) {
             billingHistory.billingEvent = action.name()
             if (action == BillingAction.REQUEST_REFUND) {
@@ -635,44 +642,59 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     Promise<com.junbo.langur.core.webflow.action.ActionResult> immediateSettle(Order order, OrderActionContext context) {
-        String actionResultStr
+        String actionResultStr = null
+        ActionResult actionResult = null
         return Promise.pure().then {
             return transactionHelper.executeInNewTransaction {
                 return facadeContainer.billingFacade.createBalance(CoreBuilder.buildBalance(order, BalanceType.DEBIT), false)
             }
         }.recover { Throwable ex ->
-            LOGGER.error('name=Order_Unexpected_Billing_Error_ImmediateSettle', ex)
+            // prepare action result for order event
+            def appError = ErrorUtils.processBillingError(ex)
+            if (appError.error().code == AppErrors.INSTANCE.billingConnectionError().error().code) {
+                LOGGER.error('name=Order_Unexpected_Billing_Error_ImmediateSettle', ex)
+                actionResultStr = 'ERROR'
+                actionResult = CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.ERROR, actionResultStr, appError)
+                markErrorStatus(order)
+            } else {
+                LOGGER.info('name=Order_ImmediateSettle_Declined. reason: {}', ex.getMessage())
+                actionResultStr = 'ROLLBACK'
+                actionResult = CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.FAILED, actionResultStr, appError)
+                markTentative(order)
+            }
             return Promise.pure(null)
         }.then { Balance balance ->
             if (balance == null) {
-                LOGGER.error('name=Order_Unexpected_Billing_Error_ImmediateSettle')
-                actionResultStr = 'ERROR'
-                markErrorStatus(order)
-                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        EventStatus.FAILED, actionResultStr))
+                // processed in recover
+                assert actionResult != null
+                return Promise.pure(actionResult)
             }
-            if (balance.status == BalanceStatus.FAILED.name()) {
-                // declined. indicate to rollback the tentative flag
-                LOGGER.info('name=Order_ImmediateSettle_Declined. orderId: {}', order.getId().value)
-                actionResultStr = 'ROLLBACK'
-                markTentative(order)
-            } else if (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
-                    balance.status != BalanceStatus.COMPLETED.name() &&
-                    balance.status != BalanceStatus.QUEUING.name()) {
-                LOGGER.error('name=Order_ImmediateSettle_UnexpectedStatus.BalanceStatus:' + balance.status)
-                actionResultStr = 'ERROR'
-                markErrorStatus(order)
-            } else {
-                LOGGER.info('name=Order_ImmediateSettle_Success. BalanceStatus:' + balance.status)
-                actionResultStr = 'SUCCESS'
+            EventStatus status = BillingEventHistoryBuilder.buildEventStatusFromImmediateSettle(balance)
+            switch (status) {
+                case EventStatus.COMPLETED:
+                    LOGGER.info('name=Order_ImmediateSettle_Success. BalanceStatus: {}', balance.status)
+                    actionResultStr = 'SUCCESS'
+                    break
+                case EventStatus.FAILED:
+                    LOGGER.info('name=Order_ImmediateSettle_Declined. orderId: {}', order.getId().value)
+                    actionResultStr = 'ROLLBACK'
+                    markTentative(order)
+                    break
+                case EventStatus.ERROR:
+                default:
+                    LOGGER.error('name=Order_ImmediateSettle_UnexpectedStatus.BalanceStatus: {}', balance.status)
+                    actionResultStr = 'ERROR'
+                    markErrorStatus(order)
+                    break
             }
             context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, balance)
             persistBillingHistory(balance, BillingAction.CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
-                // TODO: save order level tax
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        BillingEventHistoryBuilder.buildEventStatusFromBalance(balance), actionResultStr)
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(
+                        context,
+                        status,
+                        actionResultStr)
             }
         }.recover { Throwable ex ->
             transactionHelper.executeInNewTransaction {
@@ -680,8 +702,11 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 LOGGER.error('name=Order_Unexpected_Error_ImmediateSettle', ex)
                 actionResultStr = 'ERROR'
                 markErrorStatus(order)
-                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context,
-                        EventStatus.FAILED, actionResultStr))
+                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(
+                        context,
+                        EventStatus.ERROR,
+                        actionResultStr,
+                        AppErrors.INSTANCE.billingConnectionError(ex.message)))
             }
         }
     }

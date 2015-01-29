@@ -36,4 +36,12 @@ public class ErrorUtils {
         return null;
     }
 
+    public static AppError processBillingError(Throwable throwable) {
+        AppError appError = toAppError(throwable);
+        if (appError == null) {
+            return AppErrors.INSTANCE.billingConnectionError(throwable.getMessage());
+        } else {
+            return appError;
+        }
+    }
 }

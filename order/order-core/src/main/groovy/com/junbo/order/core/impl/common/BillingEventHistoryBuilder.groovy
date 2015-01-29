@@ -33,12 +33,28 @@ class BillingEventHistoryBuilder {
 
             case BalanceStatus.CANCELLED:
             case BalanceStatus.FAILED:
-            case BalanceStatus.ERROR:
                 return EventStatus.FAILED
+            case BalanceStatus.ERROR:
+                return EventStatus.ERROR
 
             default:
                 LOGGER.warn('name=Unknown_Balance_Status, status={}', balanceStatus)
                 return EventStatus.PENDING
+        }
+    }
+
+    static EventStatus buildEventStatusFromImmediateSettle(Balance balance) {
+        def balanceStatus = BalanceStatus.valueOf(balance.status)
+        switch (balanceStatus) {
+            case BalanceStatus.COMPLETED:
+            case BalanceStatus.AWAITING_PAYMENT:
+            case BalanceStatus.QUEUING:
+                return EventStatus.COMPLETED
+            case BalanceStatus.FAILED:
+                return EventStatus.FAILED
+            default:
+                LOGGER.warn('name=Unexpected_Balance_Status, status={}', balanceStatus)
+                return EventStatus.ERROR
         }
     }
 
@@ -82,6 +98,24 @@ class BillingEventHistoryBuilder {
         if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
             billingHistory.success = false
         }
+        return billingHistory
+    }
+
+    static BillingHistory buildBillingHistoryForImmediateSettle(Balance balance) {
+        def billingHistory = new BillingHistory()
+        billingHistory.balanceId = (balance.id == null || balance.getId().value == null) ?
+                null : balance.id.toString()
+        billingHistory.totalAmount = balance.totalAmount
+        billingHistory.billingEvent = BillingAction.CHARGE
+        billingHistory.success = true
+        def status = buildEventStatusFromImmediateSettle(balance)
+
+        if (status == EventStatus.COMPLETED) {
+            billingHistory.success = true
+        } else {
+            billingHistory.success = false
+        }
+
         return billingHistory
     }
 }

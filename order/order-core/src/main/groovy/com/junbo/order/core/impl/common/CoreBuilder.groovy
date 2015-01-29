@@ -1,17 +1,13 @@
 package com.junbo.order.core.impl.common
+
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
-import com.junbo.common.id.ItemId
-import com.junbo.common.id.ItemRevisionId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OfferRevisionId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.OrderItemId
-import com.junbo.common.id.PromotionId
+import com.junbo.common.error.AppError
+import com.junbo.common.id.*
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.orderaction.ActionUtils
@@ -435,9 +431,15 @@ class CoreBuilder {
 
     static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
                                                                   EventStatus eventStatus, String actionResultStr) {
+        return buildActionResultForOrderEventAwareAction(context, eventStatus, actionResultStr, null)
+    }
+
+    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                  EventStatus eventStatus, String actionResultStr, AppError exception) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
         orderActionResult.returnedEventStatus = eventStatus
+        orderActionResult.exception = exception
 
         def data = [:]
         data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object) orderActionResult)

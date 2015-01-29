@@ -202,6 +202,7 @@ class OrderE2ETest extends BaseTest {
                 orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
             } catch (ex) {
                 assert ex != null
+                assert ((AppErrorException)ex).error.error().code == '199.116'
             }
         }
         transactionHelper.executeInNewTransaction {
@@ -240,6 +241,7 @@ class OrderE2ETest extends BaseTest {
                 orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
             } catch (ex) {
                 assert ex != null
+                assert ((AppErrorException)ex).error.error().code == '199.119'
             }
         }
         transactionHelper.executeInNewTransaction {
