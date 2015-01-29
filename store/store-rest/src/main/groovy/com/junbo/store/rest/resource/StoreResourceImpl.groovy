@@ -1,27 +1,18 @@
 package com.junbo.store.rest.resource.raw
 
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.enumid.CountryId
-import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.*
+import com.junbo.common.id.ItemId
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.PaymentInstrumentId
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
-import com.junbo.identity.spec.v1.option.model.CountryGetOptions
-import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
-import com.junbo.order.spec.model.FulfillmentHistory
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
@@ -29,15 +20,13 @@ import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
+import com.junbo.store.rest.commerce.PurchaseService
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
-import com.junbo.store.spec.model.Challenge
-import com.junbo.store.spec.model.Entitlement
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.iap.IAPParam
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
@@ -48,8 +37,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.util.Assert
-import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.BeanParam
@@ -114,6 +101,9 @@ class StoreResourceImpl implements StoreResource {
 
     @Resource(name = 'storeBrowseService')
     private BrowseService browseService
+
+    @Resource(name = 'storePurchaseService')
+    private PurchaseService purchaseService
 
     @Autowired
     @Value('${store.conf.pinValidDuration}')
@@ -308,192 +298,25 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {
-        User user
-        ApiContext apiContext
-        Challenge challenge
         requestValidator.validateRequiredApiHeaders()
-        identityUtils.getVerifiedUserFromToken().then { User u ->
-            user = u
-            apiContextBuilder.buildApiContext().then { ApiContext ac ->
-                apiContext = ac
-                return Promise.pure(null)
-            }
-        }.then {
-            requestValidator.validateMakeFreePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
-            }
-        }.then {
-            if (tosFreepurchaseEnable) {
-                return challengeHelper.checkTosChallenge(user.getId(), tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId()).then { Challenge tosChallenge ->
-                    challenge = tosChallenge
-                    return Promise.pure(null)
-                }
-            } else {
-                challenge = null
-                return Promise.pure(null)
-            }
-        }.then {
-            if (challenge != null) {
-                return Promise.pure(
-                        new MakeFreePurchaseResponse(
-                                challenge : challenge
-                        )
-                )
-            }
-
-            facadeContainer.orderFacade.freePurchaseOrder(user.getId(), Collections.singletonList(request.offer), apiContext).then { Order settled ->
-                MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
-                response.order = settled.getId()
-                getEntitlementsByOrder(settled, null, apiContext).then { List<Entitlement> entitlements ->
-                    response.entitlements = entitlements
-                    return Promise.pure(response)
-                }
-            }
+        apiContextBuilder.buildApiContext().then { ApiContext apiContext ->
+            return purchaseService.makeFreePurchase(request, apiContext)
         }
     }
 
     @Override
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest request) {
-        OfferId offerId = request.offer
-        Item hostItem
-        User user
-        ApiContext apiContext
-        CurrencyId currencyId
-        PurchaseState purchaseState
-        Challenge potentialChallenge
-        PreparePurchaseResponse response = new PreparePurchaseResponse()
-        PaymentInstrumentId selectedInstrument
-        IAPParam iapParam
-
         requestValidator.validateRequiredApiHeaders()
-        identityUtils.getVerifiedUserFromToken().then { User u ->
-            user = u
-            apiContextBuilder.buildApiContext().then { ApiContext ac ->
-                apiContext = ac
-                return Promise.pure()
-            }
-        }.then {
-            requestValidator.validatePreparePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
-            }
-        }.then { // validate offer if inapp purchase
-            if (request.isIAP != null) { // todo validate offer is iap & package is correct
-                iapParam = storeUtils.buildIAPParam()
-                return facadeContainer.catalogFacade.getCatalogItemByPackageName(iapParam.packageName, iapParam.packageVersion, iapParam.packageSignatureHash).then { Item item ->
-                    hostItem = item
-                    return iapValidator.validateInAppOffer(offerId, hostItem)
-                }
-            }
-            return Promise.pure(null)
-        }.then {
-            if (request.purchaseToken == null) {
-                purchaseState = new PurchaseState(
-                        timestamp: new Date(),
-                        user: user.getId())
-                return Promise.pure(null)
-            }
-            tokenProcessor.toTokenObject(request.purchaseToken, PurchaseState).then { PurchaseState ps ->
-                purchaseState = ps
-                return Promise.pure(null)
-            }
-        }.then {
-            fillPurchaseState(purchaseState, request, iapParam, apiContext)
-            return Promise.pure(null)
-        }.then {
-            resourceContainer.countryResource.get(apiContext.country.getId(), new CountryGetOptions()).then { Country country ->
-                currencyId = country.defaultCurrency
-                return Promise.pure(null)
-            }
-        }.then {
-            if (request.instrument == null) {
-                return Promise.pure(null)
-            }
-            return validateInstrumentForPreparePurchase(user, request)
-        }.then {
-            return getPurchaseChallenge(user.getId(), request, apiContext).then { Challenge challenge ->
-                potentialChallenge = challenge
-
-                return Promise.pure(null)
-            }
-        }.then {
-            if (potentialChallenge != null) {
-                return tokenProcessor.toTokenString(purchaseState).then { String token ->
-                    return Promise.pure(
-                            new PreparePurchaseResponse(
-                                    challenge : potentialChallenge,
-                                    purchaseToken: token
-                            )
-                    )
-                }
-            }
-
-            if (request.instrument != null) {
-                selectedInstrument = request.instrument
-            } else if (user.defaultPI != null) {
-                selectedInstrument = user.defaultPI
-            }
-            return facadeContainer.orderFacade.createTentativeOrder(user.getId(), Collections.singletonList(request.offer), currencyId, selectedInstrument, apiContext).then { Order createdOrder ->
-                return resourceContainer.currencyResource.get(currencyId, new CurrencyGetOptions()).then { Currency currency ->
-                    response.formattedTotalPrice = createdOrder.totalAmount.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
-                    purchaseState.order = createdOrder.getId()
-                    return tokenProcessor.toTokenString(purchaseState).then { String token ->
-                        response.purchaseToken = token
-                        return Promise.pure(null)
-                    }
-                }.then {
-                    if (selectedInstrument != null) {
-                        return instrumentUtils.getInstrument(user, selectedInstrument).then { Instrument instrument ->
-                            response.instrument = instrument
-                            return Promise.pure(response)
-                        }
-                    }
-                    response.order = createdOrder.getId()
-                    return Promise.pure(response)
-                }
-            }
+        apiContextBuilder.buildApiContext().then { ApiContext apiContext ->
+            return purchaseService.preparePurchase(request, apiContext)
         }
     }
 
     @Override
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
-        PurchaseState purchaseState
-        User user
-        ApiContext apiContext
-        Challenge challenge
         requestValidator.validateRequiredApiHeaders()
-        return identityUtils.getVerifiedUserFromToken().then { User u ->
-            user = u
-            apiContextBuilder.buildApiContext().then { ApiContext ac ->
-                apiContext = ac
-                return Promise.pure(null)
-            }
-            return Promise.pure()
-        }.then {
-            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
-        }.then {
-            tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
-                purchaseState = e
-                if (purchaseState.user != AuthorizeContext.currentUserId) {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
-                }
-                if (purchaseState.order == null) {
-                    throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'OrderId_Invalid')] as com.junbo.common.error.ErrorDetail[]).exception()
-                }
-
-                return requestValidator.validateOrderValid(purchaseState.order)
-            }
-        }.then {
-            challengeHelper.checkPurchasePINChallenge(user.getId(), commitPurchaseRequest?.challengeAnswer).then { Challenge e ->
-                challenge = e
-                return Promise.pure()
-            }
-        }.then {
-            if (challenge != null) {
-                return tokenProcessor.toTokenString(purchaseState).then { String token ->
-                    return Promise.pure(new CommitPurchaseResponse(challenge : challenge, purchaseToken: token))
-                }
-            }
-            doCommitPurchaseResponse(purchaseState, apiContext)
+        apiContextBuilder.buildApiContext().then { ApiContext apiContext ->
+            return purchaseService.commitPurchase(commitPurchaseRequest, apiContext)
         }
     }
 
@@ -671,36 +494,6 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<List<Entitlement>> getEntitlementsByOrder(Order order, ItemId hostItemId, ApiContext apiContext) {
-        Assert.notNull(order)
-        Set<EntitlementId> entitlementIds = [] as HashSet
-
-        // get entitlement ids from order
-        if (!CollectionUtils.isEmpty(order.orderItems)) {
-            order.orderItems.each { OrderItem orderItem ->
-                if (!CollectionUtils.isEmpty(orderItem.fulfillmentHistories)) {
-                    orderItem.fulfillmentHistories.each { FulfillmentHistory fulfillmentHistory ->
-                        if (!CollectionUtils.isEmpty(fulfillmentHistory?.entitlements)) {
-                            entitlementIds.addAll(fulfillmentHistory.entitlements)
-                        }
-                    }
-                }
-            }
-        }
-
-        // get entitlements
-        facadeContainer.entitlementFacade.getEntitlementsByIds(entitlementIds, true, apiContext).then { List<Entitlement> entitlements ->
-            Promise.each(entitlements) { Entitlement e ->
-                if (e.itemType == ItemType.ADDITIONAL_CONTENT.name()|| e.itemType == ItemType.ADDITIONAL_CONTENT.name()) { // iap
-                    return storeUtils.signIAPItem(apiContext.user, e.itemDetails, hostItemId)
-                }
-                return Promise.pure()
-            }.then {
-                return Promise.pure(entitlements)
-            }
-        }
-    }
-
     private Promise updateUserCredential(UserId userId, UserProfileUpdateRequest request, ErrorContext errorContext) {
         return Promise.pure().then {
             if (StringUtils.isEmpty(request.userProfile.password)) {
@@ -733,91 +526,9 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private String getPlatformName() {
-        return 'ANDROID'
-    }
-
-    private Promise validateInstrumentForPreparePurchase(User user, PreparePurchaseRequest preparePurchaseRequest) {
-        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).recover { AppErrorException e ->
-            if ((int)(e.error.httpStatusCode / 100) == 4) {
-                return Promise.pure(null)
-            } else {
-                throw e
-            }
-        }.then { PaymentInstrument pi ->
-            if (pi == null || pi.userId != user.getId().getValue()) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('instrument').exception()
-            }
-
-            return Promise.pure(null)
-        }
-    }
-
-    Promise<CommitPurchaseResponse> doCommitPurchaseResponse(PurchaseState purchaseState, ApiContext apiContext) {
-        OrderId orderId = purchaseState.order
-        Item hostItem
-        CommitPurchaseResponse response = new CommitPurchaseResponse()
-
-        Promise.pure().then {
-            if (purchaseState.iapPackageName == null) {
-                return Promise.pure()
-            }
-            facadeContainer.catalogFacade.getCatalogItemByPackageName(purchaseState.iapPackageName, null, null).then { Item e ->
-                hostItem = e
-                return Promise.pure()
-            }
-        }.then {
-            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
-                order.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
-                    response.order = settled.getId()
-                    getEntitlementsByOrder(settled, hostItem?.itemId == null ? null : new ItemId(hostItem.itemId), apiContext).then { List<Entitlement> entitlements ->
-                        response.entitlements = entitlements
-                        return Promise.pure(response)
-                    }
-                }
-            }
-        }
-    }
-
-    private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, IAPParam iapParam, ApiContext apiContext) {
-        if (purchaseState.user != AuthorizeContext.currentUserId) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
-        }
-        if (purchaseState.country == null) {
-            purchaseState.country = apiContext.country.getCountryCode()
-        } else if (purchaseState.country != apiContext.country.getCountryCode()) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Input country isn\'t consistent with token').exception()
-        }
-        if (purchaseState.locale == null) {
-            purchaseState.locale = apiContext.locale.localeCode
-        } else if (purchaseState.locale != apiContext.locale.localeCode) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('locale', 'Input locale isn\'t consistent with token').exception()
-        }
-        if (purchaseState.offer == null) {
-            purchaseState.offer = request.offer.value
-        } else if (purchaseState.offer != request.offer.value) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('offer', 'Input offer isn\'t consistent with token').exception()
-        }
-        if (purchaseState.iapPackageName == null) {
-            purchaseState.iapPackageName = iapParam?.packageName
-        } else if (purchaseState.iapPackageName != iapParam?.packageName) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('iapParams.packageName', 'Input packageName isn\'t consistent with token').exception()
-        }
-    }
-
     private void throwOnUserPasswordIncorrect(Throwable ex) {
         if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.UserPasswordIncorrect)) {
             throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-        }
-    }
-
-    private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request, ApiContext apiContext) {
-        return challengeHelper.checkPurchasePINChallenge(userId, request?.challengeAnswer).then { Challenge challenge ->
-            if (challenge != null) {
-                return Promise.pure(challenge)
-            }
-            return challengeHelper.checkTosChallenge(userId, tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
         }
     }
 

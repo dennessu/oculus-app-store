@@ -18,6 +18,8 @@ public class PreparePurchaseResponse implements EntityLoggable {
 
     private String formattedTotalPrice;
 
+    private String formattedTaxPrice;
+
     private Instrument instrument;
 
     private String purchaseToken;
@@ -41,6 +43,14 @@ public class PreparePurchaseResponse implements EntityLoggable {
 
     public void setFormattedTotalPrice(String formattedTotalPrice) {
         this.formattedTotalPrice = formattedTotalPrice;
+    }
+
+    public String getFormattedTaxPrice() {
+        return formattedTaxPrice;
+    }
+
+    public void setFormattedTaxPrice(String formattedTaxPrice) {
+        this.formattedTaxPrice = formattedTaxPrice;
     }
 
     public String getPurchaseToken() {

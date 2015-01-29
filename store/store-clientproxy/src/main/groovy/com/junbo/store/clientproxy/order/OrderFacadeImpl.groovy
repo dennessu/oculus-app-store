@@ -1,7 +1,9 @@
 package com.junbo.store.clientproxy.order
 
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
@@ -33,9 +35,9 @@ class OrderFacadeImpl implements OrderFacade {
     }
 
     @Override
-    Promise<Order> createTentativeOrder(UserId userId, List<OfferId> offerIdList, CurrencyId currencyId, PaymentInstrumentId paymentInstrumentId, ApiContext apiContext) {
+    Promise<Order> createTentativeOrder(List<OfferId> offerIdList, CurrencyId currencyId, PaymentInstrumentId paymentInstrumentId, ApiContext apiContext) {
         Order order = new Order(
-                user: userId,
+                user: apiContext.user,
                 country: apiContext.country.getId(),
                 currency: currencyId,
                 locale: apiContext.locale.getId(),
@@ -44,6 +46,21 @@ class OrderFacadeImpl implements OrderFacade {
                 payments: paymentInstrumentId == null ? null : [new PaymentInfo(paymentInstrument : paymentInstrumentId)] as List
         )
         return resourceContainer.orderResource.createOrder(order)
+    }
+
+    @Override
+    Promise<Order> updateTentativeOrder(OrderId orderId, List<OfferId> offerIdList, CurrencyId currencyId, PaymentInstrumentId paymentInstrumentId, ApiContext apiContext) {
+        return resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+            if (order.user != apiContext.user) {
+                throw AppCommonErrors.INSTANCE.forbiddenWithMessage('Order not owned by the User.').exception()
+            }
+            order.orderItems = offerIdList.collect {OfferId offerId -> new OrderItem(offer: offerId, quantity: 1)}
+            order.payments = paymentInstrumentId == null ? null : [new PaymentInfo(paymentInstrument : paymentInstrumentId)] as List
+            order.country = apiContext.country.getId()
+            order.currency = currencyId
+            order.locale = apiContext.locale.getId()
+            return resourceContainer.orderResource.updateOrderByOrderId(orderId, order)
+        }
     }
 
     private Promise<Order> createAndSettle(UserId userId, List<OfferId> offerIdList, CurrencyId currencyId, ApiContext apiContext) {

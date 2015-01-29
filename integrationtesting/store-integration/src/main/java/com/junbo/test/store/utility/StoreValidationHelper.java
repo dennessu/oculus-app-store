@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.OrderId;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
@@ -68,10 +69,13 @@ public class StoreValidationHelper extends ValidationHelper {
         verifyEqual(instrument.getExpireDate(), "2016-06", "verify expire date");
     }
 
-    public void verifyPreparePurchase(PreparePurchaseResponse response) {
-        verifyEqual(response.getFormattedTotalPrice(), String.format("10.00$"), "verify formatted total price");
+    public void verifyPreparePurchase(PreparePurchaseResponse response, boolean hasTax, OrderId orderId) {
+        verifyEqual(response.getFormattedTotalPrice(),hasTax ? String.format("10.83$") : String.format("10.83$"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
+        }
+        if (orderId != null) {
+            Assert.assertEquals(response.getOrder(), orderId);
         }
     }
 

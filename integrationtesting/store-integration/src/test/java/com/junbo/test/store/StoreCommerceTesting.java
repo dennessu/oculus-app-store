@@ -4,6 +4,7 @@ import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.order.spec.model.Order;
@@ -508,11 +509,15 @@ public class StoreCommerceTesting extends BaseTestClass {
         PaymentInstrumentId paymentId2 = instrumentUpdateResponse2.getBillingProfile().getInstruments().get(1).getSelf();
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
-        //post order without set payment instrument
+        //post order without sorderIdet payment instrument
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+        Assert.assertNotNull(preparePurchaseResponse.getChallenge());
+        Assert.assertEquals(preparePurchaseResponse.getChallenge().getType(), "PIN");
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
+        OrderId orderId = preparePurchaseResponse.getOrder();
+        validationHelper.verifyPreparePurchase(preparePurchaseResponse, true, null);
 
         testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId() : null);
@@ -521,7 +526,7 @@ public class StoreCommerceTesting extends BaseTestClass {
                 preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId(): null);
 
         //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
+        validationHelper.verifyPreparePurchase(preparePurchaseResponse, true, orderId);
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
