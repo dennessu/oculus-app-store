@@ -25,7 +25,7 @@ before_script:
 
 script:
   - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build -Dorg.gradle.parallel=false
-  - C_DL_SINGLE_THREAD=true ./dataloader.sh
+  - SC_DL_SINGLE_THREAD=true ./dataloader.sh
   - ./test.sh -r
 
 notifications:
