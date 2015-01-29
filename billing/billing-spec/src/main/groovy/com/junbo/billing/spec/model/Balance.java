@@ -175,7 +175,7 @@ public class Balance extends ResourceMetaForDualWrite<BalanceId> {
 
     public BalanceItem getBalanceItem(Long balanceItemId) {
         for (BalanceItem item : balanceItems) {
-            if (item.getId() == balanceItemId) {
+            if (item.getId().equals(balanceItemId)) {
                 return item;
             }
         }
