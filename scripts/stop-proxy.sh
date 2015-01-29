@@ -5,7 +5,7 @@ set -e
 DIR=`git rev-parse --show-toplevel`
 cd $DIR
 
-PID_FILE=.tokyo-proxy
+PID_FILE=.tokyo-proxy.pid
 
 # wait for 3 seconds to gracefully shutdown
 TIMEOUT=3
