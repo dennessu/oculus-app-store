@@ -21,6 +21,7 @@ class ErrorCodes {
         static final String MaximumLoginAttempt = '131.139'
         static final String AgeRestriction = '131.140'
         static final String TosNotFound = '131.119'
+        static final String UserPinNotFound = '131.145'
     }
 
     class OAuth {

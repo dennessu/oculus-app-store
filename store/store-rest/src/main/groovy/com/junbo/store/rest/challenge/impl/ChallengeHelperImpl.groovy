@@ -147,6 +147,10 @@ class ChallengeHelperImpl implements ChallengeHelper {
                             value: challengeAnswer.pin
                     )
             ).recover { Throwable t ->
+                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.UserPinNotFound)) {
+                    throw t
+                }
+
                 if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPin)) {
                     throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                 }
