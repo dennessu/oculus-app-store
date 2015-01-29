@@ -774,6 +774,12 @@ class UserValidatorImpl implements UserValidator {
                     }
                 }
 
+                Date startDate = existingTaxExempt?.taxExemptionStartDate
+                Date endDate = existingTaxExempt?.taxExemptionEndDate
+                if (startDate != null && endDate != null && startDate.after(endDate)) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.taxExemptionStartDate', 'startDate should be earlier than endDate').exception()
+                }
+
                 return Promise.pure(null)
             }
         }.then {
