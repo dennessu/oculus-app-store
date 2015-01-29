@@ -20,7 +20,7 @@ fi
 
 # clear the proxy setting first
 export facebookProxy=
-if ! (curl -X HEAD --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
+if ! (curl -X HEAD --max-time 3 --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
     # set proxy
     if [[ -f "$personalConfigFile" ]]; then
         export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`

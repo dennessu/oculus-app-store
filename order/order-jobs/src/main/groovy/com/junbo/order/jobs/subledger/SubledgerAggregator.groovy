@@ -1,20 +1,24 @@
 package com.junbo.order.jobs.subledger
-
+import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.OfferResource
-import com.junbo.common.id.OfferId
+import com.junbo.common.id.ItemId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.configuration.topo.model.DataCenter
+import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.jobs.subledger.payout.Constants
-import com.junbo.order.spec.model.PageParam
-import com.junbo.order.spec.model.SubledgerItem
-import com.junbo.order.spec.model.SubledgerKey
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.order.spec.resource.SubledgerItemResource
 import com.junbo.order.spec.resource.SubledgerResource
 import groovy.transform.CompileStatic
@@ -30,7 +34,6 @@ import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
-
 /**
  * Created by fzhang on 4/8/2014.
  */
@@ -68,6 +71,12 @@ class SubledgerAggregator {
 
     @Resource(name = 'order.offerClient')
     private OfferResource offerResource
+
+    @Resource(name = 'order.offerItemClient')
+    private ItemResource itemResource
+
+    @Resource(name = 'order.identityOrganizationClient')
+    private OrganizationResource organizationResource
 
     @Resource(name = 'subledgerTaskAsyncTaskExecutor')
     private ThreadPoolTaskExecutor threadPoolTaskExecutor
@@ -107,7 +116,7 @@ class SubledgerAggregator {
     void aggregateSubledger(Date date) {
         long start = System.currentTimeMillis()
         MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
-        Date endTime = new Date(((long)(date.getTime() / MS_AN_HOUR)) * MS_AN_HOUR)
+        Date endTime = date
         LOGGER.info('name=Subledger_Aggregate_Job_Start, endSubledgerTime={}', ObjectMapperProvider.instance().writeValueAsString(endTime))
 
         AggregateStatics statics = new AggregateStatics()
@@ -125,17 +134,17 @@ class SubledgerAggregator {
         long timeStarted = System.currentTimeMillis()
         AggregateStatics statics = new AggregateStatics()
         LOGGER.info('name=Subledger_Aggregate_Shard_Start, dcId={}, shardId={}', dcId, shardId)
-        List<OfferId> offerIdList = listOfferId(dcId, shardId)
+        List<ItemId> itemIdList = listItemId(dcId, shardId)
 
         // aggregate per offerId
         List<Future<Void>> tasks = [] as List
         def self = this
-        offerIdList.each { OfferId offerId ->
+        itemIdList.each { ItemId itemId ->
             Future<Void> future = threadPoolTaskExecutor.submit(new Callable<Void>() {
                 @Override
                 Void call() throws Exception {
                     MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
-                    AggregateStatics staticsPerOffer = self.aggregateByOffer(dcId, shardId, offerId, endTime)
+                    AggregateStatics staticsPerOffer = self.aggregateByItem(dcId, shardId, itemId, endTime)
                     statics.aggregate(staticsPerOffer)
                 }
             })
@@ -151,24 +160,24 @@ class SubledgerAggregator {
         return statics
     }
 
-    private AggregateStatics aggregateByOffer(int dcId, int shardId, OfferId offerId, Date endTime) {
+    private AggregateStatics aggregateByItem(int dcId, int shardId, ItemId itemId, Date endTime) {
         long timeStarted = System.currentTimeMillis()
         AggregateStatics statics = new AggregateStatics()
-        Map<SubledgerKey, List<SubledgerItem>> groupedSubledgerItems = [:]
+        Map<SubledgerCriteria, List<SubledgerItem>> groupedSubledgerItems = [:]
         int totalInMemory = 0
         int start = 0
 
-        LOGGER.info('name=Subledger_Aggregate_Offer_Start, dcId={}, shardId={}, offerId={}, endTime={}', dcId, shardId, offerId,
+        LOGGER.info('name=Subledger_Aggregate_Item_Start, dcId={}, shardId={}, itemId={}, endTime={}', dcId, shardId, itemId,
                 ObjectMapperProvider.instance().writeValueAsString(endTime))
-        Offer offer = offerResource.getOffer(offerId.toString()).get()
-
+        def subledgerTime = subledgerHelper.getSubledgerStartTime(new Date(endTime.getTime() - MS_AN_HOUR))
         while (true) {
             List<SubledgerItem> subledgerItemList = null
             transactionHelper.executeInNewTransaction {
-                subledgerItemList = subledgerRepository.getSubledgerItem(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS.name(), offerId, endTime,
+                subledgerItemList = subledgerRepository.getSubledgerItem(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS.name(), itemId, endTime,
                         new PageParam(count: this.pageSize, start: start))
                 subledgerItemList.each { SubledgerItem subledgerItem ->
-                    subledgerItem.subledgerKey = buildSubledgerKey(subledgerItem, offer, new Date(endTime.getTime() - MS_AN_HOUR))
+                    Offer defaultOffer = offerResource.getOffer(subledgerItem.offer.value).get()
+                    fillSubledgerCriteria(subledgerItem, defaultOffer, subledgerTime)
                 }
             }
 
@@ -178,15 +187,15 @@ class SubledgerAggregator {
             start += subledgerItemList.size()
 
             subledgerItemList.each { SubledgerItem subledgerItem ->
-                if (subledgerItem.subledgerKey == null) {
+                if (subledgerItem.subledgerCriteria == null) {
                     statics.totalFailed++
                     return
                 }
 
-                List<SubledgerItem> subledgerItems = groupedSubledgerItems[subledgerItem.subledgerKey]
+                List<SubledgerItem> subledgerItems = groupedSubledgerItems[subledgerItem.subledgerCriteria]
                 if (subledgerItems == null) {
                     subledgerItems = [] as List
-                    groupedSubledgerItems[subledgerItem.subledgerKey] = subledgerItems
+                    groupedSubledgerItems[subledgerItem.subledgerCriteria] = subledgerItems
                 }
                 subledgerItems << subledgerItem
                 totalInMemory++
@@ -210,38 +219,38 @@ class SubledgerAggregator {
             aggregateSubledgerItemsWithRetry(list, statics)
         }
 
-        LOGGER.info('name=Subledger_Aggregate_Offer_End, dcId={}, shardId={}, offerId={}, totalAggregated={}, totalFailed={}, durationInMs={}',
-                dcId, shardId, offerId, statics.totalAggregated, statics.totalFailed , System.currentTimeMillis() - timeStarted)
+        LOGGER.info('name=Subledger_Aggregate_Offer_End, dcId={}, shardId={}, itemId={}, totalAggregated={}, totalFailed={}, durationInMs={}',
+                dcId, shardId, itemId, statics.totalAggregated, statics.totalFailed , System.currentTimeMillis() - timeStarted)
         return statics
     }
 
-    private List<OfferId> listOfferId(int dcId, int shardId) {
+    private List<ItemId> listItemId(int dcId, int shardId) {
         long timeStarted = System.currentTimeMillis()
-        Set<OfferId> offerIds = [] as Set
+        Set<ItemId> itemIds = [] as Set
         int start = 0
         while (true) {
-            List<OfferId> offerIdList = null
+            List<ItemId> itemIdList = null
             transactionHelper.executeInTransaction {
-                offerIdList = subledgerRepository.getDistinctSubledgerItemOfferIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS.name(),
+                itemIdList = subledgerRepository.getDistinctSubledgerItemItemIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS.name(),
                         new PageParam(start: start, count: pageSize))
             }
-            if (offerIdList.isEmpty()) {
+            if (itemIdList.isEmpty()) {
                 break
             }
 
-            offerIdList.each { OfferId offerId ->
-                if (offerIds.contains(offerId)) {
-                    LOGGER.error('name=Distinct_Return_Duplicate_OfferId, offerId={}', offerId)
+            itemIdList.each { ItemId itemId ->
+                if (itemIds.contains(itemId)) {
+                    LOGGER.error('name=Distinct_Return_Duplicate_ItemId, itemId={}', itemId)
                 }
             }
-            offerIds.addAll(offerIdList)
-            start += offerIdList.size()
+            itemIds.addAll(itemIdList)
+            start += itemIdList.size()
         }
-        List<OfferId> offerIdList = new ArrayList<OfferId>(offerIds)
-        Collections.shuffle(offerIdList, random)
+        List<ItemId> result = new ArrayList<ItemId>(itemIds)
+        Collections.shuffle(result, random)
 
-        LOGGER.info('name=Subledger_Aggregate_OfferIdDistinctGet, dcId={}, shardId={}, latencyInMs={}', dcId, shardId, System.currentTimeMillis() - timeStarted)
-        return offerIdList
+        LOGGER.info('name=Subledger_Aggregate_ItemIdDistinctGet, dcId={}, shardId={}, latencyInMs={}', dcId, shardId, System.currentTimeMillis() - timeStarted)
+        return result
     }
 
     private void aggregateSubledgerItemsWithRetry(List<SubledgerItem> items, AggregateStatics statics) {
@@ -260,7 +269,7 @@ class SubledgerAggregator {
         statics.totalFailed += items.size()
     }
 
-    private SubledgerKey buildSubledgerKey(SubledgerItem subledgerItem, Offer offer, Date subledgerTime) {
+    private SubledgerCriteria fillSubledgerCriteria(SubledgerItem subledgerItem, Offer defaultOffer, Date subledgerTime) {
         def orderItem = orderRepository.getOrderItem(subledgerItem.orderItem.value)
         if (orderItem == null) {
             LOGGER.error('name=Invalid_SubledgerItem,cause=orderItemNotFound,subledgerItemId={},orderItemId={}',
@@ -268,6 +277,7 @@ class SubledgerAggregator {
             return null
         }
 
+        SubledgerKeyInfo subledgerKeyInfo = new SubledgerKeyInfo()
         def order = orderRepository.getOrder(orderItem.orderId.value)
         if (order == null) {
             LOGGER.error('name=Invalid_SubledgerItem,cause=orderNotFound,subledgerItemId={},orderId={}',
@@ -275,12 +285,32 @@ class SubledgerAggregator {
             return null
         }
 
-        return new SubledgerKey(
+        boolean hasDigital = false, hasPhysical = false
+        order.orderSnapshot.each { OfferSnapshot offerSnapshot ->
+            offerSnapshot.itemSnapshots.each { ItemSnapshot itemSnapshot ->
+                Item item = itemResource.getItem(itemSnapshot.item.value).get()
+                if (item.type == ItemType.PHYSICAL.name()) {
+                    hasPhysical = true
+                } else {
+                    hasDigital = true
+                }
+            }
+        }
+        subledgerKeyInfo.physical = hasPhysical
+        subledgerKeyInfo.mixTxn = hasPhysical && hasDigital
+
+
+        Organization seller = organizationResource.get(defaultOffer.ownerId, new OrganizationGetOptions()).get()
+        subledgerKeyInfo.fbPayoutOrgId = seller.fbPayoutOrgId
+        subledgerItem.subledgerKeyInfo = subledgerKeyInfo
+        subledgerItem.subledgerCriteria = new SubledgerCriteria(
                 country: order.country,
                 currency: order.currency,
-                offerPublisher: offer.ownerId,
-                offerId: new OfferId(offer.getId()),
-                subledgerTime: subledgerTime
+                seller: defaultOffer.ownerId,
+                itemId: subledgerItem.item,
+                subledgerTime: subledgerTime,
+                subledgerType: SubledgerType.valueOf(subledgerItem.subledgerType),
+                subledgerKey: subledgerKeyInfo.getSubledgerKey()
         )
     }
 }

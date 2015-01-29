@@ -23,7 +23,7 @@ import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
 import com.junbo.order.spec.model.enums.PayoutStatus
-import com.junbo.order.spec.model.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -71,6 +71,7 @@ class SubledgerServiceImpl implements SubledgerService {
         subledger.totalAmount = 0
         subledger.totalPayoutAmount = 0
         subledger.totalQuantity = 0
+        subledger.taxAmount = 0
         return subledgerRepository.createSubledger(subledger)
     }
 
@@ -175,33 +176,28 @@ class SubledgerServiceImpl implements SubledgerService {
     @Transactional
     void aggregateSubledgerItem(List<SubledgerItem> subledgerItems) {
         subledgerItems.each { SubledgerItem item ->
-            if (item.subledgerKey == null) {
-                throw new RuntimeException('subledgerKey in subleger item could not be null')
+            if (item.subledgerCriteria == null) {
+                throw new RuntimeException('subledgerCriteria in subleger item could not be null')
             }
-            if (!item.subledgerKey.equals(subledgerItems[0].subledgerKey)) {
+            if (!item.subledgerCriteria.equals(subledgerItems[0].subledgerCriteria)) {
                 throw new RuntimeException('subledger items should should have same key')
             }
         }
 
-        def subledger = subledgerHelper.getMatchingSubledger(subledgerItems[0].subledgerKey)
+        def subledger = subledgerHelper.getMatchingSubledger(subledgerItems[0].subledgerCriteria)
 
         if (subledger == null) {
-            subledger = subledgerHelper.subledgerForSubledgerKey(subledgerItems[0].subledgerKey)
+            subledger = subledgerHelper.createSubledger(subledgerItems[0].subledgerCriteria, subledgerItems[0].offer, subledgerItems[0].subledgerKeyInfo)
             subledger = createSubledger(subledger)
         }
 
         subledgerItems.each { SubledgerItem subledgerItem ->
             subledgerItem.subledger = subledger.getId()
             subledgerItem.status = SubledgerItemStatus.PROCESSED
-            if (subledgerItem.subledgerItemAction == SubledgerItemAction.PAYOUT.name()) {
-                subledger.totalAmount += subledgerItem.totalAmount
-                subledger.totalQuantity += subledgerItem.totalQuantity
-                subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
-            } else {
-                subledger.totalAmount -= subledgerItem.totalAmount
-                subledger.totalQuantity -= subledgerItem.totalQuantity
-                subledger.totalPayoutAmount -= subledgerItem.totalPayoutAmount
-            }
+            subledger.totalAmount += subledgerItem.totalAmount
+            subledger.totalQuantity += subledgerItem.totalQuantity
+            subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
+            subledger.taxAmount += subledgerItem.taxAmount
 
             SubledgerItem oldSubledgerItem = subledgerRepository.getSubledgerItem(subledgerItem.getId())
             subledgerRepository.updateSubledgerItem(subledgerItem, oldSubledgerItem)

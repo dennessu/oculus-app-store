@@ -6,8 +6,11 @@ import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerKeyInfo
 import com.junbo.order.spec.model.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.sharding.IdGenerator
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,6 +60,11 @@ class SubledgerPayoutAssignUtils {
             }
 
             subledgers.each { Subledger subledger ->
+                String fbPayoutOrgId = Utils.getFbPayoutOrgId(subledger)
+                if (StringUtils.isEmpty(fbPayoutOrgId)) {
+                    LOGGER.error('name=Missing_fbPayoutOrgId_In_Subledger, subledgerId={}', subledger.getId())
+                    return
+                }
                 if (subledgersWithSameSeller.isEmpty() || subledgersWithSameSeller[0].seller == subledger.seller) {
                     subledgersWithSameSeller << subledger
                 } else {
@@ -71,28 +79,39 @@ class SubledgerPayoutAssignUtils {
             }
             pageStart += subledgers.size()
         }
+        assignPayout(subledgersWithSameSeller)
 
         LOGGER.info('name=EndSubledgerPayoutIdAssign, dcId={}, shardId={}, startDate={}, endDate={}, latencyInSeconds={}', dcId,
                 shardId, startDate, endDate, (System.currentTimeMillis() - start) / 1000);
     }
 
+    /**
+     * Assign payout to subledgers. Subledger with same seller & fbPayoutOrgId should share the same payoutId.
+     * @param subledgersWithSameSeller
+     */
     void assignPayout(List<Subledger> subledgersWithSameSeller) {
         if (subledgersWithSameSeller.isEmpty()) {
             return
         }
 
-        PayoutId payoutId = subledgersWithSameSeller.find { Subledger subledger -> subledger.payoutId != null }?.payoutId
-        if (payoutId == null) {
-            payoutId = new PayoutId(idGenerator.nextId(subledgersWithSameSeller[0].seller.value))
-        }
+        Map<String, PayoutId> payoutIdMap = [:] // fbPayoutOrgId -> payoutId
 
         subledgersWithSameSeller.each { Subledger subledger ->
-            if (subledger.payoutId == null) {
-                subledger.payoutId = payoutId
-                subledger.payoutStatus = PayoutStatus.PROCESSING.name()
-                transactionHelper.executeInNewTransaction {
-                    subledgerRepository.updateSubledger(subledger)
+            SubledgerType subledgerType = SubledgerType.valueOf(subledger.subledgerType)
+            if (subledgerType.payoutActionType == SubledgerType.PayoutActionType.NONE) { // subledgers that don't affect payout
+                subledger.payoutStatus = PayoutStatus.COMPLETED.name()
+            } else if (subledger.totalPayoutAmount == BigDecimal.ZERO) { // zero payout amount subledger
+                subledger.payoutStatus = PayoutStatus.COMPLETED.name()
+            } else if (subledger.payoutId == null) {
+                String fbPayoutOrgId = Utils.getFbPayoutOrgId(subledger)
+                if (payoutIdMap[fbPayoutOrgId] == null) { // assign payout
+                    payoutIdMap[fbPayoutOrgId] = new PayoutId(idGenerator.nextId(subledgersWithSameSeller[0].seller.value))
                 }
+                subledger.payoutId = payoutIdMap[fbPayoutOrgId]
+                subledger.payoutStatus = PayoutStatus.PENDING.name()
+            }
+            transactionHelper.executeInNewTransaction {
+                subledgerRepository.updateSubledger(subledger)
             }
         }
     }

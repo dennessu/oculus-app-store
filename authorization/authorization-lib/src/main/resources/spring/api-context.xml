@@ -106,7 +106,7 @@
                 <entry key="ResetPasswordEndpoint.getResetPasswordLink" value="smoketest" />
                 <!-- order -->
                 <entry key="OrderEventResource" value="commerce order.service csr"/>
-                <entry key="OrderResource" value="commerce order.service csr"/>
+                <entry key="OrderResource" value="commerce order.service csr commerce.checkout"/>
                 <entry key="SubledgerItemResource" value="subledger.service"/>
                 <entry key="SubledgerResource.createSubledger" value="subledger.service"/>
                 <entry key="SubledgerResource.updateStatusOnFacebookPayoutStatusChange" value="subledger.service"/>

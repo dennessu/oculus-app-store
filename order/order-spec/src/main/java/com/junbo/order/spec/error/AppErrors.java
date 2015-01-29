@@ -70,10 +70,10 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = "115", message = "Rating Connection Error.", reason = "Order rating error: {0}.")
     AppError ratingConnectionError(String error);
 
-    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Connection Error.")
+    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Throws Unexpected Error.")
     AppError billingConnectionError(AppError[] causes);
 
-    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Connection Error.", reason = "Billing service returns error: {0}.")
+    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Throws Unexpected Error.", reason = "Billing service returns error: {0}.")
     AppError billingConnectionError(String causes);
 
     @ErrorDef(httpStatusCode = 500, code = "117", message = "Billing Result Invalid.", reason = "Billing result invalid: {0}.")
@@ -82,10 +82,10 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "118", message = "Balance Not Found.")
     AppError balanceNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "119", message = "Billing Charge Declined.")
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "The payment of order is declined.")
     AppError billingChargeFailed();
 
-    @ErrorDef(httpStatusCode = 412, code = "120", message = "Billing Insufficient Fund.")
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "Insufficient Fund.")
     AppError billingInsufficientFund();
 
     @ErrorDef(httpStatusCode = 500, code = "121", message = "User Connection Error.")

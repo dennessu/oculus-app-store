@@ -15,7 +15,7 @@
     ],
     "authdbs": {
         "oculus-cni": [
-            "oculus001", "oculus002", "oculus003", "oculus004"
+            "oculus001", "oculus002", "oculus003", "oculus013"
         ]
     }
 }

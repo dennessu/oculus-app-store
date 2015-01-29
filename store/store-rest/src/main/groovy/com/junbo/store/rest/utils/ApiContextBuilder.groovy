@@ -104,6 +104,13 @@ class ApiContextBuilder implements InitializingBean {
             return Promise.pure(result)
         }
     }
+    
+    public String doLocaleMapping(String localeId) {
+        if (!localeMappingEnabled || localeId == null) {
+            return localeId;
+        }
+        return localeMapping.containsKey(localeId) ? localeMapping[localeId] : localeId
+    }
 
     private static String getHeader(StoreApiHeader header) {
         return JunboHttpContext.requestHeaders.getFirst(header.value)
@@ -143,13 +150,6 @@ class ApiContextBuilder implements InitializingBean {
             }
             throw ex
         }
-    }
-
-    private String doLocaleMapping(String localeId) {
-        if (!localeMappingEnabled || localeId == null) {
-            return localeId;
-        }
-        return localeMapping.containsKey(localeId) ? localeMapping[localeId] : localeId
     }
 
     @Override

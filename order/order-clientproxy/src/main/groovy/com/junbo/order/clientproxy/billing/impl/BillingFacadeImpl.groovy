@@ -140,12 +140,15 @@ class BillingFacadeImpl implements BillingFacade {
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
         if (e != null && e.error().code == PAYMENT_INSUFFICIENT_FUND) {
+            // map the specific error to order error
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {
-            return AppErrors.INSTANCE.billingChargeFailed()
+            // mapped error from billing. throw it as is
+            return e
         }
-        return AppErrors.INSTANCE.billingConnectionError(error.message)
+        // unexpected error from billing. wrap as 500 error
+        return AppErrors.INSTANCE.billingConnectionError(error?.message)
     }
 
     private AppError convertToCalculateTaxError(Throwable error) {

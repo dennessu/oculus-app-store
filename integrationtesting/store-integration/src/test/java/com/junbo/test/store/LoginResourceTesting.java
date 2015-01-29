@@ -1348,6 +1348,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert response.getChallenge() == null;
 
         testDataProvider.UpdateTos(englishVersionTos.getId());
+        Thread.sleep(1000);
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() != null;

@@ -89,23 +89,23 @@ public class SubledgerDaoTest extends BaseTest {
         subledgerDao.create(entity);
 
         Assert.assertNotNull(subledgerDao.find(entity.getSellerId(),
-                PayoutStatus.PENDING, entity.getStartTime(), entity.getOfferId(), entity.getCurrency(),
-                entity.getCountry()
+                PayoutStatus.PENDING, entity.getStartTime(), entity.getItemId(), entity.getKey(),
+                entity.getCurrency(), entity.getCountry()
                 ));
 
         Assert.assertNull(subledgerDao.find(entity.getSellerId(),
-                PayoutStatus.COMPLETED, entity.getStartTime(), entity.getOfferId(), entity.getCurrency(),
-                entity.getCountry()
+                PayoutStatus.COMPLETED, entity.getStartTime(), entity.getItemId(), entity.getCurrency(),
+                entity.getKey(), entity.getCountry()
         ));
 
         Assert.assertNull(subledgerDao.find(entity.getSellerId() + 1,
-                PayoutStatus.PENDING, entity.getStartTime(), entity.getOfferId(), entity.getCurrency(),
-                entity.getCountry()
+                PayoutStatus.PENDING, entity.getStartTime(), entity.getItemId(), entity.getKey(),
+                entity.getCurrency(), entity.getCountry()
         ));
 
         Assert.assertNull(subledgerDao.find(entity.getSellerId(),
-                PayoutStatus.PENDING, entity.getStartTime(), entity.getOfferId(), entity.getCurrency(),
-                entity.getCurrency()
+                PayoutStatus.PENDING, entity.getStartTime(), entity.getItemId(), entity.getKey(),
+                entity.getCurrency(), entity.getCurrency()
         ));
     }
 }

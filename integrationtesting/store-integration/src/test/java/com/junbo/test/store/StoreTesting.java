@@ -103,7 +103,7 @@ public class StoreTesting extends BaseTestClass {
                     preparePurchaseResponse.getChallenge().getTos().getTosId());
         }
         //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
+        validationHelper.verifyPreparePurchase(preparePurchaseResponse, true, null);
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
@@ -503,7 +503,7 @@ public class StoreTesting extends BaseTestClass {
         }
 
         //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
+        validationHelper.verifyPreparePurchase(preparePurchaseResponse, true, null);
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 

@@ -17,4 +17,6 @@ class Constants {
     public static final String PAYOUT_FILE_NAME = 'PayoutFile'
 
     public static final String PAYOUT_STATUS_FILE_NAME = 'PayoutStatus'
+
+    public static final String REVENUE_FILE_NAME = 'MonthlyRevenue'
 }

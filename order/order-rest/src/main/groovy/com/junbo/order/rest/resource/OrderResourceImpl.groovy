@@ -121,6 +121,9 @@ class OrderResourceImpl implements OrderResource {
                             return result
                         }
                     } else { // handle settle order scenario: the tentative flag is updated from true to false
+                        if (!AuthorizeContext.hasRights('settle.quote')) {
+                            throw AppCommonErrors.INSTANCE.forbidden().exception()
+                        }
                         LOGGER.info('name=settleQuote, orderId: {}', orderId.value)
                         return orderService.settleQuote(order, new OrderServiceContext(order, new ApiContext()))
                     }

@@ -16,10 +16,10 @@ import java.util.List;
  * Created by linyi on 14-2-7.
  */
 public interface SubledgerItemDao extends BaseDao<SubledgerItemEntity> {
-    List<SubledgerItemEntity> getByStatusOfferIdCreatedTime(Integer dataCenterId, Integer shardId, SubledgerItemStatus status,
-                                                            String offerId, Date endTime, int start, int count);
+    List<SubledgerItemEntity> getByStatusItemIdCreatedTime(Integer dataCenterId, Integer shardId, SubledgerItemStatus status,
+                                                            String itemId, Date endTime, int start, int count);
 
     List<SubledgerItemEntity> getByOrderItemId(Long orderItemId);
 
-    List<String> getDistrictOfferIds(Integer dataCenterId, Integer shardId, SubledgerItemStatus status, int start, int count);
+    List<String> getDistrictItemIds(Integer dataCenterId, Integer shardId, SubledgerItemStatus status, int start, int count);
 }

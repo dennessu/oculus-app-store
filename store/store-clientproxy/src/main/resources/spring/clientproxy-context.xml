@@ -15,7 +15,7 @@
     </bean>
 
     <bean id="storeUserAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity identity.pii commerce catalog"/>
+        <property name="scope" value="identity identity.pii commerce catalog commerce.checkout"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.onbehalf.clientSecret}"/>
         <property name="clientId" value="${store.onbehalf.clientId}"/>

@@ -10,6 +10,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -59,6 +62,17 @@ public final class CommonUtil {
 
     public static <T> T parseJson(String json, Class<T> classType){
         return JSON.parseObject(json, classType);
+    }
+
+    public static <T> T parseJsonIgnoreUnknown(String json, Class<T> classType){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        try {
+            return objectMapper.readValue(json, classType);
+        } catch (IOException e) {
+            LOGGER.error("exception parse json: " + json, e);
+            throw AppServerExceptions.INSTANCE.errorDecode(json).exception();
+        }
     }
 
     public static Boolean toBool(String value){
@@ -157,7 +171,7 @@ public final class CommonUtil {
                         propDesc.getWriteMethod().invoke(obj, (Object)null);
                         value = propDesc.getReadMethod().invoke(obj);
                     }catch(Exception ex){
-                        LOGGER.warn("exception when filter out field: " + field.getName());
+                        LOGGER.warn("exception when filter out field: " + field.getName(), ex);
                     }
                 }else if(annotation instanceof InnerFilter){
                     try{
@@ -167,7 +181,7 @@ public final class CommonUtil {
                             postFilter(sub);
                         }
                     }catch (Exception ex){
-                        LOGGER.warn("exception when filter out inner field: " + field.getName());
+                        LOGGER.warn("exception when filter out inner field: " + field.getName(), ex);
                     }
                 }
             }

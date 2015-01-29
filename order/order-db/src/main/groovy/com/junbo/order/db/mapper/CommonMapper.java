@@ -606,20 +606,20 @@ public class CommonMapper {
         }
     }
 
-    public String fromSubledgerItemActionToString(SubledgerItemAction subledgerItemAction) {
-        if (subledgerItemAction == null) {
+    public String fromSubledgerItemActionToString(SubledgerType subledgerType) {
+        if (subledgerType == null) {
             return null;
         }
-        return subledgerItemAction.toString();
+        return subledgerType.toString();
     }
 
-    public SubledgerItemAction fromStringToSubledgerItemAction(String subledgerItemAction) {
+    public SubledgerType fromStringToSubledgerItemAction(String subledgerItemAction) {
         if (subledgerItemAction == null) {
             return null;
         }
 
         try {
-            return SubledgerItemAction.valueOf(subledgerItemAction);
+            return SubledgerType.valueOf(subledgerItemAction);
         } catch (Exception e) {
             throw AppErrors.INSTANCE.enumConversionError(subledgerItemAction, "SubledgerItemAction").exception();
         }

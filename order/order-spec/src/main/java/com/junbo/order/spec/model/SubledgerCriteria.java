@@ -7,20 +7,23 @@ package com.junbo.order.spec.model;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.id.OfferId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.order.spec.model.enums.SubledgerType;
 
 import java.util.Date;
 
 /**
  * Created by acer on 2015/1/20.
  */
-public class SubledgerKey {
+public class SubledgerCriteria {
 
     private CountryId country;
     private CurrencyId currency;
-    private OrganizationId offerPublisher;
-    private OfferId offerId;
+    private String subledgerKey;
+    private SubledgerType subledgerType;
+    private OrganizationId seller;
+    private ItemId itemId;
     private Date subledgerTime;
 
     public CountryId getCountry() {
@@ -39,20 +42,36 @@ public class SubledgerKey {
         this.currency = currency;
     }
 
-    public OrganizationId getOfferPublisher() {
-        return offerPublisher;
+    public OrganizationId getSeller() {
+        return seller;
     }
 
-    public void setOfferPublisher(OrganizationId offerPublisher) {
-        this.offerPublisher = offerPublisher;
+    public void setSeller(OrganizationId seller) {
+        this.seller = seller;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public String getSubledgerKey() {
+        return subledgerKey;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setSubledgerKey(String subledgerKey) {
+        this.subledgerKey = subledgerKey;
+    }
+
+    public SubledgerType getSubledgerType() {
+        return subledgerType;
+    }
+
+    public void setSubledgerType(SubledgerType subledgerType) {
+        this.subledgerType = subledgerType;
+    }
+
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 
     public Date getSubledgerTime() {
@@ -68,15 +87,16 @@ public class SubledgerKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SubledgerKey that = (SubledgerKey) o;
+        SubledgerCriteria that = (SubledgerCriteria) o;
 
         if (country != null ? !country.equals(that.country) : that.country != null) return false;
         if (currency != null ? !currency.equals(that.currency) : that.currency != null) return false;
-        if (offerId != null ? !offerId.equals(that.offerId) : that.offerId != null) return false;
-        if (offerPublisher != null ? !offerPublisher.equals(that.offerPublisher) : that.offerPublisher != null)
-            return false;
+        if (itemId != null ? !itemId.equals(that.itemId) : that.itemId != null) return false;
+        if (seller != null ? !seller.equals(that.seller) : that.seller != null) return false;
+        if (subledgerKey != null ? !subledgerKey.equals(that.subledgerKey) : that.subledgerKey != null) return false;
         if (subledgerTime != null ? !subledgerTime.equals(that.subledgerTime) : that.subledgerTime != null)
             return false;
+        if (subledgerType != that.subledgerType) return false;
 
         return true;
     }
@@ -85,8 +105,10 @@ public class SubledgerKey {
     public int hashCode() {
         int result = country != null ? country.hashCode() : 0;
         result = 31 * result + (currency != null ? currency.hashCode() : 0);
-        result = 31 * result + (offerPublisher != null ? offerPublisher.hashCode() : 0);
-        result = 31 * result + (offerId != null ? offerId.hashCode() : 0);
+        result = 31 * result + (subledgerKey != null ? subledgerKey.hashCode() : 0);
+        result = 31 * result + (subledgerType != null ? subledgerType.hashCode() : 0);
+        result = 31 * result + (seller != null ? seller.hashCode() : 0);
+        result = 31 * result + (itemId != null ? itemId.hashCode() : 0);
         result = 31 * result + (subledgerTime != null ? subledgerTime.hashCode() : 0);
         return result;
     }

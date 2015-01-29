@@ -448,7 +448,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if (checkSign(request)) {
             LOGGER.info("signature check success.");
         }
-        final FacebookRTU facebookRTU = CommonUtil.parseJson(request, FacebookRTU.class);
+        final FacebookRTU facebookRTU = CommonUtil.parseJsonIgnoreUnknown(request, FacebookRTU.class);
         if(facebookRTU == null || !facebookRTU.getObject().equalsIgnoreCase("payments") || facebookRTU.getEntry().length < 0){
             return Promise.pure(null);
         }

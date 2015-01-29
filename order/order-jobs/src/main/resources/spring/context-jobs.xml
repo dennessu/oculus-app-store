@@ -14,17 +14,51 @@
         <property name="triggers">
             <list>
                 <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
-                <ref bean="subledgerJobTrigger"/>
-                <ref bean="payoutExportJobTrigger"/>
-                <ref bean="payoutUpdateJobTrigger"/>
                 <ref bean="orderAuditTaxJobTrigger"/>
-                <ref bean="payoutUpdateJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
             <map>
                 <entry key="org.quartz.scheduler.jmx.export" value="true"/>
                 <entry key="org.quartz.scheduler.jmx.objectName" value="quartz:type=QuartzScheduler,name=orderScheduler"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- subledgder jobs for all dc -->
+    <bean id="subledgerSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
+        <property name="schedulerName" value="subledgerScheduler" />
+        <property name="autoStartup" value="${order.jobs.scheduler.subledger.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="subledgerJobTrigger"/>
+            </list>
+        </property>
+        <property name="quartzProperties">
+            <map>
+                <entry key="org.quartz.scheduler.jmx.export" value="true"/>
+                <entry key="org.quartz.scheduler.jmx.objectName" value="quartz:type=QuartzScheduler,name=subledgerScheduler"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- subledgder jobs for master dc -->
+    <bean id="subledgerMasterDcSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
+        <property name="schedulerName" value="subledgerMasterDcScheduler" />
+        <property name="autoStartup" value="${order.jobs.scheduler.subledger.masterDc.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="payoutExportJobTrigger"/>
+                <ref bean="revenueReportJobTrigger"/>
+                <ref bean="payoutUpdateJobTrigger"/>
+            </list>
+        </property>
+        <property name="quartzProperties">
+            <map>
+                <entry key="org.quartz.scheduler.jmx.export" value="true"/>
+                <entry key="org.quartz.scheduler.jmx.objectName" value="quartz:type=QuartzScheduler,name=subledgerMasterDcScheduler"/>
             </map>
         </property>
     </bean>
@@ -119,6 +153,25 @@
         <property name="concurrent" value="false"/>
     </bean>
 
+    <!-- Subledger Job & Trigger-->
+    <bean id="revenueReportJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="subledgerJobDetail" />
+        <property name="cronExpression" value="${order.jobs.revenue.cronexpression}" />
+    </bean>
+
+    <bean id="revenueReportDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="order.revenueReportJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
+
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
         <property name="orderProcessor" ref="orderChargeProcessor"/>
@@ -190,6 +243,9 @@
                 </entry>
                 <entry key="quartz:type=QuartzJob,name=subledgerAggregateJob">
                     <idref bean="subledgerAggregator"/>
+                </entry>
+                <entry key="quartz:type=QuartzJob,name=revenueReportJob">
+                    <idref bean="order.revenueReportJob"/>
                 </entry>
             </map>
         </property>

@@ -23,9 +23,12 @@ public interface SubledgerDao extends BaseDao<SubledgerEntity> {
     List<SubledgerEntity> getByStatusOrderBySeller(int dataCenterId, int shardId, PayoutStatus payoutStatus, Date fromDate, Date toDate,
                                         int start, int count);
 
+    List<SubledgerEntity> getByTime(int dataCenterId, int shardId, Date fromDate, Date toDate,
+                                                   int start, int count);
+
     List<SubledgerEntity> getByPayoutId(long payoutId, int start, int count);
 
     SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
-                                               String productItemId, String currency, String country);
+                                               String itemId, String subledgerKey, String currency, String country);
 
 }

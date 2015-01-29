@@ -5,7 +5,7 @@
             {
                 "precondition": "ownedByCurrentUser",
                 "rights": [
-                    "read"
+                    "create", "read", "update"
                 ],
                 "scriptType": "SPEL"
             }
@@ -14,7 +14,7 @@
             {
                 "precondition": "ownedByCurrentUser",
                 "rights": [
-                    "create", "read", "update"
+                    "create", "read", "update", "settle.quote"
                 ],
                 "scriptType": "SPEL"
             }

@@ -5,11 +5,17 @@ import org.apache.commons.vfs2.FileSystemOptions
 import org.apache.commons.vfs2.Selectors
 import org.apache.commons.vfs2.impl.StandardFileSystemManager
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Created by fzhang on 2015/1/18.
  */
 class FTPUtils {
+
+    private Logger LOGGER = LoggerFactory.getLogger(FTPUtils)
+
+    private int initialRetryIntervalSecond = 10
 
     private String host
 
@@ -35,7 +41,31 @@ class FTPUtils {
         this.password = password
     }
 
-    boolean uploadFile(File localeFile, String remotePath) throws IOException {
+    boolean uploadFile(File localeFile, String remotePath, int maxRetry) throws IOException {
+        maxRetry = Math.max(0, maxRetry)
+        int retryCount = 0
+        long start = System.currentTimeMillis()
+
+        while (retryCount < maxRetry) {
+            LOGGER.info('name=Start_Upload_File, file={}, retryCount={}', localeFile.getPath(), retryCount)
+            try {
+                if (innerUploadFile(localeFile, remotePath)) {
+                    LOGGER.info('name=Finish_Upload_File, file={}, latencyInMs={}', localeFile.getPath(), System.currentTimeMillis() - start)
+                } else {
+                    LOGGER.info('name=FileAlreadyExistOnServer, file={}, skip', localeFile.path)
+                }
+                return true
+            } catch (IOException ex) {
+                LOGGER.error('name=UploadFileError, path={}', localeFile.path, ex)
+                Thread.sleep(1000L * initialRetryIntervalSecond * (1 << retryCount))
+                retryCount++
+            }
+        }
+
+        return false
+    }
+
+    private boolean innerUploadFile(File localeFile, String remotePath) throws IOException {
         StandardFileSystemManager manager = new StandardFileSystemManager();
         try {
             manager.init()

@@ -7,16 +7,12 @@ cd $DIR
 
 PROXY_SERVER=silkcloud@54.92.103.97
 
-rm .tokyo-proxy 2>/dev/null || true
-if ! ( ssh -S .tokyo-proxy -O check $PROXY_SERVER ) 2>/dev/null; then
-    echo Starting proxy...
-    if [[ "$OS" == Windows* ]]; then
-        # fix the issue in windows 8
-        chgrp Users .ssh/id_rsa > /dev/null 2>&1 || true
-    fi
-    chmod 600 .ssh/id_rsa
-    ssh -o "StrictHostKeyChecking no" -M -S .tokyo-proxy -L 13128:127.0.0.1:3128 $PROXY_SERVER -p 9222 -fnNT -i .ssh/id_rsa
-else
-    echo Proxy already started.
+echo Starting proxy...
+if [[ "$OS" == Windows* ]]; then
+    # fix the issue in windows 8
+    chgrp Users .ssh/id_rsa > /dev/null 2>&1 || true
 fi
+chmod 600 .ssh/id_rsa
+ssh -o "StrictHostKeyChecking no" -M -L 13128:127.0.0.1:3128 $PROXY_SERVER -p 9222 -nNT -i .ssh/id_rsa &
+echo $! > .tokyo-proxy.pid
 

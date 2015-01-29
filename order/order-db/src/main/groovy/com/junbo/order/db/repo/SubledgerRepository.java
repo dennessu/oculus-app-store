@@ -7,10 +7,7 @@ package com.junbo.order.db.repo;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.PayoutId;
-import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.*;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
@@ -34,10 +31,15 @@ public interface SubledgerRepository extends BaseRepository<Subledger, Subledger
                                                PageParam pageParam);
 
     @ReadMethod
+    Promise<List<Subledger>> listByTime(int dataCenterId, int shardId, Date startDate, Date endDate,
+                                               PageParam pageParam);
+
+
+    @ReadMethod
     Promise<List<Subledger>> listByPayoutId(PayoutId payoutId, PageParam pageParam);
 
     @ReadMethod
     Promise<Subledger> find(OrganizationId sellerId, String payoutStatus,
-                            OfferId offerId, Date startTime, CurrencyId currency,
+                            ItemId itemId, Date startTime, String subledgerKey, CurrencyId currency,
                             CountryId country);
 }

@@ -8,7 +8,7 @@ package com.junbo.order.db.entity;
 
 import com.junbo.common.util.Identifiable;
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.enums.SubledgerItemAction;
+import com.junbo.order.spec.model.enums.SubledgerType;
 import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
@@ -30,12 +30,13 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
     private Long subledgerId;
     private BigDecimal totalAmount;
     private BigDecimal totalPayoutAmount;
+    private BigDecimal taxAmount;
     private Long totalQuantity;
-    private Long orderId;
     private Long orderItemId;
     private String offerId;
+    private String itemId;
     private SubledgerItemStatus status;
-    private SubledgerItemAction subledgerItemAction;
+    private SubledgerType subledgerType;
 
     @Id
     @Column(name = "SUBLEDGER_ITEM_ID")
@@ -86,6 +87,16 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
         this.totalPayoutAmount = totalPayoutAmount;
     }
 
+    @Column(name = "TAX_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
     @Column(name = "TOTAL_QUANTITY")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     public Long getTotalQuantity() {
@@ -117,18 +128,29 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
         this.offerId = offerId;
     }
 
-    @Column (name = "subledger_item_action")
+    @Column(name = "ITEM_ID")
+    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
+    @Length(max=128, message=ValidationMessages.TOO_LONG)
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    @Column (name = "SUBLEDGER_TYPE")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
-    @Type(type = "com.junbo.order.db.entity.type.SubledgerItemActionType")
-    public SubledgerItemAction getSubledgerItemAction() {
-        return subledgerItemAction;
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerEnumType")
+    public SubledgerType getSubledgerType() {
+        return subledgerType;
     }
 
-    public void setSubledgerItemAction(SubledgerItemAction subledgerItemAction) {
-        this.subledgerItemAction = subledgerItemAction;
+    public void setSubledgerType(SubledgerType subledgerType) {
+        this.subledgerType = subledgerType;
     }
 
-    @Column (name = "status_id")
+    @Column (name = "STATUS_ID")
     @NotNull (message = ValidationMessages.MISSING_VALUE)
     @Type(type = "com.junbo.order.db.entity.type.SubledgerItemStatusType")
     public SubledgerItemStatus getStatus() {
