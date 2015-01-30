@@ -94,7 +94,7 @@ class TransactionServiceImpl implements TransactionService {
 
             if (throwable instanceof AppErrorException) {
                 int errorCode = ((AppErrorException)throwable).error.httpStatusCode
-                if (errorCode / 100 == 5) {
+                if (errorCode.intdiv(100) == 5) {
                     throw throwable
                 } else {
                     balance.setStatus(BalanceStatus.FAILED.name())
@@ -147,7 +147,7 @@ class TransactionServiceImpl implements TransactionService {
 
                 if (throwable instanceof AppErrorException) {
                     int errorCode = ((AppErrorException)throwable).error.httpStatusCode
-                    if (errorCode / 100 == 5) {
+                    if (errorCode.intdiv(100) == 5) {
                         throw throwable
                     } else {
                         balance.setStatus(BalanceStatus.FAILED.name())
@@ -188,7 +188,7 @@ class TransactionServiceImpl implements TransactionService {
 
             if (throwable instanceof AppErrorException) {
                 int errorCode = ((AppErrorException)throwable).error.httpStatusCode
-                if (errorCode / 100 == 5) {
+                if (errorCode.intdiv(100) == 5) {
                     throw throwable
                 } else {
                     balance.setStatus(BalanceStatus.FAILED.name())
@@ -255,7 +255,7 @@ class TransactionServiceImpl implements TransactionService {
                     throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId).exception()
                 }
                 int errorCode = appException.error.httpStatusCode
-                if (errorCode / 100 == 5) {
+                if (errorCode.intdiv(100) == 5) {
                     throw throwable
                 } else {
                     balance.setStatus(BalanceStatus.FAILED.name())
@@ -297,7 +297,7 @@ class TransactionServiceImpl implements TransactionService {
 
             if (throwable instanceof AppErrorException) {
                 int errorCode = ((AppErrorException)throwable).error.httpStatusCode
-                if (errorCode / 100 == 5) {
+                if (errorCode.intdiv(100) == 5) {
                     throw throwable
                 } else {
                     balance.setStatus(BalanceStatus.FAILED.name())
@@ -337,7 +337,7 @@ class TransactionServiceImpl implements TransactionService {
 
             if (throwable instanceof AppErrorException) {
                 int errorCode = ((AppErrorException)throwable).error.httpStatusCode
-                if (errorCode / 100 == 5) {
+                if (errorCode.intdiv(100) == 5) {
                     throw throwable
                 } else {
                     balance.setStatus(BalanceStatus.FAILED.name())
