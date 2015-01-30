@@ -276,12 +276,14 @@ class CheckoutTests(ut.TestBase):
         searchEntitlementIds = [ entitlement['self']['id'] for entitlement in entitlementSearchResults['results'] ]
         self.assertSetEqual(set(entitlementIds), set(searchEntitlementIds))
 
-        # revoke entitlement fulfilment
-        curlJson('POST', ut.test_uri, '/v1/fulfilments/revoke', data = {
-            'orderId': order['self']
-        }, headers = {
-            "Authorization": "Bearer " + fulfilmentToken
-        })
+        adminToken = oauth.getServiceAccessToken('order.service payment.service')
+        order['orderItems'] = []
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        assert order['totalAmount'] == 0
 
         # try to verify revoked entitlements
         entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
