@@ -4,7 +4,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade

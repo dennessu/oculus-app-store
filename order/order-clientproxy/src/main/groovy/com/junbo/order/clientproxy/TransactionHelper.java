@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.order.core.impl.common;
+package com.junbo.order.clientproxy;
 
 import groovy.lang.Closure;
 import org.springframework.stereotype.Component;

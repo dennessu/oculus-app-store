@@ -6,7 +6,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order

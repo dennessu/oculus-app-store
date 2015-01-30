@@ -8,6 +8,7 @@ package com.junbo.order.clientproxy.payment.impl
 import com.junbo.common.error.AppError
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
@@ -18,6 +19,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -38,22 +41,30 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentFacadeImpl)
 
+    @Qualifier('orderTransactionHelper')
+    @Autowired
+    TransactionHelper transactionHelper
+
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId) {
-        return paymentInstrumentResource.getById(new PaymentInstrumentId(paymentInstrumentId)).recover { Throwable ex ->
-            LOGGER.error('name=PaymentFacadeImpl_Get_PI_Error', ex)
-            throw convertError(ex, paymentInstrumentId).exception()
-        }.then { PaymentInstrument pi ->
-            if (pi == null) {
-                throw AppErrors.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString()).exception()
+        return transactionHelper.executeInNewTransaction {
+            return paymentInstrumentResource.getById(new PaymentInstrumentId(paymentInstrumentId)).recover { Throwable ex ->
+                LOGGER.error('name=PaymentFacadeImpl_Get_PI_Error', ex)
+                throw convertError(ex, paymentInstrumentId).exception()
+            }.then { PaymentInstrument pi ->
+                if (pi == null) {
+                    throw AppErrors.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString()).exception()
+                }
+                return Promise.pure(pi)
             }
-            return Promise.pure(pi)
         }
     }
 
     @Override
     Promise<Response> postPaymentProperties(String request) {
-        return paymentCallbackResource.postPaymentProperties(request)
+        return transactionHelper.executeInNewTransaction {
+            return paymentCallbackResource.postPaymentProperties(request)
+        }
     }
 
     private AppError convertError(Throwable error, Long paymentInstrumentId) {

@@ -6,6 +6,7 @@ import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
@@ -13,6 +14,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -31,43 +34,50 @@ class BillingFacadeImpl implements BillingFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
     private static final String PAYMENT_INSUFFICIENT_FUND = '121.117'
 
+    @Qualifier('orderTransactionHelper')
+    @Autowired
+    TransactionHelper transactionHelper
+
     @Override
     Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
         return Promise.pure().then {
             balance.isAsyncCharge = isAsyncCharge
-            return balanceResource.postBalance(balance).recover { Throwable ex ->
-                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
-                throw convertError(ex).exception()
-            }.then { Balance b ->
-                if (b == null) {
-                    LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
-                    throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+            return transactionHelper.executeInNewTransaction {
+                return balanceResource.postBalance(balance).recover { Throwable ex ->
+                    LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
+                    throw convertError(ex).exception()
+                }.then { Balance b ->
+                    if (b == null) {
+                        LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
+                        throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+                    }
+                    LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
+                    return Promise.pure(b)
                 }
-                LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
-                return Promise.pure(b)
             }
         }
     }
 
     @Override
     Promise<Balance> settleBalance(Long balanceId) {
-        return null
+        throw AppErrors.INSTANCE.billingConnectionError('settleBalance is not supported').exception()
     }
 
     @Override
     Promise<Balance> captureBalance(Balance balance) {
-        return balanceResource.captureBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Error', ex)
-            throw convertError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Capture balance response is null').exception()
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.captureBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Capture balance response is null').exception()
+                }
+                return Promise.pure(b)
             }
-            return Promise.pure(b)
         }
     }
-
 
     @Override
     Promise<Balance> getBalanceById(Long balanceId) {
@@ -82,57 +92,64 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
-        return balanceResource.getBalances(new OrderId(orderId)).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Get_Balances_Error', ex)
-            throw convertError(ex).exception()
-        }.syncThen { Results<Balance> results ->
-            return results == null ? Collections.emptyList() : results.items
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.getBalances(new OrderId(orderId)).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Get_Balances_Error', ex)
+                throw convertError(ex).exception()
+            }.syncThen { Results<Balance> results ->
+                return results == null ? Collections.emptyList() : results.items
+            }
         }
     }
 
-
     @Override
     Promise<Balance> quoteBalance(Balance balance) {
-        return balanceResource.quoteBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Order_Quote_Error', ex)
-            throw convertToCalculateTaxError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Order_Quote_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Billing response is null').exception()
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.quoteBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Order_Quote_Error', ex)
+                throw convertToCalculateTaxError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Order_Quote_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Billing response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Order_Quote_Success')
+                return Promise.pure(b)
             }
-            LOGGER.info('name=BillingFacadeImpl_Order_Quote_Success')
-            return Promise.pure(b)
         }
     }
 
     @Override
     Promise<Balance> confirmBalance(Balance balance) {
-        return balanceResource.confirmBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Confirm_Balance_Error', ex)
-            throw convertError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Confirm_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Confirm balance response is null').exception()
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.confirmBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Confirm_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Confirm_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Confirm balance response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Confirm_Balance_Success')
+                return Promise.pure(b)
             }
-            LOGGER.info('name=BillingFacadeImpl_Confirm_Balance_Success')
-            return Promise.pure(b)
         }
     }
 
     @Override
     Promise<Balance> auditBalance(Balance balance) {
-        return balanceResource.auditBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Audit_Balance_Error', ex)
-            throw convertError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Audit_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Audit balance response is null').exception()
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.auditBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Audit_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Audit_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Audit balance response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Audit_Balance_Success')
+                return Promise.pure(b)
             }
-            LOGGER.info('name=BillingFacadeImpl_Audit_Balance_Success')
-            return Promise.pure(b)
         }
     }
 

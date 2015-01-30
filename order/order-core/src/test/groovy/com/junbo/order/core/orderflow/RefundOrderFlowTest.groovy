@@ -58,7 +58,7 @@ class RefundOrderFlowTest extends BaseTest {
 
         //mock balance
         def balance = CoreBuilder.buildBalance(order, BalanceType.DEBIT)
-        facadeContainer.billingFacade.createBalance(balance, false)
+        facadeContainer.billingFacade.createBalance(balance, false).get()
 
         def billingHistory = new BillingHistory(
                 id: idGenerator.nextId(OrderId.class),

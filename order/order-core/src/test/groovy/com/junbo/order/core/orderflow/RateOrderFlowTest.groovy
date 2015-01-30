@@ -2,6 +2,7 @@ package com.junbo.order.core.orderflow
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.BaseTest
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.common.TestBuilder
@@ -11,6 +12,7 @@ import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Discount
+import com.junbo.order.spec.model.Order
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
@@ -19,7 +21,7 @@ import javax.annotation.Resource
 /**
  * Created by chriszhu on 3/13/14.
  */
-class RateOrderFlowTest extends BaseTest{
+class RateOrderFlowTest extends BaseTest {
 
     @Autowired
     FlowExecutor executor
@@ -31,9 +33,14 @@ class RateOrderFlowTest extends BaseTest{
     @Resource(name = 'mockFacadeContainer')
     FacadeContainer facadeContainer
 
+    @Qualifier('orderTransactionHelper')
+    @Autowired
+    TransactionHelper transactionHelper
+
 
     @Test(enabled = true)
     void testFlowExecute() {
+        Order o
         def order = TestBuilder.buildOrderRequest()
         order.user = new UserId(idGenerator.nextId(UserId.class))
         Map<String, Object> requestScope = [:]
@@ -41,13 +48,13 @@ class RateOrderFlowTest extends BaseTest{
         def orderActionContext = new OrderActionContext()
         orderActionContext.orderServiceContext = new OrderServiceContext(order)
         orderActionContext.trackingUuid = UUID.randomUUID()
-        requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+        requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
 
         def context = executor.start(
                 'MOCK_RATE_ORDER',
                 requestScope).get()
         // Check the order is same as the returned order
-        def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
+        o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
         o.discounts?.each { Discount d ->
             d.ownerOrderItem = null
@@ -55,7 +62,7 @@ class RateOrderFlowTest extends BaseTest{
 
         //mock balance
         def balance = CoreBuilder.buildBalance(order)
-        facadeContainer.billingFacade.createBalance(balance, false)
+        facadeContainer.billingFacade.createBalance(balance, false).get()
 
         def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext(), true).get()
         assert (o.getId().value == getOrder.getId().value)

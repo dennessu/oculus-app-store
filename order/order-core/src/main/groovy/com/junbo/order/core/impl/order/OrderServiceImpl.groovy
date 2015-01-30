@@ -17,7 +17,7 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderValidator
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext

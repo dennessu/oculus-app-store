@@ -2,11 +2,10 @@ package com.junbo.order.jobs.subledger.payout
 import com.junbo.common.id.PayoutId
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.configuration.topo.model.DataCenter
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
-import com.junbo.order.spec.model.SubledgerKeyInfo
 import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.sharding.IdGenerator

@@ -11,7 +11,7 @@ import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.resource.OrganizationResource
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
