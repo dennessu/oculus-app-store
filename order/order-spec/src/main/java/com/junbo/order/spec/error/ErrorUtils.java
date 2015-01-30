@@ -19,7 +19,7 @@ public class ErrorUtils {
         if (error == null) {
             return new AppError[0];
         }
-        return new AppError[] { error };
+        return new AppError[]{error};
     }
 
     public static AppError toAppError(Throwable throwable) {
@@ -41,6 +41,9 @@ public class ErrorUtils {
         if (appError == null) {
             return AppErrors.INSTANCE.billingConnectionError(throwable.getMessage());
         } else {
+            if (appError.getHttpStatusCode() / 100 == 5) {
+                return AppErrors.INSTANCE.billingConnectionError(throwable.getMessage());
+            }
             return appError;
         }
     }
