@@ -313,7 +313,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo.getAccountNum(),creditCardInfo.getEncryptedCVMCode());
         instrument.setAccountName(accountName);
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
