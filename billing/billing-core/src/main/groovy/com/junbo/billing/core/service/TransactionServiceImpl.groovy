@@ -93,7 +93,12 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                int errorCode = ((AppErrorException)throwable).error.httpStatusCode
+                if (errorCode / 100 == 5) {
+                    throw throwable
+                } else {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                }
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -139,7 +144,12 @@ class TransactionServiceImpl implements TransactionService {
                 checkBalance.addTransaction(newTransaction)
 
                 if (throwable instanceof AppErrorException) {
-                    throw AppErrors.INSTANCE.paymentProcessingFailed(checkBalance.piId).exception()
+                    int errorCode = ((AppErrorException)throwable).error.httpStatusCode
+                    if (errorCode / 100 == 5) {
+                        throw throwable
+                    } else {
+                        throw AppErrors.INSTANCE.paymentProcessingFailed(checkBalance.piId).exception()
+                    }
                 }
                 throw throwable
             }.then { PaymentTransaction pt ->
@@ -172,6 +182,15 @@ class TransactionServiceImpl implements TransactionService {
             newTransaction.setStatus(TransactionStatus.ERROR.name())
             balance.addTransaction(newTransaction)
             balance.setStatus(BalanceStatus.ERROR.name())
+
+            if (throwable instanceof AppErrorException) {
+                int errorCode = ((AppErrorException)throwable).error.httpStatusCode
+                if (errorCode / 100 == 5) {
+                    throw throwable
+                } else {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                }
+            }
             throw throwable
         }.then { PaymentTransaction checkPt ->
             if (checkPt == null) {
@@ -231,7 +250,12 @@ class TransactionServiceImpl implements TransactionService {
                  && appException.error.error().code.equalsIgnoreCase("135.109")) {
                     throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId).exception()
                 }
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                int errorCode = appException.error.httpStatusCode
+                if (errorCode / 100 == 5) {
+                    throw throwable
+                } else {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                }
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -267,7 +291,12 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                int errorCode = ((AppErrorException)throwable).error.httpStatusCode
+                if (errorCode / 100 == 5) {
+                    throw throwable
+                } else {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                }
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -301,7 +330,12 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                int errorCode = ((AppErrorException)throwable).error.httpStatusCode
+                if (errorCode / 100 == 5) {
+                    throw throwable
+                } else {
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
+                }
             }
             throw throwable
         }.then { PaymentTransaction pt ->
