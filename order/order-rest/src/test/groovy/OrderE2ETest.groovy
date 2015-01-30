@@ -6,7 +6,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
@@ -220,6 +220,45 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testBillingAppErrorException() {
+        Order tentativeOrder
+        transactionHelper.executeInNewTransaction {
+            tentativeOrder = testPostTentativeOrder()
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_IMMEDIATE_SETTLE')
+                }
+            }
+            tentativeOrder.tentative = false
+            JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                    requestIpAddress: '127.0.0.1'
+            )
+            tentativeOrder.payments[0].cancelRedirectUrl = 'app500'
+        }
+        transactionHelper.executeInNewTransaction {
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+            } catch (ex) {
+                assert ex != null
+                assert ((AppErrorException)ex).error.error().code == '199.116'
+            }
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.ERROR.name()
+            assert !orderGet.tentative
+            orderGet.payments[0].cancelRedirectUrl = 'aaa'
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), orderGet).get()
+            } catch (ex) {}
+            orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.ERROR.name()
+            assert !orderGet.tentative
+        }
+    }
+
+    @Test(enabled = true)
     void testBillingDecline() {
         Order tentativeOrder
         transactionHelper.executeInNewTransaction {
@@ -251,6 +290,45 @@ class OrderE2ETest extends BaseTest {
             assert orderGet.billingHistories.any { BillingHistory bh ->
                 bh.billingEvent == BillingAction.CHARGE.name() && !bh.success
             }
+            orderGet.payments[0].cancelRedirectUrl = 'aaa'
+            def orderComp = orderResource.updateOrderByOrderId(tentativeOrder.getId(), orderGet).get()
+            orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.COMPLETED.name()
+            assert !orderGet.tentative
+            assert orderComp.status == OrderStatus.COMPLETED.name()
+            assert !orderComp.tentative
+        }
+    }
+
+    @Test(enabled = true)
+    void testBillingDeclineException() {
+        Order tentativeOrder
+        transactionHelper.executeInNewTransaction {
+            tentativeOrder = testPostTentativeOrder()
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_IMMEDIATE_SETTLE')
+                }
+            }
+            tentativeOrder.tentative = false
+            JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                    requestIpAddress: '127.0.0.1'
+            )
+            tentativeOrder.payments[0].cancelRedirectUrl = 'app400'
+        }
+        transactionHelper.executeInNewTransaction {
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+            } catch (ex) {
+                assert ex != null
+                assert ((AppErrorException)ex).error.getHttpStatusCode() / 100 as int == 4
+            }
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.OPEN.name()
+            assert orderGet.tentative
             orderGet.payments[0].cancelRedirectUrl = 'aaa'
             def orderComp = orderResource.updateOrderByOrderId(tentativeOrder.getId(), orderGet).get()
             orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()

@@ -17,6 +17,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.clientproxy.model.ItemEntry
 import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.common.*
@@ -645,9 +646,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         String actionResultStr = null
         ActionResult actionResult = null
         return Promise.pure().then {
-            return transactionHelper.executeInNewTransaction {
-                return facadeContainer.billingFacade.createBalance(CoreBuilder.buildBalance(order, BalanceType.DEBIT), false)
-            }
+            return facadeContainer.billingFacade.createBalance(CoreBuilder.buildBalance(order, BalanceType.DEBIT), false)
         }.recover { Throwable ex ->
             // prepare action result for order event
             def appError = ErrorUtils.processBillingError(ex)

@@ -6,7 +6,6 @@
 package com.junbo.order.jobs.subledger.revenue
 
 import com.junbo.catalog.spec.model.item.Item
-import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
@@ -14,12 +13,10 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.identity.spec.v1.model.Organization
-import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.identity.spec.v1.resource.UserResource
-import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.jobs.subledger.payout.Constants
 import com.junbo.order.jobs.utils.csv.CSVWriter

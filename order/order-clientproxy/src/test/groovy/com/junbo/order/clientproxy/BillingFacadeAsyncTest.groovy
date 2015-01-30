@@ -42,6 +42,7 @@ class BillingFacadeAsyncTest extends BaseTest {
             }
         }
         billingFacadeAsync.pendingUserNumberLimit = 10
+        billingFacadeAsync.transactionHelper = new TransactionHelper.TransactionHelperImpl()
     }
 
     @AfterMethod

@@ -128,7 +128,7 @@ class CheckoutTests(ut.TestBase):
             "offerRev": offerRev
         }
 
-    def testCheckoutError(self):
+    def testCheckoutRefund(self):
         user = oauth.testRegister('identity commerce commerce.checkout')
         devinfo = self.testDeveloper()
 
@@ -241,58 +241,10 @@ class CheckoutTests(ut.TestBase):
         })
 
         order['tentative'] = False
-        try:
-            order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
-                "Authorization": "Bearer " + user.access_token,
-                "oculus-end-user-ip": "127.0.0.1"
-            }, data = order)
-        except Exception as e:
-            assert e.message.startswith('412')
-
-        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
-        try:
-            fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
-                'orderId': order['self']['id']
-            }, headers = {
-                "Authorization": "Bearer " + fulfilmentToken
-            })
-        except Exception as e:
-            assert e.message.startswith('412')
-        order = curlJson('GET', ut.test_uri, order['self']['href'], headers = {
-        "Authorization": "Bearer " + user.access_token })
-
-        assert order['tentative']
-        assert order['status'] == 'OPEN'
-
-        cardInfo = self.getFBEncryptedCardInfoGood()
-        pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
-            "Authorization": "Bearer " + user.access_token
-        }, data = {
-            "type": ccPiType['self'],
-            "accountName": cardInfo['holderName'],
-            "accountNumber": cardInfo['encryptedCardInfo'],
-            "label": "my credit card",
-            "user": user.json['self'],
-            "billingAddress": address['self'],
-            "typeSpecificDetails":{
-                "expireDate":"2025-11"
-            },
-            "futureExpansion": { }
-        })
-
-        order['payments'][0]['paymentInstrument'] = pi['self']
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
             "Authorization": "Bearer " + user.access_token,
             "oculus-end-user-ip": "127.0.0.1"
         }, data = order)
-
-        order['tentative'] = False
-        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
-            "Authorization": "Bearer " + user.access_token,
-            "oculus-end-user-ip": "127.0.0.1"
-        }, data = order)
-
-        assert order['status'] == 'COMPLETED'
 
         fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
         fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
@@ -324,6 +276,24 @@ class CheckoutTests(ut.TestBase):
         searchEntitlementIds = [ entitlement['self']['id'] for entitlement in entitlementSearchResults['results'] ]
         self.assertSetEqual(set(entitlementIds), set(searchEntitlementIds))
 
+        adminToken = oauth.getServiceAccessToken('order.service payment.service')
+        order['orderItems'] = []
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        assert order['totalAmount'] == 0
+
+        # try to verify revoked entitlements
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 0
+
         errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
             "userId": user.json['self']['id'],
             "apiName": "orders"
@@ -339,7 +309,7 @@ class CheckoutTests(ut.TestBase):
         }, headers={
             "Authorization": "Bearer " + serviceAccessToken
         })
-        assert userLogs['total'] == 4
+        assert userLogs['total'] == 2
 
         return order
 
@@ -535,14 +505,6 @@ class CheckoutTests(ut.TestBase):
         }
 
     def getFBDefaultCardInfo(self):
-            return {
-                "number": "4111119315405122",
-                "holderName": "John Doe",
-                "cvc": "123",
-                "expiryMonth": "06",
-                "expiryYear": "2016"
-            }
-    def getFBDefaultCardInfoGood(self):
         return {
             "number": "4111117711552927",
             "holderName": "John Doe",
@@ -557,25 +519,13 @@ class CheckoutTests(ut.TestBase):
 
         tokenResult = curl('POST', 'https://www.facebook.com', '/payments/generate_token', headers = {
             'User-Agent': 'curl/7.30.0'
-        }, body = "creditCardNumber=4111119315405122&csc=123", proxy = os.getenv('facebookProxy'))
-
-        jsonResult = json.loads(tokenResult)
-
-        cardInfo['encryptedCardInfo'] = jsonResult['token']
-        return cardInfo
-
-    def getFBEncryptedCardInfoGood(self, cardInfo = None):
-        if cardInfo is None:
-                cardInfo = self.getFBDefaultCardInfoGood()
-
-        tokenResult = curl('POST', 'https://www.facebook.com', '/payments/generate_token', headers = {
-            'User-Agent': 'curl/7.30.0'
         }, body = "creditCardNumber=4111117711552927&csc=123", proxy = os.getenv('facebookProxy'))
 
         jsonResult = json.loads(tokenResult)
 
         cardInfo['encryptedCardInfo'] = jsonResult['token']
         return cardInfo
+
 
     def getDefaultCardInfo(self):
         return {

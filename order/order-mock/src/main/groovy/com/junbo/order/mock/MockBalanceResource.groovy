@@ -40,6 +40,12 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
         if (balance.cancelRedirectUrl == 'decline') {
             balance.status = BalanceStatus.FAILED
         }
+        if (balance.cancelRedirectUrl == 'app400') {
+            throw AppMockErrors.INSTANCE.error404().exception()
+        }
+        if (balance.cancelRedirectUrl == 'app500') {
+            throw AppMockErrors.INSTANCE.error501().exception()
+        }
         return Promise.pure(balance)
     }
 
