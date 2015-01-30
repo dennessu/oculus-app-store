@@ -52,6 +52,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
     CaseyEmulatorData post(CaseyEmulatorData caseyEmulatorData) {
+        initialized = true
         if (caseyEmulatorData.cmsPages != null) {
             this.caseyEmulatorData.cmsPages = caseyEmulatorData.cmsPages
         }
@@ -72,6 +73,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     CaseyEmulatorData get() {
         if (!initialized) {
             resetData()
+            initialized = true
         }
         return caseyEmulatorData
     }

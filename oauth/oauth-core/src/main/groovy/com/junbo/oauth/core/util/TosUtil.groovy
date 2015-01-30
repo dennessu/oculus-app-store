@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.util
-
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.TosId
@@ -16,7 +15,6 @@ import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
-import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.CountryResource
 import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.identity.spec.v1.resource.TosResource
@@ -26,8 +24,8 @@ import com.junbo.oauth.common.cache.Cache
 import com.junbo.oauth.spec.model.Client
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
-
 /**
  * TosUtil.
  */
@@ -85,10 +83,11 @@ class TosUtil {
         CountryId validCountry = getValidCountry(user)
         if (client.requiredTos != null && !client.requiredTos.isEmpty() && validCountry != null) {
             List<List<Tos>> tosList = getTosList(client, validCountry, user)
+            LocaleId localeId = getLocale(user, validCountry)
             Set<TosId> acceptedTosIds = getAcceptedTosIds(user.getId())
             tosList.each { List<Tos> toses ->
                 if (!toses.any {Tos tos -> acceptedTosIds.contains(tos.getId())}) {
-                    unacceptedTosIds << toses[0].getId()
+                    unacceptedTosIds << selectTosForChallenge(toses, localeId).getId()
                 }
             }
         }
@@ -125,11 +124,7 @@ class TosUtil {
             if (!CollectionUtils.isEmpty(results.items)) {
                 List<Tos> latestTosList = getLatestTosList(results.items)
                 if (!CollectionUtils.isEmpty(latestTosList)) {
-                    LocaleId localeId = getLocale(user, country)
-                    List<Tos> supportedTos = getSupportedTos(latestTosList, localeId)
-                    if (supportedTos != null && !supportedTos.isEmpty()) {
-                        tosList.add(supportedTos)
-                    }
+                    tosList.add(latestTosList)
                 }
             }
         }
@@ -194,43 +189,10 @@ class TosUtil {
         return null
     }
 
-    private List<Tos> getSupportedTos(List<Tos> tosList, LocaleId localeId) {
-        if (CollectionUtils.isEmpty(tosList) || localeId == null) {
-            return []
-        }
-
-        Map<String, Boolean> circle = new HashMap<>()
-
-        LocaleId current = localeId
-        LocaleId fallback = null
-        List<Tos> result = [];
-        while (true) {
-            com.junbo.identity.spec.v1.model.Locale locale = localeResource.get(current, new LocaleGetOptions()).get()
-            Boolean visited = circle.get(locale.getId().toString())
-            if (visited) {
-                break
-            }
-            circle.put(locale.getId().toString(), true)
-            for (Tos tos : tosList) {
-                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
-                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
-                        return tosLocaleId == current
-                    }) {
-                        result << tos
-                    }
-                }
-            }
-            if (!result.isEmpty()) {
-                return result.sort {Tos tos -> return tos.minorversion}.reverse().asList();
-            }
-
-            fallback = locale.fallbackLocale
-            if (current == fallback || fallback == null) {
-                break
-            }
-            current = fallback
-        }
-
-        return []
+    private Tos selectTosForChallenge(List<Tos> tosList, LocaleId localeId) {
+        Assert.notEmpty(tosList)
+        tosList = new ArrayList<Tos>(tosList).sort { Tos t -> return t.minorversion }.reverse()
+        Tos tos = tosList.find {Tos t -> t.coveredLocales != null && t.coveredLocales.contains(localeId)}
+        return tos == null ? tosList.first() : tos
     }
 }
