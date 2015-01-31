@@ -22,6 +22,7 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
+import com.junbo.identity.spec.v1.model.TaxExempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -158,6 +159,10 @@ class TaxServiceImpl implements TaxService {
                     balance.balanceItems.each { BalanceItem item ->
                         item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
                     }
+                }
+                TaxExempt taxExempt = user.taxExemption?.get(billingAddress.countryId.value)
+                if (taxExempt != null) {
+                    balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), taxExempt.taxExemptionReason)
                 }
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)
             }

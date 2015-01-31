@@ -262,6 +262,10 @@ class SabrixFacadeImpl implements TaxFacade {
 //        invoice.billTo = billToAddress
 //        invoice.shipTo = shipToAddress
 //        invoice.shipFrom = getSabrixShipFromAddress()
+        if (balance.propertySet.get(PropertyKey.EXEMPT_REASON.name()) != null) {
+            invoice.exemptReason = getExemptReason(piAddress.countryId.value,
+                    balance.propertySet.get(PropertyKey.EXEMPT_REASON.name()))
+        }
         def lines = generateLine(balance, billToAddress, shipToAddress, isAudited)
         invoice.line = lines
         setupUserElement(invoice, balance)
@@ -308,6 +312,28 @@ class SabrixFacadeImpl implements TaxFacade {
         }
 
         return lines
+    }
+
+    ExemptReason getExemptReason(country, reason) {
+        def exemptReason = new ExemptReason()
+        switch (country) {
+            case 'US':
+                exemptReason.state = reason
+                exemptReason.county = reason
+                exemptReason.city = reason
+                exemptReason.district = reason
+                exemptReason.postcode = reason
+                exemptReason.geocode = reason
+                break
+            case 'CA':
+                exemptReason.country = reason
+                exemptReason.province = reason
+                break
+            default:
+                exemptReason.country = reason
+        }
+
+        return exemptReason
     }
 
     String getSellerPrimaryCountry(Balance balance, SabrixAddress billToAddress, SabrixAddress shipToAddress) {
