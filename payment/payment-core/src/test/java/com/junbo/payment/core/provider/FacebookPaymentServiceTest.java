@@ -10,10 +10,7 @@ import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl;
 import com.junbo.payment.core.provider.facebook.FacebookPaymentUtils;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.ChargeInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.RiskFeature;
+import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.TransactionStatus;
@@ -23,6 +20,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -87,6 +86,15 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(){
+            {
+                setId("123");
+                setName("afjakshdf");
+            }
+        });
+
+        transaction.getChargeInfo().setItems(items);
         transaction.setRiskFeature(riskFeature);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());

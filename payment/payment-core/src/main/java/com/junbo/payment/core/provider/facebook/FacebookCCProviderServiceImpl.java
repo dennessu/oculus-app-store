@@ -20,10 +20,7 @@ import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
 import com.junbo.payment.spec.internal.FacebookPaymentType;
-import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +31,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -222,25 +216,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     LOGGER.error("not able to find facebook payment account for user:" + pi.getUserId());
                     throw AppServerExceptions.INSTANCE.invalidProviderAccount("").exception();
                 }
-                FacebookPayment fbPayment = new FacebookPayment();
-                fbPayment.setRequestId(paymentRequest.getId().toString() + "-" + paymentRequest.getBillingRefId());
-                fbPayment.setCredential(piToken);
-                fbPayment.setAction(FacebookPaymentActionType.authorize);
-                fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
-                fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.oculus_launch_v1);
-                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
-                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
-                description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
-                fbPayment.setItemDescription(description);
-                fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
-                //Risk Feature
-                fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
-                String ipAddress = paymentRequest.getChargeInfo().getIpAddress();
-                if(CommonUtil.isNullOrEmpty(ipAddress)){
-                    ipAddress = "127.0.0.1";
-                }
-                fbPayment.setPayerIp(ipAddress);
+                FacebookPayment fbPayment = getFacebookPaymentRequest(paymentRequest, piToken, FacebookPaymentActionType.authorize);
                 final String accessToken = s;
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
@@ -320,24 +296,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     LOGGER.error("not able to find facebook payment account for user:" + pi.getUserId());
                     throw AppServerExceptions.INSTANCE.invalidProviderAccount("").exception();
                 }
-                FacebookPayment fbPayment = new FacebookPayment();
-                fbPayment.setRequestId(paymentRequest.getId().toString() + "_" + paymentRequest.getBillingRefId());
-                fbPayment.setCredential(piToken);
-                fbPayment.setAction(FacebookPaymentActionType.charge);
-                fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
-                fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.oculus_launch_v1);
-                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
-                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
-                description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
-                fbPayment.setItemDescription(description);
-                String ipAddress = paymentRequest.getChargeInfo().getIpAddress();
-                if(CommonUtil.isNullOrEmpty(ipAddress)){
-                    ipAddress = "127.0.0.1";
-                }
-                fbPayment.setPayerIp(ipAddress);
-                //Risk Feature
-                fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
+                FacebookPayment fbPayment = getFacebookPaymentRequest(paymentRequest, piToken, FacebookPaymentActionType.charge);
                 final String accessToken = s;
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
@@ -366,6 +325,39 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 });
             }
         });
+    }
+
+    private FacebookPayment getFacebookPaymentRequest(PaymentTransaction paymentRequest, String piToken, FacebookPaymentActionType action) {
+        FacebookPayment fbPayment = new FacebookPayment();
+        fbPayment.setRequestId(paymentRequest.getId().toString() + "_" + paymentRequest.getBillingRefId());
+        fbPayment.setCredential(piToken);
+        fbPayment.setAction(action);
+        fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
+        fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
+        fbPayment.setItemType(FacebookItemType.oculus_launch_v1);
+        FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
+                getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
+        List<FacebookPaymentDescriptionItem> fbPaymentItems = new ArrayList<>();
+        if(paymentRequest.getChargeInfo().getItems() != null){
+            for(Item descItem : paymentRequest.getChargeInfo().getItems()){
+                FacebookPaymentDescriptionItem fbItem = new FacebookPaymentDescriptionItem();
+                fbItem.setOfferId(descItem.getId());
+                fbItem.setOfferName(descItem.getName());
+                fbPaymentItems.add(fbItem);
+            }
+        }
+        FacebookPaymentDescriptionItem[] itemArrays = new FacebookPaymentDescriptionItem[fbPaymentItems.size()];
+        description.setItems(fbPaymentItems.toArray(itemArrays));
+        fbPayment.setItemDescription(description);
+
+        String ipAddress = paymentRequest.getChargeInfo().getIpAddress();
+        if(CommonUtil.isNullOrEmpty(ipAddress)){
+            ipAddress = "127.0.0.1";
+        }
+        fbPayment.setPayerIp(ipAddress);
+        //Risk Feature
+        fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
+        return fbPayment;
     }
 
     @Override

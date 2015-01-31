@@ -13,7 +13,6 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
@@ -374,17 +373,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             }
         }
         final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
-        return provider.getByTransactionToken(payment)
-                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
-                    @Override
-                    public Promise<PaymentTransaction> apply(Throwable throwable) {
-                        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-                        LOGGER.error("error get transaction for " + provider.getProviderName() +
-                                "; error detail: " + proxyResponse.getBody(), throwable);
-                        throw AppServerExceptions.INSTANCE.providerProcessError(
-                                provider.getProviderName(), proxyResponse.getBody()).exception();
-                    }
-                });
+        return provider.getByTransactionToken(payment);
     }
 
     @Override
@@ -497,15 +486,13 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     private Promise<PaymentTransaction> handleProviderException(Throwable throwable,
                                          PaymentProviderService provider, PaymentTransaction request, PaymentAPI api,
                                          PaymentStatus status, PaymentEventType event) {
-        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
         LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
                 "; error detail: ", throwable);
         request.setStatus(status.toString());
-        PaymentEvent authDeclined = createPaymentEvent(request, event, status, CommonUtil.toJson(proxyResponse.getBody(), null));
+        PaymentEvent authDeclined = createPaymentEvent(request, event, status, CommonUtil.toJson(throwable.getMessage(), null));
         addPaymentEvent(request, authDeclined);
         updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status, false);
-        throw AppServerExceptions.INSTANCE.providerProcessError(
-                provider.getProviderName(), proxyResponse.getBody()).exception();
+        return Promise.throwing(throwable);
     }
 
     private void validateCapturable(Long paymentId, PaymentTransaction request, PaymentTransaction existed) {

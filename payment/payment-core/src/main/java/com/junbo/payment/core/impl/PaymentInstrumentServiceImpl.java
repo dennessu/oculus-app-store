@@ -17,7 +17,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repository.PITypeRepository;
@@ -72,14 +71,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }
         request.setPaymentProvider(provider.getProviderName());
         LOGGER.info("start to call provider add PI");
-        return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
-            @Override
-            public Promise<PaymentInstrument> apply(Throwable throwable) {
-                ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-                LOGGER.error("add declined by due to:" + proxyResponse.getBody(), throwable);
-                throw AppServerExceptions.INSTANCE.providerProcessError(provider.getProviderName(), proxyResponse.getBody()).exception();
-            }
-        }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+        return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
                 LOGGER.info("call provider add PI successfully");
