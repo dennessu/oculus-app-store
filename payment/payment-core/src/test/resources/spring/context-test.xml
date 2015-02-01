@@ -55,6 +55,7 @@
         <property name="facebookGatewayService" ref="facebookGatewayService"/>
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
         <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>
+        <property name="paymentProviderIdMappingRepository" ref="paymentProviderIdMappingRepo"/>
     </bean>
 
     <bean id="mockFBProviderRoutingService" class="com.junbo.payment.core.mock.MockFBProviderRoutingServiceImpl">

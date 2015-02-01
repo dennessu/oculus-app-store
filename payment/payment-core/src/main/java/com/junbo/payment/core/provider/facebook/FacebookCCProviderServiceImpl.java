@@ -16,6 +16,8 @@ import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
+import com.junbo.payment.core.provider.PaymentProvider;
+import com.junbo.payment.db.repo.PaymentProviderIdMappingRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
@@ -53,6 +55,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private FacebookGatewayService facebookGatewayService;
     private PersonalInfoFacade personalInfoFacade;
     private PaymentInstrumentRepositoryFacade piRepository;
+    private PaymentProviderIdMappingRepository paymentProviderIdMappingRepository;
     @Autowired
     protected PlatformTransactionManager transactionManager;
     @Override
@@ -220,7 +223,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 final String accessToken = s;
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
-                    public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                    public Promise<PaymentTransaction> apply(final FacebookPayment fbPayment) {
                         if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
                             paymentRequest.setExternalToken(fbPayment.getId());
                             return facebookGatewayService.getPaymentRisk(accessToken, fbPayment.getId()).then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
@@ -228,6 +231,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                                 public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
                                     if(facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
                                         paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
+                                        PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
+                                        mapping.setExternalId(fbPayment.getId());
+                                        mapping.setPaymentId(paymentRequest.getId());
+                                        paymentProviderIdMappingRepository.create(mapping).get();
                                     }else{
                                         paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
                                     }
@@ -300,15 +307,18 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 final String accessToken = s;
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
-                    public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                    public Promise<PaymentTransaction> apply(final FacebookPayment fbPayment) {
                         if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
-                            paymentRequest.setExternalToken(fbPayment.getId());
                             paymentRequest.setExternalToken(fbPayment.getId());
                             return facebookGatewayService.getPaymentRisk(accessToken, fbPayment.getId()).then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
                                 @Override
                                 public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
                                     if (facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())) {
                                         paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
+                                        PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
+                                        mapping.setExternalId(fbPayment.getId());
+                                        mapping.setPaymentId(paymentRequest.getId());
+                                        paymentProviderIdMappingRepository.create(mapping).get();
                                     } else {
                                         paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
                                     }
@@ -455,6 +465,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                             @Override
                             public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
                                 PaymentTransaction transaction = new PaymentTransaction();
+                                PaymentProviderIdMapping mapping = paymentProviderIdMappingRepository.get(facebookRTU.getEntry()[0].getId()).get();
+                                transaction.setId(mapping.getPaymentId());
                                 if(facebookRiskPayment != null && FB_RISK_RTU_REJECT.equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
                                     transaction.setStatus(PaymentStatus.RISK_ASYNC_REJECT.toString());
                                 }
@@ -584,5 +596,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     }
     public void setRtuVerifyToken(String rtuVerifyToken) {
         this.rtuVerifyToken = rtuVerifyToken;
+    }
+    @Required
+    public void setPaymentProviderIdMappingRepository(PaymentProviderIdMappingRepository paymentProviderIdMappingRepository) {
+        this.paymentProviderIdMappingRepository = paymentProviderIdMappingRepository;
     }
 }

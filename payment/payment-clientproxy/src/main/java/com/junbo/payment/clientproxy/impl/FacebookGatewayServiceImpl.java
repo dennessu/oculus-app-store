@@ -112,6 +112,12 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
         //TODO: enable this when Facebook API is ready
         //return facebookPaymentApi.getPaymentField(accessToken, paymentId);
         return Promise.pure(null);
+        /*
+        FacebookRiskPayment result = new FacebookRiskPayment();
+        //result.setFraud_status("pending");
+        result.setFraud_status("blocked_after_pend");
+        return Promise.pure(result);
+        */
     }
 
     public void setFacebookOauthApi(FacebookOauthApi facebookOauthApi) {

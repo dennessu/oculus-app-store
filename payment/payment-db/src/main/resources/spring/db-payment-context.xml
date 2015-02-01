@@ -194,6 +194,10 @@
         <property name="dbName" value="facebook_payment_account_mapping" />
     </bean>
 
+    <bean id="paymentProviderIdMappingRepo" class="com.junbo.payment.db.repo.cloudant.PaymentProviderIdMappingRepoImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_provider_id_mapping" />
+    </bean>
+
     <!-- dual write repositories -->
     <bean id="creditCardDetailRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.CreditCardDetailRepository"/>
