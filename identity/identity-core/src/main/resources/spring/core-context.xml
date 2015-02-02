@@ -1516,7 +1516,8 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>userAttributeDefinitionId</value>
-                <value>name</value>
+                <value>organizationId</value>
+                <value>type</value>
                 <value>value</value>
                 <value>isActive</value>
                 <value>isSuspended</value>
@@ -1538,7 +1539,8 @@
             <list>
                 <value>userId</value>
                 <value>userAttributeDefinitionId</value>
-                <value>name</value>
+                <value>organizationId</value>
+                <value>type</value>
                 <value>value</value>
                 <value>grantTime</value>
                 <value>expirationTime</value>
@@ -1558,8 +1560,9 @@
                 <value>grantTime</value>
                 <value>expirationTime</value>
                 <value>useCount</value>
-                <value>name</value>
                 <value>value</value>
+                <value>organizationId</value>
+                <value>type</value>
                 <value>isActive</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
@@ -1579,6 +1582,7 @@
                 <value>description</value>
                 <value>organizationId</value>
                 <value>items</value>
+                <value>schema</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1596,6 +1600,7 @@
                 <value>description</value>
                 <value>organizationId</value>
                 <value>items</value>
+                <value>schema</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>
@@ -1610,6 +1615,7 @@
                 <value>description</value>
                 <value>organizationId</value>
                 <value>items</value>
+                <value>schema</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>

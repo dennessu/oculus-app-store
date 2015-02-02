@@ -22,6 +22,7 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
+import com.junbo.identity.spec.v1.model.TaxExempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -155,8 +156,22 @@ class TaxServiceImpl implements TaxService {
             }.then { Address billingAddress ->
                 UserVAT vat = user.vat?.get(billingAddress.countryId.value)
                 if (vat != null) {
-                    balance.balanceItems.each { BalanceItem item ->
-                        item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
+                    def vatNumber = vat.vatNumber
+                    if (vatNumber != null && vatNumber != '') {
+                        balance.balanceItems.each { BalanceItem item ->
+                            item.propertySet.put(PropertyKey.VAT_ID.name(), vatNumber)
+                        }
+                    }
+                }
+                TaxExempt taxExempt = user.taxExemption?.get(billingAddress.countryId.value)
+                if (taxExempt != null && taxExempt.isTaxExemptionValidated) {
+                    def exemptReason = taxExempt.taxExemptionReason
+                    def exemptCertificate = taxExempt.taxExemptionCertificateNumber
+                    if (exemptReason != null && exemptReason != '') {
+                        balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), taxExempt.taxExemptionReason)
+                    }
+                    if (exemptCertificate != null && exemptCertificate != '') {
+                        balance.propertySet.put(PropertyKey.EXEMPT_CERTIFICATE.name(), taxExempt.taxExemptionCertificateNumber)
                     }
                 }
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)

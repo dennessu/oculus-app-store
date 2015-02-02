@@ -20,7 +20,7 @@ import com.junbo.payment.spec.internal.FacebookPaymentType;
 public class FacebookItemDescription {
     private FacebookPaymentEntity entity;
     private FacebookPaymentType type;
-    private String[] items;
+    private FacebookPaymentDescriptionItem[] items;
 
     public FacebookItemDescription(FacebookPaymentEntity entity, FacebookPaymentType type){
         this.entity = entity;
@@ -52,11 +52,11 @@ public class FacebookItemDescription {
         this.type = type;
     }
 
-    public String[] getItems() {
+    public FacebookPaymentDescriptionItem[] getItems() {
         return items;
     }
 
-    public void setItems(String[] items) {
+    public void setItems(FacebookPaymentDescriptionItem[] items) {
         this.items = items;
     }
 }

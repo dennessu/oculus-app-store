@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,13 +82,7 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
             @Override
             public Promise<FacebookCreditCard> apply(String s) {
                 ObjectMapper mapper = new ObjectMapper();
-                FacebookCCBatchResponse[] results = null;
-                try {
-                    results = mapper.readValue(s, FacebookCCBatchResponse[].class);
-                } catch (IOException e) {
-                    LOGGER.error("error deserialize facebook request.", e);
-                    throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "deserialize:" + s).exception();
-                }
+                FacebookCCBatchResponse[] results = CommonUtil.parseJsonIgnoreUnknown(s, FacebookCCBatchResponse[].class);
                 FacebookCCBatchResponse getResult = null;
                 if(results != null && results.length > 1 ){
                     getResult = (results[0] == null ? results[1] : results[0]);
@@ -95,13 +90,18 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                 if(getResult == null){
                     throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", s).exception();
                 }
-                FacebookCreditCard creditCard = null;
-                try {
-                    creditCard = mapper.readValue(getResult.getBody(), FacebookCreditCard.class);
-                } catch (IOException e) {
-                    LOGGER.error("error deserialize facebook response.", e);
-                    throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "deserialize:" + getResult.getBody()).exception();
+                if(getResult.getCode() != 200){
+                    FacebookCCBatchError fbBatchError = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCCBatchError.class);
+                    if(fbBatchError == null){
+                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
+                    }
+                    if(getResult.getCode() == 400){
+                        throw AppClientExceptions.INSTANCE.providerInvaidRequest(fbBatchError.getError().getMessage()).exception();
+                    }else{
+                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
+                    }
                 }
+                FacebookCreditCard creditCard = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCreditCard.class);
                 return Promise.pure(creditCard);
             }
         });
@@ -112,6 +112,12 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
         //TODO: enable this when Facebook API is ready
         //return facebookPaymentApi.getPaymentField(accessToken, paymentId);
         return Promise.pure(null);
+        /*
+        FacebookRiskPayment result = new FacebookRiskPayment();
+        //result.setFraud_status("pending");
+        result.setFraud_status("blocked_after_pend");
+        return Promise.pure(result);
+        */
     }
 
     public void setFacebookOauthApi(FacebookOauthApi facebookOauthApi) {

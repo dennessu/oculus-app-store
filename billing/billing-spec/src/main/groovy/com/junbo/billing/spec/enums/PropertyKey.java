@@ -29,6 +29,8 @@ public enum PropertyKey {
     ITEM_QUANTITY,
     ITEM_TYPE,
     VAT_ID,
+    EXEMPT_REASON,
+    EXEMPT_CERTIFICATE,
     VENDOR_NAME,
     OFFER_ID,
     ITEM_DESCRIPTION,

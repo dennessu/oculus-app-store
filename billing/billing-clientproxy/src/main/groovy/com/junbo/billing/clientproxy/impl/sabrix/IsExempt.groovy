@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 @XStreamAlias('IS_EXEMPT')
-class Exempt {
+class IsExempt {
     @XStreamAlias('ALL')
     Boolean all
 

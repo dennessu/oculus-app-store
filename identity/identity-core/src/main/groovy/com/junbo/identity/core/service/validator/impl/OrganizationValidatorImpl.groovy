@@ -114,7 +114,25 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id', organization.id, oldOrganization.id.toString()).exception()
         }
 
-        return checkBasicOrganizationInfo(organization)
+        return checkBasicOrganizationInfo(organization).then {
+            if (oldOrganization.getFbPayoutOrgId() != organization.getFbPayoutOrgId()
+            && !StringUtils.isEmpty(oldOrganization.getFbPayoutOrgId())
+            && StringUtils.isEmpty(organization.getFbPayoutOrgId())) {
+                return offerResource.getOffers(new OffersGetOptions(
+                        ownerId: organization.getId(),
+                        published: true,
+                        size: 1
+                )).then { Results<Offer> results ->
+                    if (results != null && !CollectionUtils.isEmpty(results.items)) {
+                        throw AppCommonErrors.INSTANCE.forbiddenWithMessage('fbPayoutOrgId is used by published offers').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     @Override

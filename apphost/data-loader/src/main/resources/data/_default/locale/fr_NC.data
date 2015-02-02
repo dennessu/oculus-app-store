@@ -4,8 +4,8 @@
   "longName": "Français(Nouvelle-Calédonie)",
   "localeName": "French(NC)",
   "fallbackLocale": {
-    "href": "/v1/locales/en_US",
-    "id": "en_US"
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
   },
   "futureExpansion": {}
 }

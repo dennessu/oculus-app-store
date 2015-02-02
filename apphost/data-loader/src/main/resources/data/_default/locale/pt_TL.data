@@ -4,8 +4,8 @@
   "longName": "Português(Timor-Leste)",
   "localeName": "Portuguese(TL)",
   "fallbackLocale": {
-    "href": "/v1/locales/en_US",
-    "id": "en_US"
+    "href": "/v1/locales/pt_PT",
+    "id": "pt_PT"
   },
   "futureExpansion": {}
 }

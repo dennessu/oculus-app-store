@@ -4,8 +4,8 @@
   "longName": "Nederlands(Suriname)",
   "localeName": "Dutch(SR)",
   "fallbackLocale": {
-    "href": "/v1/locales/en_US",
-    "id": "en_US"
+    "href": "/v1/locales/nl_NL",
+    "id": "nl_NL"
   },
   "futureExpansion": {}
 }

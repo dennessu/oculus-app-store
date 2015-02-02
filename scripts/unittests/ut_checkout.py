@@ -311,6 +311,535 @@ class CheckoutTests(ut.TestBase):
 
         return order
 
+    def testFullRefund(self):
+        user = oauth.testRegister('identity commerce commerce.checkout')
+        devinfo = self.testDeveloper()
+
+        name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "NAME",
+            "value": {
+                "givenName": "Johann",
+                "middleName": None,
+                "familyName": "Smith"
+            },
+            "user": user.json['self']
+        })
+
+        address = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "ADDRESS",
+            "user": user.json['self'],
+            "value": {
+                "street1": "800 West Campbell Road",
+                "city": "Richardson",
+                "subCountry": "TX",
+                "country": {
+                    "id": "US"
+                },
+                "postalCode": "75080"
+            }
+        })
+
+        user.json.update({
+            "name": name['self'],
+            "addresses": [{
+                "value": address['self'],
+                "isDefault": True,
+                "label": None
+            }]
+        })
+        user.json = curlJson('PUT', ut.test_uri, user.href, headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = user.json)
+
+        cartUrl = curlRedirect('GET', ut.test_uri, user.href + '/carts/primary', headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        cartId = cartUrl.rsplit('/')[-1]
+
+        cart = curlJson('GET', ut.test_uri, user.href + '/carts/' + cartId, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+
+        cart['offers'] = [{
+            "offer": devinfo['offer']['self'],
+            "quantity": 1,
+            "isSelected": True,
+            "isApproved": True
+        }]
+
+        cart = curlJson('PUT', ut.test_uri, cart['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = cart)
+
+        piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
+        ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
+
+        cardInfo = self.getFBEncryptedCardInfo()
+        pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": ccPiType['self'],
+            "accountName": cardInfo['holderName'],
+            "accountNumber": cardInfo['encryptedCardInfo'],
+            "label": "my credit card",
+            "user": user.json['self'],
+            "billingAddress": address['self'],
+            "typeSpecificDetails":{
+                "expireDate":"2025-11"
+            },
+            "futureExpansion": { }
+        })
+
+        order = curlJson('POST', ut.test_uri, '/v1/orders', headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = {
+            "user": user.json['self'],
+            "tentative": True,
+            "countryOfPurchase": {
+                "href": "/v1/countries/US",
+                "id": "US"
+            },
+            "currency": {
+                "href": "/v1/currencies/USD",
+                "id": "USD"
+            },
+            "locale": {
+                "href": "/v1/locales/en_US",
+                "id": "en_US"
+            },
+            "shippingMethod": None,
+            "orderItems": [{
+                "offer": devinfo['offer']['self'],
+                "quantity": 1
+            }],
+            "payments": [{
+                "paymentInstrument": pi['self'],
+            }],
+            "futureExpansion": { }
+        })
+
+        order['tentative'] = False
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        orderToken = oauth.getServiceAccessToken('order.service payment.service')
+
+        order['orderItems'][0]['quantity'] = 0
+
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + orderToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        self.assertEqual(order['status'], 'REFUNDED')
+
+        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
+        fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
+            'orderId': order['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+        fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
+        self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
+        self.assertEqual(fulfilmentAction['status'], 'REVOKED')
+
+        # try to get entitlements directly
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 0
+
+        errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + user.access_token
+        }, raiseOnError=False)
+        assert errorUserLogResponse['message'] == 'Forbidden'
+
+        serviceAccessToken = oauth.getServiceAccessToken('identity.service')
+        userLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + serviceAccessToken
+        })
+        assert userLogs['total'] == 2
+
+        return order
+
+    def testRefundTax(self):
+        user = oauth.testRegister('identity commerce commerce.checkout')
+        devinfo = self.testDeveloper()
+
+        name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "NAME",
+            "value": {
+                "givenName": "Johann",
+                "middleName": None,
+                "familyName": "Smith"
+            },
+            "user": user.json['self']
+        })
+
+        address = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "ADDRESS",
+            "user": user.json['self'],
+            "value": {
+                "street1": "800 West Campbell Road",
+                "city": "Richardson",
+                "subCountry": "TX",
+                "country": {
+                    "id": "US"
+                },
+                "postalCode": "75080"
+            }
+        })
+
+        user.json.update({
+            "name": name['self'],
+            "addresses": [{
+                "value": address['self'],
+                "isDefault": True,
+                "label": None
+            }]
+        })
+        user.json = curlJson('PUT', ut.test_uri, user.href, headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = user.json)
+
+        cartUrl = curlRedirect('GET', ut.test_uri, user.href + '/carts/primary', headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        cartId = cartUrl.rsplit('/')[-1]
+
+        cart = curlJson('GET', ut.test_uri, user.href + '/carts/' + cartId, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+
+        cart['offers'] = [{
+            "offer": devinfo['offer']['self'],
+            "quantity": 1,
+            "isSelected": True,
+            "isApproved": True
+        }]
+
+        cart = curlJson('PUT', ut.test_uri, cart['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = cart)
+
+        piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
+        ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
+
+        cardInfo = self.getFBEncryptedCardInfo()
+        pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": ccPiType['self'],
+            "accountName": cardInfo['holderName'],
+            "accountNumber": cardInfo['encryptedCardInfo'],
+            "label": "my credit card",
+            "user": user.json['self'],
+            "billingAddress": address['self'],
+            "typeSpecificDetails":{
+                "expireDate":"2025-11"
+            },
+            "futureExpansion": { }
+        })
+
+        order = curlJson('POST', ut.test_uri, '/v1/orders', headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = {
+            "user": user.json['self'],
+            "tentative": True,
+            "countryOfPurchase": {
+                "href": "/v1/countries/US",
+                "id": "US"
+            },
+            "currency": {
+                "href": "/v1/currencies/USD",
+                "id": "USD"
+            },
+            "locale": {
+                "href": "/v1/locales/en_US",
+                "id": "en_US"
+            },
+            "shippingMethod": None,
+            "orderItems": [{
+                "offer": devinfo['offer']['self'],
+                "quantity": 1
+            }],
+            "payments": [{
+                "paymentInstrument": pi['self'],
+            }],
+            "futureExpansion": { }
+        })
+
+        order['tentative'] = False
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        orderToken = oauth.getServiceAccessToken('order.service payment.service')
+
+        order['orderItems'][0]['totalTax'] = 0.00
+
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + orderToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        self.assertEqual(order['status'], 'REFUNDED')
+
+        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
+        fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
+            'orderId': order['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+        fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
+        self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
+        self.assertEqual(fulfilmentAction['status'], 'SUCCEED')
+
+        order['orderItems'][0]['quantity'] = 0
+
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + orderToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        self.assertEqual(order['status'], 'REFUNDED')
+
+        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
+        fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
+            'orderId': order['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+        fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
+        self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
+        self.assertEqual(fulfilmentAction['status'], 'REVOKED')
+
+        # try to get entitlements directly
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 0
+
+        errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + user.access_token
+        }, raiseOnError=False)
+        assert errorUserLogResponse['message'] == 'Forbidden'
+
+        serviceAccessToken = oauth.getServiceAccessToken('identity.service')
+        userLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + serviceAccessToken
+        })
+        assert userLogs['total'] == 2
+
+        return order
+
+    def testPartialRefund(self):
+        user = oauth.testRegister('identity commerce commerce.checkout')
+        devinfo = self.testDeveloper()
+
+        name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "NAME",
+            "value": {
+                "givenName": "Johann",
+                "middleName": None,
+                "familyName": "Smith"
+            },
+            "user": user.json['self']
+        })
+
+        address = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": "ADDRESS",
+            "user": user.json['self'],
+            "value": {
+                "street1": "800 West Campbell Road",
+                "city": "Richardson",
+                "subCountry": "TX",
+                "country": {
+                    "id": "US"
+                },
+                "postalCode": "75080"
+            }
+        })
+
+        user.json.update({
+            "name": name['self'],
+            "addresses": [{
+                "value": address['self'],
+                "isDefault": True,
+                "label": None
+            }]
+        })
+        user.json = curlJson('PUT', ut.test_uri, user.href, headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = user.json)
+
+        cartUrl = curlRedirect('GET', ut.test_uri, user.href + '/carts/primary', headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        cartId = cartUrl.rsplit('/')[-1]
+
+        cart = curlJson('GET', ut.test_uri, user.href + '/carts/' + cartId, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+
+        cart['offers'] = [{
+            "offer": devinfo['offer']['self'],
+            "quantity": 1,
+            "isSelected": True,
+            "isApproved": True
+        }]
+
+        cart = curlJson('PUT', ut.test_uri, cart['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = cart)
+
+        piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
+        ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
+
+        cardInfo = self.getFBEncryptedCardInfo()
+        pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "type": ccPiType['self'],
+            "accountName": cardInfo['holderName'],
+            "accountNumber": cardInfo['encryptedCardInfo'],
+            "label": "my credit card",
+            "user": user.json['self'],
+            "billingAddress": address['self'],
+            "typeSpecificDetails":{
+                "expireDate":"2025-11"
+            },
+            "futureExpansion": { }
+        })
+
+        order = curlJson('POST', ut.test_uri, '/v1/orders', headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = {
+            "user": user.json['self'],
+            "tentative": True,
+            "countryOfPurchase": {
+                "href": "/v1/countries/US",
+                "id": "US"
+            },
+            "currency": {
+                "href": "/v1/currencies/USD",
+                "id": "USD"
+            },
+            "locale": {
+                "href": "/v1/locales/en_US",
+                "id": "en_US"
+            },
+            "shippingMethod": None,
+            "orderItems": [{
+                "offer": devinfo['offer']['self'],
+                "quantity": 1
+            }],
+            "payments": [{
+                "paymentInstrument": pi['self'],
+            }],
+            "futureExpansion": { }
+        })
+
+        order['tentative'] = False
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        orderToken = oauth.getServiceAccessToken('order.service payment.service')
+
+        order['orderItems'][0]['totalAmount'] = 1
+
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + orderToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        self.assertEqual(order['status'], 'REFUNDED')
+
+        order['orderItems'][0]['quantity'] = 0
+
+        order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
+            "Authorization": "Bearer " + orderToken,
+            "oculus-end-user-ip": "127.0.0.1"
+        }, data = order)
+
+        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
+        fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
+            'orderId': order['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+        fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
+        self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
+        self.assertEqual(fulfilmentAction['status'], 'REVOKED')
+
+        # try to get entitlements directly
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 0
+
+        errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + user.access_token
+        }, raiseOnError=False)
+        assert errorUserLogResponse['message'] == 'Forbidden'
+
+        serviceAccessToken = oauth.getServiceAccessToken('identity.service')
+        userLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + serviceAccessToken
+        })
+        assert userLogs['total'] == 2
+
+        return order
+
+
+
     def testCatalogGetAll(self):
         # verify get all items and offers
         curlJson('GET', ut.test_uri, '/v1/items')

@@ -82,6 +82,15 @@ class Invoice {
 
     @XStreamAlias('CUSTOMER_NUMBER')
     String customerNumber
+
+    @XStreamAlias('EXEMPT_REASON')
+    ExemptReason exemptReason
+
+    @XStreamAlias('EXEMPT_CERTIFICATE')
+    ExemptCertificate exemptCertificate
+
+    @XStreamAlias('IS_EXEMPT')
+    IsExempt isExempt
     // end of input
 
     // output

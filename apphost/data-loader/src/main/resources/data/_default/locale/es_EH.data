@@ -1,14 +1,11 @@
 {
-   "localeCode" : "es_EH",
-   "shortName" : "Español(EH)",
-   "longName" : "Español(Sahara Occidental)",
-   "localeName" : "Spanish(EH)",
-   "fallbackLocale" :
-      {
-         "href" : "/v1/locales/es_ES",
-         "id" : "es_ES"
-      },
-   "futureExpansion" :
-      {
-      }
+   "localeCode": "es_EH",
+   "shortName": "Español(EH)",
+   "longName": "Español(Sahara Occidental)",
+   "localeName": "Spanish(EH)",
+   "fallbackLocale": {
+       "href": "/v1/locales/es_ES",
+       "id": "es_ES"
+     },
+   "futureExpansion": {}
 }

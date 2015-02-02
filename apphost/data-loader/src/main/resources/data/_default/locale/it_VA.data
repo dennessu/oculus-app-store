@@ -4,8 +4,8 @@
   "longName": "Italiano(Stato della Città del Vaticano)",
   "localeName": "Italian(VA)",
   "fallbackLocale": {
-    "href": "/v1/locales/en_US",
-    "id": "en_US"
+    "href": "/v1/locales/it_IT",
+    "id": "it_IT"
   },
   "futureExpansion": {}
 }

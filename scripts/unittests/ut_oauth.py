@@ -454,7 +454,8 @@ class OAuthTests(ut.TestBase):
         assert view["view"] == 'logout-confirm'
 
         # confirm logout with 'yes'
-        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
+        assert location == 'https://id.oculus.dev/US/en-US?logout=y'
 
         # test sign-in again to confirm logout
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {

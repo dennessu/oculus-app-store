@@ -708,6 +708,7 @@
             }
         }
     },
+    "payment_provider_id_mapping": {},
     "iap_consumption": {},
     "wallet_lot_transaction": {
         "views": {

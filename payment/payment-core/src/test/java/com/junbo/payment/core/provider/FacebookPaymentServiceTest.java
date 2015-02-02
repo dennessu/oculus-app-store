@@ -3,6 +3,9 @@ package com.junbo.payment.core.provider;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.facebook.FacebookCreditCardTokenRequest;
+import com.junbo.payment.clientproxy.facebook.FacebookRTU;
+import com.junbo.payment.clientproxy.facebook.FacebookRTUEntry;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
@@ -10,10 +13,7 @@ import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl;
 import com.junbo.payment.core.provider.facebook.FacebookPaymentUtils;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.ChargeInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.RiskFeature;
+import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.TransactionStatus;
@@ -23,6 +23,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -63,6 +67,19 @@ public class FacebookPaymentServiceTest extends BaseTest {
     }
 
     @Test(enabled = true)
+    public void testRTU() throws ExecutionException, InterruptedException {
+        FacebookRTU facebookRTU = new FacebookRTU();
+        facebookRTU.setObject("payments");
+        FacebookRTUEntry facebookRTUEntry = new FacebookRTUEntry();
+        facebookRTUEntry.setId("ZXh0X3BheW1lbnRfNTg5MzExNDk0NTMyOTg4");
+        facebookRTUEntry.setTime(String.valueOf(new Date().getTime()));
+        facebookRTUEntry.setChanged_fields(new String[]{"fraud_status"});
+        facebookRTU.setEntry(new FacebookRTUEntry[]{facebookRTUEntry});
+        String rtu = CommonUtil.toJson(facebookRTU, null);
+        mockFBPaymentService.processNotification(PaymentProvider.FacebookCC, rtu).get();
+    }
+
+    @Test(enabled = true)
     public void testAuthCaptureFB() throws ExecutionException, InterruptedException {
         final PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
@@ -87,6 +104,15 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(){
+            {
+                setId("123");
+                setName("afjakshdf");
+            }
+        });
+
+        transaction.getChargeInfo().setItems(items);
         transaction.setRiskFeature(riskFeature);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());

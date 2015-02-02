@@ -3,12 +3,9 @@
    "shortName" : "Français(BL)",
    "longName" : "Français(Saint-Barthélemy)",
    "localeName" : "French(BL)",
-   "fallbackLocale" :
-      {
-         "href" : "/v1/locales/fr_FR",
-         "id" : "fr_FR"
-      },
-   "futureExpansion" :
-      {
-      }
+   "fallbackLocale" : {
+      "href" : "/v1/locales/fr_FR",
+      "id" : "fr_FR"
+   },
+   "futureExpansion" : {}
 }
