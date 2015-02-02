@@ -1539,6 +1539,8 @@
             <list>
                 <value>userId</value>
                 <value>userAttributeDefinitionId</value>
+                <value>organizationId</value>
+                <value>type</value>
                 <value>value</value>
                 <value>grantTime</value>
                 <value>expirationTime</value>
@@ -1559,6 +1561,8 @@
                 <value>expirationTime</value>
                 <value>useCount</value>
                 <value>value</value>
+                <value>organizationId</value>
+                <value>type</value>
                 <value>isActive</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>

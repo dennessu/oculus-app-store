@@ -35,9 +35,11 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
 
     @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the organization link in the attribute definition.")
     @JsonProperty("organization")
+    @CloudantIgnore
     private OrganizationId organizationId;
 
     @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the type in the corresponding attribute definition")
+    @CloudantIgnore
     private String type;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Value of the user attribute")
