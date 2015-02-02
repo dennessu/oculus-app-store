@@ -265,6 +265,15 @@ class SabrixFacadeImpl implements TaxFacade {
         if (balance.propertySet.get(PropertyKey.EXEMPT_REASON.name()) != null) {
             invoice.exemptReason = getExemptReason(piAddress.countryId.value,
                     balance.propertySet.get(PropertyKey.EXEMPT_REASON.name()))
+
+            if (balance.propertySet.get(PropertyKey.EXEMPT_CERTIFICATE.name()) != null) {
+                invoice.exemptCertificate = getExemptCertificate(piAddress.countryId.value,
+                        balance.propertySet.get(PropertyKey.EXEMPT_CERTIFICATE.name()))
+            }
+
+            IsExempt isExempt = new IsExempt()
+            isExempt.all = true
+            invoice.isExempt = isExempt
         }
         def lines = generateLine(balance, billToAddress, shipToAddress, isAudited)
         invoice.line = lines
@@ -334,6 +343,28 @@ class SabrixFacadeImpl implements TaxFacade {
         }
 
         return exemptReason
+    }
+
+    ExemptCertificate getExemptCertificate(country, certificate) {
+        def exemptCertificate = new ExemptCertificate()
+        switch (country) {
+            case 'US':
+                exemptCertificate.state = certificate
+                exemptCertificate.county = certificate
+                exemptCertificate.city = certificate
+                exemptCertificate.district = certificate
+                exemptCertificate.postcode = certificate
+                exemptCertificate.geocode = certificate
+                break
+            case 'CA':
+                exemptCertificate.country = certificate
+                exemptCertificate.province = certificate
+                break
+            default:
+                exemptCertificate.country = certificate
+        }
+
+        return exemptCertificate
     }
 
     String getSellerPrimaryCountry(Balance balance, SabrixAddress billToAddress, SabrixAddress shipToAddress) {
