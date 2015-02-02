@@ -33,6 +33,7 @@
         <property name="triggers">
             <list>
                 <ref bean="subledgerJobTrigger"/>
+                <ref bean="transactionReceiveJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
@@ -171,6 +172,24 @@
         <property name="concurrent" value="false"/>
     </bean>
 
+    <!-- tra Job & Trigger-->
+    <bean id="transactionReceiveJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="transactionReceiveJobDetail" />
+        <property name="cronExpression" value="${order.jobs.transactionReceive.cronexpression}" />
+    </bean>
+
+    <bean id="transactionReceiveJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="order.transactionReceiveJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
 
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
@@ -204,10 +223,7 @@
     <bean id="orderJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="${order.jobs.order.process.poolsize}" />
         <property name="maxPoolSize" value="${order.jobs.order.process.poolsize}" />
-        <property name="queueCapacity" value="1000" />
-        <property name="rejectedExecutionHandler">
-            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
-        </property>
+        <property name="queueCapacity" value="0" />
     </bean>
 
     <bean id="payoutExportJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
@@ -246,6 +262,9 @@
                 </entry>
                 <entry key="quartz:type=QuartzJob,name=revenueReportJob">
                     <idref bean="order.revenueReportJob"/>
+                </entry>
+                <entry key="quartz:type=QuartzJob,name=transactionReceiveJob">
+                    <idref bean="order.transactionReceiveJob"/>
                 </entry>
             </map>
         </property>

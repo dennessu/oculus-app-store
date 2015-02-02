@@ -47,8 +47,6 @@ class PayoutExportJob {
 
     private int pageSize = 100
 
-    private int writeBufferSize = 1000
-
     private String payoutKeyId = '___payout_key'
 
     private static Lock lock = new ReentrantLock()
@@ -172,9 +170,9 @@ class PayoutExportJob {
             FileUtils.openOutputStream(work, false).close()
 
             // write headers
-            CSVWriter csvWriter = new ConcurrentCSVWriter(work, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(work, lock)
             csvWriter.writeRecords(Arrays.asList(Arrays.asList('ds','financial_id','payout_amount','external_id')))
-            csvWriter.flush()
+            csvWriter.close()
 
             List<Future> futures = []
             for (Integer dcId : DataCenters.instance().getDataCenterIds()) {
@@ -207,7 +205,7 @@ class PayoutExportJob {
         DateFormat dateFormat = new SimpleDateFormat('yyyy-MM-dd')
 
         try {
-            CSVWriter csvWriter = new ConcurrentCSVWriter(file, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(file, lock)
 
             subledgerPayoutIdAssignUtils.execute(dcId, shardId, startDate, endDate)
 
@@ -233,7 +231,7 @@ class PayoutExportJob {
 
                 if (subledgers.size() < pageSize) {
                     aggregateAndWrite(subledgersWithSameSeller, csvWriter, date, dateFormat)
-                    csvWriter.flush()
+                    csvWriter.close()
                     break
                 }
             }

@@ -28,6 +28,10 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     private BigDecimal totalAmount;
 
+    private BigDecimal totalTax;
+
+    private Boolean isTaxInclusive;
+
     private String billingEvent;
 
     private Boolean success;
@@ -52,6 +56,22 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(BigDecimal totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    public Boolean getIsTaxInclusive() {
+        return isTaxInclusive;
+    }
+
+    public void setIsTaxInclusive(Boolean isTaxInclusive) {
+        this.isTaxInclusive = isTaxInclusive;
     }
 
     public Long getOrderId() {

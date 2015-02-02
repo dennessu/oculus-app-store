@@ -160,6 +160,8 @@ class TestHelper implements ApplicationContextAware {
         entity.setOrderId(generateOrderId())
         entity.balanceId = RandomStringUtils.randomAlphabetic(20)
         entity.totalAmount = BigDecimal.TEN
+        entity.totalTax = BigDecimal.TEN
+        entity.isTaxInclusive = true
         entity.success = true
         return entity
     }

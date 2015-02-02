@@ -96,7 +96,7 @@ class PayoutStatusUpdateJob {
             }
 
             if (!payoutStatusFile.exists()) { // download if not exists in local
-                boolean downloaded = downloadStatusUpdateFile(payoutStatusFile)
+                boolean downloaded = ftpUtils.downloadFile(payoutStatusFile, "${remoteDir}/${payoutStatusFile.name}", maxRetry)
                 if (!downloaded) {
                     return
                 }
@@ -107,35 +107,6 @@ class PayoutStatusUpdateJob {
         } finally {
             LOGGER.info('name=endPayoutExportJob, time={}s', (System.currentTimeMillis() - start) / 1000)
         }
-    }
-
-    private boolean downloadStatusUpdateFile(File payoutStatusFile) {
-        long start = System.currentTimeMillis()
-        String remotePath = "${remoteDir}/${payoutStatusFile.name}"
-        File tmp = new File(payoutStatusFile.path + '.tmp')
-
-        int retryCount = 0
-        while (retryCount < maxRetry) {
-            if (tmp.exists()) {
-                tmp.delete()
-            }
-            LOGGER.info('name=StartDownloadStatusUpdateFile,path={},retryCount={}', remotePath, retryCount)
-            try {
-                ftpUtils.downloadFile(tmp, remotePath)
-                LOGGER.info('name=EndDownloadStatusUpdateFile,path={},latencyInMs={}', remotePath, System.currentTimeMillis() - start)
-                FileUtils.moveFile(tmp, payoutStatusFile)
-                return true
-            } catch (FileNotFoundException ex) {
-                LOGGER.info('name=PayoutStatusFileNotFoundOnFTP,path={}', remotePath)
-                break
-            } catch (IOException ex) {
-                LOGGER.info('name=Fail_To_Download,path={}', remotePath, ex)
-                Thread.sleep(1000L * initialRetryIntervalSecond * (1 << retryCount))
-                retryCount++
-            }
-        }
-
-        return false
     }
 
     private void processPayoutStatusFile(File payoutStatusFile) {

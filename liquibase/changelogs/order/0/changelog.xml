@@ -471,6 +471,9 @@
                 alter table subledger_item drop column subledger_item_action;
                 drop index subledger_item_status_offer_id_created_time;
                 create index subledger_item_status_item_id_created_time on subledger_item(status_id, item_id, created_time);
+
+                alter table order_billing_history add column total_tax decimal default 0;
+                alter table order_billing_history add column is_tax_inclusive boolean default false;
             ]]>
         </sql>
     </changeSet>

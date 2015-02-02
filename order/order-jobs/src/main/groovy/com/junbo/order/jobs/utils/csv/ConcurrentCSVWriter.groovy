@@ -5,7 +5,7 @@ import com.Ostermiller.util.CSVPrinter
 import java.util.concurrent.locks.Lock
 
 /**
- * The PayoutCSVWriter class.
+ * The CSVWriter could be used to write line concurrently.
  */
 class ConcurrentCSVWriter implements CSVWriter {
 
@@ -15,12 +15,18 @@ class ConcurrentCSVWriter implements CSVWriter {
 
     private final File file;
 
+    private final static DEFAULT_BUFFER_SIZE = 1000
+
     private List<List<String>> buffer = [] as List
 
     ConcurrentCSVWriter(File file, Lock lock, int bufferSize) {
         this.file = file
         this.lock = lock
         this.bufferSize = bufferSize
+    }
+
+    ConcurrentCSVWriter(File file, Lock lock) {
+        this(file, lock, DEFAULT_BUFFER_SIZE)
     }
 
     @Override
@@ -32,7 +38,11 @@ class ConcurrentCSVWriter implements CSVWriter {
     }
 
     @Override
-    void flush() {
+    void close() {
+        flush()
+    }
+
+    private void flush() {
         if (lock != null) {
             lock.lock()
         }

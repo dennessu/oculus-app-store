@@ -66,7 +66,9 @@ class RefundOrderFlowTest extends BaseTest {
                 balanceId: balance.id,
                 success: true,
                 billingEvent: BillingAction.CHARGE.name(),
-                totalAmount: 50G
+                totalAmount: 50G,
+                totalTax: 10,
+                isTaxInclusive: false
         )
 
         repo.createBillingHistory(order.id.value, billingHistory)

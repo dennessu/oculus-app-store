@@ -162,7 +162,7 @@ class RevenueReportJob {
                 // create work file
                 File work = new File(file.getPath() + ".tmp")
                 FileUtils.openOutputStream(work, false).close()
-                CSVWriter csvWriter = new ConcurrentCSVWriter(work, null, 0)
+                CSVWriter csvWriter = new ConcurrentCSVWriter(work, null)
                 csvWriter.writeRecords(Arrays.asList(columns))
 
                 List<Map<String, Object>> records = aggregate(startDate, endDate)
@@ -174,7 +174,7 @@ class RevenueReportJob {
                     }
                     csvWriter.writeRecords(Arrays.asList(row))
                 }
-                csvWriter.flush()
+                csvWriter.close()
                 FileUtils.moveFile(work, file)
             }
 
