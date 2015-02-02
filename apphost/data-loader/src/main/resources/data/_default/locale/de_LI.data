@@ -3,12 +3,9 @@
    "shortName" : "Deutsch(LI)",
    "longName" : "Deutsch(Liechtenstein)",
    "localeName" : "German(LI)",
-   "fallbackLocale" :
-      {
-         "href" : "/v1/locales/de_DE",
-         "id" : "de_DE"
-      },
-   "futureExpansion" :
-      {
-      }
+   "fallbackLocale" : {
+      "href" : "/v1/locales/de_DE",
+      "id" : "de_DE"
+   },
+   "futureExpansion" : {}
 }

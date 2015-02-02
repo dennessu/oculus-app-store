@@ -3,12 +3,9 @@
    "shortName" : "Français(BF)",
    "longName" : "Français(Burkina Faso)",
    "localeName" : "French(BF)",
-   "fallbackLocale" :
-      {
+   "fallbackLocale" : {
          "href" : "/v1/locales/fr_FR",
          "id" : "fr_FR"
-      },
-   "futureExpansion" :
-      {
-      }
+   },
+   "futureExpansion" :{}
 }
