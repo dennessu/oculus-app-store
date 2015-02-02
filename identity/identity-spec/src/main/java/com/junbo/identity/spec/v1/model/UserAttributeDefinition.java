@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserAttributeDefinitionId;
@@ -36,6 +37,41 @@ public class UserAttributeDefinition extends PropertyAssignedAwareResourceMeta<U
 
     @ApiModelProperty(position = 5, required = false, value = "[Nullable] Array of Links to the item that this user attribute is associated with, for example this can be a cross base game achievement")
     private List<ItemId> items;
+
+     /*
+    {
+       "$schema": "http://json-schema.org/draft-04/schema#",
+       "title": "Product",
+       "description": "A product from Acme's catalog",
+       "type": "object",
+       "properties": {
+           "id": {
+               "description": "The unique identifier for a product",
+               "type": "integer"
+           },
+           "name": {
+               "description": "Name of the product",
+               "type": "string"
+           },
+           "price": {
+               "type": "number",
+               "minimum": 0,
+               "exclusiveMinimum": true
+           },
+           "tags": {
+               "type": "array",
+               "items": {
+                   "type": "string"
+               },
+               "minItems": 1,
+               "uniqueItems": true
+           }
+       },
+       "required": ["id", "name", "price"]
+    }
+     */
+    @ApiModelProperty(position = 6, required = false, value = "[Nullable]The JSON schema used to validate the userAttribute \"value\" property of this type")
+    private JsonNode schema;
 
     public void setType(String type) {
         this.type = type;
@@ -84,5 +120,14 @@ public class UserAttributeDefinition extends PropertyAssignedAwareResourceMeta<U
     public void setItems(List<ItemId> items) {
         this.items = items;
         support.setPropertyAssigned("items");
+    }
+
+    public JsonNode getSchema() {
+        return schema;
+    }
+
+    public void setSchema(JsonNode schema) {
+        this.schema = schema;
+        support.setPropertyAssigned("schema");
     }
 }

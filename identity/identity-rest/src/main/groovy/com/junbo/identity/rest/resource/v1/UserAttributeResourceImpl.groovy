@@ -10,9 +10,11 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserAttributeFilter
 import com.junbo.identity.core.service.validator.UserAttributeValidator
+import com.junbo.identity.service.UserAttributeDefinitionService
 import com.junbo.identity.service.UserAttributeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserAttribute
+import com.junbo.identity.spec.v1.model.UserAttributeDefinition
 import com.junbo.identity.spec.v1.option.list.UserAttributeListOptions
 import com.junbo.identity.spec.v1.option.model.UserAttributeGetOptions
 import com.junbo.identity.spec.v1.resource.UserAttributeResource
@@ -29,6 +31,9 @@ import javax.ws.rs.core.Response
 class UserAttributeResourceImpl implements UserAttributeResource {
     @Autowired
     private UserAttributeService userAttributeService
+
+    @Autowired
+    private UserAttributeDefinitionService userAttributeDefinitionService
 
     @Autowired
     private UserAttributeFilter userAttributeFilter
@@ -52,6 +57,8 @@ class UserAttributeResourceImpl implements UserAttributeResource {
             throw AppCommonErrors.INSTANCE.fieldRequired('user').exception()
         }
 
+        userAttribute = clearUserAttribute(userAttribute)
+
         def callback = authorizeCallbackFactory.create(userAttribute.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
@@ -63,9 +70,10 @@ class UserAttributeResourceImpl implements UserAttributeResource {
             return userAttributeValidator.validateForCreate(userAttribute).then {
                 return userAttributeService.create(userAttribute).then { UserAttribute newUserAttribute ->
                         Created201Marker.mark(newUserAttribute.getId())
-
-                        newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
-                        return Promise.pure(newUserAttribute)
+                        return fillUserAttribute(newUserAttribute).then {
+                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
+                            return Promise.pure(newUserAttribute)
+                        }
                 }
             }
         }
@@ -80,6 +88,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         if (userAttribute == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
+        userAttribute = clearUserAttribute(userAttribute)
 
         return userAttributeService.get(userAttributeId).then { UserAttribute oldUserAttribute ->
             if (oldUserAttribute == null) {
@@ -95,8 +104,10 @@ class UserAttributeResourceImpl implements UserAttributeResource {
                 userAttribute = userAttributeFilter.filterForPut(userAttribute, oldUserAttribute)
                 return userAttributeValidator.validateForUpdate(userAttributeId, userAttribute, oldUserAttribute).then {
                     return userAttributeService.update(userAttribute, oldUserAttribute).then { UserAttribute newUserAttribute ->
-                        newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
-                        return Promise.pure(newUserAttribute)
+                        return fillUserAttribute(newUserAttribute).then {
+                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
+                            return Promise.pure(newUserAttribute)
+                        }
                     }
                 }
             }
@@ -112,8 +123,10 @@ class UserAttributeResourceImpl implements UserAttributeResource {
                         throw AppErrors.INSTANCE.userAttributeNotFound(userAttributeId).exception()
                     }
 
-                    existing = userAttributeFilter.filterForGet(existing, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(existing)
+                    return fillUserAttribute(existing).then {
+                        existing = userAttributeFilter.filterForGet(existing, getOptions.properties?.split(',') as List<String>)
+                        return Promise.pure(existing)
+                    }
                 }
         }
     }
@@ -126,18 +139,20 @@ class UserAttributeResourceImpl implements UserAttributeResource {
                 result.total = userAttributes.total
 
                 return Promise.each(userAttributes.items) { UserAttribute newUserAttribute ->
-                    def callback = authorizeCallbackFactory.create(newUserAttribute.userId)
-                    return RightsScope.with(authorizeService.authorize(callback)) {
-                        if (newUserAttribute != null) {
-                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute,
-                                    listOptions.properties?.split(',') as List<String>)
-                        }
+                    return fillUserAttribute(newUserAttribute).then {
+                        def callback = authorizeCallbackFactory.create(newUserAttribute.userId)
+                        return RightsScope.with(authorizeService.authorize(callback)) {
+                            if (newUserAttribute != null) {
+                                newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute,
+                                        listOptions.properties?.split(',') as List<String>)
+                            }
 
-                        if (newUserAttribute != null && AuthorizeContext.hasRights('read')) {
-                            result.items.add(newUserAttribute)
-                            return Promise.pure(newUserAttribute)
-                        } else {
-                            return Promise.pure(null)
+                            if (newUserAttribute != null && AuthorizeContext.hasRights('read')) {
+                                result.items.add(newUserAttribute)
+                                return Promise.pure(newUserAttribute)
+                            } else {
+                                return Promise.pure(null)
+                            }
                         }
                     }
                 }.then {
@@ -172,6 +187,22 @@ class UserAttributeResourceImpl implements UserAttributeResource {
             return userAttributeService.searchByUserAttributeDefinitionId(options.userAttributeDefinitionId, options.limit, options.offset)
         } else {
             throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
+        }
+    }
+
+    private static UserAttribute clearUserAttribute(UserAttribute userAttribute) {
+        userAttribute.setOrganizationId(null);
+        userAttribute.setType(null)
+
+        return userAttribute;
+    }
+
+    private Promise<UserAttribute> fillUserAttribute(UserAttribute userAttribute) {
+        return userAttributeDefinitionService.get(userAttribute.userAttributeDefinitionId).then { UserAttributeDefinition userAttributeDefinition ->
+            userAttribute.setOrganizationId(userAttributeDefinition.getOrganizationId())
+            userAttribute.setType(userAttributeDefinition.getType())
+
+            return Promise.pure(userAttribute)
         }
     }
 }

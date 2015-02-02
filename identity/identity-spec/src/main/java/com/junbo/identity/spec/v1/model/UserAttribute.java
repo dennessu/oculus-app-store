@@ -6,7 +6,9 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserAttributeDefinitionId;
 import com.junbo.common.id.UserAttributeId;
 import com.junbo.common.id.UserId;
@@ -31,11 +33,15 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
     @JsonProperty("attributeDefinition")
     private UserAttributeDefinitionId userAttributeDefinitionId;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Name of the user attribute")
-    private String name;
+    @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the organization link in the attribute definition.")
+    @JsonProperty("organization")
+    private OrganizationId organizationId;
+
+    @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the type in the corresponding attribute definition")
+    private String type;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Value of the user attribute")
-    private String value;
+    private JsonNode value;
 
     @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] True if/only if the user-attribute is active; " +
             "false when the user attribute is out of date, useCount is 0, or someone manually set isSuspended to true,")
@@ -66,22 +72,32 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
         support.setPropertyAssigned("userAttributeDefinitionId");
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        support.setPropertyAssigned("name");
-    }
-
-    public String getValue() {
+    public JsonNode getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(JsonNode value) {
         this.value = value;
         support.setPropertyAssigned("value");
+    }
+
+    public OrganizationId getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
+        support.setPropertyAssigned("organizationId");
+        support.setPropertyAssigned("organization");
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        support.setPropertyAssigned("type");
     }
 
     public void setIsActive(Boolean isActive) {
