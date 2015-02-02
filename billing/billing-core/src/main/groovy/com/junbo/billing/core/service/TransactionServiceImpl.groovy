@@ -11,6 +11,7 @@ import com.junbo.billing.db.repo.facade.TransactionRepositoryFacade
 import com.junbo.billing.spec.enums.*
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.Transaction
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
@@ -376,14 +377,21 @@ class TransactionServiceImpl implements TransactionService {
         }
         paymentTransaction.setChargeInfo(chargeInfo)
 
-        String description = balance.getProperty(PropertyKey.BALANCE_DESCRIPTION)
-        if (description != null) {
-            Item paymentItem = new Item()
-            paymentItem.name = description
-            paymentItem.amount = balance.totalAmount
-            paymentItem.quantity = 1
-            chargeInfo.setItems([ paymentItem ])
+        List<Item> paymentItems = []
+        for (BalanceItem balanceItem : balance.balanceItems) {
+            String offerId = balanceItem.propertySet.containsKey(PropertyKey.OFFER_ID.name()) ?
+                    balanceItem.propertySet.get(PropertyKey.OFFER_ID.name()) : null
+            String offerName = balanceItem.propertySet.containsKey(PropertyKey.ITEM_NAME.name()) ?
+                    balanceItem.propertySet.get(PropertyKey.ITEM_NAME.name()) : null
+            if (offerId != null && offerName != null) {
+                Item paymentItem = new Item()
+                paymentItem.setId(offerId)
+                paymentItem.setName(offerName)
+
+                paymentItems << paymentItem
+            }
         }
+        chargeInfo.setItems(paymentItems)
 
         def webPaymentInfo = new WebPaymentInfo()
         if (balance.successRedirectUrl != null || balance.cancelRedirectUrl != null) {
@@ -413,10 +421,12 @@ class TransactionServiceImpl implements TransactionService {
             case PaymentStatus.SETTLING.name():
             case PaymentStatus.SETTLED.name():
             case PaymentStatus.REFUNDED.name():
+            case PaymentStatus.RISK_PENDING.name():
                 return TransactionStatus.SUCCESS
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
             case PaymentStatus.REFUND_DECLINED.name():
+            case PaymentStatus.RISK_ASYNC_REJECT.name():
                 return TransactionStatus.DECLINE
             case PaymentStatus.UNCONFIRMED.name():
                 return TransactionStatus.UNCONFIRMED
@@ -429,10 +439,12 @@ class TransactionServiceImpl implements TransactionService {
         switch (paymentStatus) {
             case PaymentStatus.SETTLEMENT_SUBMITTED.name():
             case PaymentStatus.SETTLING.name():
+            case PaymentStatus.RISK_PENDING.name():
                 return BalanceStatus.AWAITING_PAYMENT
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
             case PaymentStatus.REFUND_DECLINED.name():
+            case PaymentStatus.RISK_ASYNC_REJECT.name():
                 return BalanceStatus.FAILED
             case PaymentStatus.UNCONFIRMED.name():
                 return BalanceStatus.UNCONFIRMED
