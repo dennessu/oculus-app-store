@@ -7,8 +7,8 @@
 
   "logout_redirect_uris" : [],
 
-  "scopes" : [ "readonly.service", "catalog" ],
-  "default_scopes" : [ "readonly.service", "catalog" ],
+  "scopes" : [ "readonly.service", "catalog", "cms.service" ],
+  "default_scopes" : [ "readonly.service", "catalog", "cms.service" ],
 
   "response_types" : [],
   "grant_types" : ["CLIENT_CREDENTIALS", "EXCHANGE"],
