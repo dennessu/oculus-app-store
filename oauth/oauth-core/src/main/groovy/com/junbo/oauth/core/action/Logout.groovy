@@ -84,6 +84,13 @@ class Logout implements Action {
         IdToken idToken = null
         String idTokenHint = parameterMap.getFirst(OAuthParameters.ID_TOKEN_HINT)
         String postLogoutRedirectUri = this.defaultConfirmationUri
+        if (contextWrapper.viewCountry != null) {
+            postLogoutRedirectUri = postLogoutRedirectUri.replaceFirst('/:country', "/$contextWrapper.viewCountry")
+        }
+        if (contextWrapper.viewLocale != null) {
+            postLogoutRedirectUri = postLogoutRedirectUri.replaceFirst('/:locale', "/$contextWrapper.viewLocale")
+        }
+
         if (StringUtils.hasText(idTokenHint)) {
             Client client = null
             try {
