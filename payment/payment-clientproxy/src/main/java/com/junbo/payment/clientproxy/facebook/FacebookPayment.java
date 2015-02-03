@@ -47,7 +47,7 @@ public class FacebookPayment {
     //output response
     private String id;
     private Boolean success;
-    private String error;
+    private FacebookCCErrorDetail error;
     @JsonProperty("payment_account")
     private String paymentAccountId;
     private String application;
@@ -143,11 +143,11 @@ public class FacebookPayment {
         this.success = success;
     }
 
-    public String getError() {
+    public FacebookCCErrorDetail getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(FacebookCCErrorDetail error) {
         this.error = error;
     }
 

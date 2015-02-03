@@ -10,8 +10,6 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * Created by wenzhu on 12/2/14.
  */
@@ -96,7 +94,7 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                         throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
                     }
                     if(getResult.getCode() == 400){
-                        throw AppClientExceptions.INSTANCE.providerInvaidRequest(fbBatchError.getError().getMessage()).exception();
+                        throw AppClientExceptions.INSTANCE.providerInvalidRequest("Facebook", fbBatchError.getError().getMessage()).exception();
                     }else{
                         throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
                     }

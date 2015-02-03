@@ -31,11 +31,13 @@ public class UserAttributeDefinition extends PropertyAssignedAwareResourceMeta<U
             "for example \"Finished VR Home Tutorial\", \"Acheived Level 30 in Darknet\"")
     private String description;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Link to the organization resource, to illustrate this user attribute definition is invented/introduced by this organization")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Link to the organization resource, " +
+            "to illustrate this user attribute definition is invented/introduced by this organization")
     @JsonProperty("organization")
     private OrganizationId organizationId;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Array of Links to the item that this user attribute is associated with, for example this can be a cross base game achievement")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Array of Links to the item that this user attribute is associated with, " +
+            "for example this can be a cross base game achievement")
     private List<ItemId> items;
 
      /*

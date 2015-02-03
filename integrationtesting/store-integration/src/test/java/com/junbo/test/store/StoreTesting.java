@@ -409,6 +409,7 @@ public class StoreTesting extends BaseTestClass {
             validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
             String userName = authTokenResponse.getUsername();
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+            Thread.sleep(20000);
             AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
             validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
@@ -432,11 +433,12 @@ public class StoreTesting extends BaseTestClass {
             MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
 
             //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
-
             if (freePurchaseResponse.getChallenge() != null) {
                 freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
             }
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+            Thread.sleep(20000);
+
             LibraryResponse libraryResponse = testDataProvider.getLibrary();
             validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 

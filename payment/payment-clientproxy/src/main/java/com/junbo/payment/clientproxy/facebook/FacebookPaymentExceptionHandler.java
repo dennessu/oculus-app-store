@@ -8,9 +8,12 @@ package com.junbo.payment.clientproxy.facebook;
 
 import com.junbo.langur.core.client.ExceptionHandler;
 import com.junbo.langur.core.client.MessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
+import com.junbo.payment.common.exception.AppServerExceptions;
 import com.ning.http.client.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.IOException;
@@ -19,8 +22,7 @@ import java.io.IOException;
  * Facebook Payment Exception Handler.
  */
 public class FacebookPaymentExceptionHandler  implements ExceptionHandler {
-    private static final FacebookPaymentError UNEXPECTED_ERROR =
-            new FacebookPaymentError(new FacebookPaymentError.Error("Unexpected error", null, 0));
+    private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPaymentExceptionHandler.class);
     private MessageTranscoder messageTranscoder;
 
     @Required
@@ -30,15 +32,28 @@ public class FacebookPaymentExceptionHandler  implements ExceptionHandler {
 
     @Override
     public void handleExceptionResponse(Response response) {
+        LOGGER.error("provider exception:", response);
+        FacebookCCErrorDetail unknowError = new FacebookCCErrorDetail();
+        unknowError.setCode("-1");
+        unknowError.setMessage("unkonw error");
+        unknowError.setType("provider");
         try {
             if(CommonUtil.isNullOrEmpty(response.getResponseBody())){
-                throw new FacebookPaymentException(new FacebookPaymentError(new FacebookPaymentError.Error("empty response", null, 0)));
+                throw new FacebookPaymentException(new FacebookPaymentError(unknowError));
             }
-            FacebookPaymentError error = (FacebookPaymentError)messageTranscoder.<FacebookPaymentError>decode(
-                    new TypeReference<FacebookPaymentError>() { },response.getResponseBody());
-            throw new FacebookPaymentException(error);
+            FacebookPaymentError error = CommonUtil.parseJsonIgnoreUnknown(response.getResponseBody(), FacebookPaymentError.class);
+            if(error != null && error.getError() !=null){
+                if(error.getError().getCode().equalsIgnoreCase("API_EC_PAYMENTS_SYSTEM_OR_PROVIDER_ERROR")){
+                    throw AppServerExceptions.INSTANCE.providerProcessError("FacebookCC", error.getError().getMessage()).exception();
+                }else{
+                    throw AppClientExceptions.INSTANCE.providerInvalidRequest("FacebookCC", error.getError().getMessage()).exception();
+                }
+            }else{
+                throw AppServerExceptions.INSTANCE.providerProcessError("FacebookCC", response.getResponseBody()).exception();
+            }
         } catch (IOException e) {
-            throw new FacebookPaymentException(UNEXPECTED_ERROR, e);
+            LOGGER.error("provider exception handling:", e);
+            throw new FacebookPaymentException(new FacebookPaymentError(unknowError));
         }
     }
 }

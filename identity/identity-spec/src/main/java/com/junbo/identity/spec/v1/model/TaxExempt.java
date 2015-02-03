@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.identity.spec.v1.model;
 
 import com.junbo.common.jackson.annotation.XSSFreeString;
@@ -38,7 +43,8 @@ public class TaxExempt {
     private Date taxExemptionEndDate;
 
     @XSSFreeString
-    @ApiModelProperty(position = 1, required = false, value = "True if Oculus has verified user taxExemption material, False if Oculus hasn't verified user taxExemption material, " +
+    @ApiModelProperty(position = 1, required = false, value = "True if Oculus has verified user taxExemption material, " +
+            "False if Oculus hasn't verified user taxExemption material, " +
             "this value should only be set by internal tool by Oculus employee.")
     private Boolean isTaxExemptionValidated;
 
@@ -117,7 +123,8 @@ public class TaxExempt {
             return false;
         if (taxExemptionCertificateFile != null ? !taxExemptionCertificateFile.equals(taxExempt.taxExemptionCertificateFile) : taxExempt.taxExemptionCertificateFile != null)
             return false;
-        if (taxExemptionCertificateNumber != null ? !taxExemptionCertificateNumber.equals(taxExempt.taxExemptionCertificateNumber) : taxExempt.taxExemptionCertificateNumber != null)
+        if (taxExemptionCertificateNumber != null ? !taxExemptionCertificateNumber.equals(taxExempt.taxExemptionCertificateNumber) :
+                taxExempt.taxExemptionCertificateNumber != null)
             return false;
         if (taxExemptionCountry != null ? !taxExemptionCountry.equals(taxExempt.taxExemptionCountry) : taxExempt.taxExemptionCountry != null)
             return false;
