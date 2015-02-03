@@ -19,10 +19,12 @@ import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
+import com.junbo.identity.spec.v1.model.Organization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -59,7 +61,15 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
+        if (validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors)) {
+            Organization organization = organizationFacade.getOrganization(revision.getOwnerId());
+            if (organization == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            } else if (Status.APPROVED.is(revision.getStatus()) && StringUtils.isEmpty(organization.getFbPayoutOrgId())
+                    && revision.getPrice() != null && !PriceType.FREE.name().equals(revision.getPrice().getPriceType())){
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "publisher has no fbPayoutOrgId"));
+            }
+        }
         validateOffer(revision, errors);
         validateDistributedChannels(revision.getDistributionChannels(), errors);
         if(validateFieldNotNull("price", revision.getPrice(), errors)) {

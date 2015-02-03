@@ -20,7 +20,8 @@ class CheckoutTests(ut.TestBase):
                 "id": user.id
             },
             "isValidated": False,
-            "name": randomstr(10)
+            "name": randomstr(10),
+            "fbPayoutOrgId": randomstr(10)
         })
 
         role = curlJson('POST', ut.test_uri, '/v1/roles', headers = {

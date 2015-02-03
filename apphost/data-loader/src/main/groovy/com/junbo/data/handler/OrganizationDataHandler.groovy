@@ -46,10 +46,12 @@ class OrganizationDataHandler extends BaseDataHandler {
 
         String orgName = organizationData.organizationName
         String ownerUsername = organizationData.organizationOwner
+        String fbPayoutOrgId = organizationData.fbPayoutOrgId
 
         Organization organization = new Organization()
         organization.name = orgName
         organization.isValidated = false
+        organization.fbPayoutOrgId = fbPayoutOrgId
 
         Organization existing = null
         User orgOwnerUser = null

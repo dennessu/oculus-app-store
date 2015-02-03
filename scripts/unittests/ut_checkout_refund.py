@@ -20,6 +20,7 @@ class CheckoutTests(ut.TestBase):
                 "id": user.id
             },
             "isValidated": False,
+            "fbPayoutOrgId": randomstr(10),
             "name": randomstr(10)
         })
 
