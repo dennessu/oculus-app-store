@@ -171,10 +171,6 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
             "on Android and in VR,")
     private PaymentInstrumentId defaultPI;
 
-    @ApiModelProperty(position = 23, required = false, value = "User bio measurement information for getting accurate vr experience.")
-    @JsonProperty("biometrics")
-    private Measure measure;
-
     // This field is just for migration only, please don't use it in any API
     @JsonIgnore
     private Long migratedUserId;
@@ -529,16 +525,6 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     public void setDefaultPI(PaymentInstrumentId defaultPI) {
         this.defaultPI = defaultPI;
         support.setPropertyAssigned("defaultPI");
-    }
-
-    public Measure getMeasure() {
-        return measure;
-    }
-
-    public void setMeasure(Measure measure) {
-        this.measure = measure;
-        support.setPropertyAssigned("measure");
-        support.setPropertyAssigned("biometrics");
     }
 
     /**

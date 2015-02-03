@@ -343,32 +343,6 @@ class UserValidatorImpl implements UserValidator {
             }
         }
 
-        if (newUser.measure != null) {
-            if (newUser.measure.eyeHeight != null && newUser.measure.eyeHeight <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.eyeHeight', 'eyeHeight must be larger than 0').exception()
-            }
-
-            if (newUser.measure.eyeRelief != null && newUser.measure.eyeRelief <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.eyeRelief', 'eyeRelief must be larger than 0').exception()
-            }
-
-            if (newUser.measure.height != null && newUser.measure.height <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.height', 'height must be larger than 0').exception()
-            }
-
-            if (newUser.measure.ipd != null && newUser.measure.ipd <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.IPD', 'IPD must be larger than 0').exception()
-            }
-
-            if (newUser.measure.neckToEyeHorizontal != null && newUser.measure.neckToEyeHorizontal <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.neckToEyeHorizontal', 'neckToEyeHorizontal must be larger than 0').exception()
-            }
-
-            if (newUser.measure.neckToEyeVertical != null && newUser.measure.neckToEyeVertical <= 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('measure.neckToEyeVertical', 'neckToEyeVertical must be larger than 0').exception()
-            }
-        }
-
         return validateUserName(oldUser, newUser).then {
                 return validateLocale(oldUser, newUser)
             }.then {

@@ -778,7 +778,6 @@
                         <value>vat</value>
                         <value>profile</value>
                         <value>defaultPI</value>
-                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>createdTime</value>
@@ -820,7 +819,6 @@
                         <value>vat</value>
                         <value>profile</value>
                         <value>defaultPI</value>
-                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>adminInfo</value>
                         <value>createdBy</value>
@@ -860,7 +858,6 @@
                         <value>vat</value>
                         <value>profile</value>
                         <value>defaultPI</value>
-                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>adminInfo</value>
