@@ -78,7 +78,7 @@ public interface AppClientExceptions {
     AppError userNotAllowed(String userId);
 
     @ErrorDef(httpStatusCode = 400, code = "416", message = "invalid request for provider",
-            reason = "error details: {0}")
-    AppError providerInvaidRequest(String error);
+            reason = "provider {0} with error details: {1}")
+    AppError providerInvalidRequest(String providerName, String error);
 
 }

@@ -14,6 +14,7 @@ import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.provider.PaymentProvider;
@@ -119,9 +120,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                             fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
                             createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
                             return addCreditCard(accessToken, fbAccount, request, tokens);
-                        }else if(!CommonUtil.isNullOrEmpty(fbPaymentAccount.getError())){
-                            LOGGER.error("error response:" + fbPaymentAccount.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPaymentAccount.getError()).exception();
+                        }else if(fbPaymentAccount.getError() != null){
+                            handlePaymentError(fbPaymentAccount.getError());
+                            return Promise.pure(null);
                         }else{
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
@@ -161,14 +162,14 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
-        /*//Test Use
+        //Test Use
         FacebookAddress fbAddress = new FacebookAddress();
         fbAddress.setZip("12345");
         fbAddress.setCountryCode("US");
         fbAddress.setCity("MENLO Park");
         fbAddress.setState("CA");
         fbCreditCard.setBillingAddress(fbAddress);
-        */
+
         return facebookGatewayService.batchAddAndGetCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
@@ -178,9 +179,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
                     request.setAccountNumber(facebookCreditCard.getLast4());
                     return Promise.pure(request);
-                }else if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getError())){
-                    LOGGER.error("error response:" + facebookCreditCard.getError());
-                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCreditCard.getError()).exception();
+                }else if(facebookCreditCard.getError() != null){
+                    handlePaymentError(facebookCreditCard.getError());
+                    return Promise.pure(null);
                 }else{
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknown server error").exception();
                 }
@@ -229,22 +230,23 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                             return facebookGatewayService.getPaymentRisk(accessToken, fbPayment.getId()).then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
                                 @Override
                                 public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
-                                    if(facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
+                                    if (facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())) {
                                         paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
                                         PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
                                         mapping.setExternalId(fbPayment.getId());
                                         mapping.setPaymentId(paymentRequest.getId());
                                         paymentProviderIdMappingRepository.create(mapping).get();
-                                    }else{
+                                    } else {
                                         paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
                                     }
                                     return Promise.pure(paymentRequest);
                                 }
                             });
-                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else if(fbPayment.getError() != null){
+                            handlePaymentError(fbPayment.getError());
+                            return Promise.pure(null);
                         }else{
+                            LOGGER.error("error response:" + fbPayment.getError());
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
                     }
@@ -270,9 +272,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         if(fbPayment.getSuccess()){
                             paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
                             return Promise.pure(paymentRequest);
-                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else if(fbPayment.getError() != null){
+                            handlePaymentError(fbPayment.getError());
+                            return Promise.pure(null);
                         }else{
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
@@ -325,9 +327,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                                     return Promise.pure(paymentRequest);
                                 }
                             });
-                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else if(fbPayment.getError() != null){
+                            handlePaymentError(fbPayment.getError());
+                            return Promise.pure(null);
                         }else{
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
@@ -380,13 +382,13 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookGatewayService.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        if(fbPayment.getSuccess()){
+                        if (fbPayment.getSuccess()) {
                             paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
                             return Promise.pure(paymentRequest);
-                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
-                        }else{
+                        } else if(fbPayment.getError() != null){
+                            handlePaymentError(fbPayment.getError());
+                            return Promise.pure(null);
+                        } else {
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
                     }
@@ -416,9 +418,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         if(fbPayment.getSuccess()){
                             paymentRequest.setStatus(PaymentStatus.REFUNDED.toString());
                             return Promise.pure(paymentRequest);
-                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else if(fbPayment.getError() != null){
+                            handlePaymentError(fbPayment.getError());
+                            return Promise.pure(null);
                         }else{
                             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
                         }
@@ -523,6 +525,17 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return piRepository.createFBPaymentAccountIfNotExist(model);
             }
         });
+    }
+
+    private void handlePaymentError(FacebookCCErrorDetail facebookCCErrorDetail){
+        LOGGER.error("error response:" + facebookCCErrorDetail);
+        if(facebookCCErrorDetail != null){
+            if(facebookCCErrorDetail.getCode().equalsIgnoreCase("API_EC_PAYMENTS_SYSTEM_OR_PROVIDER_ERROR")){
+                throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCCErrorDetail.getMessage()).exception();
+            }else{
+                throw AppClientExceptions.INSTANCE.providerInvalidRequest(PROVIDER_NAME, facebookCCErrorDetail.getMessage()).exception();
+            }
+        }
     }
 
     protected String getFacebookPaymentAccount(final Long userId){

@@ -55,7 +55,7 @@ public class FacebookCreditCard {
     private Boolean isEnabled;
     @JsonProperty("time_created")
     private String timeCreated;
-    private String error;
+    private FacebookCCErrorDetail error;
 
 
     public String getId() {
@@ -175,11 +175,11 @@ public class FacebookCreditCard {
         this.riskFeature = riskFeature;
     }
 
-    public String getError() {
+    public FacebookCCErrorDetail getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(FacebookCCErrorDetail error) {
         this.error = error;
     }
 

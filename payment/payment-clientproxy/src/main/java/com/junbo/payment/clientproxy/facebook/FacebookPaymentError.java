@@ -10,35 +10,20 @@ package com.junbo.payment.clientproxy.facebook;
  * Facebook Payment Error.
  */
 public class FacebookPaymentError {
-    public FacebookPaymentError(Error error){
+    public FacebookPaymentError(){
+
+    }
+
+    public FacebookPaymentError(FacebookCCErrorDetail error){
         this.error = error;
     }
-    public Error getError() {
+    public FacebookCCErrorDetail getError() {
         return error;
     }
 
-    private final Error error;
-
-    static class Error {
-        public Error(String message, String type, int code){
-            this.message = message;
-            this.type = type;
-            this.code = code;
-        }
-        public String getMessage() {
-            return message;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public int getCode() {
-            return code;
-        }
-
-        private final String message;
-        private final String type;
-        private final int code;
+    public void setError(FacebookCCErrorDetail error) {
+        this.error = error;
     }
+
+    private FacebookCCErrorDetail error;
 }
