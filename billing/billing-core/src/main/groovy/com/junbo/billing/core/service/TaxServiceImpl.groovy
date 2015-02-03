@@ -22,7 +22,6 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
-import com.junbo.identity.spec.v1.model.TaxExempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -163,6 +162,8 @@ class TaxServiceImpl implements TaxService {
                         }
                     }
                 }
+                // todo:    czhu:   Need to do this
+                /*
                 TaxExempt taxExempt = user.taxExemption?.get(billingAddress.countryId.value)
                 if (taxExempt != null && taxExempt.isTaxExemptionValidated) {
                     def exemptReason = taxExempt.taxExemptionReason
@@ -174,6 +175,7 @@ class TaxServiceImpl implements TaxService {
                         balance.propertySet.put(PropertyKey.EXEMPT_CERTIFICATE.name(), taxExempt.taxExemptionCertificateNumber)
                     }
                 }
+                */
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)
             }
         }

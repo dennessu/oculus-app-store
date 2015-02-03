@@ -151,8 +151,8 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     @HateoasLink("/payment-instruments?userId={id}")
     private Link paymentInstruments;
 
-    @ApiModelProperty(position = 18, required = false, value = "A mapping between country code and user Tax ememption information, country code must be exist valid country code")
-    private Map<String, TaxExempt> taxExemption;
+    @ApiModelProperty(position = 18, required = false, value = "List of tax exemption profiles for the user")
+    private List<TaxExempt> taxExemption;
 
     @ApiModelProperty(position = 19, required = false, value = "[Client Immutable] A Link to Order-List resource to Search orders of the user.")
     @HateoasLink("/orders?userId={id}")
@@ -492,11 +492,11 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         support.setPropertyAssigned("vat");
     }
 
-    public Map<String, TaxExempt> getTaxExemption() {
+    public List<TaxExempt> getTaxExemption() {
         return taxExemption;
     }
 
-    public void setTaxExemption(Map<String, TaxExempt> taxExemption) {
+    public void setTaxExemption(List<TaxExempt> taxExemption) {
         this.taxExemption = taxExemption;
         support.setPropertyAssigned("taxExemption");
     }

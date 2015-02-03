@@ -722,34 +722,29 @@ class UserValidatorImpl implements UserValidator {
         if (user.taxExemption == null || user.taxExemption.isEmpty()) {
             return Promise.pure(null)
         }
-        Map<String, TaxExempt> taxExemptMap = oldUser?.taxExemption
+        Map<String, TaxExempt> taxExemptMap = oldUser?.taxExemption?.collectEntries { TaxExempt taxExempt ->
+            return [taxExempt.taxExemptionCertificateNumber, taxExempt]
+        }
 
-        return Promise.each(user.taxExemption.entrySet()) { Map.Entry<String, TaxExempt> entry ->
-            if (StringUtils.isEmpty(entry.key) ||!ValidatorUtil.isValidCountryCode(entry.key)) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.key').exception()
-            }
-
-            if (entry.value == null) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.value').exception()
-            }
-            return countryService.get(new CountryId(entry.getKey())).then { Country country ->
+        return Promise.each(user.taxExemption) { TaxExempt entry ->
+            return countryService.get(new CountryId(entry.getTaxExemptionCountry())).then { Country country ->
                 if (country == null) {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.key').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.taxExemptionCountry').exception()
                 }
 
-                TaxExempt existingTaxExempt = taxExemptMap?.get(entry.key)
-                if (existingTaxExempt != null && existingTaxExempt.equals(entry.value)) {
+                TaxExempt existingTaxExempt = taxExemptMap?.get(entry.taxExemptionCertificateNumber)
+                if (existingTaxExempt != null && existingTaxExempt.equals(entry)) {
                     return Promise.pure(null)
                 }
 
-                if (existingTaxExempt?.isTaxExemptionValidated != entry.value.isTaxExemptionValidated) {
+                if (existingTaxExempt?.isTaxExemptionValidated != entry.isTaxExemptionValidated) {
                     if (!AuthorizeContext.hasScopes('csr')) {
                         throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.value', 'isTaxExemptionValidated can only be changed by CSR').exception()
                     }
                 }
 
-                Date startDate = existingTaxExempt?.taxExemptionStartDate
-                Date endDate = existingTaxExempt?.taxExemptionEndDate
+                Date startDate = entry?.taxExemptionStartDate
+                Date endDate = entry?.taxExemptionEndDate
                 if (startDate != null && endDate != null && startDate.after(endDate)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.taxExemptionStartDate', 'startDate should be earlier than endDate').exception()
                 }

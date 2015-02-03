@@ -14,7 +14,6 @@ import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import com.junbo.test.common.libs.IdConverter;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,9 +23,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author dw
@@ -687,9 +687,11 @@ public class postUser {
         User user = IdentityModel.DefaultUser();
         TaxExempt taxExemptUS = IdentityModel.DefaultUserTaxExempt();
         TaxExempt taxExemptCN = IdentityModel.DefaultUserTaxExempt();
-        Map<String, TaxExempt> invalidTaxExempt = new HashMap<>();
-        invalidTaxExempt.put("XX", taxExemptCN);
-        invalidTaxExempt.put("US", taxExemptUS);
+        List<TaxExempt> invalidTaxExempt = new ArrayList<>();
+        taxExemptCN.setTaxExemptionCountry("XX");
+        taxExemptUS.setTaxExemptionCountry("US");
+        invalidTaxExempt.add(taxExemptCN);
+        invalidTaxExempt.add(taxExemptUS);
         user.setTaxExemption(invalidTaxExempt);
         Boolean exception = false;
         try {
@@ -699,33 +701,36 @@ public class postUser {
         }
         assert exception;
 
-        Map<String, TaxExempt> validTaxExempt = new HashMap<>();
-        validTaxExempt.put("CN", taxExemptCN);
-        validTaxExempt.put("US", taxExemptUS);
+        List<TaxExempt> validTaxExempt = new ArrayList<>();
+        taxExemptCN.setTaxExemptionCountry("CN");
+        taxExemptUS.setTaxExemptionCountry("US");
+        validTaxExempt.add(taxExemptCN);
+        validTaxExempt.add(taxExemptUS);
         user.setTaxExemption(validTaxExempt);
         User posted = Identity.UserPostDefault(user);
 
         exception = false;
-        Map<String, TaxExempt> taxExemptMap = posted.getTaxExemption();
+        List<TaxExempt> taxExemptMap = posted.getTaxExemption();
         posted.setTaxExemption(invalidTaxExempt);
         try {
             Identity.UserPut(posted);
         } catch (Exception e) {
             exception = true;
         }
-        assert exception;
+        assert !exception;
 
         exception = false;
-        taxExemptMap.get("CN").setIsTaxExemptionValidated(true);
+        taxExemptMap.get(0).setIsTaxExemptionValidated(true);
         posted.setTaxExemption(taxExemptMap);
         try {
-            Identity.UserPut(posted);
+            posted = Identity.UserPut(posted);
         } catch (Exception e) {
             exception = true;
         }
         assert exception;
 
-        taxExemptMap.get("CN").setIsTaxExemptionValidated(null);
+        posted = Identity.UserGetByUserId(posted.getId());
+        taxExemptMap.get(0).setIsTaxExemptionValidated(null);
         User put = Identity.UserPut(posted);
     }
 

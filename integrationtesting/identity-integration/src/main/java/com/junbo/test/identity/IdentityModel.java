@@ -161,14 +161,6 @@ public class IdentityModel {
     public static User DefaultUser() throws Exception {
         User user = new User();
         user.setIsAnonymous(true);
-        Measure measure = new Measure();
-        measure.setEyeHeight(Math.abs(RandomHelper.randomDouble()));
-        measure.setEyeRelief(Math.abs(RandomHelper.randomDouble()));
-        measure.setHeight(Math.abs(RandomHelper.randomDouble()));
-        measure.setIpd(Math.abs(RandomHelper.randomDouble()));
-        measure.setNeckToEyeHorizontal(Math.abs(RandomHelper.randomDouble()));
-        measure.setNeckToEyeVertical(Math.abs(RandomHelper.randomDouble()));
-        user.setMeasure(measure);
         return user;
     }
 
