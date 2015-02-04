@@ -595,12 +595,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
-        return commitPurchase(uid, purchaseToken, 200);
+        return commitPurchase(uid, purchaseToken, null, 200);
     }
 
-    public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken, int expectedResponseCode) throws Exception {
+    public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken, String pin) throws Exception {
+        return commitPurchase(uid, purchaseToken, pin, 200);
+    }
+
+    public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken, String pin, int expectedResponseCode) throws Exception {
         CommitPurchaseRequest commitPurchaseRequest = new CommitPurchaseRequest();
         commitPurchaseRequest.setPurchaseToken(purchaseToken);
+        if (!StringUtils.isEmpty(pin)) {
+            commitPurchaseRequest.setChallengeAnswer(new ChallengeAnswer());
+            commitPurchaseRequest.getChallengeAnswer().setType("PIN");
+            commitPurchaseRequest.getChallengeAnswer().setPin(pin);
+        }
         //commitPurchaseRequest.setChallengeSolution();
         return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }

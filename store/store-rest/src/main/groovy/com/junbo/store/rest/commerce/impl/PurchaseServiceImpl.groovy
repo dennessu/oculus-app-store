@@ -383,13 +383,7 @@ class PurchaseServiceImpl implements PurchaseService {
         }
     }
 
-
     private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request, ApiContext apiContext) {
-        return challengeHelper.checkPurchasePINChallenge(userId, request?.challengeAnswer).then { Challenge challenge ->
-            if (challenge != null) {
-                return Promise.pure(challenge)
-            }
-            return challengeHelper.checkTosChallenge(userId, tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
-        }
+        return challengeHelper.checkTosChallenge(userId, tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
     }
 }
