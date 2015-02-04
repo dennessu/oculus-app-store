@@ -135,7 +135,7 @@ class ChallengeHelperImpl implements ChallengeHelper {
                     return Promise.pure(challenge)
                 }
 
-                if (results.items.get(0).getCreatedTime().before(DateUtils.addSeconds(new Date(), pinCodeValidateDuration))) {
+                if (results.items.get(0).getCreatedTime().before(DateUtils.addSeconds(new Date(), -pinCodeValidateDuration))) {
                     return Promise.pure(challenge)
                 }
 
