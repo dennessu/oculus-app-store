@@ -327,12 +327,8 @@ class SabrixFacadeImpl implements TaxFacade {
         def exemptReason = new ExemptReason()
         switch (country) {
             case 'US':
+                exemptReason.country = reason
                 exemptReason.state = reason
-                exemptReason.county = reason
-                exemptReason.city = reason
-                exemptReason.district = reason
-                exemptReason.postcode = reason
-                exemptReason.geocode = reason
                 break
             case 'CA':
                 exemptReason.country = reason
@@ -349,12 +345,8 @@ class SabrixFacadeImpl implements TaxFacade {
         def exemptCertificate = new ExemptCertificate()
         switch (country) {
             case 'US':
+                exemptCertificate.country = certificate
                 exemptCertificate.state = certificate
-                exemptCertificate.county = certificate
-                exemptCertificate.city = certificate
-                exemptCertificate.district = certificate
-                exemptCertificate.postcode = certificate
-                exemptCertificate.geocode = certificate
                 break
             case 'CA':
                 exemptCertificate.country = certificate
