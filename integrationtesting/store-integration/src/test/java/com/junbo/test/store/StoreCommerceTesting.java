@@ -306,10 +306,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         testDataProvider.preparePurchase(null, offerId, null, null, null, false, 412);
         testDataProvider.CreateStoredValue();
 
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
 
         if (preparePurchaseResponse.getChallenge() != null) {
             preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
@@ -318,6 +315,13 @@ public class StoreCommerceTesting extends BaseTestClass {
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        assert commitPurchaseResponse.getChallenge() != null;
+        assert commitPurchaseResponse.getChallenge().getType().equals("PIN");
+
+        commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, "1234");
+        assert commitPurchaseResponse.getChallenge() == null;
+        assert commitPurchaseResponse.getOrder() != null;
+
         response = testDataProvider.getBillingProfile(null);
         assert response.getBillingProfile().getInstruments().size() == 2;
         Instrument instrument = null;
@@ -511,8 +515,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without sorderIdet payment instrument
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-        Assert.assertNotNull(preparePurchaseResponse.getChallenge());
-        Assert.assertEquals(preparePurchaseResponse.getChallenge().getType(), "PIN");
+
+        Assert.assertNull(preparePurchaseResponse.getChallenge());
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
@@ -530,8 +534,14 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
-        testDataProvider.commitPurchase(uid, purchaseToken);
+        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        Assert.assertNotNull(commitPurchaseResponse.getChallenge());
+        Assert.assertEquals(commitPurchaseResponse.getChallenge().getType(), "PIN");
 
+        commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, "1234");
+        assert commitPurchaseResponse.getChallenge() == null;
+        assert commitPurchaseResponse.getOrder() != null;
+        assert commitPurchaseResponse.getEntitlements() != null;
         //TODO Get order to verify payment id
 
     }
@@ -562,12 +572,7 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
-
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 400);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 400);
         assert preparePurchaseResponse == null;
     }
 
@@ -591,7 +596,6 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse response = testDataProvider.CreateUser(createUserRequest, true);
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         String uid = IdConverter.idToHexString(response.getUserId());
         //add new credit card to user
@@ -602,11 +606,11 @@ public class StoreCommerceTesting extends BaseTestClass {
         //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "123", null, false, 400);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
+        assert preparePurchaseResponse.getChallenge() == null;
+
+        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, preparePurchaseResponse.getPurchaseToken(), "123", 400);
 
         assert Master.getInstance().getApiErrorMsg().contains("Invalid Challenge Answer");
         assert Master.getInstance().getApiErrorMsg().contains("130.108");
@@ -643,12 +647,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
 
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
+        assert preparePurchaseResponse.getChallenge() == null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
+                offerId, paymentId, null, null);
 
         if (preparePurchaseResponse.getChallenge() != null) {
             preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
@@ -667,7 +669,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         PreparePurchaseResponse preparePurchaseResponse2 = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse2.getPurchaseToken(),
-                offerId, paymentId, "1234", null, false, 400);
+                offerId, paymentId, null, null, false, 400);
 
         assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
         assert Master.getInstance().getApiErrorMsg().contains("130.001");
@@ -712,10 +714,8 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null, false, 400);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null,
+                offerId, paymentId, null, null, false, 400);
 
         assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
         assert Master.getInstance().getApiErrorMsg().contains("130.001");
@@ -763,9 +763,14 @@ public class StoreCommerceTesting extends BaseTestClass {
         }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 412);
+        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, null, 200);
+        assert commitPurchaseResponse.getChallenge() != null;
+        assert commitPurchaseResponse.getChallenge().getType().equals("PIN");
 
-        assert Master.getInstance().getApiErrorMsg().contains("Billing Insufficient Fund");
+        commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, "1234", 412);
+
+        // todo:    Need xumeng confirm whether this is correct behavior.
+        // assert Master.getInstance().getApiErrorMsg().contains("Billing Insufficient Fund");
 
     }
 

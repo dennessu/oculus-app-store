@@ -6,7 +6,9 @@
 
 package com.junbo.payment.clientproxy.facebook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.payment.common.CommonUtil;
 
 import javax.ws.rs.QueryParam;
 import java.math.BigDecimal;
@@ -21,8 +23,8 @@ public class FacebookPayment {
     @JsonProperty("request_id")
     private String requestId;
     @QueryParam("credential_id")
-    @JsonProperty
-    private String credential;
+    @JsonProperty("credential_id")
+    private String credentialId;
     @QueryParam("amount")
     private BigDecimal amount;
     @QueryParam("currency")
@@ -49,7 +51,9 @@ public class FacebookPayment {
     private Boolean success;
     private FacebookCCErrorDetail error;
     @JsonProperty("payment_account")
+    @JsonIgnore
     private String paymentAccountId;
+    @JsonIgnore
     private String application;
     @JsonProperty("time_created")
     private String createdTime;
@@ -63,12 +67,12 @@ public class FacebookPayment {
         this.requestId = requestId;
     }
 
-    public String getCredential() {
-        return credential;
+    public String getCredentialId() {
+        return credentialId;
     }
 
-    public void setCredential(String credential) {
-        this.credential = credential;
+    public void setCredentialId(String credentialId) {
+        this.credentialId = credentialId;
     }
 
     public BigDecimal getAmount() {
@@ -189,6 +193,31 @@ public class FacebookPayment {
 
     public void setRiskFeature(FacebookRiskFeature riskFeature) {
         this.riskFeature = riskFeature;
+    }
+
+
+    public String toBatchString(){
+        String concat = "&";
+        StringBuilder sb = new StringBuilder();
+        sb.append("credential_id="+ this.credentialId + concat);
+        sb.append("action=" + this.action.toString() + concat);
+        sb.append("amount=" + this.amount + concat);
+        sb.append("currency=" + this.currency + concat);
+        sb.append("payment_type=" + this.itemType + concat);
+        if(!CommonUtil.isNullOrEmpty(this.requestId)){
+            sb.append(concat + "request_id=" + this.requestId);
+        }
+        if(!CommonUtil.isNullOrEmpty(this.getPayerIp())){
+            sb.append(concat + "ip_address=" + this.getPayerIp());
+        }
+        if(this.getItemDescription() != null){
+            sb.append(concat + "payment_description=" + this.itemDescription.toBatchString());
+        }
+        if(riskFeature != null){
+            sb.append(concat + "risk_features=" + this.riskFeature.toBatchString());
+        }
+
+        return sb.toString();
     }
 
 }

@@ -1,16 +1,17 @@
 package com.junbo.store.rest.challenge.impl
+
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
-import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.Constants
 import com.junbo.store.rest.utils.DataConverter
@@ -18,15 +19,15 @@ import com.junbo.store.rest.utils.IdentityUtils
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
-import com.junbo.store.spec.model.token.Token
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
-import org.apache.commons.lang3.time.DateUtils
+import org.apache.commons.lang.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * The ChallengeHelperImpl class.
  */
@@ -42,9 +43,6 @@ class ChallengeHelperImpl implements ChallengeHelper {
 
     @Value('${store.tos.challenge.enabled}')
     private boolean tosChallengeEnabled
-
-    @Resource(name = 'cloudantTokenPinRepository')
-    private TokenRepository tokenRepository
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
@@ -128,16 +126,20 @@ class ChallengeHelperImpl implements ChallengeHelper {
 
         if (challengeAnswer?.type != Constants.ChallengeType.PIN || challengeAnswer?.pin == null) {
             def challenge = new Challenge(type:  Constants.ChallengeType.PIN)
-            return tokenRepository.searchByUserIdAndType(userId, Constants.ChallengeType.PIN, 1, 0).then { List<Token> tokenList ->
-                if (CollectionUtils.isEmpty(tokenList)) {
+            return resourceContainer.userCredentialVerifyAttemptResource.list(new UserCredentialAttemptListOptions(
+                  userId: userId,
+                  type: Constants.CredentialType.PIN,
+                  limit: 1
+            )).then { Results<UserCredentialVerifyAttempt> results ->
+                if (CollectionUtils.isEmpty(results.items)) {
                     return Promise.pure(challenge)
                 }
 
-                Token validToken = tokenList.find { Token token ->
-                    return token.expireTime.after(new Date())
+                if (results.items.get(0).getCreatedTime().before(DateUtils.addSeconds(new Date(), -pinCodeValidateDuration))) {
+                    return Promise.pure(challenge)
                 }
 
-                return Promise.pure(validToken == null ? challenge : null)
+                return Promise.pure(null)
             }
         } else {
             return resourceContainer.userCredentialVerifyAttemptResource.create(
@@ -161,14 +163,7 @@ class ChallengeHelperImpl implements ChallengeHelper {
 
                 appErrorUtils.throwUnknownError('purchase', t)
             }.then {
-                Token token = new Token(
-                        userId: userId,
-                        type: Constants.ChallengeType.PIN,
-                        expireTime: DateUtils.addSeconds(new Date(), pinCodeValidateDuration)
-                )
-                return tokenRepository.create(token).then {
-                    return Promise.pure(null)
-                }
+                return Promise.pure(null)
             }
         }
     }

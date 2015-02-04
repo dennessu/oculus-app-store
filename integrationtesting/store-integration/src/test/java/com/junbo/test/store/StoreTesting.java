@@ -87,15 +87,12 @@ public class StoreTesting extends BaseTestClass {
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
         String offerId = testDataProvider.getOfferIdByName(offer_inApp_consumable);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, true, 200);
-
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
+        assert preparePurchaseResponse.getChallenge() == null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, "1234", null, true, 200);
 
         if (preparePurchaseResponse.getChallenge() != null) {
-            assert preparePurchaseResponse.getChallenge() != null;
             assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
             assert preparePurchaseResponse.getChallenge().getTos() != null;
 
@@ -109,6 +106,10 @@ public class StoreTesting extends BaseTestClass {
 
         //IAPParam iapParam = testDataProvider.getIapParam(offerId);
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        assert commitPurchaseResponse.getChallenge() != null;
+        assert commitPurchaseResponse.getChallenge().getType().equals("PIN");
+
+        commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, "1234");
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         LibraryResponse libraryResponse = testDataProvider.getIapLibrary();
@@ -209,20 +210,13 @@ public class StoreTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
-
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
-
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
+        assert preparePurchaseResponse.getChallenge() == null;
         for (int i = 0; i < 5; i++) {
-            com.junbo.common.error.Error appError = testDataProvider.preparePurchaseWithException(preparePurchaseResponse.getPurchaseToken(),
-                    offerId, paymentId, "5678", null, false, 400, "130.108");
-            assert appError != null;
+            testDataProvider.commitPurchase(uid, preparePurchaseResponse.getPurchaseToken(), "5678", 400);
         }
 
-        com.junbo.common.error.Error appError = testDataProvider.preparePurchaseWithException(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "5678", null, false, 400, "130.108");
-        assert appError != null;
+        testDataProvider.commitPurchase(uid, preparePurchaseResponse.getPurchaseToken(), "5678", 400);
     }
 
     @Property(
@@ -490,13 +484,9 @@ public class StoreTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null, true, 200);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, true, 200);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null, true, 200);
-
+        assert preparePurchaseResponse.getChallenge() == null;
         if (preparePurchaseResponse.getChallenge() != null) {
             assert preparePurchaseResponse.getChallenge().getTos() != null;
 
@@ -510,6 +500,9 @@ public class StoreTesting extends BaseTestClass {
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        assert commitPurchaseResponse.getChallenge() != null;
+        assert commitPurchaseResponse.getChallenge().getType().equals("PIN");
+        commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, "1234");
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
@@ -633,5 +626,41 @@ public class StoreTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store get user Profile",
+            component =  Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test userProfi pin set/notSet",
+            steps = {
+                    "1. Create user",
+                    "2. No pin is set, check user-profile out",
+                    "3. set pin, check user-profile out"
+            }
+    )
+    @Test
+    public void testStorePinSetReturn() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
+        createUserRequest.setPin(null);
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equals(userName);
+        assert authTokenResponse.getAccessToken() != null;
 
+        UserProfileGetResponse getResponse = testDataProvider.getUserProfile();
+        assert getResponse != null;
+        assert getResponse.getUserProfile() != null;
+        assert getResponse.getUserProfile().getPin().equals("");
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
+        assert authTokenResponse.getAccessToken() != null;
+
+        getResponse = testDataProvider.getUserProfile();
+        assert getResponse != null;
+        assert getResponse.getUserProfile() != null;
+        assert getResponse.getUserProfile().getPin().equals("****");
+    }
 }

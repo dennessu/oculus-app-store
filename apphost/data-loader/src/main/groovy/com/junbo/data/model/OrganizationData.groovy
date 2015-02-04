@@ -6,4 +6,5 @@ package com.junbo.data.model
 class OrganizationData {
     String organizationName
     String organizationOwner
+    String fbPayoutOrgId
 }

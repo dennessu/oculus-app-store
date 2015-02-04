@@ -116,6 +116,8 @@ class SubledgerCreateReverseItemAction implements Action, InitializingBean{
                                     reverseSubledgerItem.orderItem, reverseSubledgerItem.totalQuantity)
                         }
                     }
+
+                    return Promise.pure(null)
                 }
             }
         }.syncThen {

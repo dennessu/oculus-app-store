@@ -21,7 +21,7 @@ public class FacebookPaymentAccount {
     private String payerId;
     @QueryParam("payer_email")
     @JsonProperty("payer_email")
-    private String payerEmail;
+    private FacebookEmail payerEmail;
     @QueryParam("payer_address")
     @JsonProperty("payer_address")
     private FacebookAddress payerAddress;
@@ -54,11 +54,11 @@ public class FacebookPaymentAccount {
         this.payerId = payerId;
     }
 
-    public String getPayerEmail() {
+    public FacebookEmail getPayerEmail() {
         return payerEmail;
     }
 
-    public void setPayerEmail(String payerEmail) {
+    public void setPayerEmail(FacebookEmail payerEmail) {
         this.payerEmail = payerEmail;
     }
 

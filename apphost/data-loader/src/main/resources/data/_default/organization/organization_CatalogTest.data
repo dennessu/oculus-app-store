@@ -1,4 +1,5 @@
 {
     "organizationName": "OrganizationCatalogTest",
-    "organizationOwner": "testUserCatalog"
+    "organizationOwner": "testUserCatalog",
+    "fbPayoutOrgId": "test"
 }

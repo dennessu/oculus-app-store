@@ -20,6 +20,7 @@ import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.TaxExempt
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
 import com.junbo.langur.core.promise.Promise
@@ -162,9 +163,8 @@ class TaxServiceImpl implements TaxService {
                         }
                     }
                 }
-                // todo:    czhu:   Need to do this
-                /*
-                TaxExempt taxExempt = user.taxExemption?.get(billingAddress.countryId.value)
+
+                TaxExempt taxExempt = getTaxExempt(user, billingAddress)
                 if (taxExempt != null && taxExempt.isTaxExemptionValidated) {
                     def exemptReason = taxExempt.taxExemptionReason
                     def exemptCertificate = taxExempt.taxExemptionCertificateNumber
@@ -175,9 +175,22 @@ class TaxServiceImpl implements TaxService {
                         balance.propertySet.put(PropertyKey.EXEMPT_CERTIFICATE.name(), taxExempt.taxExemptionCertificateNumber)
                     }
                 }
-                */
+
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)
             }
         }
+    }
+
+    TaxExempt getTaxExempt(User user, Address billingAddress) {
+        if (user.taxExemption == null || user.taxExemption.size() == 0) {
+            return null
+        }
+        def taxExempt = user.taxExemption.find { TaxExempt exempt ->
+            billingAddress.countryId.value == exempt.taxExemptionCountry && (
+                exempt.taxExemptionSubcountry == 'ALL' || exempt.taxExemptionSubcountry == billingAddress.subCountry
+            )
+        }
+
+        return taxExempt
     }
 }

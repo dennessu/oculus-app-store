@@ -59,6 +59,11 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
         return facebookPaymentApi.addPayment(accessToken, paymentAccountId, fbPayment);
     }
 
+    @Override
+    public Promise<FacebookPayment> getPayment(String accessToken, String paymentId) {
+        return facebookPaymentApi.getPaymentDetail(accessToken, paymentId);
+    }
+
     public Promise<FacebookPayment> modifyPayment(String accessToken, String paymentId, FacebookPayment fbPayment) {
         return facebookPaymentApi.modifyPayment(accessToken, paymentId, fbPayment);
     }
@@ -108,14 +113,55 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
     @Override
     public Promise<FacebookRiskPayment> getPaymentRisk(String accessToken, String paymentId) {
         //TODO: enable this when Facebook API is ready
-        //return facebookPaymentApi.getPaymentField(accessToken, paymentId);
-        return Promise.pure(null);
+        return facebookPaymentApi.getPaymentField(accessToken, paymentId);
+        //return Promise.pure(null);
         /*
         FacebookRiskPayment result = new FacebookRiskPayment();
         //result.setFraud_status("pending");
         result.setFraud_status("blocked_after_pend");
         return Promise.pure(result);
         */
+    }
+
+    @Override
+    public Promise<FacebookPayment> batchAddAndGetPayment(String accessToken, String paymentAccountId, FacebookPayment fbPayment) {
+        FacebookBatch addPayment = new FacebookBatch();
+        addPayment.setName("addPayment");
+        addPayment.setMethod("POST");
+        addPayment.setRelativeUrl(paymentAccountId + "/payments");
+        addPayment.setBody(fbPayment.toBatchString());
+        FacebookBatch getPayment = new FacebookBatch();
+        getPayment.setMethod("GET");
+        getPayment.setRelativeUrl("{result=addPayment:$.id}");
+        getPayment.setOmitResponse(false);
+        String addCardJson = addPayment.toString();
+        String getCardJson = getPayment.toString();
+        return facebookBatchApi.batchInvoke(accessToken, "[" + addCardJson + "," + getCardJson + "]").then(new Promise.Func<String, Promise<FacebookPayment>>() {
+            @Override
+            public Promise<FacebookPayment> apply(String s) {
+                FacebookCCBatchResponse[] results = CommonUtil.parseJsonIgnoreUnknown(s, FacebookCCBatchResponse[].class);
+                FacebookCCBatchResponse getResult = null;
+                if(results != null && results.length > 1 ){
+                    getResult = (results[0] == null ? results[1] : results[0]);
+                }
+                if(getResult == null){
+                    throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", s).exception();
+                }
+                if(getResult.getCode() != 200){
+                    FacebookCCBatchError fbBatchError = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCCBatchError.class);
+                    if(fbBatchError == null){
+                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
+                    }
+                    if(getResult.getCode() == 400){
+                        throw AppClientExceptions.INSTANCE.providerInvalidRequest("Facebook", fbBatchError.getError().getMessage()).exception();
+                    }else{
+                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
+                    }
+                }
+                FacebookPayment payment = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookPayment.class);
+                return Promise.pure(payment);
+            }
+        });
     }
 
     public void setFacebookOauthApi(FacebookOauthApi facebookOauthApi) {

@@ -146,6 +146,7 @@ public abstract class BaseTestClass {
 
     @BeforeMethod(alwaysRun = true)
     public void initialEnv() {
+        Master.getInstance().initializeMaster();
         if (ConfigHelper.getSetting("endpoint.random") == null) {
             return;
         } else if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {

@@ -1,0 +1,17 @@
+{
+  "client_id" : "event-horizon",
+  "client_secret" : "C2DEA2347AACACAA715FBE9B401CDB30#EF9B69B352322696549657535DAE95A1DA0801609ED324D1D519D23C3BD204B66423A3DC5D4DD9F899ECBC5995B25C11",
+  "client_name" : "event-horizon",
+
+  "redirect_uris" : [],
+  "logout_redirect_uris" : [],
+
+  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "commerce", "openid", "offline", "organization.group.admin" ],
+  "default_scopes" : ["everyone", "identity", "identity.pii", "catalog", "commerce", "openid", "offline", "organization.group.admin" ],
+
+  "response_types" : [],
+  "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ],
+
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false
+}

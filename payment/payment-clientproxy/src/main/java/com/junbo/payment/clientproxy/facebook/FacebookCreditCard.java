@@ -35,9 +35,9 @@ public class FacebookCreditCard {
     private FacebookAddress billingAddress;
     @QueryParam("payer_email")
     @JsonProperty("payer_email")
-    private String payerEmail;
-    @QueryParam("payer_ip")
-    @JsonProperty("payer_ip")
+    private FacebookEmail payerEmail;
+    @QueryParam("ip_address")
+    @JsonProperty("ip_address")
     private String payerIp;
     @QueryParam("risk_features")
     @JsonProperty("risk_features")
@@ -49,6 +49,8 @@ public class FacebookCreditCard {
     private String last4;
     @JsonProperty("first6")
     private String first6;
+    @JsonProperty("card_type")
+    private String cardType;
     @JsonProperty("last_payment_time")
     private String lastPaymentTime;
     @JsonProperty("is_enabled")
@@ -104,10 +106,10 @@ public class FacebookCreditCard {
     }
 
     @JsonIgnore
-    public String getPayerEmail() {
+    public FacebookEmail getPayerEmail() {
         return payerEmail;
     }
-    public void setPayerEmail(String payerEmail) {
+    public void setPayerEmail(FacebookEmail payerEmail) {
         this.payerEmail = payerEmail;
     }
 
@@ -141,6 +143,14 @@ public class FacebookCreditCard {
     @JsonIgnore
     public void setFirst6(String first6) {
         this.first6 = first6;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     public String getLastPaymentTime() {
@@ -197,6 +207,12 @@ public class FacebookCreditCard {
         }
         if(riskFeature != null){
             sb.append(concat + "risk_features=" + this.riskFeature.toBatchString());
+        }
+        if(this.payerEmail != null){
+            sb.append(concat + "payer_email=" + "{'address': '" + this.payerEmail.getAddress() + "'}");
+        }
+        if(!CommonUtil.isNullOrEmpty(this.getPayerIp())){
+            sb.append(concat + "ip_address=" + this.getPayerIp());
         }
         return sb.toString();
     }

@@ -88,6 +88,11 @@ public class MockFacebookPaymentApiImpl implements FacebookPaymentApi {
     }
 
     @Override
+    public Promise<FacebookPayment> getPaymentDetail(String accessToken, String paymentId) {
+        return facebookPaymentApi.getPaymentDetail(accessToken, paymentId);
+    }
+
+    @Override
     public Promise<FacebookRiskPayment> getPaymentField(String accessToken, String paymentId) {
         return Promise.pure(null);
     }

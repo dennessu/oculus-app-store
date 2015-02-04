@@ -36,6 +36,10 @@ public class FacebookItemDescription {
         }
     }
 
+    public String toBatchString() {
+        return this.toString().replace("\"", "'");
+    }
+
     public FacebookPaymentEntity getEntity() {
         return entity;
     }

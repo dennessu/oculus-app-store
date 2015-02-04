@@ -20,6 +20,7 @@ class CheckoutTests(ut.TestBase):
                 "id": user.id
             },
             "isValidated": False,
+            "fbPayoutOrgId": randomstr(10),
             "name": randomstr(10)
         })
 
@@ -129,7 +130,7 @@ class CheckoutTests(ut.TestBase):
         }
 
     def testCheckoutError(self):
-        user = oauth.testRegister('identity commerce commerce.checkout')
+        user = oauth.testRegister('identity identity.pii commerce commerce.checkout', True)
         devinfo = self.testDeveloper()
 
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
@@ -207,6 +208,12 @@ class CheckoutTests(ut.TestBase):
             "billingAddress": address['self'],
             "typeSpecificDetails":{
                 "expireDate":"2025-11"
+            },
+            "riskFeature":{
+                "timeSinceUserAccountCreatedInDays":"10",
+                "sourceDatr":"test_datr",
+                "sourceCountry":"US",
+                "currencyPurchasing":"USD"
             },
             "futureExpansion": { }
         })

@@ -7,7 +7,6 @@
 package com.junbo.payment.core.provider.facebook;
 
 import com.junbo.common.error.AppCommonErrors;
-import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.FacebookGatewayService;
@@ -17,7 +16,6 @@ import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
-import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.db.repo.PaymentProviderIdMappingRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
@@ -34,14 +32,16 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Facebook Payment Service Impl.
  */
 public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookCCProviderServiceImpl.class);
+    private static final String Local_IP = "127.0.0.1";
     private static final String PROVIDER_NAME = "FacebookCC";
     private static final String TEST_ENV = "test";
     private static final String FB_VERIFY_TOKEN = "hub.verify_token";
@@ -107,6 +107,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
+                fbPaymentAccount.setPayerEmail(new FacebookEmail(request.getUserInfo().getEmail()));
                 if(TEST_ENV.equalsIgnoreCase(env)){
                     fbPaymentAccount.setEnv(TEST_ENV);
                 }
@@ -139,6 +140,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         fbCreditCard.setCardHolderName(request.getAccountName());
         fbCreditCard.setExpiryMonth(tokens[1]);
         fbCreditCard.setExpiryYear(tokens[0]);
+        fbCreditCard.setPayerEmail(new FacebookEmail(request.getUserInfo().getEmail()));
+        String ipAddress = request.getIpAddress();
+        fbCreditCard.setPayerIp(CommonUtil.isNullOrEmpty(ipAddress)? Local_IP : ipAddress);
         //Risk Feature
         if(request.getRiskFeature() != null){
             FacebookRiskFeature fbRiskFeature = new FacebookRiskFeature();
@@ -178,6 +182,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
                     request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
                     request.setAccountNumber(facebookCreditCard.getLast4());
+                    request.getTypeSpecificDetails().setCreditCardType(facebookCreditCard.getCardType());
                     return Promise.pure(request);
                 }else if(facebookCreditCard.getError() != null){
                     handlePaymentError(facebookCreditCard.getError());
@@ -222,37 +227,53 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPayment fbPayment = getFacebookPaymentRequest(paymentRequest, piToken, FacebookPaymentActionType.authorize);
                 final String accessToken = s;
-                return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.batchAddAndGetPayment(accessToken, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(final FacebookPayment fbPayment) {
-                        if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
-                            paymentRequest.setExternalToken(fbPayment.getId());
-                            return facebookGatewayService.getPaymentRisk(accessToken, fbPayment.getId()).then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
-                                @Override
-                                public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
-                                    if (facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())) {
-                                        paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
-                                        PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
-                                        mapping.setExternalId(fbPayment.getId());
-                                        mapping.setPaymentId(paymentRequest.getId());
-                                        paymentProviderIdMappingRepository.create(mapping).get();
-                                    } else {
-                                        paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
-                                    }
-                                    return Promise.pure(paymentRequest);
-                                }
-                            });
-                        }else if(fbPayment.getError() != null){
-                            handlePaymentError(fbPayment.getError());
-                            return Promise.pure(null);
-                        }else{
-                            LOGGER.error("error response:" + fbPayment.getError());
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
-                        }
+                        return handleFacebookPayment(fbPayment, paymentRequest, FacebookPaymentActionType.authorize);
                     }
                 });
             }
         });
+    }
+
+    private Promise<PaymentTransaction> handleFacebookPayment(FacebookPayment fbPayment, PaymentTransaction paymentRequest, FacebookPaymentActionType actionType){
+        if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
+            paymentRequest.setExternalToken(fbPayment.getId());
+            //TODO: we could remove the mapping now as the request_id would be fetched from the getPaymentDetail()
+            /*
+            PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
+            mapping.setExternalId(fbPayment.getId());
+            mapping.setPaymentId(paymentRequest.getId());
+            paymentProviderIdMappingRepository.create(mapping).get();
+            */
+            switch (actionType){
+                case authorize:
+                    paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
+                    break;
+                case charge:
+                    paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                    break;
+                default:
+                    throw AppServerExceptions.INSTANCE.serviceNotImplemented(actionType.toString()).exception();
+            }
+            //if risk pending the set the payment status as pending
+            if(fbPayment.getActions() != null){
+                for(FacebookPaymentAction action : fbPayment.getActions()){
+                    if(!CommonUtil.isNullOrEmpty(action.getRequestId()) && action.getRisk() != null && action.getRisk().getFraudStatus().equals(FacebookFraudStatus.pending)){
+                        paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
+                        break;
+                    }
+                }
+            }
+            return Promise.pure(paymentRequest);
+        }else if(fbPayment.getError() != null){
+            handlePaymentError(fbPayment.getError());
+            return Promise.pure(null);
+        }else{
+            LOGGER.error("error response:" + fbPayment.getError());
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+        }
     }
 
     @Override
@@ -307,32 +328,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPayment fbPayment = getFacebookPaymentRequest(paymentRequest, piToken, FacebookPaymentActionType.charge);
                 final String accessToken = s;
-                return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.batchAddAndGetPayment(accessToken, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(final FacebookPayment fbPayment) {
-                        if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
-                            paymentRequest.setExternalToken(fbPayment.getId());
-                            return facebookGatewayService.getPaymentRisk(accessToken, fbPayment.getId()).then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
-                                @Override
-                                public Promise<PaymentTransaction> apply(FacebookRiskPayment facebookRiskPayment) {
-                                    if (facebookRiskPayment != null && FB_RISK_PENDING.equalsIgnoreCase(facebookRiskPayment.getFraud_status())) {
-                                        paymentRequest.setStatus(PaymentStatus.RISK_PENDING.toString());
-                                        PaymentProviderIdMapping mapping = new PaymentProviderIdMapping();
-                                        mapping.setExternalId(fbPayment.getId());
-                                        mapping.setPaymentId(paymentRequest.getId());
-                                        paymentProviderIdMappingRepository.create(mapping).get();
-                                    } else {
-                                        paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-                                    }
-                                    return Promise.pure(paymentRequest);
-                                }
-                            });
-                        }else if(fbPayment.getError() != null){
-                            handlePaymentError(fbPayment.getError());
-                            return Promise.pure(null);
-                        }else{
-                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
-                        }
+                        return handleFacebookPayment(fbPayment, paymentRequest, FacebookPaymentActionType.charge);
                     }
                 });
             }
@@ -342,7 +341,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private FacebookPayment getFacebookPaymentRequest(PaymentTransaction paymentRequest, String piToken, FacebookPaymentActionType action) {
         FacebookPayment fbPayment = new FacebookPayment();
         fbPayment.setRequestId(paymentRequest.getId().toString() + "_" + paymentRequest.getBillingRefId());
-        fbPayment.setCredential(piToken);
+        fbPayment.setCredentialId(piToken);
         fbPayment.setAction(action);
         fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
         fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
@@ -364,7 +363,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
         String ipAddress = paymentRequest.getChargeInfo().getIpAddress();
         if(CommonUtil.isNullOrEmpty(ipAddress)){
-            ipAddress = "127.0.0.1";
+            ipAddress = Local_IP;
         }
         fbPayment.setPayerIp(ipAddress);
         //Risk Feature
@@ -432,6 +431,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<PaymentTransaction> processNotify(final String rawRequest){
+        if(CommonUtil.isNullOrEmpty(rawRequest)){
+            throw AppCommonErrors.INSTANCE.fieldRequired("request").exception();
+        }
         final String request = CommonUtil.urlDecode(rawRequest);
         //check it is a Get verify or a RTU post:
         if(rawRequest.contains(FB_VERIFY_TOKEN)){
@@ -449,8 +451,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             throw AppServerExceptions.INSTANCE.unAuthorized(request).exception();
         }
         //Post RTU
-        if (checkSign(request)) {
-            LOGGER.info("signature check success.");
+        if (!checkSign(request)) {
+            LOGGER.error("verify sign failed:" + rawRequest);
+            throw AppServerExceptions.INSTANCE.unAuthorized(request).exception();
         }
         final FacebookRTU facebookRTU = CommonUtil.parseJsonIgnoreUnknown(request, FacebookRTU.class);
         if(facebookRTU == null || !facebookRTU.getObject().equalsIgnoreCase("payments") || facebookRTU.getEntry().length < 0){
@@ -462,6 +465,36 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
+                return facebookGatewayService.getPayment(s, facebookRTU.getEntry()[0].getId()).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                    @Override
+                    public Promise<PaymentTransaction> apply(FacebookPayment facebookPayment) {
+                        if(facebookPayment != null && facebookPayment.getActions() != null){
+                            for(FacebookPaymentAction action : facebookPayment.getActions()){
+                                if(!CommonUtil.isNullOrEmpty(action.getRequestId())){
+                                    PaymentTransaction transaction = new PaymentTransaction();
+                                    //request id is always "paymentid_billingrefid"
+                                    transaction.setId(Long.parseLong(action.getRequestId().split("_")[0]));
+                                    if(action.getRisk() != null && FacebookFraudStatus.blocked_after_pend.equals(action.getRisk().getFraudStatus())){
+                                        transaction.setStatus(PaymentStatus.RISK_ASYNC_REJECT.toString());
+                                    }else if(action.getRisk() != null && FacebookFraudStatus.released_after_pend.equals(action.getRisk().getFraudStatus())){
+                                        transaction.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                                    }else{
+                                        return Promise.pure(null);
+                                    }
+                                    return Promise.pure(transaction);
+                                }
+                            }
+                        }
+                        return Promise.pure(null);
+                    }
+                });
+            }
+        });
+        //TODO: remove it as now it returns directly in the payment details
+        /*
+        return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(String s) {
                 return facebookGatewayService.getPaymentRisk(s, facebookRTU.getEntry()[0].getId()).
                         then(new Promise.Func<FacebookRiskPayment, Promise<PaymentTransaction>>() {
                             @Override
@@ -469,14 +502,18 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                                 PaymentTransaction transaction = new PaymentTransaction();
                                 PaymentProviderIdMapping mapping = paymentProviderIdMappingRepository.get(facebookRTU.getEntry()[0].getId()).get();
                                 transaction.setId(mapping.getPaymentId());
-                                if(facebookRiskPayment != null && FB_RISK_RTU_REJECT.equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
+                                if(facebookRiskPayment != null && FacebookFraudStatus.blocked_after_pend.name().equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
                                     transaction.setStatus(PaymentStatus.RISK_ASYNC_REJECT.toString());
+                                }else if(facebookRiskPayment != null && FacebookFraudStatus.released_after_pend.name().equalsIgnoreCase(facebookRiskPayment.getFraud_status())){
+                                    transaction.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                                }else{
+                                    return Promise.pure(null);
                                 }
                                 return Promise.pure(transaction);
                             }
                         });
             }
-        });
+        });*/
     }
 
     private boolean checkSign(String request){

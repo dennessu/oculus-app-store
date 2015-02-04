@@ -10,6 +10,7 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
+import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
@@ -31,6 +32,7 @@ import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -234,9 +236,22 @@ class StoreResourceImpl implements StoreResource {
                         isValidated: personalInfo.isValidated
                 )
            }
+        }.then{
+            return resourceContainer.userUserCredentialResource.list(user.getId(), new UserCredentialListOptions(
+                    userId: user.getId(),
+                    type: Constants.CredentialType.PIN,
+                    active: true
+            )).then { Results<UserCredential> results ->
+                if (CollectionUtils.isEmpty(results.getItems())) {
+                    userProfile.pin = ''
+                } else {
+                    userProfile.pin = '****'
+                }
+
+                return Promise.pure()
+            }
         }.syncThen {
             userProfile.password = '******'
-            userProfile.pin = '****'
             return userProfile
         }
     }

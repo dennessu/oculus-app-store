@@ -24,7 +24,6 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -71,7 +70,7 @@ public class FacebookPaymentServiceTest extends BaseTest {
         FacebookRTU facebookRTU = new FacebookRTU();
         facebookRTU.setObject("payments");
         FacebookRTUEntry facebookRTUEntry = new FacebookRTUEntry();
-        facebookRTUEntry.setId("ZXh0X3BheW1lbnRfNTg5MzExNDk0NTMyOTg4");
+        facebookRTUEntry.setId("ZXh0X3BheW1lbnRfNTcyMTk3MTc5NTc3MTQ0");
         facebookRTUEntry.setTime(String.valueOf(new Date().getTime()));
         facebookRTUEntry.setChanged_fields(new String[]{"fraud_status"});
         facebookRTU.setEntry(new FacebookRTUEntry[]{facebookRTUEntry});
@@ -94,6 +93,13 @@ public class FacebookPaymentServiceTest extends BaseTest {
         request.setPhoneNumber(null);
         RiskFeature riskFeature = new RiskFeature(){
             {
+                setBrowserVersion("1.0");
+                setBrowserName("Chrome");
+                setCurrencyPurchasing("USD");
+                setInstalledApps(new Integer[] {1});
+                setPlatformName("Android");
+                setPlatformVersion("4.1");
+                setSourceDatr("2015-01-30");
                 setTimeSinceUserAccountCreatedInDays(10);
                 setSourceCountry("US");
             }
@@ -125,6 +131,55 @@ public class FacebookPaymentServiceTest extends BaseTest {
         };
         PaymentTransaction captureResult = mockFBPaymentService.capture(paymentResult.getId(), captureTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+
+    }
+
+    @Test(enabled = true)
+    public void testChargeFBDirect() throws ExecutionException, InterruptedException {
+        final PaymentInstrument request = buildPIRequest();
+        //hard code user to avoid create too many test users
+        request.setUserId(83886144L);
+        PaymentInstrument result = null;
+        FacebookCreditCardTokenRequest ccTokenRequest = new FacebookCreditCardTokenRequest();
+        ccTokenRequest.setCreditCardNumber("4111117711552927");
+        ccTokenRequest.setCsc("123");
+        String ccToken = facebookGatewayService.getCCToken(ccTokenRequest).get();
+        request.setAccountNumber(ccToken);
+        request.setBillingAddressId(null);
+        request.setPhoneNumber(null);
+        RiskFeature riskFeature = new RiskFeature(){
+            {
+                setBrowserVersion("1.0");
+                setBrowserName("Chrome");
+                setCurrencyPurchasing("USD");
+                setInstalledApps(new Integer[] {1});
+                setPlatformName("Android");
+                setPlatformVersion("4.1");
+                setSourceDatr("test_datr");
+                setTimeSinceUserAccountCreatedInDays(10);
+                setSourceCountry("US");
+            }
+        };
+        request.setRiskFeature(riskFeature);
+        result = addPI(request);
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotEquals("", result.getExternalToken());
+        PaymentTransaction transaction = buildPaymentTransaction(request);
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(){
+            {
+                setId("123");
+                setName("afjakshdf");
+            }
+        });
+
+        transaction.getChargeInfo().setItems(items);
+        transaction.setRiskFeature(riskFeature);
+        //risk pending & allow
+        transaction.getChargeInfo().setAmount(new BigDecimal("0.02"));
+        PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
+        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
     @Test(enabled = true)

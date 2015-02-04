@@ -140,6 +140,7 @@ class CoreBuilder {
             }) {
                 // use tax amount directly for fully refund
                 balance.skipTaxCalculation = true
+                balance.taxIncluded = diffOrder.isTaxInclusive
             }
             returnBalances << balance
         }
@@ -147,16 +148,25 @@ class CoreBuilder {
         // handle partial refund
         diffOrder.orderItems.each { OrderItem diffItem ->
             def totalAmount = diffItem.totalAmount
+            def totalTax = diffItem.totalTax
             returnBalances.each { Balance b ->
                 BalanceItem balanceItem = b.balanceItems.find { BalanceItem bi ->
                     bi.orderItemId.value == diffItem.getId().value
                 }
                 assert(balanceItem != null)
                 if (totalAmount >= balanceItem.amount) {
-                    totalAmount = diffItem.totalAmount - balanceItem.amount
+                    def tmpAmount = totalAmount
+                    totalAmount = tmpAmount - balanceItem.amount
                 } else {
-                    balanceItem.amount = diffItem.totalAmount
+                    balanceItem.amount = totalAmount
                     totalAmount = 0G
+                }
+                if (totalTax >= balanceItem.taxAmount) {
+                    def tmpAmount = totalAmount
+                    totalTax = tmpAmount - balanceItem.taxAmount
+                } else {
+                    balanceItem.taxAmount = totalTax
+                    totalTax = 0G
                 }
             }
             // validate

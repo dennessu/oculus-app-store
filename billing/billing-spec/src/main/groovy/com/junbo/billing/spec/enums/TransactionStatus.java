@@ -21,6 +21,8 @@ public enum TransactionStatus implements Identifiable<Short> {
 
     TIMEOUT((short)4),
 
+    PENG_REVIEW((short)5),
+
     ERROR((short)999);
 
     private final Short id;

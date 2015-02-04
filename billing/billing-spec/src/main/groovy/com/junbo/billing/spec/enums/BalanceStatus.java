@@ -18,6 +18,7 @@ public enum BalanceStatus implements Identifiable<Short> {
     QUEUING((short)1),
 
     UNCONFIRMED((short)10),
+    PENDING_RISK_REVIEW((short)30),
     PENDING_CAPTURE((short)50),
 
     AWAITING_PAYMENT((short)80),

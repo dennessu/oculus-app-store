@@ -150,34 +150,26 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 if (listOptions.active != null) {
                     return userPasswordService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
                             listOptions.limit, listOptions.offset).then { Results<UserPassword> userPasswordList ->
-                        return wrappUserCredential(userPasswordList, resultList, listOptions)
+                        return wrapUserPassword(userPasswordList, resultList, listOptions)
                     }
                 }
                 else {
                     return userPasswordService.searchByUserId(listOptions.userId, listOptions.limit,
-                            listOptions.offset).then { Results<UserPassword> userPasswordList ->
-                        return wrappUserCredential(userPasswordList, resultList, listOptions)
+                            listOptions.offset).then { List<UserPassword> userPasswordList ->
+                        return wrapUserPassword(userPasswordList, resultList, listOptions)
                     }
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
-                return userPinService.searchByUserId(listOptions.userId, listOptions.limit,
-                        listOptions.offset).then { Results<UserPin> userPinList ->
-                    resultList.total = userPinList.total
-                    if (userPinList == null || userPinList.items == null) {
-                        return Promise.pure(userPinList)
+                if (listOptions.active == null) {
+                    return userPinService.searchByUserId(listOptions.userId, listOptions.limit,
+                            listOptions.offset).then { List<UserPin> userPinList ->
+                        return wrapUserPin(userPinList, resultList, listOptions)
                     }
-
-                    userPinList.each { UserPin userPin ->
-                        UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
-                        if (newUserCredential != null) {
-                            newUserCredential.type = CredentialType.PIN.toString()
-                            newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
-                                    listOptions.properties?.split(',') as List<String>)
-
-                            resultList.items.add(newUserCredential)
-                        }
+                } else {
+                    return userPinService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
+                            listOptions.limit, listOptions.offset).then { List<UserPin> userPinList ->
+                        return wrapUserPin(userPinList, resultList, listOptions)
                     }
-                    return Promise.pure(resultList)
                 }
             } else {
                 throw AppCommonErrors.INSTANCE.parameterInvalid("credentialType").exception()
@@ -185,7 +177,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         }
     }
 
-    private Promise<Results<UserCredential>> wrappUserCredential(Results<UserPassword> userPasswordList, Results<UserCredential> resultList, UserCredentialListOptions listOptions) {
+    private Promise<Results<UserCredential>> wrapUserPassword(Results<UserPassword> userPasswordList, Results<UserCredential> resultList, UserCredentialListOptions listOptions) {
         resultList.total = userPasswordList.total
         if (userPasswordList == null || userPasswordList.items == null) {
             return Promise.pure(resultList)
@@ -211,6 +203,24 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         }.then {
             return Promise.pure(resultList)
         }
+    }
+
+    private Promise<Results<UserCredential>> wrapUserPin(List<UserPin> userPinList, Results<UserCredential> results, UserCredentialListOptions listOptions) {
+        if (userPinList == null) {
+            return Promise.pure(results)
+        }
+
+        userPinList.each { UserPin userPin ->
+            UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
+            if (newUserCredential != null) {
+                newUserCredential.type = CredentialType.PIN.toString()
+                newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
+                        listOptions.properties?.split(',') as List<String>)
+
+                results.items.add(newUserCredential)
+            }
+        }
+        return Promise.pure(results)
     }
 
     @Override
