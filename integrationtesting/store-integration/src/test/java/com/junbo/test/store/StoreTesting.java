@@ -44,7 +44,6 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -581,4 +580,41 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store get user Profile",
+            component =  Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test userProfi pin set/notSet",
+            steps = {
+                    "1. Create user",
+                    "2. No pin is set, check user-profile out",
+                    "3. set pin, check user-profile out"
+            }
+    )
+    @Test
+    public void testStorePinSetReturn() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
+        createUserRequest.setPin(null);
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equals(userName);
+        assert authTokenResponse.getAccessToken() != null;
+
+        UserProfileGetResponse getResponse = testDataProvider.getUserProfile();
+        assert getResponse != null;
+        assert getResponse.getUserProfile() != null;
+        assert getResponse.getUserProfile().getPin().equals("");
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
+        assert authTokenResponse.getAccessToken() != null;
+
+        getResponse = testDataProvider.getUserProfile();
+        assert getResponse != null;
+        assert getResponse.getUserProfile() != null;
+        assert getResponse.getUserProfile().getPin().equals("****");
+    }
 }

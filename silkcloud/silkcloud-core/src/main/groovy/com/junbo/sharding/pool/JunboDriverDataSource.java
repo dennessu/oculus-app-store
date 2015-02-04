@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -28,6 +30,7 @@ public class JunboDriverDataSource implements DataSource {
 
     private static final String LOGIN_TIMEOUT_KEY = "common.db.loginTimeout";
     private DriverDataSource[] candidates;
+    private Map<DriverDataSource, String> hostUrlMapping = new HashMap<>();
     private PrintWriter logWriter;
 
     public JunboDriverDataSource(String jdbcUrl,
@@ -58,6 +61,7 @@ public class JunboDriverDataSource implements DataSource {
             }
 
             candidates[i] = new DriverDataSource(finalUrl, properties, username, password);
+            hostUrlMapping.put(candidates[i], finalUrl);
         }
     }
 
@@ -87,10 +91,10 @@ public class JunboDriverDataSource implements DataSource {
                 if (conn != null) {
                     return conn;
                 } else {
-                    LOGGER.warn("Get invalid connection from data source [" + dataSource + "].");
+                    LOGGER.warn("Get invalid connection from data source [" + hostUrlMapping.get(dataSource) + "].");
                 }
             } catch (Exception e) {
-                LOGGER.warn("Failed to get connection from data source [" + dataSource + "].");
+                LOGGER.error("Failed to get connection from data source [" + hostUrlMapping.get(dataSource) + "].", e);
             }
         }
 
