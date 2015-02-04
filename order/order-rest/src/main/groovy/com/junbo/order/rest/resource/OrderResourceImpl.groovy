@@ -177,6 +177,9 @@ class OrderResourceImpl implements OrderResource {
         if(olderOrder.orderItems.size() > newOrder.orderItems.size()) {
             return true
         }
+        if(olderOrder.totalTax > 0 && newOrder.totalTax == 0) {
+            return true
+        }
 
         Boolean isARefund = false
         newOrder.orderItems.each {OrderItem newItem ->

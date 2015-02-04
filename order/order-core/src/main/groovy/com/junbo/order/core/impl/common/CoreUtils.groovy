@@ -101,6 +101,7 @@ class CoreUtils {
         diffOrder.orderItems = []
         diffOrder.totalAmount = 0G
         diffOrder.refundPaymentInstrument = request.refundPaymentInstrument
+        diffOrder.isTaxInclusive = existingOrder.isTaxInclusive
 
         Boolean changed = false
         existingOrder.orderItems.each { OrderItem i ->
@@ -128,6 +129,10 @@ class CoreUtils {
                     if (requestItem.totalAmount == 0) {
                         diffItem.totalTax = i.totalTax
                     }
+                } else if (existingOrder.totalTax > 0 && request.totalTax == 0) {
+                    diffItem.quantity = 0
+                    diffItem.totalTax = i.totalTax
+                    diffItem.totalAmount = 0G
                 } else {
                     // no change
                     return

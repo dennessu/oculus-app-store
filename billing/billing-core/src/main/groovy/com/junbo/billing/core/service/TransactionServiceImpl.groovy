@@ -421,8 +421,9 @@ class TransactionServiceImpl implements TransactionService {
             case PaymentStatus.SETTLING.name():
             case PaymentStatus.SETTLED.name():
             case PaymentStatus.REFUNDED.name():
-            case PaymentStatus.RISK_PENDING.name():
                 return TransactionStatus.SUCCESS
+            case PaymentStatus.RISK_PENDING.name():
+                return TransactionStatus.PENG_REVIEW
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
             case PaymentStatus.REFUND_DECLINED.name():
@@ -439,8 +440,9 @@ class TransactionServiceImpl implements TransactionService {
         switch (paymentStatus) {
             case PaymentStatus.SETTLEMENT_SUBMITTED.name():
             case PaymentStatus.SETTLING.name():
-            case PaymentStatus.RISK_PENDING.name():
                 return BalanceStatus.AWAITING_PAYMENT
+            case PaymentStatus.RISK_PENDING.name():
+                return BalanceStatus.PENDING_RISK_REVIEW
             case PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.name():
             case PaymentStatus.AUTH_DECLINED.name():
             case PaymentStatus.REFUND_DECLINED.name():
