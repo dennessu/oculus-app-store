@@ -1,6 +1,6 @@
 package com.junbo.order.jobs.utils.ftp
 
-import com.junbo.order.jobs.subledger.payout.Constants
+import com.junbo.order.jobs.Constants
 import org.apache.commons.vfs2.FileObject
 import org.apache.commons.vfs2.FileSystemOptions
 import org.apache.commons.vfs2.Selectors

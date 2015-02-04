@@ -298,6 +298,16 @@
             }
         }
     },
+    "order_pending_action": {
+      "views": {
+        "by_status_type_createdTime": {
+          "map": "function(doc) {emit(doc.completed + ';' + doc.actionType + ';' + doc.createdTime, doc._id)}"
+        },
+        "by_status_orderId": {
+          "map": "function(doc) {emit(doc.completed + ';' + doc.orderId, doc._id)}"
+        }
+      }
+    },
     "tos": {
         "views": {
             "by_title" : {

@@ -9,6 +9,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.*
 import com.junbo.order.db.entity.*
+import com.junbo.order.spec.model.OrderPendingAction
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerEvent
 import com.junbo.order.spec.model.SubledgerItem
@@ -287,6 +288,19 @@ class TestHelper implements ApplicationContextAware {
             event.properties[RandomStringUtils.randomAlphabetic(10)] = RandomStringUtils.randomAlphabetic(10)
         }
         return event
+    }
+
+    static OrderPendingAction generateOrderPendingAction(OrderId orderId, OrderPendingActionType actionType) {
+        OrderPendingAction orderPendingAction = new OrderPendingAction(
+                orderId: orderId,
+                actionType: actionType.name(),
+                completed: false
+        )
+        orderPendingAction.properties = [:]
+        for (int i = 0;i < 5;++i) {
+            orderPendingAction.properties[RandomStringUtils.randomAlphabetic(10)] = RandomStringUtils.randomAlphabetic(10)
+        }
+        return orderPendingAction
     }
 
     @Override

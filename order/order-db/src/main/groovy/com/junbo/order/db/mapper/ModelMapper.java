@@ -226,6 +226,18 @@ public interface ModelMapper {
     OrderItemRevision toOrderItemRevisionModel(OrderItemRevisionEntity orderItemRevisionEntity, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "pendingActionId", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
+    })
+    OrderPendingActionEntity toOrderPendingActionEntity(OrderPendingAction orderPendingAction, MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "pendingActionId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
+    })
+    OrderPendingAction toOrderPendingAction(OrderPendingActionEntity orderPendingActionEntity, MappingContext context);
+
+    @Mappings({
             @Mapping(source = "subledgerId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false),

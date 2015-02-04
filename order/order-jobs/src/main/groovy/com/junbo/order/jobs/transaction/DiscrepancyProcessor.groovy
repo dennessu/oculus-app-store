@@ -72,8 +72,7 @@ class DiscrepancyProcessor {
         // todo : in which scenario an order may have multiple billing history currently ?
         BigDecimal expectedAmount = 0
         chargeHistories.each { BillingHistory billingHistory ->
-            BigDecimal total = getBillingHistoryTotal(billingHistory)
-            expectedAmount += total
+            expectedAmount += billingHistory.totalAmount
         }
 
         if (!amountEquals(expectedAmount, transaction.senderAmount)) {
@@ -98,7 +97,7 @@ class DiscrepancyProcessor {
 
         // check refund history has the amount
         boolean found = refundHistories.find { BillingHistory billingHistory ->
-            return amountEquals(0G - getBillingHistoryTotal(billingHistory), transaction.senderAmount)
+            return amountEquals(0G - billingHistory.totalAmount, transaction.senderAmount)
         } != null
         if (!found) {
             LOGGER.info("name=Success_Refund_With_Amount_NotFound, order={}, amount={}", order.getId(), transaction.senderAmount)
@@ -134,13 +133,5 @@ class DiscrepancyProcessor {
         left = left.setScale(SCALE, RoundingMode.FLOOR)
         right = right.setScale(SCALE, RoundingMode.FLOOR)
         return left.equals(right)
-    }
-
-    private static BigDecimal getBillingHistoryTotal(BillingHistory billingHistory) {
-        BigDecimal total = billingHistory.totalAmount
-        if (!billingHistory.isTaxInclusive && billingHistory.totalTax != null) {
-            total += billingHistory.totalTax
-        }
-        return total
     }
 }

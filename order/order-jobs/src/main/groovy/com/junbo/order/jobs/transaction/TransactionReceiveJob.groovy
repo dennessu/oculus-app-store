@@ -6,7 +6,7 @@ import com.junbo.common.util.IdFormatter
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.jobs.transaction.model.DiscrepancyRecord
 import com.junbo.order.jobs.transaction.model.FacebookTransaction
-import com.junbo.order.jobs.subledger.payout.Constants
+import com.junbo.order.jobs.Constants
 import com.junbo.order.jobs.transaction.model.TransactionProcessResult
 import com.junbo.order.jobs.utils.csv.CSVWriter
 import com.junbo.order.jobs.utils.csv.ConcurrentCSVWriter

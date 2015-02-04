@@ -13,6 +13,7 @@ import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerEvent
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.SubledgerType
 import groovy.transform.CompileStatic
 import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Required
@@ -91,8 +92,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     @Override
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus, ItemId itemId,
-                            Date startTime, String subledgerKey, CurrencyId currency, CountryId country) {
-        return subledgerRepository.find(sellerId, payoutStatus, itemId, startTime, subledgerKey, currency, country).get()
+                            Date startTime, SubledgerType subledgerType, String subledgerKey, CurrencyId currency, CountryId country) {
+        return subledgerRepository.find(sellerId, payoutStatus, itemId, startTime, subledgerType, subledgerKey, currency, country).get()
     }
 
     @Override

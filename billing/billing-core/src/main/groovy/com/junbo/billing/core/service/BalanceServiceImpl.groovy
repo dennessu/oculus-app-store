@@ -121,7 +121,7 @@ class BalanceServiceImpl implements BalanceService {
                     throw AppErrors.INSTANCE.balanceNotFound("originalBalanceId", balance.originalBalanceId).exception()
                 }
                 balanceValidator.validateBalanceStatus(originalBalance.status,
-                        [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+                        [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.PENDING_RISK_REVIEW.name()])
                 balanceValidator.validateTransactionNotEmpty(originalBalance.getId(), originalBalance.transactions)
 
                 if (balance.balanceItems == null || balance.balanceItems.size() == 0) {

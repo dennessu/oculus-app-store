@@ -24,6 +24,7 @@ class BillingEventHistoryBuilder {
             case BalanceStatus.COMPLETED:
             case BalanceStatus.AWAITING_PAYMENT:
             case BalanceStatus.PENDING_CAPTURE:
+            case BalanceStatus.PENDING_RISK_REVIEW:
                 return EventStatus.COMPLETED
 
             case BalanceStatus.QUEUING:
@@ -48,6 +49,7 @@ class BillingEventHistoryBuilder {
         switch (balanceStatus) {
             case BalanceStatus.COMPLETED:
             case BalanceStatus.AWAITING_PAYMENT:
+            case BalanceStatus.PENDING_RISK_REVIEW:
             case BalanceStatus.QUEUING:
                 return EventStatus.COMPLETED
             case BalanceStatus.FAILED:

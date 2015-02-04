@@ -1,4 +1,4 @@
-package com.junbo.order.jobs.subledger.payout
+package com.junbo.order.jobs
 
 import groovy.transform.CompileStatic
 
@@ -27,4 +27,8 @@ class Constants {
     public static final long MS_A_DAY = 1000L * 3600 * 24
 
     public static final long MS_A_SECOND = 1000L
+
+    public static final int BATCH_SIZE = 5000
+
+    public static final int PAGE_SIZE = 100
 }

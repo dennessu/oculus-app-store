@@ -9,6 +9,7 @@ package com.junbo.order.db.dao.impl;
 import com.junbo.order.db.dao.SubledgerDao;
 import com.junbo.order.db.entity.SubledgerEntity;
 import com.junbo.order.spec.model.enums.PayoutStatus;
+import com.junbo.order.spec.model.enums.SubledgerType;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -54,7 +55,7 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
     @Override
     @SuppressWarnings("unchecked")
     public SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
-                                String itemId, String subledgerKey, String currency, String country) {
+                                String itemId, SubledgerType subledgerType, String subledgerKey, String currency, String country) {
         Criteria criteria = this.getSession(sellerId).createCriteria(SubledgerEntity.class);
 
         criteria.add(Restrictions.eq("sellerId", sellerId));
@@ -64,6 +65,7 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
         criteria.add(Restrictions.eq("country", country));
         criteria.add(Restrictions.eq("currency", currency));
         criteria.add(Restrictions.eq("key", subledgerKey));
+        criteria.add(Restrictions.eq("subledgerType", subledgerType));
 
         criteria.setFirstResult(0);
         criteria.setMaxResults(1);

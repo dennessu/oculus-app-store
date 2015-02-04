@@ -134,6 +134,9 @@
         <property name="dbName" value="subledger_event"/>
     </bean>
 
+    <bean id="cloudantOrderPendingActionRepository" class="com.junbo.order.db.repo.cloudant.OrderPendingActionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_pending_action"/>
+    </bean>
     <!-- dual-write repositories -->
 
     <bean id="billingHistoryRepository" parent="baseRepository">
@@ -188,6 +191,12 @@
         <property name="repositoryInterface" value="com.junbo.order.db.repo.PreorderInfoRepository"/>
         <property name="cloudantRepositoryImpl" ref="cloudantPreorderInfoRepository" />
         <property name="sqlRepositoryImpl" ref="sqlPreorderInfoRepository" />
+    </bean>
+
+    <bean id="orderPendingActionRepository" parent="baseRepository" >
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.OrderPendingActionRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantOrderPendingActionRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlOrderPendingActionRepository" />
     </bean>
 
     <bean id="subledgerItemRepository" parent="baseRepository">

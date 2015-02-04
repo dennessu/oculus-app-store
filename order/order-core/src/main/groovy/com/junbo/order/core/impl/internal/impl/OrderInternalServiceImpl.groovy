@@ -10,6 +10,7 @@ import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OrderId
 import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
@@ -52,6 +53,8 @@ import javax.annotation.Resource
 @TypeChecked
 @Service('orderInternalService')
 class OrderInternalServiceImpl implements OrderInternalService {
+
+    private static final int DEFAULT_NUMBER_AFTER_DECIMAL = 5
 
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
@@ -162,16 +165,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
         Promise promise1 = getOrderByOrderId(order.getId().value, context, false)
 
         Order existingOrder = null
+        List<OrderItem> orderItemsBeforeRefund = []
         Promise promise2 = promise1.then { Order o ->
             existingOrder = o
+            orderItemsBeforeRefund = CoreUtils.cloneOrderItems(existingOrder)
             return orderServiceContextBuilder.getCurrency(context)
         }
 
         Order diffOrder = null
+        int numberAfterDecimal = DEFAULT_NUMBER_AFTER_DECIMAL
         com.junbo.identity.spec.v1.model.Currency orderCurrency
         Promise promise3 = promise2.then { com.junbo.identity.spec.v1.model.Currency currency ->
             orderCurrency = currency
-            diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
+            if (currency.numberAfterDecimal != null) {
+                numberAfterDecimal = currency.numberAfterDecimal
+            }
+            diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, numberAfterDecimal)
             return orderServiceContextBuilder.getBalances(context)
         }
 
@@ -181,7 +190,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
                                 bl.status == BalanceStatus.COMPLETED.name() ||
                                 bl.status == BalanceStatus.PENDING_CAPTURE.name() ||
-                                bl.status == BalanceStatus.UNCONFIRMED.name())
+                                bl.status == BalanceStatus.UNCONFIRMED.name() ||
+                                bl.status == BalanceStatus.PENDING_RISK_REVIEW.name())
             }.toList()
             // preorder: deposit+deposit
             // physical goods: manual_capture/deposit
@@ -212,7 +222,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             refundedOrder.status = OrderStatus.REFUNDED.name()
                             refundedOrder.isAudited = false
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
-                            context.refundedOrderItems = diffOrder.orderItems
+                            context.refundedOrderItems = CoreUtils.getRefundedOrderItems(orderItemsBeforeRefund, refundedOrder.orderItems, numberAfterDecimal)
                             // todo : need to whether it is the right way to set refundedOrderItems
                             persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
                         } else if (isCancelable) {
@@ -668,6 +678,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 assert actionResult != null
                 return Promise.pure(actionResult)
             }
+
+            if (balance.status == BalanceStatus.PENDING_RISK_REVIEW.name()) {
+                LOGGER.info("name=Order_Pending_Risk_Review, orderId={}, balanceId={}", order.getId(), balance.getId())
+                createOrderPendingAction(order.getId(), OrderPendingActionType.RISK_REVIEW)
+            }
+
             EventStatus status = BillingEventHistoryBuilder.buildEventStatusFromImmediateSettle(balance)
             switch (status) {
                 case EventStatus.COMPLETED:
@@ -708,5 +724,14 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         AppErrors.INSTANCE.billingConnectionError(ex.message)))
             }
         }
+    }
+
+    @Override
+    OrderPendingAction createOrderPendingAction(OrderId orderId, OrderPendingActionType type) {
+        orderRepository.createOrderPendingAction(new OrderPendingAction(
+                orderId: orderId,
+                completed: false,
+                actionType: type.name()
+        ))
     }
 }

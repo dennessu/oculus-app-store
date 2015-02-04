@@ -6,9 +6,12 @@
 
 package com.junbo.order.db.repo.facade;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.order.spec.model.*;
 import com.junbo.order.spec.model.enums.OrderItemRevisionType;
+import com.junbo.order.spec.model.enums.OrderPendingActionType;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,4 +57,15 @@ public interface OrderRepositoryFacade {
     OfferSnapshot createOfferSnapshot(OfferSnapshot offerSnapshot);
 
     List<OfferSnapshot> getSnapshot(Long orderId);
+
+    OrderPendingAction createOrderPendingAction(OrderPendingAction action);
+
+    OrderPendingAction updateOrderPendingAction(OrderPendingAction action);
+
+    List<OrderPendingAction> getOrderPendingActionsByOrderId(OrderId orderId, OrderPendingActionType actionType);
+
+    List<OrderPendingAction> listOrderPendingActionsCreateTimeAsc(Integer dataCenterId, Integer shardKey,
+                                                                  OrderPendingActionType actionType, Date startTime,
+                                                                  Date endTime, PageParam pageParam);
+
 }

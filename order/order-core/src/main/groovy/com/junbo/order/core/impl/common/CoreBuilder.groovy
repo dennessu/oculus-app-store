@@ -481,18 +481,4 @@ class CoreBuilder {
         offerSnapshot.itemSnapshots = itemSnapshots
         return offerSnapshot
     }
-
-    static SubledgerItem buildSubledgerItemFromOriginal(SubledgerItem original) {
-        SubledgerItem subledgerItem = new SubledgerItem()
-        subledgerItem.item = original.item
-        subledgerItem.offer = original.offer
-        subledgerItem.orderItem = original.orderItem
-        subledgerItem.originalSubledgerItem = original.getId()
-        subledgerItem.totalAmount = original.totalAmount
-        subledgerItem.totalPayoutAmount = original.totalPayoutAmount
-        subledgerItem.taxAmount = original.taxAmount
-        subledgerItem.totalQuantity = original.totalQuantity
-        subledgerItem.status = SubledgerItemStatus.PENDING_PROCESS.name()
-        return subledgerItem
-    }
 }

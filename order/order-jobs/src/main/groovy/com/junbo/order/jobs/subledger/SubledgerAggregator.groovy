@@ -15,7 +15,7 @@ import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
-import com.junbo.order.jobs.subledger.payout.Constants
+import com.junbo.order.jobs.Constants
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.spec.model.enums.SubledgerType

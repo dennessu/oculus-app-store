@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="com.junbo.order.jobs"/>
 
@@ -34,6 +35,7 @@
             <list>
                 <ref bean="subledgerJobTrigger"/>
                 <ref bean="transactionReceiveJobTrigger"/>
+                <ref bean="orderRiskReviewJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
@@ -190,6 +192,23 @@
         <property name="concurrent" value="false"/>
     </bean>
 
+    <!-- risk review Job & Trigger-->
+    <bean id="orderRiskReviewJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="orderRiskReviewJobDetail" />
+        <property name="cronExpression" value="${order.jobs.riskReview.cronexpression}" />
+    </bean>
+
+    <bean id="orderRiskReviewJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="orderRiskReviewPendingActionJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
 
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
@@ -203,6 +222,18 @@
         <property name="numOfFuturesToTrack" value="10000"/>
         <property name="pageSizePerShard" value="${order.jobs.pagesize}"/>
         <property name="orderProcessNumLimit" value="${order.jobs.order.process.limit}"/>
+    </bean>
+
+    <bean id="orderRiskReviewPendingActionJob" class="com.junbo.order.jobs.OrderPendingActionJob" >
+        <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
+        <property name="pendingActionProcessor" ref="order.RiskPendingActionProcessor"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
+        <property name="orderPendingActionTypes">
+            <list>
+                <value>RISK_REVIEW</value>
+            </list>
+        </property>
+        <property name="transactionHelper" ref="orderTransactionHelper"/>
     </bean>
 
     <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.tax.TaxAuditor" >
@@ -265,6 +296,9 @@
                 </entry>
                 <entry key="quartz:type=QuartzJob,name=transactionReceiveJob">
                     <idref bean="order.transactionReceiveJob"/>
+                </entry>
+                <entry key="quartz:type=QuartzJob,name=orderRiskReviewPendingActionJob">
+                    <idref bean="orderRiskReviewPendingActionJob"/>
                 </entry>
             </map>
         </property>

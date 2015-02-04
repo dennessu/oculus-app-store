@@ -16,6 +16,7 @@ import com.junbo.order.db.repo.util.Utils
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.OrderItemRevisionType
+import com.junbo.order.spec.model.enums.OrderPendingActionType
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -71,6 +72,10 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Autowired
     @Qualifier('itemSnapshotRepository')
     private ItemSnapshotRepository itemSnapshotRepository;
+
+    @Autowired
+    @Qualifier('orderPendingActionRepository')
+    private OrderPendingActionRepository orderPendingActionRepository
 
     @Autowired
     @Qualifier('oculus48IdGenerator')
@@ -297,6 +302,27 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         }
         LOGGER.info('name=repo.getSnapshot_done')
         return orderSnapshot
+    }
+
+    @Override
+    OrderPendingAction createOrderPendingAction(OrderPendingAction action) {
+        return orderPendingActionRepository.create(action).get()
+    }
+
+    @Override
+    OrderPendingAction updateOrderPendingAction(OrderPendingAction action) {
+        OrderPendingAction old = orderPendingActionRepository.get(action.getId()).get()
+        return orderPendingActionRepository.update(action, old).get()
+    }
+
+    @Override
+    List<OrderPendingAction> getOrderPendingActionsByOrderId(OrderId orderId, OrderPendingActionType actionType) {
+        return orderPendingActionRepository.getOrderPendingActionsByOrderId(orderId, actionType).get()
+    }
+
+    @Override
+    List<OrderPendingAction> listOrderPendingActionsCreateTimeAsc(Integer dataCenterId, Integer shardKey, OrderPendingActionType actionType, Date startTime, Date endTime, PageParam pageParam) {
+        return orderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dataCenterId, shardKey, actionType, startTime, endTime, pageParam).get()
     }
 
     private Promise<Void> saveOrderItems(OrderId orderId, List<OrderItem> orderItems,
