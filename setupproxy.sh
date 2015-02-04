@@ -23,11 +23,11 @@ export facebookProxy=
 if ! (curl -X HEAD --max-time 3 --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
     # set proxy
     if [[ -f "$personalConfigFile" ]]; then
-        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}' | tail -1`
     fi
     if [[ -z "$facebookProxy" ]]; then
         echo 'facebook.proxy=http://silkcloud:#Bugs4$1@127.0.0.1:13128' >> $personalConfigFile
-        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}' | tail -1`
         if [[ -z "$facebookProxy" ]]; then
             echo Error setting facebookProxy
             exit 1
