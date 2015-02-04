@@ -155,7 +155,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 }
                 else {
                     return userPasswordService.searchByUserId(listOptions.userId, listOptions.limit,
-                            listOptions.offset).then { List<UserPassword> userPasswordList ->
+                            listOptions.offset).then { Results<UserPassword> userPasswordList ->
                         return wrapUserPassword(userPasswordList, resultList, listOptions)
                     }
                 }
