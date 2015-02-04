@@ -21,7 +21,7 @@ public class FacebookRiskFeature {
     private Integer[] installedApps;
     @JsonProperty("TimeSinceUserAccountCreatedInDays")
     private Integer timeSinceUserAccountCreatedInDays;
-    @JsonProperty("SourceDatr")
+    @JsonProperty("SourceDATR")
     private String sourceDatr;
     @JsonProperty("PlatformName")
     private String platformName;

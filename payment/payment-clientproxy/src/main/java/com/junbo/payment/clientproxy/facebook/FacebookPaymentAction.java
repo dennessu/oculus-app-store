@@ -14,15 +14,25 @@ import java.math.BigDecimal;
  * Facebook Payment Action.
  */
 public class FacebookPaymentAction {
+    @JsonProperty("request_id")
+    private String requestId;
     private FacebookPaymentActionType type;
-    private FacebookPaymentStatus status;
+    private String status;
     private BigDecimal amount;
     private String currency;
     @JsonProperty("time_created")
     private String createdTime;
     @JsonProperty("time_updated")
     private String updatedTime;
+    private FacebookRiskResult risk;
 
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getCreatedTime() {
         return createdTime;
@@ -40,11 +50,11 @@ public class FacebookPaymentAction {
         this.type = type;
     }
 
-    public FacebookPaymentStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(FacebookPaymentStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -70,6 +80,14 @@ public class FacebookPaymentAction {
 
     public void setUpdatedTime(String updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    public FacebookRiskResult getRisk() {
+        return risk;
+    }
+
+    public void setRisk(FacebookRiskResult risk) {
+        this.risk = risk;
     }
 
 }

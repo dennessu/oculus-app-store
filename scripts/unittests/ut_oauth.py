@@ -3,7 +3,7 @@ import silkcloudut as ut
 from silkcloudut import *
 
 class OAuthTests(ut.TestBase):
-    def testRegister(self, scope = 'identity'):
+    def testRegister(self, scope = 'identity', isFBUser = False):
         ut.cookies.clear()
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
@@ -20,7 +20,7 @@ class OAuthTests(ut.TestBase):
         assert view["view"] == 'register'
 
         # generate user info
-        user = self.genUserInfo()
+        user = self.genUserInfo(isFBUser)
 
         view = curlForm('POST', ut.test_uri, '/v1/oauth2/authorize', data = {
             'cid': cid,
@@ -1142,12 +1142,15 @@ class OAuthTests(ut.TestBase):
         # TODO: test modify user PII and sign-up using TFA flow
         pass
 
-    def genUserInfo(self):
+    def genUserInfo(self, isFBUser = False):
         user = Object()
 
         user.username = randomstr(1, string.ascii_lowercase) + randomstr(10)
         user.password = randompwd()
-        user.email = 'silkcloudtest+' + randomstr(1, string.ascii_letters) + randomstr(10) + '@gmail.com'
+        if(isFBUser):
+            user.email = 'silkcloud' + randomstr(5) + '@gmail.com'
+        else:
+            user.email = 'silkcloudtest+' + randomstr(1, string.ascii_letters) + randomstr(10) + '@gmail.com'
         user.nickname = randomstr(1, string.ascii_letters) + randomstr(10)
         user.first_name = randomstr(10)
         user.last_name = randomstr(10)

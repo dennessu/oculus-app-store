@@ -89,6 +89,8 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     private RiskFeature riskFeature;
 
+    private String ipAddress;
+
     public Long getId() {
         return id;
     }
@@ -273,5 +275,13 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     public void setRiskFeature(RiskFeature riskFeature) {
         this.riskFeature = riskFeature;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 }

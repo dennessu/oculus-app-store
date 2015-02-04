@@ -19,9 +19,13 @@ public interface FacebookGatewayService{
 
     Promise<FacebookPayment> addPayment(String accessToken, String paymentAccountId, FacebookPayment fbPayment);
 
+    Promise<FacebookPayment> getPayment(String accessToken, String paymentId);
+
     Promise<FacebookPayment> modifyPayment(String accessToken, String paymentId, FacebookPayment fbPayment);
 
     Promise<FacebookCreditCard> batchAddAndGetCreditCard(String accessToken, String paymentAccountId, FacebookCreditCard fbCreditCard);
 
     Promise<FacebookRiskPayment> getPaymentRisk(String accessToken, String paymentId);
+
+    Promise<FacebookPayment> batchAddAndGetPayment(String accessToken, String paymentAccountId, FacebookPayment fbPayment);
 }
