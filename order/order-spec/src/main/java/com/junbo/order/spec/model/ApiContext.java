@@ -19,10 +19,10 @@ public class ApiContext {
 
     public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
     public static final String HEADER_IP_GEO_LOCATION = "oculus-geoip-country-code";
-    public static final String CLIENT_NAME = "X-CIENT-NAME";
-    public static final String CLIENT_VERSION = "X-CLIENT-VERSION";
-    public static final String PLATFORM_NAME = "X-PLATFORM-NAME";
-    public static final String PLATFORM_VERSION = "X-PLATFORM-VERSION";
+    public static final String CLIENT_NAME = "x-client-name";
+    public static final String CLIENT_VERSION = "x-client-version";
+    public static final String PLATFORM_NAME = "x-platform-name";
+    public static final String PLATFORM_VERSION = "x-platform-version";
 
     private String delegateUserId;
     private String requestorId;

@@ -221,8 +221,9 @@ class CheckoutTests(ut.TestBase):
         order = curlJson('POST', ut.test_uri, '/v1/orders', headers = {
             "Authorization": "Bearer " + user.access_token, 
             "oculus-end-user-ip": "127.0.0.1",
-             "X-PACKAGE-NAME": "OculusStore",
-             "X-PACKAGE-VERSION": "1.0.0",
+            "oculus-geoip-country-code": "US",
+             "X-CLIENT-NAME": "OculusStore",
+             "X-CLIENT-VERSION": "1.0.0",
              "X-PLATFORM-NAME": "Android",
              "X-PLATFORM-VERSION": "4.4.2"
         }, data = {
@@ -254,7 +255,12 @@ class CheckoutTests(ut.TestBase):
         order['tentative'] = False
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
             "Authorization": "Bearer " + user.access_token,
-            "oculus-end-user-ip": "127.0.0.1"
+            "oculus-end-user-ip": "127.0.0.1",
+             "oculus-geoip-country-code": "US",
+             "X-CLIENT-NAME": "OculusStore",
+             "X-CLIENT-VERSION": "1.0.0",
+             "X-PLATFORM-NAME": "Android",
+             "X-PLATFORM-VERSION": "4.4.2"
         }, data = order)
 
         fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
@@ -291,7 +297,12 @@ class CheckoutTests(ut.TestBase):
         order['orderItems'] = []
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
             "Authorization": "Bearer " + adminToken,
-            "oculus-end-user-ip": "127.0.0.1"
+            "oculus-end-user-ip": "127.0.0.1",
+             "oculus-geoip-country-code": "US",
+             "X-CLIENT-NAME": "OculusStore",
+             "X-CLIENT-VERSION": "1.0.0",
+             "X-PLATFORM-NAME": "Android",
+             "X-PLATFORM-VERSION": "4.4.2"
         }, data = order)
 
         assert order['totalAmount'] == 0
