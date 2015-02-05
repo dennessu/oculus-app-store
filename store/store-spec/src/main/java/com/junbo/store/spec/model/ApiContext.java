@@ -19,6 +19,12 @@ public class ApiContext {
 
     private Platform platform;
 
+    private String platformVersion;
+
+    private String clientName;
+
+    private String clientVersion;
+
     private Locale locale;
 
     private Country country;
@@ -32,6 +38,8 @@ public class ApiContext {
     private String userAgent;
 
     private UserId user;
+
+    private String ipAddress;
 
     /**
      * The ContextDataKey enum.
@@ -98,12 +106,44 @@ public class ApiContext {
         this.userAgent = userAgent;
     }
 
+    public String getPlatformVersion() {
+        return platformVersion;
+    }
+
+    public void setPlatformVersion(String platformVersion) {
+        this.platformVersion = platformVersion;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientVersion() {
+        return clientVersion;
+    }
+
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
     public UserId getUser() {
         return user;
     }
 
     public void setUser(UserId user) {
         this.user = user;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public Map<ContextDataKey, Object> getContextData() {

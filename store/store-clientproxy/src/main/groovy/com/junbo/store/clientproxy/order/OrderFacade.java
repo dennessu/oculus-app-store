@@ -26,4 +26,6 @@ public interface OrderFacade {
     Promise<Order> createTentativeOrder(List<OfferId> offerIdList, CurrencyId currencyId, PaymentInstrumentId paymentInstrumentId, ApiContext apiContext);
 
     Promise<Order> updateTentativeOrder(OrderId orderId, List<OfferId> offerIdList, CurrencyId currencyId, PaymentInstrumentId paymentInstrumentId, ApiContext apiContext);
+
+    Promise<Order> settleOrder(OrderId orderId, ApiContext apiContext);
 }

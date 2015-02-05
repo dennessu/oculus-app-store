@@ -298,7 +298,7 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            instrumentUtils.updateInstrument(user, request)
+            instrumentUtils.updateInstrument(user, request, apiContext)
         }.then { PaymentInstrumentId paymentInstrumentId ->
             innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, paymentInstrumentId).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(

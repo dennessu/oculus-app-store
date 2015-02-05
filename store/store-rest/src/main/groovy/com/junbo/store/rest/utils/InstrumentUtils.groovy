@@ -15,8 +15,10 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
+import com.junbo.payment.spec.model.RiskFeature
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.InstrumentDeleteRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
@@ -30,6 +32,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+import java.text.SimpleDateFormat
 
 /**
  * The InstrumentUtils class.
@@ -52,16 +55,17 @@ class InstrumentUtils {
     @Resource(name = 'storeIdentityUtils')
     private IdentityUtils identityUtils
 
+    private static final long MS_A_DAY = 1000L * 3600 * 24
 
     private static final int PAGE_SIZE = 100
 
-    public Promise<PaymentInstrumentId> updateInstrument(User user, InstrumentUpdateRequest instrumentUpdateRequest) {
+    public Promise<PaymentInstrumentId> updateInstrument(User user, InstrumentUpdateRequest instrumentUpdateRequest, ApiContext apiContext) {
         if (instrumentUpdateRequest.instrument.self != null) {
             return getInstrument(user, instrumentUpdateRequest.instrument.self).then { Instrument old ->
                 return innerUpdateInstrument(user, instrumentUpdateRequest.instrument, old)
             }
         } else {
-            return innerCreateInstrument(user, instrumentUpdateRequest.instrument)
+            return innerCreateInstrument(user, instrumentUpdateRequest.instrument, apiContext)
         }
     }
 
@@ -117,7 +121,7 @@ class InstrumentUtils {
         }
     }
 
-    private Promise<PaymentInstrumentId> innerCreateInstrument(User user, Instrument instrument) {
+    private Promise<PaymentInstrumentId> innerCreateInstrument(User user, Instrument instrument, ApiContext apiContext) {
         PaymentInstrument paymentInstrument = new PaymentInstrument()
         Promise promise = Promise.pure(null)
         dataConvertor.toPaymentInstrument(instrument, paymentInstrument)
@@ -163,6 +167,8 @@ class InstrumentUtils {
 
         return promise.then {
             paymentInstrument.userId = user.getId().value
+            paymentInstrument.ipAddress = apiContext.ipAddress
+            paymentInstrument.riskFeature = buildRiskFeature(user, apiContext)
             resourceContainer.paymentInstrumentResource.postPaymentInstrument(paymentInstrument)
         }.then { PaymentInstrument pi ->
             instrument.self = new PaymentInstrumentId(pi.getId())
@@ -254,5 +260,19 @@ class InstrumentUtils {
             }
             return Promise.pure(null)
         }
+    }
+
+    private RiskFeature buildRiskFeature(User user, ApiContext apiContext) {
+        RiskFeature riskFeature = new RiskFeature()
+        riskFeature.browserName = apiContext.clientName
+        riskFeature.browserVersion = apiContext.clientVersion
+        riskFeature.platformName = apiContext.platform.value
+        riskFeature.platformVersion = apiContext.platformVersion
+
+        riskFeature.currencyPurchasing = apiContext.country.defaultCurrency?.value
+        riskFeature.sourceCountry = apiContext.country.getId()
+        riskFeature.sourceDatr = new SimpleDateFormat('yyyy-MM-dd').format(new Date())
+        riskFeature.timeSinceUserAccountCreatedInDays = (int)((System.currentTimeMillis() - user.createdTime.time) / MS_A_DAY)
+        return riskFeature
     }
 }
