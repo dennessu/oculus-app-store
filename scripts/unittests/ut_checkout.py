@@ -605,7 +605,7 @@ class CheckoutTests(ut.TestBase):
 
         orderToken = oauth.getServiceAccessToken('order.service payment.service')
 
-        order['orderItems'][0]['totalTax'] = 0.00
+        order['totalTax'] = 0.00
 
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
             "Authorization": "Bearer " + orderToken,
