@@ -446,7 +446,7 @@ public class authorizeUser {
         Oauth.Logout(idToken);
     }
 
-    @Test(groups = "ppe/prod")
+    @Test(groups = "ppe/prod", enabled = false)
     @Property(environment = "release")
     public void testResetPasswordSentryCheck() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
