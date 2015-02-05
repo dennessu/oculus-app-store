@@ -407,7 +407,7 @@ class TransactionServiceImpl implements TransactionService {
         riskFeature.setPlatformName(balance.propertySet.get(PropertyKey.PLATFORM_NAME.name()))
         riskFeature.setPlatformVersion(balance.propertySet.get(PropertyKey.PLATFORM_VERSION.name()))
         riskFeature.setCurrencyPurchasing(balance.currency)
-        riskFeature.setSourceCountry(balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name()))
+        riskFeature.setSourceCountry(balance.country)
         riskFeature.setTimeSinceUserAccountCreatedInDays(Integer.parseInt(balance.propertySet.get(PropertyKey.ACCOUNT_CREATION_DAYS.name())))
         riskFeature.setSourceDatr('test_datr')
 
