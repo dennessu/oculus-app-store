@@ -30,6 +30,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 
 /**
  * Created by LinYi on 14-3-10.
@@ -49,6 +50,9 @@ class TaxServiceImpl implements TaxService {
     void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
         this.paymentFacade = paymentFacade
     }
+
+    @Value('${gsa.purchase.prefix}')
+    String gsaPrefix
 
     TaxFacade taxFacade
 
@@ -173,7 +177,7 @@ class TaxServiceImpl implements TaxService {
                     } else if (balance.propertySet.get(PropertyKey.BIN_NUMBER.name()) != null) {
                         def binNumber = balance.propertySet.get(PropertyKey.BIN_NUMBER.name())
                         if (isGSACard(binNumber)) {
-                            balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), 'GSA')
+                            balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), 'Government')
                         }
                     }
                     if (exemptCertificate != null && exemptCertificate != '') {
@@ -201,6 +205,6 @@ class TaxServiceImpl implements TaxService {
 
     Boolean isGSACard(String number) {
         def prefix = number?.substring(0, 4)
-        return (prefix in ['4486', '4614', '4716', '5565', '5568'])
+        return (gsaPrefix.contains(prefix))
     }
 }
