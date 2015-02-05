@@ -82,6 +82,7 @@
     <bean id="order.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.paymentTransactionClient"
