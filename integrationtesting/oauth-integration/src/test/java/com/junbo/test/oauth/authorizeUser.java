@@ -447,6 +447,7 @@ public class authorizeUser {
     }
 
     @Test(groups = "ppe/prod")
+    @Property(environment = "release")
     public void testResetPasswordSentryCheck() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
