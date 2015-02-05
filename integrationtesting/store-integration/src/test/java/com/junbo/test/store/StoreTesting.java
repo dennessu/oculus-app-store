@@ -307,6 +307,7 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testPrivilege() throws Exception {
+        Master.getInstance().initializeMaster();
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
