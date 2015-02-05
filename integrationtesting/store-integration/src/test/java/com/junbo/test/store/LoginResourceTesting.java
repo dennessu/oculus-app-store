@@ -641,7 +641,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error != null;
         assert error.getDetails().get(0).getField().contains("password");
 
-        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10) + "@gmail.com", "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10) + "@silkcloud.com", "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("email");
         assert error.getDetails().get(0).getReason().contains("email and credential doesn't match");

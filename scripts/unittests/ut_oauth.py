@@ -1148,9 +1148,9 @@ class OAuthTests(ut.TestBase):
         user.username = randomstr(1, string.ascii_lowercase) + randomstr(10)
         user.password = randompwd()
         if(isFBUser):
-            user.email = 'silkcloud' + randomstr(5) + '@gmail.com'
+            user.email = 'silkcloudtest' + randomstr(5) + '@silkcloud.com'
         else:
-            user.email = 'silkcloudtest+' + randomstr(1, string.ascii_letters) + randomstr(10) + '@gmail.com'
+            user.email = 'silkcloudtest+' + randomstr(1, string.ascii_letters) + randomstr(10) + '@silkcloud.com'
         user.nickname = randomstr(1, string.ascii_letters) + randomstr(10)
         user.first_name = randomstr(10)
         user.last_name = randomstr(10)

@@ -120,7 +120,7 @@ class CrossDCTests(ut.TestBase):
         
         user.username = randomstr(1, string.ascii_lowercase) + randomstr(10)
         user.password = randompwd()
-        user.email = 'silkcloudtest+' + randomstr(1, string.ascii_letters) + randomstr(10) + '@gmail.com'
+        user.email = 'silkcloudtest' + randomstr(1, string.ascii_letters) + randomstr(10) + '@silkcloud.com'
         user.nickname = randomstr(1, string.ascii_letters) + randomstr(10)
         user.first_name = randomstr(10)
         user.last_name = randomstr(10)

@@ -49,7 +49,7 @@ public class RandomHelper {
     }
 
     public static String randomEmail() {
-        return "silkcloudtest+" + randomAlphabetic(8).toLowerCase() + String.format("@gmail.com");
+        return "silkcloudtest" + randomAlphabetic(8).toLowerCase() + String.format("@silkcloud.com");
     }
 
     public static String randomName() {
