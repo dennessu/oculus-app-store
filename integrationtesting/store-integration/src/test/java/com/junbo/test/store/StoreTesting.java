@@ -460,6 +460,7 @@ public class StoreTesting extends BaseTestClass {
     @Test(groups = "int/ppe/prod/sewer")
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
         try {
+            Master.getInstance().initializeMaster();
             if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
