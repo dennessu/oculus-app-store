@@ -170,6 +170,11 @@ class TaxServiceImpl implements TaxService {
                     def exemptCertificate = taxExempt.taxExemptionCertificateNumber
                     if (exemptReason != null && exemptReason != '') {
                         balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), taxExempt.taxExemptionReason)
+                    } else if (balance.propertySet.get(PropertyKey.BIN_NUMBER.name()) != null) {
+                        def binNumber = balance.propertySet.get(PropertyKey.BIN_NUMBER.name())
+                        if (isGSACard(binNumber)) {
+                            balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), 'GSA')
+                        }
                     }
                     if (exemptCertificate != null && exemptCertificate != '') {
                         balance.propertySet.put(PropertyKey.EXEMPT_CERTIFICATE.name(), taxExempt.taxExemptionCertificateNumber)
@@ -192,5 +197,10 @@ class TaxServiceImpl implements TaxService {
         }
 
         return taxExempt
+    }
+
+    Boolean isGSACard(String number) {
+        def prefix = number?.substring(0, 4)
+        return (prefix in ['4486', '4614', '4716', '5565', '5568'])
     }
 }
