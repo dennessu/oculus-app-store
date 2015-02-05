@@ -606,7 +606,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     Promise<Boolean> reverseFulfillment(Order order) {
         return facadeContainer.fulfillmentFacade.reverseFulfillment(order).then { FulfilmentRequest fr ->
             if (fr == null || CollectionUtils.isEmpty(fr.items)) {
-                return Promise.pure(order)
+                return Promise.pure(false)
             }
             def completed = true
             fr.items.each { FulfilmentItem fulfilmentItem ->
