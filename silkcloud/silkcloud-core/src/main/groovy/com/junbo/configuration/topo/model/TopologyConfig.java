@@ -5,7 +5,10 @@
  */
 package com.junbo.configuration.topo.model;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.configuration.topo.DataCenters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,6 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * Topology.
  */
 public class TopologyConfig {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopologyConfig.class);
+
     private String appUrlTemplate;
 
     public TopologyConfig(
@@ -22,10 +27,11 @@ public class TopologyConfig {
     }
 
     public String getAppServerUrl(int shard) {
-        if (shard < getNumberOfShards()) {
-            throw new RuntimeException("No app server for shardId: " + shard);
+        if (shard >= getNumberOfShards()) {
+            LOGGER.warn("No app server for shardId: {}", shard);
+            throw AppCommonErrors.INSTANCE.fieldInvalid("id").exception();
         }
-        return appUrlTemplate.replace("\\{shard\\}", String.valueOf(shard));
+        return appUrlTemplate.replace("{shard}", String.valueOf(shard));
     }
 
     public boolean isHandledBySelf(int shard) {
