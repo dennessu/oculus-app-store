@@ -61,9 +61,6 @@ class PayoutExportJob {
     @Resource(name ='order.SubledgerPayoutIdAssignUtils')
     SubledgerPayoutAssignUtils subledgerPayoutIdAssignUtils
 
-    @Resource(name ='orderFacadeContainer')
-    FacadeContainer facadeContainer
-
     @Resource(name ='order.SignatureUtils')
     SignatureUtils signatureUtils
 
@@ -84,8 +81,6 @@ class PayoutExportJob {
 
     @Value('${order.jobs.subledger.maxRetry}')
     private int maxRetry
-
-    private int initialRetryIntervalSecond = 10
 
     private List<String> extensions = Arrays.asList(Constants.CSV_EXTENSION, Constants.SIGNATURE_EXTENSION)
 
