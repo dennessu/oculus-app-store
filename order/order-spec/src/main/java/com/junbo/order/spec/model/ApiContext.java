@@ -19,6 +19,10 @@ public class ApiContext {
 
     public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
     public static final String HEADER_IP_GEO_LOCATION = "oculus-geoip-country-code";
+    public static final String CLIENT_NAME = "X-CIENT-NAME";
+    public static final String CLIENT_VERSION = "X-CLIENT-VERSION";
+    public static final String PLATFORM_NAME = "X-PLATFORM-NAME";
+    public static final String PLATFORM_VERSION = "X-PLATFORM-VERSION";
 
     private String delegateUserId;
     private String requestorId;
@@ -26,6 +30,10 @@ public class ApiContext {
     private String userIp;
     private Boolean asyncCharge;
     private String location;
+    private String clientName;
+    private String clientVersion;
+    private String platformName;
+    private String platformVersion;
 
     public ApiContext() {
 
@@ -38,6 +46,22 @@ public class ApiContext {
         if (JunboHttpContext.getRequestHeaders()!= null &&
                 !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_IP_GEO_LOCATION))) {
             location = JunboHttpContext.getRequestHeaders().getFirst(HEADER_IP_GEO_LOCATION);
+        }
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(CLIENT_NAME))) {
+            setClientName(JunboHttpContext.getRequestHeaders().getFirst(CLIENT_NAME));
+        }
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(CLIENT_VERSION))) {
+            setClientVersion(JunboHttpContext.getRequestHeaders().getFirst(CLIENT_VERSION));
+        }
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(PLATFORM_NAME))) {
+            setPlatformName(JunboHttpContext.getRequestHeaders().getFirst(PLATFORM_NAME));
+        }
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(PLATFORM_VERSION))) {
+            setPlatformVersion(JunboHttpContext.getRequestHeaders().getFirst(PLATFORM_VERSION));
         }
     }
 
@@ -87,5 +111,37 @@ public class ApiContext {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientVersion() {
+        return clientVersion;
+    }
+
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
+    public String getPlatformName() {
+        return platformName;
+    }
+
+    public void setPlatformName(String platformName) {
+        this.platformName = platformName;
+    }
+
+    public String getPlatformVersion() {
+        return platformVersion;
+    }
+
+    public void setPlatformVersion(String platformVersion) {
+        this.platformVersion = platformVersion;
     }
 }

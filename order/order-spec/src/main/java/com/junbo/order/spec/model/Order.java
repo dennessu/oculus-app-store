@@ -178,6 +178,18 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     private String ipGeoAddress;
 
     @JsonIgnore
+    private String platformName;
+
+    @JsonIgnore
+    private String platformVersion;
+
+    @JsonIgnore
+    private String clientName;
+
+    @JsonIgnore
+    private String clientVersion;
+
+    @JsonIgnore
     private Boolean isAudited;
 
     public OrderId getId() {
@@ -426,6 +438,38 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setIpGeoAddress(String ipGeoAddress) {
         this.ipGeoAddress = ipGeoAddress;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientVersion() {
+        return clientVersion;
+    }
+
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
+    public String getPlatformName() {
+        return platformName;
+    }
+
+    public void setPlatformName(String platformName) {
+        this.platformName = platformName;
+    }
+
+    public String getPlatformVersion() {
+        return platformVersion;
+    }
+
+    public void setPlatformVersion(String platformVersion) {
+        this.platformVersion = platformVersion;
     }
 
     public Boolean getIsAudited() {

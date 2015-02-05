@@ -369,7 +369,10 @@ class CoreUtils {
 
         order.ipAddress = context.userIp
         order.ipGeoAddress = context.location
-
+        order.clientName = context.clientName
+        order.clientVersion = context.clientVersion
+        order.platformName = context.platformName
+        order.platformVersion = context.platformVersion
     }
 
     static Boolean isPendingOnFulfillment(Order order, OrderEvent event) {
