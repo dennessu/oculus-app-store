@@ -472,8 +472,6 @@
                 drop index subledger_item_status_offer_id_created_time;
                 create index subledger_item_status_item_id_created_time on subledger_item(status_id, item_id, created_time);
 
-                alter table order_billing_history add column total_tax decimal default 0;
-                alter table order_billing_history add column is_tax_inclusive boolean default false;
             ]]>
         </sql>
     </changeSet>
@@ -495,6 +493,14 @@
                 );
                 create index completed_action_type_created_time on order_pending_action (is_completed, action_type, created_time);
                 create index completed_order_id on order_pending_action (is_completed, order_id);
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="fzhang" id = "1.9" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table order_billing_history add column total_tax decimal default 0;
+                alter table order_billing_history add column is_tax_inclusive boolean default false;
             ]]>
         </sql>
     </changeSet>
