@@ -154,7 +154,7 @@ class TransactionReceiveJob {
             }
         } finally {
             is.close()
-            LOGGER.info('name=End_Process_Discrepancy,totalProcessed={},totalInFile={},latencyInMs={},numOfDiscrepancy={},numOfError={}',jobResult.totalProcessed, index,
+            LOGGER.info('name=End_Process_Discrepancy,totalProcessed={},totalInFile={},numOfError={},numOfDiscrepancy={},latencyInMs={}',jobResult.totalProcessed, index,
                     jobResult.discrepancyRecords.size(), jobResult.totalError, System.currentTimeMillis() - startTime)
         }
     }

@@ -7,6 +7,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.TransactionHelper
+import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.SubledgerUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.subledger.SubledgerHelper
@@ -32,8 +33,8 @@ class SubledgerCreateReverseItemAction implements Action, InitializingBean {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerCreateReverseItemAction)
 
-    @Resource(name = 'order.subledgerItemClient')
-    SubledgerItemResource subledgerItemResource
+    @Resource(name = 'orderSubledgerService')
+    SubledgerService subledgerService
 
     @Resource(name = 'orderSubledgerHelper')
     SubledgerHelper subledgerHelper
@@ -78,73 +79,17 @@ class SubledgerCreateReverseItemAction implements Action, InitializingBean {
             reversedOrderItems = serviceContext.order.orderItems
         }
 
-        return Promise.each(reversedOrderItems) { OrderItem orderItem ->
-            subledgerItemResource.getSubledgerItemsByOrderItemId(orderItem.getId()).then { List<SubledgerItem> subledgerItems ->
-                if (subledgerItems.isEmpty()) {
-                    LOGGER.error('name=Empty_SubledgerItems,orderItemId={}', orderItem.getId())
-                    return Promise.pure(null)
-                }
-
-                List<SubledgerItem> payoutSubledgerItems = subledgerItems.findAll { SubledgerItem item -> item.subledgerType == SubledgerType.PAYOUT.name() }.asList()
-                if (payoutSubledgerItems.isEmpty()) {
-                    LOGGER.error('name=Empty_PayoutSubledgerItems,orderItemId={}', orderItem.getId())
-                    return Promise.pure(null)
-                }
-
-                List<SubledgerItem> existingReverseSubledgerItems = subledgerItems.findAll {
-                    SubledgerItem item -> SubledgerUtils.getSubledgerType(item).payoutActionType == SubledgerType.PayoutActionType.DEDUCT
-                }.asList()
-
-                SubledgerItem reverseSubledgerItem = createReverseSubledgerItem(payoutSubledgerItems[0], existingReverseSubledgerItems, orderItem)
-                SubledgerAmount amount = SubledgerUtils.getSubledgerAmount(reverseSubledgerItem)
-                if (!amount.anyPositive()) {
-                    return Promise.pure()
-                }
-
-                subledgerItemResource.createSubledgerItem(reverseSubledgerItem).syncThen {
-                    LOGGER.info('name=CreateReverseSubledgerItem, orderItemId={}, quantity={}',
-                            reverseSubledgerItem.orderItem, reverseSubledgerItem.totalQuantity)
-                }
-            }
-        }.syncThen {
-            return null
-        }
-    }
-
-    private SubledgerItem createReverseSubledgerItem(SubledgerItem payoutSubledgerItem, List<SubledgerItem> existingReverseSubledgerItems, OrderItem reverseOrderItem) {
-        SubledgerItem subledgerItem = SubledgerUtils.buildSubledgerItem(payoutSubledgerItem, null)
-
         SubledgerType subledgerType
         if (this.actionType == SubledgerCreateReverseItemActionType.CHARGE_BACK) {
             subledgerType = SubledgerType.CHARGE_BACK // todo : handle DECLINE, CHARGE_BACK outside of time window
         } else {
             subledgerType = SubledgerType.REFUND
         }
-        subledgerItem.subledgerType = subledgerType.name()
 
-        SubledgerAmount payoutAmount = SubledgerUtils.getSubledgerAmount(payoutSubledgerItem)
-        SubledgerAmount reversedAmount = new SubledgerAmount()
-        existingReverseSubledgerItems.each { SubledgerItem e ->
-            reversedAmount = reversedAmount.add(SubledgerUtils.getSubledgerAmount(e))
+        return Promise.each(reversedOrderItems) { OrderItem orderItem ->
+            subledgerService.createReverseSubledgerItem(subledgerType, orderItem)
+            return Promise.pure()
         }
-        SubledgerAmount remainedAmount = payoutAmount.substract(reversedAmount)
-        SubledgerAmount zero = new SubledgerAmount()
-
-        SubledgerAmount finalAmount = getReverseAmountFromOrderItem(reverseOrderItem, payoutSubledgerItem)
-        if (subledgerType.payoutActionType == SubledgerType.PayoutActionType.DEDUCT) {
-            finalAmount = finalAmount.min(remainedAmount).max(zero)
-        }
-        SubledgerUtils.updateSubledgerAmount(finalAmount, subledgerItem)
-        return subledgerItem
-    }
-
-    private SubledgerAmount getReverseAmountFromOrderItem(OrderItem reverseOrderItem, SubledgerItem payoutSubledgerItem) {
-        SubledgerAmount amount = new SubledgerAmount()
-        amount.totalQuantity = reverseOrderItem.quantity
-        amount.totalAmount = reverseOrderItem.totalAmount
-        amount.taxAmount = (reverseOrderItem.totalTax == null) ? 0 : reverseOrderItem.totalTax
-        amount.totalPayoutAmount = reverseOrderItem.totalAmount * payoutSubledgerItem.totalPayoutAmount / payoutSubledgerItem.totalAmount
-        return amount
     }
 
     @Override

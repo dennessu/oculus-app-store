@@ -2,12 +2,15 @@ package com.junbo.order.jobs.transaction
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OrderId
+import com.junbo.order.core.SubledgerService
 import com.junbo.order.jobs.transaction.model.DiscrepancyReason
 import com.junbo.order.jobs.transaction.model.DiscrepancyRecord
 import com.junbo.order.jobs.transaction.model.FacebookTransaction
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.order.spec.model.fb.TransactionType
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
@@ -34,16 +37,8 @@ class DiscrepancyProcessor {
     @Resource(name = 'order.billingBalanceClient')
     BalanceResource balanceResource
 
-    private static Map<TransactionType, DiscrepancyReason> defaultDiscrepancyReasonMapping
-
-    static {
-        defaultDiscrepancyReasonMapping = [:]
-        defaultDiscrepancyReasonMapping[TransactionType.N] = DiscrepancyReason.DECLINE
-        defaultDiscrepancyReasonMapping[TransactionType.C] = DiscrepancyReason.CHARGE_BACK
-        defaultDiscrepancyReasonMapping[TransactionType.D] = DiscrepancyReason.CHARGE_BACK_OTW
-        defaultDiscrepancyReasonMapping[TransactionType.K] = DiscrepancyReason.CHARGE_BACK_REVERSE
-        defaultDiscrepancyReasonMapping[TransactionType.J] = DiscrepancyReason.CHARGE_BACK_REVERSE_OTW
-    }
+    @Resource(name = 'orderSubledgerService')
+    SubledgerService subledgerService
 
     public DiscrepancyRecord process(OrderId orderId, FacebookTransaction transaction) {
         Order order = orderResource.getOrderByOrderId(orderId).get()
@@ -53,7 +48,8 @@ class DiscrepancyProcessor {
             case TransactionType.R:
                 return handleRefundTransaction(order, transaction)
             default:
-                return handleDefault(order, transaction)
+                createSublededgerItem(order, transaction)
+                return null
         }
     }
 
@@ -79,7 +75,6 @@ class DiscrepancyProcessor {
             LOGGER.info("name=Order_Charge_Amount_Not_Match, order={}, expected={}, actual={}", order.getId(), expectedAmount, transaction.senderAmount)
             return createDiscrepancyRecord(order.getId(), DiscrepancyReason.CHARGE_MISMATCH, transaction)
         }
-
         return null
     }
 
@@ -106,11 +101,6 @@ class DiscrepancyProcessor {
         return null
     }
 
-    private DiscrepancyRecord handleDefault(Order order, FacebookTransaction transaction) {
-        DiscrepancyReason reason = defaultDiscrepancyReasonMapping[transaction.txnType]
-        return createDiscrepancyRecord(order.getId(), reason, transaction)
-    }
-
     private List<BillingHistory> getSuccessBillingHistory(Order order, BillingAction billingAction) {
         List<BillingHistory> billingHistories = []
         if (order.billingHistories == null) {
@@ -119,6 +109,35 @@ class DiscrepancyProcessor {
         return order.billingHistories.findAll { BillingHistory billingHistory ->
             return billingHistory.billingEvent == billingAction.name() && billingHistory.success
         }.asList()
+    }
+
+    private void createSublededgerItem(Order order, FacebookTransaction transaction) {
+        SubledgerType subledgerType = null
+        switch (transaction.txnType) {
+            case TransactionType.C:
+                subledgerType = SubledgerType.CHARGE_BACK
+                break
+            case TransactionType.N:
+                subledgerType = SubledgerType.DECLINE
+                break
+            case TransactionType.D:
+                subledgerType = SubledgerType.CHARGE_BACK_OTW
+                break
+            case TransactionType.K:
+                subledgerType = SubledgerType.CHARGE_BACK_REVERSAL
+                break
+            case TransactionType.J:
+                subledgerType = SubledgerType.CHARGE_BACK_REVERSAL_OTW
+                break
+        }
+
+        order.orderItems.each { OrderItem orderItem ->
+            if (subledgerType == SubledgerType.CHARGE_BACK_REVERSAL || subledgerType == SubledgerType.CHARGE_BACK_REVERSAL_OTW) {
+                subledgerService.createChargebackReverseSubledgerItem(subledgerType, orderItem)
+            } else {
+                subledgerService.createReverseSubledgerItem(subledgerType, orderItem)
+            }
+        }
     }
 
     private DiscrepancyRecord createDiscrepancyRecord(OrderId orderId, DiscrepancyReason discrepancyReason, FacebookTransaction facebookTransaction) {
