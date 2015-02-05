@@ -75,6 +75,10 @@ class ApiContextBuilder implements InitializingBean {
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId
         String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
 
+        result.platformVersion = getHeader(StoreApiHeader.ANDROID_VERSION)
+        result.ipAddress = getHeader(StoreApiHeader.USER_IP)
+        fillClientNameAndVersion(result.userAgent, result)
+
         if (!StringUtils.isEmpty(result.androidId) && !androidIdPattern.matcher(result.androidId).matches()) {
             LOGGER.warn('name=Invalid_AndroidId_Pattern, androidId={}', result.androidId)
         }
@@ -114,6 +118,21 @@ class ApiContextBuilder implements InitializingBean {
 
     private static String getHeader(StoreApiHeader header) {
         return JunboHttpContext.requestHeaders.getFirst(header.value)
+    }
+
+    private static void fillClientNameAndVersion(String userAgent, ApiContext apiContext) {
+        String[] splits = userAgent.trim().split('\\s')
+        if (splits.length > 0) {
+            splits = splits[0].trim().split('/')
+
+            if (splits.length > 0) {
+                apiContext.clientName = splits[0]
+            }
+
+            if (splits.length > 1) {
+                apiContext.clientVersion = splits[1]
+            }
+        }
     }
 
     private Promise<com.junbo.identity.spec.v1.model.Locale> getLocale() {

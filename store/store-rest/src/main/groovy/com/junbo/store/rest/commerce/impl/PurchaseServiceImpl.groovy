@@ -337,14 +337,11 @@ class PurchaseServiceImpl implements PurchaseService {
                 return Promise.pure()
             }
         }.then {
-            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
-                order.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
-                    response.order = settled.getId()
-                    getEntitlementsByOrder(settled, hostItem?.itemId == null ? null : new ItemId(hostItem.itemId), apiContext).then { List<Entitlement> entitlements ->
-                        response.entitlements = entitlements
-                        return Promise.pure(response)
-                    }
+            facadeContainer.orderFacade.settleOrder(orderId, apiContext).then { Order settled ->
+                response.order = settled.getId()
+                getEntitlementsByOrder(settled, hostItem?.itemId == null ? null : new ItemId(hostItem.itemId), apiContext).then { List<Entitlement> entitlements ->
+                    response.entitlements = entitlements
+                    return Promise.pure(response)
                 }
             }
         }

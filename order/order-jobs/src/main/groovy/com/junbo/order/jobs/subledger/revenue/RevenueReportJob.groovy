@@ -18,7 +18,7 @@ import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
-import com.junbo.order.jobs.subledger.payout.Constants
+import com.junbo.order.jobs.Constants
 import com.junbo.order.jobs.utils.csv.CSVWriter
 import com.junbo.order.jobs.utils.csv.ConcurrentCSVWriter
 import com.junbo.order.jobs.utils.ftp.FTPUtils
@@ -162,7 +162,7 @@ class RevenueReportJob {
                 // create work file
                 File work = new File(file.getPath() + ".tmp")
                 FileUtils.openOutputStream(work, false).close()
-                CSVWriter csvWriter = new ConcurrentCSVWriter(work, null, 0)
+                CSVWriter csvWriter = new ConcurrentCSVWriter(work, null)
                 csvWriter.writeRecords(Arrays.asList(columns))
 
                 List<Map<String, Object>> records = aggregate(startDate, endDate)
@@ -174,7 +174,7 @@ class RevenueReportJob {
                     }
                     csvWriter.writeRecords(Arrays.asList(row))
                 }
-                csvWriter.flush()
+                csvWriter.close()
                 FileUtils.moveFile(work, file)
             }
 

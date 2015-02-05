@@ -298,7 +298,7 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            instrumentUtils.updateInstrument(user, request)
+            instrumentUtils.updateInstrument(user, request, apiContext)
         }.then { PaymentInstrumentId paymentInstrumentId ->
             innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, paymentInstrumentId).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
@@ -310,6 +310,34 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
+    @Override
+    Promise<InstrumentDeleteResponse> deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest) {
+        ApiContext apiContext
+        User user
+        requestValidator.validateRequiredApiHeaders()
+        Promise.pure().then {
+            identityUtils.getVerifiedUserFromToken().then { User u ->
+                user = u
+                return Promise.pure()
+            }.then {
+                apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                    apiContext = ac
+                    return Promise.pure()
+                }
+            }
+        }.then {
+            return requestValidator.validateInstrumentDeleteRequest(user, instrumentDeleteRequest)
+        }.then {
+            instrumentUtils.deleteInstrument(instrumentDeleteRequest)
+        }.then {
+            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, null as PaymentInstrumentId).then { BillingProfile billingProfile ->
+                InstrumentDeleteResponse response = new InstrumentDeleteResponse(
+                        billingProfile: billingProfile
+                )
+                return Promise.pure(response)
+            }
+        }
+    }
 
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {

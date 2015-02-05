@@ -24,6 +24,7 @@ class BillingEventHistoryBuilder {
             case BalanceStatus.COMPLETED:
             case BalanceStatus.AWAITING_PAYMENT:
             case BalanceStatus.PENDING_CAPTURE:
+            case BalanceStatus.PENDING_RISK_REVIEW:
                 return EventStatus.COMPLETED
 
             case BalanceStatus.QUEUING:
@@ -48,6 +49,7 @@ class BillingEventHistoryBuilder {
         switch (balanceStatus) {
             case BalanceStatus.COMPLETED:
             case BalanceStatus.AWAITING_PAYMENT:
+            case BalanceStatus.PENDING_RISK_REVIEW:
             case BalanceStatus.QUEUING:
                 return EventStatus.COMPLETED
             case BalanceStatus.FAILED:
@@ -89,10 +91,16 @@ class BillingEventHistoryBuilder {
         def billingHistory = new BillingHistory()
         billingHistory.balanceId = (balance.id == null || balance.getId().value == null) ?
                 null : balance.id.toString()
+
+        billingHistory.isTaxInclusive = (balance.taxIncluded != null ? balance.taxIncluded : false)
         billingHistory.totalAmount = balance.totalAmount
+        billingHistory.totalTax = balance.taxAmount
+
         if (balance.type == BalanceType.REFUND.name() || balance.type == BalanceType.CREDIT.name()) {
             billingHistory.totalAmount = 0G - balance.totalAmount
+            billingHistory.totalTax = 0G - balance.taxAmount
         }
+
         billingHistory.billingEvent = buildBillingEvent(balance)
         billingHistory.success = true
         if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
@@ -105,7 +113,11 @@ class BillingEventHistoryBuilder {
         def billingHistory = new BillingHistory()
         billingHistory.balanceId = (balance.id == null || balance.getId().value == null) ?
                 null : balance.id.toString()
+
         billingHistory.totalAmount = balance.totalAmount
+        billingHistory.totalTax = balance.taxAmount
+        billingHistory.isTaxInclusive = (balance.taxIncluded != null ? balance.taxIncluded : false)
+
         billingHistory.billingEvent = BillingAction.CHARGE
         billingHistory.success = true
         def status = buildEventStatusFromImmediateSettle(balance)

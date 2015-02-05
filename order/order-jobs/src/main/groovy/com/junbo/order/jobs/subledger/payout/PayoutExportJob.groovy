@@ -7,6 +7,7 @@ import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
+import com.junbo.order.jobs.Constants
 import com.junbo.order.jobs.utils.csv.ConcurrentCSVWriter
 import com.junbo.order.jobs.utils.csv.CSVWriter
 import com.junbo.order.jobs.utils.ftp.FTPUtils
@@ -47,8 +48,6 @@ class PayoutExportJob {
 
     private int pageSize = 100
 
-    private int writeBufferSize = 1000
-
     private String payoutKeyId = '___payout_key'
 
     private static Lock lock = new ReentrantLock()
@@ -61,9 +60,6 @@ class PayoutExportJob {
 
     @Resource(name ='order.SubledgerPayoutIdAssignUtils')
     SubledgerPayoutAssignUtils subledgerPayoutIdAssignUtils
-
-    @Resource(name ='orderFacadeContainer')
-    FacadeContainer facadeContainer
 
     @Resource(name ='order.SignatureUtils')
     SignatureUtils signatureUtils
@@ -85,8 +81,6 @@ class PayoutExportJob {
 
     @Value('${order.jobs.subledger.maxRetry}')
     private int maxRetry
-
-    private int initialRetryIntervalSecond = 10
 
     private List<String> extensions = Arrays.asList(Constants.CSV_EXTENSION, Constants.SIGNATURE_EXTENSION)
 
@@ -172,9 +166,9 @@ class PayoutExportJob {
             FileUtils.openOutputStream(work, false).close()
 
             // write headers
-            CSVWriter csvWriter = new ConcurrentCSVWriter(work, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(work, lock)
             csvWriter.writeRecords(Arrays.asList(Arrays.asList('ds','financial_id','payout_amount','external_id')))
-            csvWriter.flush()
+            csvWriter.close()
 
             List<Future> futures = []
             for (Integer dcId : DataCenters.instance().getDataCenterIds()) {
@@ -207,7 +201,7 @@ class PayoutExportJob {
         DateFormat dateFormat = new SimpleDateFormat('yyyy-MM-dd')
 
         try {
-            CSVWriter csvWriter = new ConcurrentCSVWriter(file, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(file, lock)
 
             subledgerPayoutIdAssignUtils.execute(dcId, shardId, startDate, endDate)
 
@@ -233,7 +227,7 @@ class PayoutExportJob {
 
                 if (subledgers.size() < pageSize) {
                     aggregateAndWrite(subledgersWithSameSeller, csvWriter, date, dateFormat)
-                    csvWriter.flush()
+                    csvWriter.close()
                     break
                 }
             }

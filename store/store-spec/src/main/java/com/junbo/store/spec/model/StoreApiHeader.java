@@ -13,6 +13,8 @@ public enum StoreApiHeader {
 
     ANDROID_ID("X-ANDROID-ID"),
 
+    ANDROID_VERSION("X-ANDROID-VERSION"),
+
     DEVICE_ID("X-DEVICE-ID"),
 
     ACCEPT_LANGUAGE("Accept-Language"),
@@ -25,7 +27,9 @@ public enum StoreApiHeader {
 
     PACKAGE_SIGNATURE_HASH("X-PACKAGE-SIGNATURE-HASH"),
 
-    IP_COUNTRY("oculus-geoip-country-code");
+    IP_COUNTRY("oculus-geoip-country-code"),
+
+    USER_IP("oculus-end-user-ip");
 
     private final String value;
 

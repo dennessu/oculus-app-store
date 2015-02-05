@@ -34,7 +34,7 @@ public final class RandomFactory {
     }
 
     public static String getRandomEmailAddress() {
-        String email = "silkcloudtest+" + getRandomStringOfAlphabetOrNumeric(9) + String.format("@gmail.com");
+        String email = "silkcloudtest" + getRandomStringOfAlphabetOrNumeric(9) + String.format("@silkcloud.com");
         return email;
     }
 

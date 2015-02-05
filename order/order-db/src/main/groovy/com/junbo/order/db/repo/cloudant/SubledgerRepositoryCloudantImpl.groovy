@@ -17,6 +17,7 @@ import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.sharding.repo.BaseCloudantRepositoryForDualWrite
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -63,7 +64,7 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
 
     @Override
     Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, ItemId itemId,
-                            Date startTime, String subledgerKey, CurrencyId currency, CountryId country) {
+                            Date startTime, SubledgerType subledgerType, String subledgerKey, CurrencyId currency, CountryId country) {
         throw new UnsupportedOperationException('find is not supported in SubledgerRepositoryCloudantImpl.')
     }
 }

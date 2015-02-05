@@ -36,13 +36,13 @@ class SubledgerHelper {
         return new Date(start.time + MS_A_DAY)
     }
 
-    Subledger getMatchingSubledger(SubledgerCriteria subledgerKey) {
-        def sellerId = subledgerKey.seller
-        def startTime = getSubledgerStartTime(subledgerKey.subledgerTime)
+    Subledger getMatchingSubledger(SubledgerCriteria subledgerCriteria) {
+        def sellerId = subledgerCriteria.seller
+        def startTime = getSubledgerStartTime(subledgerCriteria.subledgerTime)
 
         return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
-                subledgerKey.itemId, startTime, subledgerKey.subledgerKey, subledgerKey.currency,
-                subledgerKey.country)
+                subledgerCriteria.itemId, startTime, subledgerCriteria.subledgerType, subledgerCriteria.subledgerKey, subledgerCriteria.currency,
+                subledgerCriteria.country)
     }
 
     Subledger createSubledger(SubledgerCriteria subledgerCriteria, OfferId defaultOffer, SubledgerKeyInfo subledgerKeyInfo) {

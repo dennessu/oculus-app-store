@@ -86,7 +86,7 @@
               </elementProp>
               <elementProp name="email" elementType="Argument">
                 <stringProp name="Argument.name">email</stringProp>
-                <stringProp name="Argument.value">silkcloudtest${__RandomString(4,ASDFGHJKLIUYTREW)}@gmail.com</stringProp>
+                <stringProp name="Argument.value">silkcloudtest${__RandomString(4,ASDFGHJKLIUYTREW)}@silkcloud.com</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="offerName" elementType="Argument">

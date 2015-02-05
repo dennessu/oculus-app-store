@@ -475,5 +475,34 @@
         </sql>
     </changeSet>
 
+    <changeSet author="fzhang" id = "1.8" context="PREDEPLOY">
+        <sql><![CDATA[
+                create table order_pending_action (
+                    pending_action_id bigint not null,
+                    action_type smallint not null,
+                    is_completed boolean not null,
+                    order_id bigint not null,
+					resource_age bigint not null,
+                    created_time timestamp not null,
+                    created_by bigint not null,
+                    updated_time timestamp not null,
+                    updated_by bigint not null,
+                    properties varchar(4000) default null,
+                    primary key (pending_action_id)
+                );
+                create index completed_action_type_created_time on order_pending_action (is_completed, action_type, created_time);
+                create index completed_order_id on order_pending_action (is_completed, order_id);
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="fzhang" id = "1.9" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table order_billing_history add column total_tax decimal default 0;
+                alter table order_billing_history add column is_tax_inclusive boolean default false;
+            ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

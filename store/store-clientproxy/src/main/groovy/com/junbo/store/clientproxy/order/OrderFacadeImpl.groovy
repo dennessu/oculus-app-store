@@ -1,11 +1,11 @@
 package com.junbo.store.clientproxy.order
-
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -16,7 +16,6 @@ import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * The OrderFacadeImpl class.
  */
@@ -60,6 +59,24 @@ class OrderFacadeImpl implements OrderFacade {
             order.currency = currencyId
             order.locale = apiContext.locale.getId()
             return resourceContainer.orderResource.updateOrderByOrderId(orderId, order)
+        }
+    }
+
+    @Override
+    Promise<Order> settleOrder(OrderId orderId, ApiContext apiContext) {
+        setHeaderValue('X-CLIENT-NAME', apiContext.clientName)
+        setHeaderValue('X-CLIENT-VERSION', apiContext.clientVersion)
+        setHeaderValue('X-PLATFORM-NAME', apiContext.platform.value)
+        setHeaderValue('X-PLATFORM-VERSION', apiContext.platformVersion)
+        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+            order.tentative = false
+            return resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order)
+        }
+    }
+
+    private void setHeaderValue(String name, String val) {
+        if (val != null) {
+            JunboHttpContext.requestHeaders.putSingle(name, val)
         }
     }
 

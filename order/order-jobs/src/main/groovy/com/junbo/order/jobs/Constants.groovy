@@ -1,4 +1,4 @@
-package com.junbo.order.jobs.subledger.payout
+package com.junbo.order.jobs
 
 import groovy.transform.CompileStatic
 
@@ -19,4 +19,16 @@ class Constants {
     public static final String PAYOUT_STATUS_FILE_NAME = 'PayoutStatus'
 
     public static final String REVENUE_FILE_NAME = 'MonthlyRevenue'
+
+    public static final String TRANSACTION_FILE_NAME = 'OculusTransaction'
+
+    public static final String DISCREPANCY_FILE_NAME = 'OrderDiscrepancy'
+
+    public static final long MS_A_DAY = 1000L * 3600 * 24
+
+    public static final long MS_A_SECOND = 1000L
+
+    public static final int BATCH_SIZE = 5000
+
+    public static final int PAGE_SIZE = 100
 }

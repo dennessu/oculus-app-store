@@ -11,6 +11,9 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
+import com.junbo.store.spec.model.billing.InstrumentDeleteRequest;
+import com.junbo.store.spec.model.billing.InstrumentDeleteResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
@@ -126,6 +129,65 @@ public class StoreTesting extends BaseTestClass {
     }
 
     @Property(
+            priority = Priority.Dailies,
+            features = "Store delete payment instrument",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test iap offer checkout",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile",
+                    "3. Delete paymentInstrument and check",
+                    "4. Add another credit card into billing profile",
+                    "5. Add storeValue into billing profile",
+                    "6. Delete credit card paymentInstrument and check",
+                    "7. Delete storedValue paymentInstrument and check"
+            }
+    )
+    @Test
+    public void testPaymentInstrumentDelete() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+        //add new credit card to user
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        //verify decrypted credit card info
+        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
+
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+        InstrumentDeleteRequest instrumentDeleteRequest = new InstrumentDeleteRequest();
+        instrumentDeleteRequest.setSelf(paymentId);
+        InstrumentDeleteResponse response = testDataProvider.DeleteInstrument(instrumentDeleteRequest);
+        assert response != null;
+        assert response.getBillingProfile().getInstruments().size() == 0;
+
+        BillingProfileGetResponse billingProfileGetResponse = testDataProvider.getBillingProfile(null);
+        assert billingProfileGetResponse != null;
+        assert billingProfileGetResponse.getBillingProfile().getInstruments().size() == 0;
+
+        InstrumentUpdateResponse creditCard = testDataProvider.CreateCreditCard(uid);
+        InstrumentUpdateResponse storedValue = testDataProvider.CreateStoredValue();
+
+        BillingProfileGetResponse getResponse = testDataProvider.getBillingProfile(null);
+        assert getResponse != null;
+        assert getResponse.getBillingProfile().getInstruments().size() == 2;
+
+        instrumentDeleteRequest.setSelf(getResponse.getBillingProfile().getInstruments().get(0).getSelf());
+        response = testDataProvider.DeleteInstrument(instrumentDeleteRequest);
+        assert response != null;
+        assert response.getBillingProfile().getInstruments().size() == 1;
+
+        instrumentDeleteRequest.setSelf(getResponse.getBillingProfile().getInstruments().get(1).getSelf());
+        response = testDataProvider.DeleteInstrument(instrumentDeleteRequest);
+        assert response != null;
+        assert response.getBillingProfile().getInstruments().size() == 0;
+    }
+
+    @Property(
             priority = Priority.BVT,
             features = "Store checkout",
             component = Component.STORE,
@@ -168,7 +230,6 @@ public class StoreTesting extends BaseTestClass {
                 offerId, paymentId, "1234", null);
 
         if (preparePurchaseResponse.getChallenge() != null) {
-            assert preparePurchaseResponse.getChallenge() != null;
             assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
             assert preparePurchaseResponse.getChallenge().getTos() != null;
 
@@ -242,6 +303,7 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testPrivilege() throws Exception {
+        Master.getInstance().initializeMaster();
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
@@ -395,6 +457,7 @@ public class StoreTesting extends BaseTestClass {
     @Test(groups = "int/ppe/prod/sewer")
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
         try {
+            Master.getInstance().initializeMaster();
             if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();

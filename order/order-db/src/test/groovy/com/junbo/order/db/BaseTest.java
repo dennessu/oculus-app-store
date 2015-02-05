@@ -8,7 +8,9 @@ package com.junbo.order.db;
 
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.sharding.IdGeneratorFacade;
+import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -28,6 +30,11 @@ import java.util.UUID;
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected IdGeneratorFacade idGenerator;
+
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    protected ShardAlgorithm shardAlgorithm;
+
     /**
      * <p>Simple entity id generator.</p>
      *

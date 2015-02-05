@@ -8,6 +8,7 @@ package com.junbo.order.core;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.enums.SubledgerType;
 
 import java.util.List;
 
@@ -31,4 +32,9 @@ public interface SubledgerService {
     void aggregateSubledgerItem(List<SubledgerItem> item);
 
     void updateStatusOnFacebookPayoutStatusChange(FBPayoutStatusChangeRequest fbPayoutStatusChangeRequest);
+
+    List<SubledgerItem> createReverseSubledgerItem(SubledgerType subledgerType, OrderItem orderItem);
+
+    List<SubledgerItem> createChargebackReverseSubledgerItem(SubledgerType subledgerType, OrderItem orderItem);
+
 }

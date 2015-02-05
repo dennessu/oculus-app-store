@@ -9,7 +9,7 @@
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
 
     <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service csr.service entitlement.service crypto.service"/>
+        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service csr.service entitlement.service crypto.service order.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${order.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${order.clientproxy.service.clientId}"/>
@@ -82,6 +82,13 @@
     <bean id="order.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
+    <bean id="order.paymentTransactionClient"
+          class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy"
+          parent="paymentTransactionProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.paymentCallbackClient"
@@ -117,6 +124,11 @@
 
     <bean id="order.subledgerClient" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxy"
           parent="subledgerResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
+    <bean id="order.orderClient" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy"
+          parent="orderResourceClientProxy">
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 

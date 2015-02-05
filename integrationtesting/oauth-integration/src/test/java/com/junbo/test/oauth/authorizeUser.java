@@ -446,6 +446,34 @@ public class authorizeUser {
         Oauth.Logout(idToken);
     }
 
+    @Test(groups = "ppe/prod", enabled = false)
+    @Property(environment = "release")
+    public void testResetPasswordSentryCheck() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
+        for (int i =0; i < 1000; i++) {
+            Oauth.PostResetPassword(email, null);
+        }
+    }
+
     @Test(groups = "dailies")
     public void resetPassword() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);

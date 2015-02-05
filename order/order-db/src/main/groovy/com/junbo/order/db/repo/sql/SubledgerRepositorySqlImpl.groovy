@@ -18,6 +18,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -123,10 +124,10 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
     }
 
     @Override
-    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, ItemId itemId, Date startTime,
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, ItemId itemId, Date startTime, SubledgerType subledgerType,
                             String subledgerKey, CurrencyId currency, CountryId country) {
         def entity = subledgerDao.find(sellerId.value, PayoutStatus.valueOf(payoutStatus),
-                startTime, itemId.value.toString(), subledgerKey, currency?.toString(), country?.toString())
+                startTime, itemId.value.toString(), subledgerType, subledgerKey, currency?.toString(), country?.toString())
         return Promise.pure(modelMapper.toSubledgerModel(entity, new MappingContext()));
     }
 }

@@ -14,5 +14,5 @@ public interface CSVWriter {
 
     void writeRecords(List<List<String>> records);
 
-    void flush();
+    void close();
 }

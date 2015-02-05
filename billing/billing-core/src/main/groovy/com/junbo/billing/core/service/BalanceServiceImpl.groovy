@@ -16,6 +16,7 @@ import com.junbo.billing.db.repo.facade.BalanceRepositoryFacade
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.EventActionType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
@@ -27,6 +28,7 @@ import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.identity.spec.v1.model.Currency
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -38,6 +40,8 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionCallback
+
+import java.text.SimpleDateFormat
 
 /**
  * Created by xmchen on 14-1-26.
@@ -121,7 +125,7 @@ class BalanceServiceImpl implements BalanceService {
                     throw AppErrors.INSTANCE.balanceNotFound("originalBalanceId", balance.originalBalanceId).exception()
                 }
                 balanceValidator.validateBalanceStatus(originalBalance.status,
-                        [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+                        [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.PENDING_RISK_REVIEW.name()])
                 balanceValidator.validateTransactionNotEmpty(originalBalance.getId(), originalBalance.transactions)
 
                 if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
@@ -138,7 +142,9 @@ class BalanceServiceImpl implements BalanceService {
 
             }
 
-            return balanceValidator.validateUser(balance.userId).then {
+            return balanceValidator.validateUser(balance.userId).then { User user ->
+                Integer days = daysBetween(user.createdTime, new Date())
+                balance.propertySet.put(PropertyKey.ACCOUNT_CREATION_DAYS.name(), days.toString())
                 return balanceValidator.validateCountry(balance.country).then {
                     return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
                         return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
@@ -482,5 +488,19 @@ class BalanceServiceImpl implements BalanceService {
         balance.setTotalAmount(amount)
     }
 
+    private Integer daysBetween(Date smdate, Date bdate)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        smdate = sdf.parse(sdf.format(smdate));
+        bdate = sdf.parse(sdf.format(bdate));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(smdate);
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(bdate);
+        long time2 = cal.getTimeInMillis();
+        int between_days = time2.minus(time1).intdiv(1000 * 3600 * 24).intValue();
+
+        return between_days;
+    }
 
 }

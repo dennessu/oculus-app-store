@@ -12,15 +12,14 @@ import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.order.clientproxy.TransactionHelper
+import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
-import com.junbo.order.jobs.subledger.payout.Constants
+import com.junbo.order.jobs.Constants
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.spec.model.enums.SubledgerType
-import com.junbo.order.spec.resource.SubledgerItemResource
-import com.junbo.order.spec.resource.SubledgerResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,12 +53,6 @@ class SubledgerAggregator {
     @Resource(name = 'orderSubledgerHelper')
     SubledgerHelper subledgerHelper
 
-    @Resource(name = 'order.subledgerClient')
-    SubledgerResource subledgerResource
-
-    @Resource(name = 'order.subledgerItemClient')
-    SubledgerItemResource subledgerItemResource
-
     @Resource(name ='orderTransactionHelper')
     TransactionHelper transactionHelper
 
@@ -77,6 +70,9 @@ class SubledgerAggregator {
 
     @Resource(name = 'order.identityOrganizationClient')
     private OrganizationResource organizationResource
+
+    @Resource(name = 'orderSubledgerService')
+    SubledgerService subledgerService
 
     @Resource(name = 'subledgerTaskAsyncTaskExecutor')
     private ThreadPoolTaskExecutor threadPoolTaskExecutor
@@ -257,7 +253,7 @@ class SubledgerAggregator {
         int retryCount = 0
         while (retryCount <= maxRetryCount) {
             try {
-                subledgerItemResource.aggregateSubledgerItem(items).get()
+                subledgerService.aggregateSubledgerItem(items)
                 statics.totalAggregated += items.size()
                 return
             } catch (Exception ex) {

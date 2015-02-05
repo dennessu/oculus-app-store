@@ -59,10 +59,11 @@ public class MemcachedThrottleController implements ThrottleController {
 
         String key = apiName + ":" + JunboHttpContext.getRequestIpAddress();
         Long limit = apiThrottleLimits.get(apiName);
+        long currentValue = 0;
 
         try {
             // Try to increase the current api count for this api + request ip
-            long currentValue = memcachedClient.incr(key, 1L);
+            currentValue = memcachedClient.incr(key, 1L);
             // return value = -1 means the key does not exist
             if (currentValue == -1) {
                 try {
@@ -80,14 +81,15 @@ public class MemcachedThrottleController implements ThrottleController {
                     LOGGER.error("Error calling memcached client", e);
                 }
             }
-
-            // Check if the api count exceeds the api throttle limit
-            if (currentValue > limit) {
-                throw AppCommonErrors.INSTANCE.forbiddenWithMessage("The requester exceeds the api throttle limit")
-                        .exception();
-            }
         } catch (Exception e) {
             LOGGER.error("Error calling memcached client, silently ignore", e);
+            currentValue = 0;
+        }
+
+        // Check if the api count exceeds the api throttle limit
+        if (currentValue > limit) {
+            throw AppCommonErrors.INSTANCE.forbiddenWithMessage("The requester exceeds the api throttle limit")
+                    .exception();
         }
     }
 }

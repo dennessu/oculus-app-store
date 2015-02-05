@@ -9,6 +9,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.*;
 import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.enums.SubledgerType;
 
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface SubledgerRepositoryFacade {
     List<Subledger> getSubledgersByPayouId(PayoutId payoutId, PageParam pageParam);
 
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus,
-                                          ItemId itemId, Date startTime, String subledgerKey, CurrencyId currency,
+                                          ItemId itemId, Date startTime, SubledgerType subledgerType, String subledgerKey, CurrencyId currency,
                                           CountryId country);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);

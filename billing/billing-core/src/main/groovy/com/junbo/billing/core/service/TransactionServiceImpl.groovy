@@ -25,6 +25,7 @@ import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
 import com.junbo.payment.spec.model.Item
 import com.junbo.payment.spec.model.PaymentTransaction
+import com.junbo.payment.spec.model.RiskFeature
 import com.junbo.payment.spec.model.WebPaymentInfo
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -399,6 +400,18 @@ class TransactionServiceImpl implements TransactionService {
             webPaymentInfo.setCancelURL(balance.cancelRedirectUrl)
         }
         paymentTransaction.setWebPaymentInfo(webPaymentInfo)
+
+        def riskFeature = new RiskFeature()
+        riskFeature.setBrowserName(balance.propertySet.get(PropertyKey.CLIENT_NAME.name()))
+        riskFeature.setBrowserVersion(balance.propertySet.get(PropertyKey.CLIENT_VERSION.name()))
+        riskFeature.setPlatformName(balance.propertySet.get(PropertyKey.PLATFORM_NAME.name()))
+        riskFeature.setPlatformVersion(balance.propertySet.get(PropertyKey.PLATFORM_VERSION.name()))
+        riskFeature.setCurrencyPurchasing(balance.currency)
+        riskFeature.setSourceCountry(balance.country)
+        riskFeature.setTimeSinceUserAccountCreatedInDays(Integer.parseInt(balance.propertySet.get(PropertyKey.ACCOUNT_CREATION_DAYS.name())))
+        riskFeature.setSourceDatr('test_datr')
+
+        paymentTransaction.setRiskFeature(riskFeature)
 
         return paymentTransaction
     }

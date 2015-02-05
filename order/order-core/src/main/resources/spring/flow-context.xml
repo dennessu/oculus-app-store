@@ -62,6 +62,10 @@
         <property name="actionType" value="CHARGE_BACK"/>
     </bean>
 
+    <bean id="subledgerCreateChargeBackReverseItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateChargeBackReverseItemAction">
+    </bean>
+
+
     <bean id="webPaymentChargeAction" class="com.junbo.order.core.impl.orderaction.WebPaymentChargeAction">
         <property name="orderActionType" value="CHARGE"/>
     </bean>

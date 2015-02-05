@@ -65,7 +65,8 @@ class CoreUtils {
         }
         if (balances.any { Balance balance ->
             (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
-                    balance.status != BalanceStatus.COMPLETED.name()) ||
+                    balance.status != BalanceStatus.COMPLETED.name() &&
+                    balance.status != BalanceStatus.PENDING_RISK_REVIEW.name()) ||
                     balance.type != BalanceType.DEBIT.name()
         }) {
             return false
@@ -111,16 +112,18 @@ class CoreUtils {
             OrderItem requestItem = request.orderItems?.find { OrderItem ii ->
                 i.offer == ii.offer
             }
+            diffItem.totalTax = 0G
             if (requestItem == null) {
                 diffItem.quantity = i.quantity
                 diffItem.totalAmount = i.totalAmount
+                diffItem.totalTax = i.totalTax
             } else {
                 if (i.quantity > requestItem.quantity) {
                     diffItem.quantity = i.quantity - requestItem.quantity
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
                     requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
-                    if (requestItem.quantity == i.quantity) {
+                    if (diffItem.quantity == i.quantity) {
                         diffItem.totalTax = i.totalTax
                     }
                 } else if (i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
@@ -146,6 +149,48 @@ class CoreUtils {
             throw AppErrors.INSTANCE.orderNoItemRefund().exception()
         }
         return diffOrder
+    }
+
+    static List<OrderItem> cloneOrderItems(Order order) {
+        return order.orderItems.collect { OrderItem o ->
+            return new OrderItem(
+                    id: o.getId(),
+                    totalAmount: o.totalAmount,
+                    totalTax: o.totalTax,
+                    quantity: o.quantity,
+                    offer: o.offer,
+                    developerRevenue: o.developerRevenue,
+                    taxes: o.taxes,
+                    honoredTime: o.honoredTime,
+                    totalDiscount: o.totalDiscount
+            )
+        }.asList()
+    }
+
+    static List<OrderItem> getRefundedOrderItems(List<OrderItem> itemsBeforeRefund, List<OrderItem> itemsAfterRefund, int numberAfterDecimal) {
+        List<OrderItem> orderItems = []
+        itemsBeforeRefund.each { OrderItem original ->
+            OrderItem diff = new OrderItem(offer: original.offer, id: original.getId())
+            diff.quantity = original.quantity
+            diff.totalAmount = original.totalAmount
+            diff.totalTax = original.totalTax == null ? 0 : original.totalTax
+
+            OrderItem updated = itemsAfterRefund.find {OrderItem orderItem -> orderItem.offer == original.offer}
+            if (updated != null) {
+                diff.quantity -= updated.quantity
+                diff.totalAmount -= updated.totalAmount
+                if (updated.totalTax != null) {
+                    diff.totalTax -= updated.totalTax
+                }
+            }
+
+            diff.totalAmount = diff.totalAmount.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+            diff.totalTax = diff.totalTax.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+            if (diff.totalAmount > BigDecimal.ZERO || diff.totalTax > BigDecimal.ZERO || diff.quantity > 0) {
+                orderItems << diff
+            }
+        }
+        return orderItems
     }
 
     static Order calcRefundedOrder(Order existingOrder, Balance balance, Order diffOrder) {
@@ -324,7 +369,10 @@ class CoreUtils {
 
         order.ipAddress = context.userIp
         order.ipGeoAddress = context.location
-
+        order.clientName = context.clientName
+        order.clientVersion = context.clientVersion
+        order.platformName = context.platformName
+        order.platformVersion = context.platformVersion
     }
 
     static Boolean isPendingOnFulfillment(Order order, OrderEvent event) {
@@ -582,7 +630,8 @@ class CoreUtils {
 
     static Boolean isBalanceSettled(Balance balance) {
         return BalanceStatus.COMPLETED.name() == balance.status ||
-                BalanceStatus.AWAITING_PAYMENT.name() == balance.status
+                BalanceStatus.AWAITING_PAYMENT.name() == balance.status ||
+                BalanceStatus.PENDING_RISK_REVIEW.name() == balance.status
     }
 
     static Order refreshFulfillmentHistories(Order order, FulfilmentRequest fr) {

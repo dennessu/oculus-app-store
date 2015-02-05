@@ -12,6 +12,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.order.spec.model.SubledgerParam;
+import com.junbo.order.spec.model.enums.SubledgerType;
 import com.junbo.sharding.dualwrite.annotations.ReadMethod;
 import com.junbo.sharding.repo.BaseRepository;
 
@@ -40,6 +41,6 @@ public interface SubledgerRepository extends BaseRepository<Subledger, Subledger
 
     @ReadMethod
     Promise<Subledger> find(OrganizationId sellerId, String payoutStatus,
-                            ItemId itemId, Date startTime, String subledgerKey, CurrencyId currency,
+                            ItemId itemId, Date startTime, SubledgerType subledgerType, String subledgerKey, CurrencyId currency,
                             CountryId country);
 }

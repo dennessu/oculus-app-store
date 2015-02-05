@@ -80,6 +80,12 @@ class FacadeBuilder {
         request.items = []
 
         order.orderItems?.each { OrderItem oi ->
+
+            if (oi.totalAmount != 0) {
+                // if there is amount not refund for item, do not revoke it.
+                return
+            }
+
             def revokeItems = oi.orderItemRevisions?.findAll { OrderItemRevision oir ->
                 oir.revisionType == OrderItemRevisionType.REFUND.name() && !oir.revoked
             }

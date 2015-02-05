@@ -6,16 +6,15 @@
 package com.junbo.order.core.impl.internal;
 
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.OrderId;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.clientproxy.model.Offer;
 import com.junbo.order.core.impl.order.OrderServiceContext;
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext;
-import com.junbo.order.spec.model.Order;
-import com.junbo.order.spec.model.OrderEvent;
-import com.junbo.order.spec.model.OrderQueryParam;
-import com.junbo.order.spec.model.PageParam;
+import com.junbo.order.spec.model.*;
 import com.junbo.order.spec.model.enums.BillingAction;
+import com.junbo.order.spec.model.enums.OrderPendingActionType;
 import com.junbo.payment.spec.model.PaymentInstrument;
 
 import java.util.List;
@@ -62,4 +61,5 @@ public interface OrderInternalService {
 
     Promise<com.junbo.langur.core.webflow.action.ActionResult> immediateSettle(Order order, OrderActionContext context);
 
+    OrderPendingAction createOrderPendingAction(OrderId orderId, OrderPendingActionType type);
 }

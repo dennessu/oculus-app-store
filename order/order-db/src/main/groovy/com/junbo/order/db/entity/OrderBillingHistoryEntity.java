@@ -26,6 +26,8 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
     private String balanceId;
     private BillingAction billingEventId;
     private BigDecimal totalAmount;
+    private BigDecimal totalTax;
+    private Boolean isTaxInclusive;
     private Boolean success;
     private String note;
 
@@ -78,6 +80,26 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "TOTAL_TAX")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(BigDecimal totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    @Column(name = "IS_TAX_INCLUSIVE")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getIsTaxInclusive() {
+        return isTaxInclusive;
+    }
+
+    public void setIsTaxInclusive(Boolean isTaxInclusive) {
+        this.isTaxInclusive = isTaxInclusive;
     }
 
     @Override

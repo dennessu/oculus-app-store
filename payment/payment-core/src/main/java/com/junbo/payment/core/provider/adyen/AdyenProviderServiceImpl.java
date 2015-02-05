@@ -402,8 +402,6 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         // Check user and password
         checkAuthorization();
         //TODO: save to DB and check redundant notification. Log it first
-        LOGGER.info("receive notification from ayden:" + request);
-
         PaymentTransaction transaction = null;
         try{
             transaction = process(request);

@@ -9,6 +9,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.RiskFeature;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.paymentInstruments.*;
@@ -130,6 +131,13 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                     paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
                     paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
                     paymentInstrument.setEmail(creditCardInfo.getEmail());
+
+                    RiskFeature riskFeature = new RiskFeature();
+                    riskFeature.setCurrencyPurchasing("USD");
+                    riskFeature.setSourceCountry("US");
+                    riskFeature.setSourceDatr("test_datr");
+                    riskFeature.setTimeSinceUserAccountCreatedInDays(10);
+                    paymentInstrument.setRiskFeature(riskFeature);
                     paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                     return paymentInfo.getPid();
                 }

@@ -407,8 +407,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
 
     @Override
     public Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request) {
+        LOGGER.info("receive notification from " + provider.name() + ": " + request);
         PaymentProviderService providerService = providerRoutingService.getProviderByName(provider.name());
-        LOGGER.info("start to call provider processNotification");
         return providerService.processNotify(request)
                 .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override

@@ -245,6 +245,27 @@ public class CommonMapper {
         }
     }
 
+
+    public String fromOrderPendingActionTypeToString(OrderPendingActionType actionType) {
+        if (actionType == null) {
+            return null;
+        }
+
+        return actionType.toString();
+    }
+
+    public OrderPendingActionType fromStringToOrderPendingActionType(String action) {
+        if (action == null) {
+            return null;
+        }
+
+        try {
+            return OrderPendingActionType.valueOf(action);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(action, "OrderPendingActionType").exception();
+        }
+    }
+
     public Long fromOrderEventIdToLong(OrderEventId orderEventId) {
         if (orderEventId == null) {
             return null;
@@ -664,5 +685,21 @@ public class CommonMapper {
         }
 
         return payoutId.getValue();
+    }
+
+    public OrderPendingActionId fromLongToOrderPendingActionId(Long orderPendingActionId) {
+        if (orderPendingActionId == null) {
+            return null;
+        }
+
+        return new OrderPendingActionId(orderPendingActionId);
+    }
+
+    public Long fromOrderPendingActionIdToLong(OrderPendingActionId orderPendingActionId) {
+        if (orderPendingActionId == null) {
+            return null;
+        }
+
+        return orderPendingActionId.getValue();
     }
 }

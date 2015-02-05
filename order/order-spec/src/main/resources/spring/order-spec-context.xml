@@ -12,4 +12,9 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.subledger.url}"/>
     </bean>
+
+    <bean id="orderResourceClientProxy" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
 </beans>
