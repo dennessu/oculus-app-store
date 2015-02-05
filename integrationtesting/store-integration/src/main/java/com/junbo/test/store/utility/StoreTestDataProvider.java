@@ -19,7 +19,6 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -379,6 +378,13 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest, expectedResponseCde);
     }
 
+    public InstrumentDeleteResponse DeleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest) throws Exception {
+        return DeleteInstrument(instrumentDeleteRequest, 200);
+    }
+
+    public InstrumentDeleteResponse DeleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest, int expectedResponseCode) throws Exception {
+        return storeClient.deleteInstrument(instrumentDeleteRequest, expectedResponseCode);
+    }
 
     public void CreditStoredValue(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);

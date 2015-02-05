@@ -15,8 +15,10 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.billing.Instrument
+import com.junbo.store.spec.model.billing.InstrumentDeleteRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
@@ -26,7 +28,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
-import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
 
@@ -61,6 +62,14 @@ class InstrumentUtils {
             }
         } else {
             return innerCreateInstrument(user, instrumentUpdateRequest.instrument)
+        }
+    }
+
+    public Promise<Void> deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest) {
+        return Promise.pure().then {
+            return resourceContainer.paymentInstrumentResource.delete(instrumentDeleteRequest.self).recover { Throwable throwable ->
+                throw AppCommonErrors.INSTANCE.invalidOperation("current payment instrument is not allow to delete").exception()
+            }
         }
     }
 

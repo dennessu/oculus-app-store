@@ -6,10 +6,7 @@
 package com.junbo.test.store.apihelper;
 
 import com.junbo.common.id.OfferId;
-import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
-import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
@@ -46,6 +43,10 @@ public interface StoreService {
     InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest) throws Exception;
 
     InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception;
+
+    InstrumentDeleteResponse deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest) throws Exception;
+
+    InstrumentDeleteResponse deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest, int expectedResponseCode) throws Exception;
 
     PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, IAPParam iapParam) throws Exception;
 

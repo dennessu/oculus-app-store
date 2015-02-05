@@ -4,7 +4,10 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.id.*
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.TosId
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
@@ -27,6 +30,7 @@ import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
+import com.junbo.store.spec.model.billing.InstrumentDeleteRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.browse.AcceptTosRequest
 import com.junbo.store.spec.model.browse.DeliveryRequest
@@ -312,20 +316,20 @@ class RequestValidator {
         notEmpty(request.instrument, 'instrument')
         if (request.instrument.self == null) { // validate for create
             notEmpty(request.instrument.type, 'instrument.type')
-            PIType piType
+            com.junbo.common.id.PIType piType
             try {
-                piType = PIType.valueOf(request.instrument.type)
-                if (piType != PIType.CREDITCARD && piType != PIType.STOREDVALUE) {
+                piType = com.junbo.common.id.PIType.valueOf(request.instrument.type)
+                if (piType != com.junbo.common.id.PIType.CREDITCARD && piType != com.junbo.common.id.PIType.STOREDVALUE) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Unsupported instrument type.').exception()
                 }
             } catch (IllegalArgumentException ex) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Invalid instrument type.').exception()
             }
-            if (piType == PIType.CREDITCARD) {
+            if (piType == com.junbo.common.id.PIType.CREDITCARD) {
                 notEmpty(request.instrument.accountName, 'instrument.accountName')
                 notEmpty(request.instrument.accountNum, 'instrument.accountNum')
                 notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
-            } else if (piType == PIType.STOREDVALUE) {
+            } else if (piType == com.junbo.common.id.PIType.STOREDVALUE) {
                 notEmpty(request.instrument.storedValueCurrency, 'instrument.storedValueCurrency')
                 notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
             } else {
@@ -333,6 +337,27 @@ class RequestValidator {
             }
         }
         return Promise.pure(null)
+    }
+
+    Promise validateInstrumentDeleteRequest(User user, InstrumentDeleteRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.self, 'self')
+
+        resourceContainer.paymentInstrumentResource.getById(request.self).then { PaymentInstrument paymentInstrument ->
+            if (paymentInstrument == null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('self', 'payment Instrument does not exist.').exception()
+            }
+
+            if (!user.getId().getValue().equals(paymentInstrument.getUserId())) {
+                throw AppCommonErrors.INSTANCE.forbiddenWithMessage("user does not own this payment instrument").exception()
+            }
+
+            return Promise.pure()
+        }.recover { Throwable throwable ->
+            throw AppCommonErrors.INSTANCE.fieldInvalid('self', 'payment Instrument is not valid.').exception()
+        }
     }
 
 
@@ -414,7 +439,7 @@ class RequestValidator {
             if (offer.hasStoreValueItem) {
                 return resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(
                         userId: userId,
-                        type: PIType.STOREDVALUE.toString()
+                        type: com.junbo.common.id.PIType.STOREDVALUE.toString()
                 )).then { Results<PaymentInstrument> results ->
                     if (results == null || CollectionUtils.isEmpty(results.items)) {
                         throw AppErrors.INSTANCE.invalidOffer('StoreValue is not exists.').exception()

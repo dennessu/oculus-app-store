@@ -8,12 +8,12 @@ package com.junbo.store.spec.resource;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteByAccessToken;
-import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
-import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.identity.*;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
+import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
+import com.junbo.store.spec.model.identity.VerifyEmailResponse;
 import com.junbo.store.spec.model.purchase.*;
 
 import javax.ws.rs.*;
@@ -61,6 +61,12 @@ public interface StoreResource {
     @RouteByAccessToken
     // This requires email verification
     Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest);
+
+    @DELETE
+    @Path("/billing-profile/instruments")
+    @RouteByAccessToken
+    // This request email verification
+    Promise<InstrumentDeleteResponse> deleteInstrument(@BeanParam InstrumentDeleteRequest instrumentDeleteRequest);
 
     @POST
     @Path("/purchase/free")

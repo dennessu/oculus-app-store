@@ -8,12 +8,12 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
-import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.iap.*;
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest;
+import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPItemsResponse;
+import com.junbo.store.spec.model.iap.IAPParam;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.apihelper.Header;
@@ -175,6 +175,27 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             }, responseBody);
 
             return instrumentUpdateResponse;
+        }
+        return null;
+    }
+
+    @Override
+    public InstrumentDeleteResponse deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest) throws Exception {
+        return deleteInstrument(instrumentDeleteRequest, 200);
+    }
+
+    @Override
+    public InstrumentDeleteResponse deleteInstrument(InstrumentDeleteRequest instrumentDeleteRequest, int expectedResponseCode) throws Exception {
+        String url = getEndPointUrl() + "/billing-profile/instruments";
+        if (instrumentDeleteRequest.getSelf() != null) {
+            url += String.format("?paymentInstrumentId=%s", IdConverter.idToHexString(instrumentDeleteRequest.getSelf()));
+        }
+        String responseBody = restApiCall(HTTPMethod.DELETE, url, instrumentDeleteRequest, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            InstrumentDeleteResponse instrumentDeleteResponse = new JsonMessageTranscoder().decode(new TypeReference<InstrumentDeleteResponse>() {
+            }, responseBody);
+
+            return instrumentDeleteResponse;
         }
         return null;
     }
