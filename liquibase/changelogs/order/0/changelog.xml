@@ -471,7 +471,6 @@
                 alter table subledger_item drop column subledger_item_action;
                 drop index subledger_item_status_offer_id_created_time;
                 create index subledger_item_status_item_id_created_time on subledger_item(status_id, item_id, created_time);
-
             ]]>
         </sql>
     </changeSet>
