@@ -1372,10 +1372,10 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test(groups = "int/ppe/prod/sewer")
     public void testSignInWithMultiEndpoint() throws Exception {
         try {
+            Master.getInstance().initializeMaster();
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
             AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-            String userName = authTokenResponse.getUsername();
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
             AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
