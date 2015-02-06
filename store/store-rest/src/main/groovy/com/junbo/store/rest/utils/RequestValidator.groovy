@@ -343,11 +343,11 @@ class RequestValidator {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        notEmpty(request.self, 'self')
+        notEmpty(request.self, 'paymentInstrumentId')
 
         resourceContainer.paymentInstrumentResource.getById(request.self).then { PaymentInstrument paymentInstrument ->
             if (paymentInstrument == null) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('self', 'payment Instrument does not exist.').exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid('paymentInstrumentId', 'payment Instrument does not exist.').exception()
             }
 
             if (!user.getId().getValue().equals(paymentInstrument.getUserId())) {
@@ -356,7 +356,7 @@ class RequestValidator {
 
             return Promise.pure()
         }.recover { Throwable throwable ->
-            throw AppCommonErrors.INSTANCE.fieldInvalid('self', 'payment Instrument is not valid.').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('paymentInstrumentId', 'payment Instrument is not valid.').exception()
         }
     }
 
