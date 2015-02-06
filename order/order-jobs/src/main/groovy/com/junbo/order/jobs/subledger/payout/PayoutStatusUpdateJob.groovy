@@ -63,6 +63,8 @@ class PayoutStatusUpdateJob {
     @Value('${order.jobs.subledger.maxRetry}')
     private int maxRetry
 
+    private boolean parallelUpdate = false
+
     private int initialRetryIntervalSecond = 10
 
     @Resource(name = 'payoutUpdateJobAsyncTaskExecutor')
@@ -73,9 +75,6 @@ class PayoutStatusUpdateJob {
 
     @Resource(name='subledgerPayoutFTPUtils')
     FTPUtils ftpUtils
-
-    @Resource(name = 'orderTransactionHelper')
-    TransactionHelper transactionHelper
 
     public void execute() {
         innerExecute(new Date(System.currentTimeMillis() ))
@@ -151,6 +150,7 @@ class PayoutStatusUpdateJob {
                         MDC.put(X_REQUEST_ID, UUID.randomUUID().toString());
                         try {
                             totalProcessed.incrementAndGet()
+                            LOGGER.info('name=PayoutStatusUpdateStart, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','))
                             self.processPayoutStatus(headersLowerCase, values)
                             LOGGER.info('name=PayoutStatusUpdateSuccess, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','))
                         } catch (Exception ex) {
@@ -159,12 +159,16 @@ class PayoutStatusUpdateJob {
                         }
                     }
                 })
-                taskList.add(future)
 
-                if (taskList.size() > MAX_FUTURE_NUM) {
-                    taskList.each { Future f -> f.get()}
-                    taskList.clear()
+                if (!parallelUpdate) {
+                    future.get()
+                } else {
+                    if (taskList.size() > MAX_FUTURE_NUM) {
+                        taskList.each { Future f -> f.get()}
+                        taskList.clear()
+                    }
                 }
+
                 index++
             }
 
@@ -213,9 +217,7 @@ class PayoutStatusUpdateJob {
             int retryCount = 0;
             while (true) {
                 try {
-                    transactionHelper.executeInNewTransaction {
-                        subledgerResource.updateStatusOnFacebookPayoutStatusChange(request).get()
-                    }
+                    subledgerResource.updateStatusOnFacebookPayoutStatusChange(request).get()
                     break
                 } catch (Exception ex) {
                     LOGGER.error('name=PayoutStatusUpdateApiError,payoutId={},fbPayoutId={},retryCount={}', IdFormatter.encodeId(payoutId), request.fbPayoutId, retryCount, ex)

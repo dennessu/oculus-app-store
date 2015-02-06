@@ -2,6 +2,7 @@ package com.junbo.order.jobs.transaction
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OrderId
+import com.junbo.common.util.IdFormatter
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.jobs.transaction.model.DiscrepancyReason
 import com.junbo.order.jobs.transaction.model.DiscrepancyRecord
@@ -41,6 +42,7 @@ class DiscrepancyProcessor {
     SubledgerService subledgerService
 
     public DiscrepancyRecord process(OrderId orderId, FacebookTransaction transaction) {
+        LOGGER.info('name=Start_Check_Discrepancy, orderId={}', IdFormatter.encodeId(orderId))
         Order order = orderResource.getOrderByOrderId(orderId).get()
         switch (transaction.txnType) {
             case TransactionType.S:
@@ -55,6 +57,8 @@ class DiscrepancyProcessor {
 
     private DiscrepancyRecord handleChargeTransaction(Order order, FacebookTransaction transaction) {
         List<BillingHistory> chargeHistories = getSuccessBillingHistory(order, BillingAction.CHARGE)
+        LOGGER.info('name=Check_ChargeTransaction_Discrepancy, orderId={}', IdFormatter.encodeId(order.getId()))
+
         if (chargeHistories.isEmpty()) {
             LOGGER.info("name=Success_Charge_Not_Found, order={}", order.getId())
             return createDiscrepancyRecord(order.getId(), DiscrepancyReason.CHARGE_MISMATCH, transaction)
@@ -79,6 +83,8 @@ class DiscrepancyProcessor {
     }
 
     private DiscrepancyRecord handleRefundTransaction(Order order, FacebookTransaction transaction) {
+        LOGGER.info('name=Check_RefundTransaction_Discrepancy, orderId={}', IdFormatter.encodeId(order.getId()))
+
         List<BillingHistory> refundHistories = getSuccessBillingHistory(order, BillingAction.REFUND)
         if (refundHistories.isEmpty()) {
             LOGGER.info("name=Success_Refund_Not_Found, order={}", order.getId())

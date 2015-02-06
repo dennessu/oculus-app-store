@@ -65,6 +65,9 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
         def newEntity = modelMapper.toSubledgerEntity(subledger, new MappingContext())
         newEntity.createdTime = oldEntity.createdTime
         newEntity.createdBy = oldEntity.createdBy
+        if (subledger.resourceAge == null) {
+            subledger.resourceAge = subledger.resourceAge
+        }
         newEntity.resourceAge = oldEntity.resourceAge
         subledgerDao.update(newEntity)
         Utils.fillDateInfo(subledger, newEntity)
