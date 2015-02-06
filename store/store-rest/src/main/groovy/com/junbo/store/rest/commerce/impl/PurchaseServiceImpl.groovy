@@ -351,7 +351,11 @@ class PurchaseServiceImpl implements PurchaseService {
         if (value == null) {
             return null
         }
-        return value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
+        if (currency.symbolPosition.equalsIgnoreCase(Constants.CurrencySymbolPosition.AFTER)) {
+            return value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
+        } else {
+            return currency.symbol + value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP)
+        }
     }
 
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, IAPParam iapParam, ApiContext apiContext) {

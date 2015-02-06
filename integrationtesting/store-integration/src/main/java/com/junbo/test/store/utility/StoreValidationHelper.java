@@ -70,7 +70,7 @@ public class StoreValidationHelper extends ValidationHelper {
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response, boolean hasTax, OrderId orderId) {
-        verifyEqual(response.getFormattedTotalPrice(),hasTax ? String.format("10.83$") : String.format("10.83$"), "verify formatted total price");
+        verifyEqual(response.getFormattedTotalPrice(),hasTax ? String.format("$10.83") : String.format("$10.83"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
         }

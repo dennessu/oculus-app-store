@@ -29,4 +29,9 @@ class Constants {
         public static final String PASSWORD = 'PASSWORD'
         public static final String PIN = 'PIN'
     }
+
+    public static class CurrencySymbolPosition {
+        public static final String BEFORE = 'BEFORE'
+        public static final String AFTER = 'AFTER'
+    }
 }
