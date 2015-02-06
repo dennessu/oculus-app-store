@@ -118,7 +118,7 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     @Override
     List<ItemId> getDistinctSubledgerItemItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        return subledgerItemRepository.getDistinctOfferIds(dataCenterId, shardKey, status, pageParam).get()
+        return subledgerItemRepository.getDistinctItemIds(dataCenterId, shardKey, status, pageParam).get()
     }
 
     @Override

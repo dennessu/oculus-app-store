@@ -156,9 +156,9 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-    <!-- Subledger Job & Trigger-->
+    <!-- revenue report Job & Trigger-->
     <bean id="revenueReportJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
-        <property name="jobDetail" ref="subledgerJobDetail" />
+        <property name="jobDetail" ref="revenueReportDetail" />
         <property name="cronExpression" value="${order.jobs.revenue.cronexpression}" />
     </bean>
 

@@ -504,5 +504,13 @@
         </sql>
     </changeSet>
 
+    <changeSet author="fzhang" id = "1.10" context="PREDEPLOY">
+        <sql><![CDATA[
+                create unique index subledger_start_time_seller_item_pending_unique on subledger (start_time, seller_id, item_id, subledger_type, subledger_key, country, currency, nullif(payout_status_id = 0, false));
+                drop index subledger_start_time_seller_item_unique
+            ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

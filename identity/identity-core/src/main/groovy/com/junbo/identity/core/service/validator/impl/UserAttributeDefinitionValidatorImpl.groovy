@@ -16,6 +16,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Created by xiali_000 on 2014/12/19.
@@ -47,6 +48,10 @@ class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionVal
     Promise<Void> validateForSearch(UserAttributeDefinitionListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
+        }
+
+        if (options.getOrganizationId() == null && !StringUtils.isEmpty(options.type)) {
+            throw AppCommonErrors.INSTANCE.parameterRequired("organizationId").exception();
         }
 
         return Promise.pure(null)

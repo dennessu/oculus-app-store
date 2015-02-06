@@ -294,6 +294,12 @@ class CheckoutTests(ut.TestBase):
             "typeSpecificDetails":{
                 "expireDate":"2025-11"
             },
+            "riskFeature":{
+                "timeSinceUserAccountCreatedInDays":"10",
+                "sourceDatr":"test_datr",
+                "sourceCountry":"US",
+                "currencyPurchasing":"USD"
+            },
             "futureExpansion": { }
         })
 

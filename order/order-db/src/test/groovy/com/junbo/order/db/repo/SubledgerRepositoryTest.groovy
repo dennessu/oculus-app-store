@@ -140,12 +140,17 @@ class SubledgerRepositoryTest extends BaseTest {
     }
 
     @Test
-    public void testSqlCreateDuplicate() {
+    public void testSqlCreateDuplicatePending() {
         def subledger = TestHelper.generateSubledger()
+        subledger.payoutStatus = PayoutStatus.COMPLETED.name()
+        subledgerRepositorySql.create(subledger)
+        subledgerRepositorySql.create(subledger)
+
+        subledger.payoutStatus = PayoutStatus.PENDING.name()
         subledgerRepositorySql.create(subledger)
         try  {
             subledgerRepositorySql.create(subledger)
-            Assert.fail('expect creation failure');
+            Assert.fail('create pending duplicate should fail');
         } catch (Exception) {
         }
 

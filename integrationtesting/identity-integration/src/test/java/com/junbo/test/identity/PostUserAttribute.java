@@ -42,7 +42,7 @@ public class PostUserAttribute {
 
     @Test(groups = "bvt")
     public void postUserAttribute() throws Exception {
-        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null);
+        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null, null, null);
         for(UserAttributeDefinition userAttributeDefinition : results.getItems()) {
             Identity.UserAttributeDefinitionDelete(userAttributeDefinition.getId());
 
@@ -79,14 +79,19 @@ public class PostUserAttribute {
 
     @Test(groups = "dailies")
     public void testUserAttributeIsActive() throws Exception {
-        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null);
+        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null, null, null);
+        Results<UserAttribute> userAttributeResults = null;
         for(UserAttributeDefinition userAttributeDefinition : results.getItems()) {
             Identity.UserAttributeDefinitionDelete(userAttributeDefinition.getId());
 
-            Results<UserAttribute> userAttributeResults = Identity.UserAttributeSearch(null, userAttributeDefinition.getId(), null, null);
+            userAttributeResults = Identity.UserAttributeSearch(null, userAttributeDefinition.getId(), null, null);
             for(UserAttribute userAttribute : userAttributeResults.getItems()) {
                 Identity.UserAttributeDelete(userAttribute.getId());
             }
+        }
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
+        for (UserAttribute userAttribute : userAttributeResults.getItems()) {
+            Identity.UserAttributeDelete(userAttribute.getId());
         }
         User user = Identity.UserPostDefault();
         UserAttributeDefinition userAttributeDefinition = IdentityModel.DefaultUserAttributeDefinition();
@@ -97,7 +102,12 @@ public class PostUserAttribute {
         assert created.getUseCount().equals(userAttribute.getUseCount());
         assert created.getIsActive();
 
-        Results<UserAttribute> userAttributeResults = Identity.UserAttributeSearch(user.getId(), null, null, null);
+        userAttributeResults = Identity.UserAttributeSearch(user.getId(), null, null, null);
+        for(UserAttribute userAttribute1 : userAttributeResults.getItems()) {
+            assert userAttribute1.getIsActive();
+        }
+
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
         for(UserAttribute userAttribute1 : userAttributeResults.getItems()) {
             assert userAttribute1.getIsActive();
         }
@@ -111,12 +121,21 @@ public class PostUserAttribute {
             assert !userAttribute1.getIsActive();
         }
 
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
+        assert userAttributeResults.getItems().size() == 0;
+
         updated.setUseCount(100);
         updated = Identity.UserAttributePut(updated);
         assert updated.getIsActive();
 
         userAttributeResults = Identity.UserAttributeSearch(user.getId(), null, null, null);
         for (UserAttribute userAttribute1 : userAttributeResults.getItems()) {
+            assert userAttribute1.getIsActive();
+        }
+
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
+        assert userAttributeResults.getItems().size() != 0;
+        for(UserAttribute userAttribute1 : userAttributeResults.getItems()) {
             assert userAttribute1.getIsActive();
         }
 
@@ -129,12 +148,21 @@ public class PostUserAttribute {
             assert !userAttribute1.getIsActive();
         }
 
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
+        assert userAttributeResults.getItems().size() == 0;
+
         updated.setExpirationTime(DateUtils.addDays(new Date(), 100));
         updated = Identity.UserAttributePut(updated);
         assert updated.getIsActive();
 
         userAttributeResults = Identity.UserAttributeSearch(user.getId(), null, null, null);
         for (UserAttribute userAttribute1 : userAttributeResults.getItems()) {
+            assert userAttribute1.getIsActive();
+        }
+
+        userAttributeResults = Identity.UserAttributeSearchByStatus(true);
+        assert userAttributeResults.getItems().size() != 0;
+        for(UserAttribute userAttribute1 : userAttributeResults.getItems()) {
             assert userAttribute1.getIsActive();
         }
     }

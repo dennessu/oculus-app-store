@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.identity.spec.v1.model.UserAttributeDefinition;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
@@ -37,12 +38,15 @@ public class PostUserAttributeDefinition {
 
     @Test(groups = "bvt")
     public void postUserAttributeDefinition() throws Exception {
-        Results<UserAttributeDefinition> userAttributeDefinitionResults = Identity.UserAttributeDefinitionSearch(null, null);
+        Results<UserAttributeDefinition> userAttributeDefinitionResults = Identity.UserAttributeDefinitionSearch(null, null, null, null);
         for(UserAttributeDefinition userAttributeDefinition : userAttributeDefinitionResults.getItems()) {
             Identity.UserAttributeDefinitionDelete(userAttributeDefinition.getId());
         }
 
         UserAttributeDefinition userAttributeDefinition = IdentityModel.DefaultUserAttributeDefinition();
+        Organization organization = IdentityModel.DefaultOrganization();
+        Organization posted = Identity.OrganizationPostDefault(organization);
+        userAttributeDefinition.setOrganizationId(posted.getId());
         UserAttributeDefinition created = Identity.UserAttributeDefinitionPost(userAttributeDefinition);
         assert userAttributeDefinition.getDescription().equals(created.getDescription());
         assert userAttributeDefinition.getType().equals(created.getType());
@@ -58,11 +62,17 @@ public class PostUserAttributeDefinition {
         assert getResource.getType().equals(updated.getType());
         assert getResource.getDescription().equals(updated.getDescription());
 
-        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null);
+        Results<UserAttributeDefinition> results = Identity.UserAttributeDefinitionSearch(null, null, null, null);
+        assert results.getItems().size() == 1;
+
+        results = Identity.UserAttributeDefinitionSearch(posted.getId(), null, null, null);
+        assert results.getItems().size() == 1;
+
+        results = Identity.UserAttributeDefinitionSearch(posted.getId(), userAttributeDefinition.getType(), null, null);
         assert results.getItems().size() == 1;
 
         Identity.UserAttributeDefinitionDelete(updated.getId());
-        results = Identity.UserAttributeDefinitionSearch(null, null);
+        results = Identity.UserAttributeDefinitionSearch(null, null, null, null);
         assert results.getItems().size() == 0;
     }
 }

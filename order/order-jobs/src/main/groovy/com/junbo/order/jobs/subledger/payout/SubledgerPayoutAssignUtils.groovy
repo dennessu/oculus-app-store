@@ -94,6 +94,12 @@ class SubledgerPayoutAssignUtils {
         }
 
         Map<String, PayoutId> payoutIdMap = [:] // fbPayoutOrgId -> payoutId
+        subledgersWithSameSeller.each { Subledger subledger ->
+            String fbPayoutOrgId = Utils.getFbPayoutOrgId(subledger)
+            if (fbPayoutOrgId != null && subledger.payoutId != null && payoutIdMap[fbPayoutOrgId] == null) {
+                payoutIdMap[fbPayoutOrgId] = subledger.payoutId
+            }
+        }
 
         subledgersWithSameSeller.each { Subledger subledger ->
             SubledgerType subledgerType = SubledgerType.valueOf(subledger.subledgerType)

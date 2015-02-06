@@ -549,6 +549,45 @@ public class StoreCommerceTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test prePurchase with USD then use CNY",
+            steps = {
+                    "1. Create user",
+                    "2. Post prepare purchase with USD",
+                    "3. Post prepare purchase with CNY"
+            }
+    )
+    @Test
+    public void testMultipleCurrencyPurchase() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+        //add new credit card to user
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        TestContext.getData().putHeader("oculus-geoip-country-code", "US");
+        //post order without sorderIdet payment instrument
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
+        assert preparePurchaseResponse != null;
+        assert preparePurchaseResponse.getFormattedTaxPrice().equals("$0.83");
+        assert preparePurchaseResponse.getFormattedTotalPrice().equals("$10.83");
+
+        TestContext.getData().putHeader("oculus-geoip-country-code", "RU");
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null);
+        assert preparePurchaseResponse != null;
+        assert preparePurchaseResponse.getFormattedTotalPrice().equals("1.08руб.");
+        assert preparePurchaseResponse.getFormattedTaxPrice().equals("0.08руб.");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,

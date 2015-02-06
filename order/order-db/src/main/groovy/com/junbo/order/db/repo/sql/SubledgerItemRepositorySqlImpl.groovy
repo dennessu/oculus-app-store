@@ -89,7 +89,7 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<ItemId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+    Promise<List<ItemId>> getDistinctItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         List<ItemId> result = [] as List
         subledgerItemDao.getDistrictItemIds(dataCenterId, (Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),

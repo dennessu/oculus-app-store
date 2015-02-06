@@ -15,6 +15,7 @@ import com.junbo.identity.spec.v1.resource.UserAttributeDefinitionResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Response
 
@@ -126,6 +127,12 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
     }
 
     Promise<Results<UserAttributeDefinition>> search(UserAttributeDefinitionListOptions options) {
-        return userAttributeDefinitionService.getAll(options.limit, options.offset)
+        if (options.getOrganizationId() != null && !StringUtils.isEmpty(options.type)) {
+            return userAttributeDefinitionService.getByOrganizationIdAndType(options.organizationId, options.type, options.limit, options.offset)
+        } else if (options.getOrganizationId() != null) {
+            return userAttributeDefinitionService.getByOrganizationId(options.organizationId, options.limit, options.offset)
+        } else {
+            return userAttributeDefinitionService.getAll(options.limit, options.offset)
+        }
     }
 }

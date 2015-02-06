@@ -49,8 +49,22 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null && options.userAttributeDefinitionId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
+        if (options.isActive == null) {
+            if (options.userId == null && options.userAttributeDefinitionId == null) {
+                throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
+            }
+        } else {
+            if (options.userId != null) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid("userId", "userId can not search with userId").exception()
+            }
+
+            if (options.userAttributeDefinitionId != null) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid("userAttributeDefinitionId", "userAttributeDefinitionId can not search with userId").exception()
+            }
+
+            if (!options.isActive) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid("isActive", "isActive only support true").exception()
+            }
         }
 
         return Promise.pure(null)

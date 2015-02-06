@@ -5,6 +5,7 @@ import ut_oauth
 import ut_checkout
 import ut_checkout_consumable
 import ut_checkout_refund
+import ut_checkout_error
 import ut_identity
 
 if __name__ == '__main__':
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     suite.addTest(ut_identity.IdentityTests('testRoles'))
     suite.addTest(ut_checkout_consumable.CheckoutTests('testCheckout'))
     suite.addTest(ut_checkout_refund.CheckoutTests('testCheckoutRefund'))
+    suite.addTest(ut_checkout_error.CheckoutTests('testCheckoutError'))
 # TODO: add testTFA
 
     silkcloud_utmain(suite)

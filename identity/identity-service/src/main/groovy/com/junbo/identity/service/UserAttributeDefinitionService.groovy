@@ -1,5 +1,6 @@
 package com.junbo.identity.service
 
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserAttributeDefinitionId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserAttributeDefinition
@@ -21,4 +22,8 @@ public interface UserAttributeDefinitionService {
     Promise<Void> delete(UserAttributeDefinitionId userAttributeDefinitionId)
 
     Promise<Results<UserAttributeDefinition>> getAll(Integer limit, Integer offset)
+
+    Promise<Results<UserAttributeDefinition>> getByOrganizationId(OrganizationId organizationId, Integer limit, Integer offset);
+
+    Promise<Results<UserAttributeDefinition>> getByOrganizationIdAndType(OrganizationId organizationId, String type, Integer limit, Integer offset);
 }

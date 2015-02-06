@@ -1,5 +1,6 @@
 package com.junbo.identity.service.impl
 
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserAttributeDefinitionId
 import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserAttributeDefinitionRepository
@@ -43,6 +44,26 @@ class UserAttributeDefinitionServiceImpl implements UserAttributeDefinitionServi
         Results<UserAttributeDefinition> results = new Results<>()
         return userAttributeDefinitionRepository.getAll(limit, offset).then { List<UserAttributeDefinition> userAttributeDefinitionList ->
             results.items = userAttributeDefinitionList
+
+            return Promise.pure(results)
+        }
+    }
+
+    @Override
+    Promise<Results<UserAttributeDefinition>> getByOrganizationId(OrganizationId organizationId, Integer limit, Integer offset) {
+        Results<UserAttributeDefinition> results = new Results<>()
+        return userAttributeDefinitionRepository.getByOrganizationId(organizationId, limit, offset).then { List<UserAttributeDefinition> list ->
+            results.items = list
+
+            return Promise.pure(results)
+        }
+    }
+
+    @Override
+    Promise<Results<UserAttributeDefinition>> getByOrganizationIdAndType(OrganizationId organizationId, String type, Integer limit, Integer offset) {
+        Results<UserAttributeDefinition> results = new Results<>()
+        return userAttributeDefinitionRepository.getByOrganizationIdAndType(organizationId, type, limit, offset).then { List<UserAttributeDefinition> list ->
+            results.items = list
 
             return Promise.pure(results)
         }

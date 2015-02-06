@@ -24,6 +24,9 @@ public class UserAttributeListOptions extends PagingGetOptions {
     @QueryParam("userAttributeDefinitionId")
     private UserAttributeDefinitionId userAttributeDefinitionId;
 
+    @QueryParam("isActive")
+    private Boolean isActive;
+
     public String getProperties() {
         return properties;
     }
@@ -46,5 +49,13 @@ public class UserAttributeListOptions extends PagingGetOptions {
 
     public void setUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId) {
         this.userAttributeDefinitionId = userAttributeDefinitionId;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 }
