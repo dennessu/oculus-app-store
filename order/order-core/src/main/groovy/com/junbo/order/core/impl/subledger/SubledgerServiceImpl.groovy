@@ -193,6 +193,7 @@ class SubledgerServiceImpl implements SubledgerService {
         if (subledger == null) {
             subledger = subledgerHelper.createSubledger(subledgerItems[0].subledgerCriteria, subledgerItems[0].offer, subledgerItems[0].subledgerKeyInfo)
             subledger = createSubledger(subledger)
+            LOGGER.info('name=Subledger_Created, id={}', subledger.getId())
         }
 
         subledgerItems.each { SubledgerItem subledgerItem ->

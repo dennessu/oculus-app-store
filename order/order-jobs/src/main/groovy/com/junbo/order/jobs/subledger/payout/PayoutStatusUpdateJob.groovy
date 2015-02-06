@@ -82,7 +82,7 @@ class PayoutStatusUpdateJob {
     }
 
     public void execute(Date input) {
-        LOGGER.info('name=startPayoutExportJob')
+        LOGGER.info('name=startPayoutStatusUpdateJob')
         long start = System.currentTimeMillis()
         try
         {
@@ -106,7 +106,7 @@ class PayoutStatusUpdateJob {
             processPayoutStatusFile(payoutStatusFile)
             FileUtils.moveFile(payoutStatusFile, payoutHistoryFile)
         } finally {
-            LOGGER.info('name=endPayoutExportJob, time={}s', (System.currentTimeMillis() - start) / 1000)
+            LOGGER.info('name=endPayoutStatusUpdateJob, time={}s', (System.currentTimeMillis() - start) / 1000)
         }
     }
 

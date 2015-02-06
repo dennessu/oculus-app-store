@@ -34,7 +34,7 @@ class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualW
     }
 
     @Override
-    Promise<List<ItemId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+    Promise<List<ItemId>> getDistinctItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         throw new UnsupportedOperationException("SubledgerItemRepository::getDistinctSubledgerItemOfferIds is only available in SQL mode for backend jobs.");
     }
 }

@@ -89,7 +89,7 @@ class FTPUtils {
                 LOGGER.info('name=EndDownloadStatusUpdateFile,remotePath={},latencyInMs={}', remotePath, System.currentTimeMillis() - start)
                 return true
             } catch (FileNotFoundException ex) {
-                LOGGER.info('name=PayoutStatusFileNotFoundOnFTP,remotePath={}', remotePath)
+                LOGGER.info('name=FileNotFoundOnFTP,remotePath={}', remotePath)
                 break
             } catch (IOException ex) {
                 LOGGER.info('name=Fail_To_Download,remotePath={}', remotePath, ex)

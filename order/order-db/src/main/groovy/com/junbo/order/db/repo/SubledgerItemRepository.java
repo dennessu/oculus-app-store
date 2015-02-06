@@ -29,5 +29,5 @@ public interface SubledgerItemRepository extends BaseRepository<SubledgerItem, S
     Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId);
 
     @ReadMethod
-    Promise<List<ItemId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+    Promise<List<ItemId>> getDistinctItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 }
