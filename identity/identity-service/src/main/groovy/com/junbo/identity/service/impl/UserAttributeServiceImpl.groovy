@@ -87,6 +87,19 @@ class UserAttributeServiceImpl implements UserAttributeService {
         }
     }
 
+    @Override
+    Promise<Results<UserAttribute>> searchByActive(Boolean active, Integer limit, Integer offset) {
+        Results<UserAttribute> results = new Results<>()
+        return userAttributeRepository.searchByActive(active, limit, offset).then { List<UserAttribute> userAttributeList ->
+            results.items = userAttributeList
+            results.items.each { UserAttribute existing ->
+                filter(existing)
+            }
+
+            return Promise.pure(results)
+        }
+    }
+
     @Required
     void setUserAttributeRepository(UserAttributeRepository userAttributeRepository) {
         this.userAttributeRepository = userAttributeRepository

@@ -134,7 +134,7 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
 
     @ApiModelProperty(position = 13, required = false, value = " [Client Immutable] A Link to OptIn-List resource to Search opt-in of the user.")
     @HateoasLink("/opt-ins?userId={id}")
-    private Link optins;
+    private Link optIns;
 
     @ApiModelProperty(position = 15, required = false, value = "[Client Immutable] A Link to SecurityQuestion-List resource to " +
             "Search Security Questions of the user.")
@@ -284,12 +284,12 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         // support.setPropertyAssigned("credentialAttempts");
     }
 
-    public Link getOptins() {
-        return optins;
+    public Link getOptIns() {
+        return optIns;
     }
 
-    public void setOptins(Link optins) {
-        this.optins = optins;
+    public void setOptIns(Link optins) {
+        this.optIns = optins;
         // support.setPropertyAssigned("optins");
     }
 

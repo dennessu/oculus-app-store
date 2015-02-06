@@ -972,7 +972,7 @@ public class Identity {
         IdentityDelete(IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinitionId.toString());
     }
 
-    public static Results<UserAttributeDefinition> UserAttributeDefinitionSearch(Integer limit, Integer offset) throws Exception {
+    public static Results<UserAttributeDefinition> UserAttributeDefinitionSearch(OrganizationId organizationId, String type, Integer limit, Integer offset) throws Exception {
         String url = IdentityV1UserAttributeDefinitionURI;
         if (limit != null && offset != null) {
             url = url + "?cursor=" + offset + "&count=" + limit;
@@ -981,6 +981,26 @@ public class Identity {
         } else if (offset != null) {
             url = url + "?cursor=" + offset;
         }
+
+        if (url.contains("?")) {
+            if (organizationId != null) {
+                url = url + "&organizationId=" + IdConverter.idToHexString(organizationId);
+            }
+            if (type != null) {
+                url = url + "&type=" + type;
+            }
+        } else {
+            if (organizationId != null || !StringUtils.isEmpty(type)) {
+                url = url + "?";
+            }
+            if (organizationId != null) {
+                url = url + "organizationId=" + IdConverter.idToHexString(organizationId);
+            }
+            if (type != null) {
+                url = url + "&type=" + type;
+            }
+        }
+
         Results<UserAttributeDefinition> results = new Results<>();
         Results res = IdentityGet(url, Results.class);
         results.setItems(new ArrayList<UserAttributeDefinition>());
@@ -1011,6 +1031,24 @@ public class Identity {
 
     public static void UserAttributeDelete(UserAttributeId userAttributeId) throws Exception {
         IdentityDelete(IdentityV1UserAttributeURI + "/" + userAttributeId.toString());
+    }
+
+    public static Results<UserAttribute> UserAttributeSearchByStatus(Boolean isActive) throws Exception{
+        String url = IdentityV1UserAttributeURI;
+        url = url + "?isActive=" + isActive;
+
+        Results res = IdentityGet(url, Results.class);
+        Results<UserAttribute> results = new Results<>();
+        results.setItems(new ArrayList<UserAttribute>());
+        for (Object obj : res.getItems()) {
+            results.getItems().add((UserAttribute) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAttribute.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
     }
 
     public static Results<UserAttribute> UserAttributeSearch(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId,

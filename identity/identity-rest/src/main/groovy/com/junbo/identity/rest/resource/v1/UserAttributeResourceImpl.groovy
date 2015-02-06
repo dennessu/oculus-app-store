@@ -185,6 +185,8 @@ class UserAttributeResourceImpl implements UserAttributeResource {
             return userAttributeService.searchByUserId(options.userId, options.limit, options.offset)
         } else if (options.userAttributeDefinitionId != null) {
             return userAttributeService.searchByUserAttributeDefinitionId(options.userAttributeDefinitionId, options.limit, options.offset)
+        } else if (options.isActive != null) {
+            return userAttributeService.searchByActive(options.isActive, options.limit, options.offset)
         } else {
             throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
         }
@@ -199,9 +201,10 @@ class UserAttributeResourceImpl implements UserAttributeResource {
 
     private Promise<UserAttribute> fillUserAttribute(UserAttribute userAttribute) {
         return userAttributeDefinitionService.get(userAttribute.userAttributeDefinitionId).then { UserAttributeDefinition userAttributeDefinition ->
-            userAttribute.setOrganizationId(userAttributeDefinition.getOrganizationId())
-            userAttribute.setType(userAttributeDefinition.getType())
-
+            if (userAttributeDefinition != null) {
+                userAttribute.setOrganizationId(userAttributeDefinition.getOrganizationId())
+                userAttribute.setType(userAttributeDefinition.getType())
+            }
             return Promise.pure(userAttribute)
         }
     }

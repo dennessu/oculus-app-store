@@ -1,6 +1,7 @@
 package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserAttributeDefinitionId
 import com.junbo.identity.data.repository.UserAttributeDefinitionRepository
 import com.junbo.identity.spec.v1.model.UserAttributeDefinition
@@ -38,5 +39,18 @@ class UserAttributeDefinitionRepositoryCloudantImpl
     @Override
     Promise<List<UserAttributeDefinition>> getAll(Integer limit, Integer offset) {
         return super.cloudantGetAll(limit, offset, false)
+    }
+
+    @Override
+    Promise<List<UserAttributeDefinition>> getByOrganizationId(OrganizationId organizationId, Integer limit, Integer offset) {
+        return super.queryView('by_organization_id', organizationId.toString(), limit, offset, false)
+    }
+
+    @Override
+    Promise<List<UserAttributeDefinition>> getByOrganizationIdAndType(OrganizationId organizationId, String type, Integer limit, Integer offset) {
+        def startKey = [organizationId.toString(), type]
+        def endKey = [organizationId.toString(), type]
+        return queryView('by_organization_id_type', startKey.toArray(new String()), endKey.toArray(new String()), false, limit,
+                offset, false)
     }
 }

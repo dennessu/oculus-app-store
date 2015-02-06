@@ -29,4 +29,6 @@ interface UserAttributeService {
 
     Promise<Results<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId,
                                            UserAttributeDefinitionId userAttributeDefinitionId, Integer limit, Integer offset)
+
+    Promise<Results<UserAttribute>> searchByActive(Boolean active, Integer limit, Integer offset)
 }

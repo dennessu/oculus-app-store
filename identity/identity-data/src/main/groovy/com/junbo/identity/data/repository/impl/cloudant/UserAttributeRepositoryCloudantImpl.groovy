@@ -53,4 +53,12 @@ class UserAttributeRepositoryCloudantImpl extends CloudantClient<UserAttribute> 
         return queryView('by_user_id_attribute_definition_id', startKey.toArray(new String()), endKey.toArray(new String()),
                 false, limit, offset, false)
     }
+
+    @Override
+    Promise<List<UserAttribute>> searchByActive(Boolean isActive, Integer limit, Integer offset) {
+        def startKey = [isActive.toString(), (new Date()).getTime()]
+        def endKey = [isActive.toString()]
+        return queryView('by_isActive_expirationTime', startKey.toArray(new String()), endKey.toArray(new String()),
+                true, limit, offset, true);
+    }
 }
