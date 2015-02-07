@@ -320,7 +320,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
             CoreUtils.refreshBillingHistories(order, balances)
             if (hasFulfillment) {
-                return orderServiceContextBuilder.getFulfillmentRequest(orderServiceContext).then {
+                return orderServiceContextBuilder.refreshFulfillmentRequest(orderServiceContext).then {
                     FulfilmentRequest fr ->
                         CoreUtils.refreshFulfillmentHistories(order, fr)
                         return Promise.pure(order)

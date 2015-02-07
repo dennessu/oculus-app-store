@@ -3,14 +3,15 @@ import com.junbo.common.id.UserId
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
-import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.FulfillmentEventType
 import com.junbo.order.spec.model.enums.OrderStatus
@@ -396,5 +397,42 @@ class OrderE2ETest extends BaseTest {
             return
         }
         assert false
+    }
+
+    @Test(enabled = true)
+    void testGetByUserId() {
+        def user = new UserId(idGenerator.nextId(UserId))
+        def order1 = chargeOrder(user)
+        def order2 = chargeOrder(user)
+        def getOrders = orderResource.getOrderByUserId(user, new OrderQueryParam(), null).get()
+        assert getOrders.items.size() == 2
+        def eid1 = getOrders.items[0].orderItems[0].fulfillmentHistories[0].entitlements[0].value
+        def eid2 = getOrders.items[1].orderItems[0].fulfillmentHistories[0].entitlements[0].value
+        assert eid1 != eid2
+    }
+
+    private Order chargeOrder(UserId userId) {
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_RATE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        order.orderItems.add(TestBuilder.buildOrderItem())
+        order.user = userId
+        def tentativeOrder = orderResource.createOrder(order).get()
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_IMMEDIATE_SETTLE')
+            }
+        }
+        tentativeOrder.tentative = false
+        JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                requestIpAddress: '127.0.0.1'
+        )
+        def orderResult = orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+        return orderResult
     }
 }
