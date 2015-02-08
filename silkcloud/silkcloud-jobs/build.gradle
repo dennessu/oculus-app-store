@@ -9,4 +9,14 @@ dependencies {
     runtime junboProject(':ewallet-db')
     runtime junboProject(':order-db')
     runtime junboProject(':payment-db')
+
+    processor junboProject(':silkcloud-processor')
+    processor (libraries.log4j)
+}
+
+ext {
+    processorClass = [
+            'com.junbo.langur.processor.RestAdapterProcessor',
+            'com.junbo.langur.processor.ClientProxyProcessor'
+    ].join(',')
 }

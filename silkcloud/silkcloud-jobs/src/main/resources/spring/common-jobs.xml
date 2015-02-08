@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="com.junbo.common.job"/>
 
@@ -97,4 +98,44 @@
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
         </property>
     </bean>
+
+    <bean id="defaultJobTriggerEndpointClientFactory" class="com.junbo.common.job.trigger.proxy.JobTriggerEndpointClientProxyFactory"/>
+
+    <util:list id="jobTriggerJobDefinitions">
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="subledgerAggregateJob"/>
+            <property name="beanName" value="subledgerAggregator"/>
+            <property name="methodName" value="aggregateSubledger"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="payoutExportJob"/>
+            <property name="beanName" value="order.payoutExportJob"/>
+            <property name="methodName" value="exportAndUploadDaily"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="payoutUpdateJob"/>
+            <property name="beanName" value="order.payoutUpdateJob"/>
+            <property name="methodName" value="execute"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="revenueReportJob"/>
+            <property name="beanName" value="order.revenueReportJob"/>
+            <property name="methodName" value="execute"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="transactionReceiveJob"/>
+            <property name="beanName" value="order.transactionReceiveJob"/>
+            <property name="methodName" value="execute"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="riskReviewPendingActionJob"/>
+            <property name="beanName" value="orderRiskReviewPendingActionJob"/>
+            <property name="methodName" value="execute"/>
+        </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="orderAuditTaxJob"/>
+            <property name="beanName" value="orderAuditTaxJob"/>
+            <property name="methodName" value="execute"/>
+        </bean>
+    </util:list>
 </beans>
