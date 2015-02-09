@@ -65,6 +65,7 @@ public class PriceTierResourceImpl extends ResourceSupport implements PriceTierR
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
+        results.setTotal(options.getTotal());
         return Promise.pure(results);
     }
 
