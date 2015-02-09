@@ -15,6 +15,7 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
@@ -97,11 +98,14 @@ class TaxServiceImpl implements TaxService {
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
             throw AppErrors.INSTANCE.piNotFound("balance.paymentInstrument", balance.piId).exception()
         }.then { PaymentInstrument pi ->
-            if (pi.billingAddressId == null) {
+            /* use ipGeoLocation as address if billing address not found*/
+            if (pi.billingAddressId == null && balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name()) == null) {
                 throw AppCommonErrors.INSTANCE.fieldRequired("paymentInstrument.billingAddress").exception()
             }
             balance.propertySet.put(PropertyKey.PAYMENT_METHOD.name(), PIType.get(pi.type).name())
-            balance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), pi.billingAddressId.toString())
+            if (pi.billingAddressId != null) {
+                balance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), pi.billingAddressId.toString())
+            }
             if (PIType.get(pi.type) == PIType.CREDITCARD) {
                 balance.propertySet.put(PropertyKey.BIN_NUMBER.name(), pi.typeSpecificDetails?.issuerIdentificationNumber)
             }
@@ -143,6 +147,9 @@ class TaxServiceImpl implements TaxService {
                 LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
                 throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
             }.then { Address billingAddress ->
+                if (billingAddress == null) {
+                    billingAddress = buildAddressByIpGeoLocation(balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name()))
+                }
                 return taxFacade.calculateTax(balance, shippingAddress, billingAddress)
             }
         }
@@ -158,6 +165,9 @@ class TaxServiceImpl implements TaxService {
                 LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
                 throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
             }.then { Address billingAddress ->
+                if (billingAddress == null) {
+                    billingAddress = buildAddressByIpGeoLocation(balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name()))
+                }
                 UserVAT vat = user.vat?.get(billingAddress.countryId.value)
                 if (vat != null) {
                     def vatNumber = vat.vatNumber
@@ -206,5 +216,12 @@ class TaxServiceImpl implements TaxService {
     Boolean isGSACard(String number) {
         def prefix = number?.substring(0, 4)
         return (gsaPrefix.contains(prefix))
+    }
+
+    Address buildAddressByIpGeoLocation(String ipGeoCountry) {
+        def address = new Address()
+        address.countryId = new CountryId(ipGeoCountry)
+
+        return address
     }
 }
