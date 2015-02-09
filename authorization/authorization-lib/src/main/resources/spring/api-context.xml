@@ -71,6 +71,8 @@
                 <entry key="MigrationResource" value="identity.migration"/>
                 <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin catalog.update"/>
                 <entry key="PITypeResource" value="identity.admin"/>
+                <entry key="UserAttributeDefinitionResource.get" value="*" />
+                <entry key="UserAttributeDefinitionResource.list" value="*" />
                 <entry key="TosResource" value="identity.admin"/>
                 <entry key="UserAttributeDefinitionResource" value="identity.admin" />
                 <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>

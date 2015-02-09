@@ -121,6 +121,11 @@
         <property name="communicationResource" ref="defaultCommunicationResource" />
     </bean>
 
+    <bean id="userAttributeDefinitionDataHandler" class="com.junbo.data.handler.UserAttributeDefinitionDataHandler" parent="baseDataHandler">
+        <property name="organizationResource" ref="defaultOrganizationResource" />
+        <property name="userAttributeDefinitionResource" ref="defaultUserAttributeDefinitionResource" />
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -142,6 +147,7 @@
                 <entry key="communication" value-ref="communicationDataHandler" />
                 <entry key="paymentprovider" value-ref="paymentProviderDataHandler" />
                 <entry key="merchantaccount" value-ref="merchantAccountDataHandler" />
+                <entry key="userattributedefinition" value-ref="userAttributeDefinitionDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -164,6 +170,7 @@
                 <value>communication</value>
                 <value>paymentprovider</value>
                 <value>merchantaccount</value>
+                <value>userattributedefinition</value>
             </list>
         </property>
         <property name="serialDataList">
