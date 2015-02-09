@@ -681,6 +681,7 @@
                 <value>CATEGORY</value>
                 <value>TUTORIAL</value>
                 <value>ACHIEVEMENT</value>
+                <value>PROFILE</value>
             </list>
         </property>
         <property name="organizationService" ref="organizationService" />

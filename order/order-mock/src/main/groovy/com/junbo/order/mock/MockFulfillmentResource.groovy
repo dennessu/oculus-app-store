@@ -6,6 +6,7 @@ import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.fulfilment.spec.model.FulfilmentResult
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -32,7 +33,10 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
             item.fulfilmentId = id
             item.actions = [new FulfilmentAction(
                     type: FulfilmentActionType.GRANT_ENTITLEMENT,
-                    status: FulfilmentStatus.SUCCEED
+                    status: FulfilmentStatus.SUCCEED,
+                    result: new FulfilmentResult(
+                            entitlementIds: [generateString()]
+                    )
             )]
         }
         fulfilmentRequestMap[request.orderId] = request
@@ -63,7 +67,10 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
             if (CollectionUtils.isEmpty(fi.actions)) {
                 fi.actions = [new FulfilmentAction(
                         type: FulfilmentActionType.GRANT_ENTITLEMENT,
-                        status: FulfilmentStatus.SUCCEED
+                        status: FulfilmentStatus.SUCCEED,
+                        result: new FulfilmentResult(
+                                entitlementIds: [generateString()]
+                        )
                 )]
             }
         }
