@@ -74,14 +74,14 @@ class PayoutStatusUpdateJob {
     FTPUtils ftpUtils
 
     public void execute() {
-        execute(new Date(System.currentTimeMillis() ))
+        innerExecute(new Date(System.currentTimeMillis() ))
     }
 
     public void execute(String dateString) {
-        execute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
+        innerExecute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
     }
 
-    public void execute(Date input) {
+    private synchronized void innerExecute(Date input) {
         LOGGER.info('name=startPayoutStatusUpdateJob')
         long start = System.currentTimeMillis()
         try

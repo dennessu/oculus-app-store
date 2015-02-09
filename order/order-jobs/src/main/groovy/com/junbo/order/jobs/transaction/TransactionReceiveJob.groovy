@@ -88,7 +88,7 @@ class TransactionReceiveJob {
         List<DiscrepancyRecord> discrepancyRecords = []
     }
 
-    private void innerExecute(Date date) {
+    private synchronized void innerExecute(Date date) {
         long startTime = System.currentTimeMillis()
         MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString())
         LOGGER.info('name=Start_Process_TransactionReceive')

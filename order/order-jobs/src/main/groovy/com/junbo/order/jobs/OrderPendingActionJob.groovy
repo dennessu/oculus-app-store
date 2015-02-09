@@ -13,6 +13,7 @@ import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
+import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
 /**
@@ -59,10 +60,14 @@ class OrderPendingActionJob {
     }
 
     public void execute() {
-        execute(new Date())
+        innerExecute(new Date())
     }
 
-    public void execute(Date endTime) {
+    public void execute(String timeString) {
+        innerExecute(new SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(timeString))
+    }
+
+    private synchronized void innerExecute(Date endTime) {
         orderPendingActionTypes.each { OrderPendingActionType actionType ->
             processPendingActions(actionType, endTime)
         }

@@ -138,7 +138,7 @@ class RevenueReportJob {
         innerExecute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
     }
 
-    private void innerExecute(Date time) {
+    private synchronized void innerExecute(Date time) {
         time = new Date(time.year, time.month, time.date)
         Calendar calendar = Calendar.getInstance()
         calendar.setTime(time)

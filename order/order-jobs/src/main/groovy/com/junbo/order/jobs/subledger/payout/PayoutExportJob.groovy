@@ -107,14 +107,14 @@ class PayoutExportJob {
     }
 
     public void exportAndUploadDaily() {
-        exportAndUploadDaily(new Date(System.currentTimeMillis() - MS_A_DAY))
+        innerExportAndUploadDaily(new Date(System.currentTimeMillis() - MS_A_DAY))
     }
 
     public void exportAndUploadDaily(String dateString) {
-        exportAndUploadDaily(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
+        innerExportAndUploadDaily(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
     }
 
-    public void exportAndUploadDaily(Date input) {
+    private synchronized void innerExportAndUploadDaily(Date input) {
         LOGGER.info('name=startPayoutExportJob')
         long start = System.currentTimeMillis()
         try

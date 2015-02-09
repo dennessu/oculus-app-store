@@ -99,17 +99,17 @@ class SubledgerAggregator {
     }
 
     void aggregateSubledger(String dateString) {
-        aggregateSubledger(new SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(dateString))
+        innerAggregateSubledger(new SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(dateString))
     }
 
     void aggregateSubledger() {
-        aggregateSubledger(new Date())
+        innerAggregateSubledger(new Date())
     }
 
     /**
      * Method to execute periodically to do subledger aggregate in the back-end
      */
-    void aggregateSubledger(Date date) {
+    private synchronized void innerAggregateSubledger(Date date) {
         long start = System.currentTimeMillis()
         MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
         Date endTime = date
