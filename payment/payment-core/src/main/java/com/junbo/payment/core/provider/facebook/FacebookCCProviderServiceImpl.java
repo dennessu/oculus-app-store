@@ -166,6 +166,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
+        /*
         //Test Use
         FacebookAddress fbAddress = new FacebookAddress();
         fbAddress.setZip("12345");
@@ -173,7 +174,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         fbAddress.setCity("MENLO Park");
         fbAddress.setState("CA");
         fbCreditCard.setBillingAddress(fbAddress);
-
+        */
         return facebookGatewayService.batchAddAndGetCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
@@ -384,7 +385,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         if (fbPayment.getSuccess()) {
                             paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
                             return Promise.pure(paymentRequest);
-                        } else if(fbPayment.getError() != null){
+                        } else if (fbPayment.getError() != null) {
                             handlePaymentError(fbPayment.getError());
                             return Promise.pure(null);
                         } else {
