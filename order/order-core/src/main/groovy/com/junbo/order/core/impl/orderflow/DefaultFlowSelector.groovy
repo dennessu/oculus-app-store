@@ -99,6 +99,7 @@ class DefaultFlowSelector implements FlowSelector {
                 }
                 LOGGER.error('name=Charge_Event_Not_Expected. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotExpected(event.action, event.status).exception()
+
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()

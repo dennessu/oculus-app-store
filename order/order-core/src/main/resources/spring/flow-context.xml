@@ -100,4 +100,14 @@
 
     <bean id="interruptChargeAction" class="com.junbo.order.core.impl.orderaction.InterruptChargeAction">
     </bean>
+
+    <bean id="refundTaxAction" class="com.junbo.order.core.impl.orderaction.RefundTaxAction">
+        <property name="orderActionType" value="REFUND_TAX"/>
+    </bean>
+
+    <bean id="chargeBackAction" class="com.junbo.order.core.impl.orderaction.ChargeBackAction">
+        <property name="orderActionType" value="CHARGE_BACK"/>
+    </bean>
+
+
 </beans>
