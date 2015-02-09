@@ -115,12 +115,9 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                         }
                         throw ex
                     }
-                }.recover {
-                    Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
+                } else {
+                    throw AppCommonErrors.INSTANCE.fieldRequired('user_email').exception()
                 }
-            }
-            else {
-                throw AppCommonErrors.INSTANCE.fieldRequired('user_email').exception()
             }
 
             Map<String, Object> requestScope = new HashMap<>()
