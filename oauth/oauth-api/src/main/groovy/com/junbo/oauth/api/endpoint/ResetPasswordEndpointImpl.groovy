@@ -92,26 +92,22 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
 
     @Override
     Promise<Response> resetPassword(String conversationId, String event, String locale, String country, String userEmail, MultivaluedMap<String, String> formParams) {
-        try {
-            def textMap = [:]
-            SentryResponse sentryResponse = sentryFacade.doSentryCheck(sentryFacade.
-                    createSentryRequest(SentryCategory.OCULUS_EMAIL_LOOKUP.value, textMap)).get()
-            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
-                throw AppErrors.INSTANCE.sentryBlockEmailCheck('reset password').exception()
-            }
-        } catch (Throwable t) {
-            LOGGER.error('ResetPassword:  Call sentry error, Ignore', t)
-        }
+        return Promise.pure().then {
+            return doSentryCheck()
+        }.then {
+            if (conversationId == null) {
+                if (userEmail != null) {
+                    return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
+                        return userService.sendResetPassword(id, locale, country).then { String uri ->
+                            csrActionAudit(id)
+                            if (debugEnabled || AuthorizeContext.debugEnabled) {
+                                return Promise.pure(Response.ok().entity(uri).build())
+                            }
 
-        if (conversationId == null) {
-            if (userEmail != null) {
-                return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
-                    return userService.sendResetPassword(id, locale, country).then { String uri ->
-                        csrActionAudit(id)
-                        if (debugEnabled || AuthorizeContext.debugEnabled) {
-                            return Promise.pure(Response.ok().entity(uri).build())
+                            Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
                         }
-
+                    }
+                    .recover {
                         Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
                     }.recover { Throwable ex ->
                         if (isAppError(ex, "132.135")) {    // If this is email not default user email error
@@ -126,12 +122,28 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
             else {
                 throw AppCommonErrors.INSTANCE.fieldRequired('user_email').exception()
             }
+
+            Map<String, Object> requestScope = new HashMap<>()
+            requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
+
+            return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
         }
+    }
 
-        Map<String, Object> requestScope = new HashMap<>()
-        requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
+    private Promise<Void> doSentryCheck() {
+        def textMap = [:]
+        return sentryFacade.doSentryCheck(sentryFacade.
+            createSentryRequest(SentryCategory.OCULUS_EMAIL_LOOKUP.value, textMap)).recover {
 
-        return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        }.recover { Throwable throwable ->
+            LOGGER.error('ResetPassword:  Call sentry error, Ignore', throwable)
+            return Promise.pure()
+        }.then { SentryResponse sentryResponse ->
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
+                throw AppErrors.INSTANCE.sentryBlockEmailCheck('reset password').exception()
+            }
+            return Promise.pure()
+        }
     }
 
     @Override

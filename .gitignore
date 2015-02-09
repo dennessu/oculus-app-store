@@ -57,6 +57,9 @@ activemq-data/
 # ignore diff orig file
 *.orig
 
+#order job output file
+**/order_job_output/**
+
 # ignore the personal configuration file
 common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
 apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties

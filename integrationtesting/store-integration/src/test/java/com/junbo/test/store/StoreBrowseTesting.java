@@ -537,7 +537,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0);
-        Assert.assertEquals(sectionLayoutResponse.getName(), featuredSectionName);
+        Assert.assertEquals(sectionLayoutResponse.getName().toUpperCase(), featuredSectionName.toUpperCase());
         storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");
 

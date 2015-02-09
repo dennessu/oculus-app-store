@@ -3,6 +3,13 @@
     "scopes": {
         "identity": [
             {
+                "precondition": "true",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
                 "precondition": "ownedByCurrentUser",
                 "rights": [
                     "create", "update", "read", "delete"

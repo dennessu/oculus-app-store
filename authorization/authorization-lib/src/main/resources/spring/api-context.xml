@@ -47,13 +47,13 @@
                 <entry key="DrmResource" value="drm"/>
                 <!-- email -->
                 <entry key="EmailResource" value="email.service"/>
-                <entry key="EmailTemplateResource.getEmailTemplates" value="email.service email.admin"/>
+                <entry key="EmailTemplateResource.getEmailTemplates" value="email.service email.admin readonly.service"/>
                 <entry key="EmailTemplateResource.postEmailTemplate" value="email.admin"/>
-                <entry key="EmailTemplateResource.getEmailTemplate" value="email.service email.admin"/>
+                <entry key="EmailTemplateResource.getEmailTemplate" value="email.service email.admin readonly.service"/>
                 <entry key="EmailTemplateResource.putEmailTemplate" value="email.admin"/>
                 <entry key="EmailTemplateResource.deleteEmailTemplate" value="email.admin"/>
                 <!-- entitlement -->
-                <entry key="EntitlementResource" value="commerce entitlement entitlement.service csr"/>
+                <entry key="EntitlementResource" value="commerce entitlement entitlement.service csr readonly.service"/>
                 <entry key="DownloadUrlResource" value="commerce entitlement entitlement.service item-binaries.manage csr"/>
                 <!-- ewallet -->
                 <entry key="WalletResource" value="ewallet.service ewallet.admin csr"/>
@@ -66,21 +66,23 @@
                 <entry key="CurrencyResource" value="identity.admin"/>
                 <entry key="DeviceTypeResource" value="identity.admin"/>
                 <entry key="ErrorInfoResource" value="identity.admin"/>
-                <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin"/>
+                <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin readonly.service"/>
                 <entry key="LocaleResource" value="identity.admin"/>
                 <entry key="MigrationResource" value="identity.migration"/>
-                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin catalog.update"/>
+                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin catalog.update readonly.service"/>
                 <entry key="PITypeResource" value="identity.admin"/>
+                <entry key="UserAttributeDefinitionResource.get" value="*" />
+                <entry key="UserAttributeDefinitionResource.list" value="*" />
                 <entry key="TosResource" value="identity.admin"/>
                 <entry key="UserAttributeDefinitionResource" value="identity.admin" />
-                <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr readonly.service"/>
                 <entry key="UserCredentialResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr readonly.service"/>
                 <entry key="UserCredentialVerifyAttemptResource.create" value="identity.service"/>
-                <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr readonly.service"/>
                 <entry key="UserLogResource" value="identity.service csr"/>
-                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr organization.group.admin"/>
-                <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin identity.search"/>
+                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr organization.group.admin readonly.service"/>
+                <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin identity.search readonly.service"/>
                 <entry key="UserResource.checkUsername" value="*" />
                 <entry key="UserResource.checkEmail" value="*" />
                 <!-- This checkUsernameEmailBlocker API will be used only by oauth -->
@@ -94,7 +96,7 @@
                 <entry key="UserTFABackupCodeAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
-                <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr readonly.service"/>
                 <entry key="UserAttributeResource" value="identity identity.service identity.pii csr" />
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
@@ -105,14 +107,14 @@
                 <entry key="EmailVerifyEndpoint.getVerifyEmailLink" value="smoketest" />
                 <entry key="ResetPasswordEndpoint.getResetPasswordLink" value="smoketest" />
                 <!-- order -->
-                <entry key="OrderEventResource" value="commerce order.service csr"/>
-                <entry key="OrderResource" value="commerce order.service csr commerce.checkout"/>
+                <entry key="OrderEventResource" value="commerce order.service csr readonly.service"/>
+                <entry key="OrderResource" value="commerce order.service csr commerce.checkout readonly.service"/>
                 <entry key="SubledgerItemResource" value="subledger.service"/>
                 <entry key="SubledgerResource.createSubledger" value="subledger.service"/>
                 <entry key="SubledgerResource.updateStatusOnFacebookPayoutStatusChange" value="subledger.service"/>
                 <entry key="SubledgerResource" value="subledger subledger.service"/>
                 <!-- payment -->
-                <entry key="PaymentInstrumentResource" value="commerce payment.service csr"/>
+                <entry key="PaymentInstrumentResource" value="commerce payment.service csr readonly.service"/>
                 <entry key="PaymentCallbackResource" value="payment.service"/>
                 <entry key="PaymentTransactionResource" value="payment.service"/>
                 <!-- rating -->
@@ -126,6 +128,7 @@
                 <!-- Store API -->
                 <entry key="StoreResource" value="storeapi"/>
                 <entry key="IAPResource" value="storeapi"/>
+                <entry key="JobTriggerEndpoint" value="*"/>
             </map>
         </property>
     </bean>
