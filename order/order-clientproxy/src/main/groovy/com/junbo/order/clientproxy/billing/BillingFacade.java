@@ -24,6 +24,7 @@ public interface BillingFacade {
     Promise<Balance> quoteBalance(Balance balance);
     Promise<Balance> confirmBalance(Balance balance);
     Promise<Balance> auditBalance(Balance balance);
+    Promise<Balance> putBalance(Balance balance);
 
     AppError convertError(Throwable error);
 }

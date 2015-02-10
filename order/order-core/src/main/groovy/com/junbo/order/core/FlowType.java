@@ -25,5 +25,7 @@ public enum FlowType {
     WEB_PAYMENT_SETTLE,
     CANCEL_ORDER,
     REFUND_ORDER,
-    FREE_ORDER
+    FREE_ORDER,
+    REFUND_TAX,
+    CHARGE_BACK
 }

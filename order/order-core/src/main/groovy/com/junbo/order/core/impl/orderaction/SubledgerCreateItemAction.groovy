@@ -86,7 +86,7 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
                     subledgerItems.each { SubledgerItem subledgerItem ->
                         subledgerItemResource.createSubledgerItem(subledgerItem)
                     }
-                    LOGGER.error('name=SulbedgerItemCreated, orderId={}, numOfCreated={}', IdFormatter.encodeId(serviceContext.order.getId()), subledgerItems.size())
+                    LOGGER.info('name=SulbedgerItemCreated, orderId={}, numOfCreated={}', IdFormatter.encodeId(serviceContext.order.getId()), subledgerItems.size())
                     return Promise.pure()
                 }
             }
@@ -131,7 +131,6 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
 
             return catalogFacade.getLatestOfferRevision(item.defaultOffer).then { Offer of ->
                 subledgerItem.offer = new OfferId(item.defaultOffer)
-                results << subledgerItem
                 def price = of?.price?.prices[order.country.value][order.currency.value]
                 itemPrices[new ItemId(item.itemId)] = (price == null ? BigDecimal.ZERO : price)
                 if (price != null) {

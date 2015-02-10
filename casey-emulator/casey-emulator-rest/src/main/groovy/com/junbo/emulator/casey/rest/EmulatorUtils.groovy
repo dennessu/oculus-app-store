@@ -104,6 +104,9 @@ public class EmulatorUtils {
             caseyOffer.regions = offerRevision.countries
             caseyOffer.price = new CaseyPrice()
             caseyOffer.price.isFree = offerRevision.price?.priceType == PriceType.FREE.name()
+            if (!caseyOffer.price.isFree) {
+                caseyOffer.price.currencyCode = offerRevision.price.prices[countryId.value].keySet().first()
+            }
             // Set<String> currencies = offerRevision.price?.prices?.get(countryId.value)?.keySet()
             // todo set the price
             caseyOffer.items = offerRevision?.items?.collect { ItemEntry itemEntry ->

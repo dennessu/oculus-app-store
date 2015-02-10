@@ -20,6 +20,7 @@ public enum BillingAction implements Identifiable<Short> {
     CAPTURE(4),
     DEPOSIT(5),
     CANCEL(6),
+    CHARGE_BACK(7),
     REQUEST_CHARGE(100),
     REQUEST_CREDIT(102),
     REQUEST_REFUND(103),

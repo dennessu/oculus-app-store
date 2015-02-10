@@ -284,6 +284,8 @@ class OrderServiceImpl implements OrderService {
 
         switch (event.action) {
             case OrderActionType.CHARGE.name():
+            case OrderActionType.CHARGE_BACK.name():
+            case OrderActionType.REFUND_TAX.name():
                 LOGGER.info('name=Update_Charge_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
                 break
@@ -329,7 +331,7 @@ class OrderServiceImpl implements OrderService {
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
                 LOGGER.info('name=updateOrderByOrderEvent_Completed')
-                orderInternalService.refreshOrderStatus(order, true)
+                orderInternalService.refreshOrderStatus(orderServiceContext.order, true)
                 return Promise.pure(orderServiceContext.orderEvent)
             }
         }

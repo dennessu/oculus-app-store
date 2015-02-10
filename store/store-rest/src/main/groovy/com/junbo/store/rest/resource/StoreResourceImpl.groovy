@@ -28,6 +28,7 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.browse.document.Offer
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
@@ -273,7 +274,7 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            return innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), request.offer, null).then { BillingProfile billingProfile ->
+            return innerGetBillingProfile(user, request.offer, null, apiContext).then { BillingProfile billingProfile ->
                 response.billingProfile = billingProfile
                 return Promise.pure(response)
             }
@@ -300,7 +301,7 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             instrumentUtils.updateInstrument(user, request, apiContext)
         }.then { PaymentInstrumentId paymentInstrumentId ->
-            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, paymentInstrumentId).then { BillingProfile billingProfile ->
+            innerGetBillingProfile(user, null as OfferId, paymentInstrumentId, apiContext).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
@@ -330,7 +331,7 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             instrumentUtils.deleteInstrument(instrumentDeleteRequest)
         }.then {
-            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, null as PaymentInstrumentId).then { BillingProfile billingProfile ->
+            innerGetBillingProfile(user, null as OfferId, null as PaymentInstrumentId, apiContext).then { BillingProfile billingProfile ->
                 InstrumentDeleteResponse response = new InstrumentDeleteResponse(
                         billingProfile: billingProfile
                 )
@@ -472,24 +473,24 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, OfferId offerId,
-                                                           PaymentInstrumentId paymentInstrumentId) {
-        com.junbo.store.spec.model.catalog.Offer offer
+    private Promise<BillingProfile> innerGetBillingProfile(User user, OfferId offerId,
+                                                           PaymentInstrumentId paymentInstrumentId, ApiContext apiContext) {
+        Offer offer
         Promise.pure(null).then {
             if (offerId != null) {
-                return facadeContainer.catalogFacade.getOffer(offerId.value, locale).then { com.junbo.store.spec.model.catalog.Offer of ->
+                return facadeContainer.catalogFacade.getOffer(offerId.value, apiContext).then { Offer of ->
                     offer = of
                     return Promise.pure(null)
                 }
             }
             return Promise.pure(null)
         }.then {
-            innerGetBillingProfile(user, locale, country, offer, paymentInstrumentId)
+            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), offer, paymentInstrumentId)
         }
     }
 
     private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country,
-                                                           com.junbo.store.spec.model.catalog.Offer offer, PaymentInstrumentId paymentInstrumentId) {
+                                                           Offer offer, PaymentInstrumentId paymentInstrumentId) {
         BillingProfile billingProfile = new BillingProfile()
         billingProfile.instruments = []
 

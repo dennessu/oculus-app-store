@@ -105,6 +105,9 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "128", message = "TOS not found.")
     AppError tosNotFound();
 
+    @ErrorDef(httpStatusCode = 412, code = "129", message = "Price not available in the country:{0}")
+    AppError priceNotAvailable(String country);
+
     @ErrorDef(httpStatusCode = 412, code = "150", message = "IAP purchase not consumable.")
     AppError iapPurchaseNotConsumable();
 

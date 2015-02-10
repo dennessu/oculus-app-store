@@ -154,6 +154,24 @@ class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
+    Promise<Balance> putBalance(Balance balance) {
+
+        return transactionHelper.executeInNewTransaction {
+            return balanceResource.putBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Put_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Put_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Put balance response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Put_Balance_Success')
+                return Promise.pure(b)
+            }
+        }
+    }
+
+    @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
         if (e != null && e.error().code == PAYMENT_INSUFFICIENT_FUND) {

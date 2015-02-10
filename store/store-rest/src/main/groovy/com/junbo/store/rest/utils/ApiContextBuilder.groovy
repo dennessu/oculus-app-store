@@ -98,11 +98,6 @@ class ApiContextBuilder implements InitializingBean {
                 result.locale = e
                 return Promise.pure()
             }
-        }.then { // get currency
-            resourceContainer.currencyResource.get(result.country.defaultCurrency, new CurrencyGetOptions()).then { com.junbo.identity.spec.v1.model.Currency currency ->
-                result.currency = currency
-                return Promise.pure()
-            }
         }.then {
             LOGGER.info("name=Store_Build_Context, androidId={}, countryCode={}, actualCountryCode={}", result.androidId, countryCode, result.getCountry().getId().value)
             return Promise.pure(result)

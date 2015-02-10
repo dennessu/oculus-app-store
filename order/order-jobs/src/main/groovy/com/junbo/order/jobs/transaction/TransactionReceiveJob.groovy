@@ -155,7 +155,7 @@ class TransactionReceiveJob {
         } finally {
             is.close()
             LOGGER.info('name=End_Process_Discrepancy,totalProcessed={},totalInFile={},numOfError={},numOfDiscrepancy={},latencyInMs={}',jobResult.totalProcessed, index,
-                    jobResult.discrepancyRecords.size(), jobResult.totalError, System.currentTimeMillis() - startTime)
+                    jobResult.totalError, jobResult.discrepancyRecords.size(), System.currentTimeMillis() - startTime)
         }
     }
 
@@ -226,7 +226,7 @@ class TransactionReceiveJob {
         if (org.apache.commons.lang3.StringUtils.isEmpty(transaction.providerTxnId)) {
             throw new IllegalArgumentException('providerTxnId is empty')
         }
-        int index = transaction.providerTxnId.indexOf('-')
+        int index = transaction.providerTxnId.indexOf('_')
         if (index < 0) {
             throw new IllegalArgumentException('Invalid providerTxnId')
         }

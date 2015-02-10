@@ -17,7 +17,8 @@ public enum BalanceType implements Identifiable<Short> {
     DEBIT((short)1),
     MANUAL_CAPTURE((short)2),
     CREDIT((short)4),
-    REFUND((short)8);
+    REFUND((short)8),
+    CHARGE_BACK((short)16);
 
     private final Short id;
 

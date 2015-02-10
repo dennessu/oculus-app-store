@@ -447,8 +447,13 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(offer.getIsFree().booleanValue(), isFree);
         if (isFree) {
             Assert.assertEquals(offer.getPrice().doubleValue(), BigDecimal.ZERO.doubleValue(), 0.00001);
+            Assert.assertEquals(offer.getCurrency(), null);
+        } else {
+            Assert.assertEquals(offer.getCurrency().getValue(), "USD");
+            int symbolIndex = offer.getFormattedPrice().indexOf("$");
+            Assert.assertEquals(symbolIndex, 0);
+            Assert.assertTrue(new BigDecimal(offer.getFormattedPrice().substring(symbolIndex + 1)).compareTo(BigDecimal.ZERO) > 0);
         }
-        Assert.assertEquals(offer.getCurrency().getValue(), "USD");
     }
 
     private String getImageSizeGroup(String dimensionText) {

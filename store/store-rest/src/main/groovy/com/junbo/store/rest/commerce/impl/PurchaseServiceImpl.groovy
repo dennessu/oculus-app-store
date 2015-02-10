@@ -28,6 +28,7 @@ import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.Entitlement
 import com.junbo.store.spec.model.billing.Instrument
+import com.junbo.store.spec.model.browse.document.Offer
 import com.junbo.store.spec.model.iap.IAPParam
 import com.junbo.store.spec.model.purchase.*
 import groovy.transform.CompileStatic
@@ -92,15 +93,21 @@ class PurchaseServiceImpl implements PurchaseService {
     @Resource(name = 'iapValidator')
     private IAPValidator iapValidator
 
+    @Resource(name = 'storePriceFormatter')
+    private PriceFormatter priceFormatter
+
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request, ApiContext apiContext) {
         User user
         Challenge challenge
+        Offer offer
         requestValidator.validateRequiredApiHeaders()
+        requestValidator.validateMakeFreePurchaseRequest(request)
         identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
-            requestValidator.validateMakeFreePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
+            facadeContainer.catalogFacade.getOffer(request.offer.value, apiContext).then { Offer of ->
+                offer = of
+                requestValidator.validateOfferForPurchase(user.getId(), offer, true)
             }
         }.then {
             if (tosFreepurchaseEnable) {
@@ -134,21 +141,29 @@ class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest request, ApiContext apiContext) {
-        OfferId offerId = request.offer
         Item hostItem
         User user
-        CurrencyId currencyId
         PurchaseState purchaseState
         IAPParam iapParam
+        Offer offer
 
         identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
-            validatePreparePurchase(request, user, apiContext).then {
+            requestValidator.validatePreparePurchaseRequest(request)
+            facadeContainer.catalogFacade.getOffer(request.offer.value, apiContext).then { Offer of ->
+                offer = of
+                requestValidator.validateOfferForPurchase(apiContext.user, offer, false).then {
+                    if (request.instrument == null) {
+                        return Promise.pure(null)
+                    }
+                    return validateInstrumentForPreparePurchase(user, request)
+                }
+            }.then {
                 if (request.isIAP != null) { // todo validate offer is iap & package is correct
                     iapParam = storeUtils.buildIAPParam()
                     return facadeContainer.catalogFacade.getCatalogItemByPackageName(iapParam.packageName, iapParam.packageVersion, iapParam.packageSignatureHash).then { Item item ->
                         hostItem = item
-                        return iapValidator.validateInAppOffer(offerId, hostItem)
+                        return iapValidator.validateInAppOffer(offer.self, hostItem)
                     }
                 }
                 return Promise.pure(null)
@@ -167,11 +182,6 @@ class PurchaseServiceImpl implements PurchaseService {
                 return Promise.pure(null)
             }
         }.then {
-            resourceContainer.countryResource.get(apiContext.country.getId(), new CountryGetOptions()).then { Country country ->
-                currencyId = country.defaultCurrency
-                return Promise.pure(null)
-            }
-        }.then {
             return getPurchaseChallenge(user.getId(), request, apiContext).then { Challenge challenge ->
                 if (challenge != null) {
                     return tokenProcessor.toTokenString(purchaseState).then { String token ->
@@ -183,7 +193,7 @@ class PurchaseServiceImpl implements PurchaseService {
                         )
                     }
                 }
-                return doPreparePurchase(request, user, purchaseState, currencyId, apiContext)
+                return doPreparePurchase(request, user, purchaseState, offer.currency, apiContext)
             }
         }
     }
@@ -292,8 +302,8 @@ class PurchaseServiceImpl implements PurchaseService {
                 if (!order.isTaxInclusive && order.totalTax != null) {
                     total += order.totalTax
                 }
-                response.formattedTotalPrice = formatPrice(total, currency)
-                response.formattedTaxPrice = formatPrice(order.totalTax, currency)
+                response.formattedTotalPrice = priceFormatter.formatPrice(total, currencyId)
+                response.formattedTaxPrice = priceFormatter.formatPrice(order.totalTax, currencyId)
                 response.order = order.getId()
                 purchaseState.order = order.getId()
                 return tokenProcessor.toTokenString(purchaseState).then { String token ->
@@ -309,17 +319,6 @@ class PurchaseServiceImpl implements PurchaseService {
                 }
             }
             return Promise.pure(response)
-        }
-    }
-
-    Promise validatePreparePurchase(PreparePurchaseRequest request, User user, ApiContext apiContext) {
-        requestValidator.validatePreparePurchaseRequest(request).then { // basic validation
-            requestValidator.validateOfferForPurchase(apiContext.user, request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
-        }.then {
-            if (request.instrument == null) {
-                return Promise.pure(null)
-            }
-            return validateInstrumentForPreparePurchase(user, request)
         }
     }
 
@@ -344,17 +343,6 @@ class PurchaseServiceImpl implements PurchaseService {
                     return Promise.pure(response)
                 }
             }
-        }
-    }
-
-    private static String formatPrice(BigDecimal value, Currency currency) {
-        if (value == null) {
-            return null
-        }
-        if (currency.symbolPosition.equalsIgnoreCase(Constants.CurrencySymbolPosition.AFTER)) {
-            return value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
-        } else {
-            return currency.symbol + value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP)
         }
     }
 

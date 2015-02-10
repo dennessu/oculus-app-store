@@ -13,6 +13,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.order.clientproxy.model.Offer
+import com.junbo.order.core.OrderAction
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
@@ -357,6 +358,9 @@ class CoreUtils {
                 return order.status == OrderStatus.PENDING.name()
             case OrderActionType.FULFILL.name():
                 return order.status == OrderStatus.PENDING.name() || order.status == OrderStatus.PREORDERED.name()
+            case OrderActionType.CHARGE_BACK.name():
+            case OrderActionType.REFUND_TAX.name():
+                return order.status == OrderStatus.COMPLETED.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
@@ -418,6 +422,15 @@ class CoreUtils {
         return order.billingHistories.any { BillingHistory bh ->
             (bh.billingEvent == BillingAction.REQUEST_REFUND.name() && bh.success) ||
                     (bh.billingEvent == BillingAction.REFUND.name() && bh.success)
+        }
+    }
+
+    static Boolean isChargeBack(Order order) {
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        return order.billingHistories.any { BillingHistory bh ->
+            (bh.billingEvent == BillingAction.CHARGE_BACK.name() && bh.success)
         }
     }
 

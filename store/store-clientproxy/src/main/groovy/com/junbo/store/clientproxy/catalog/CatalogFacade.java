@@ -12,7 +12,7 @@ import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.document.RevisionNote;
-import com.junbo.store.spec.model.catalog.Offer;
+import com.junbo.store.spec.model.browse.document.Offer;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public interface CatalogFacade {
 
-    Promise<Offer> getOffer(String offerId, LocaleId locale);
+    Promise<Offer> getOffer(String offerId, ApiContext apiContext);
 
     Promise<List<ItemId>> getItemsInOffer(String offerId);
 

@@ -23,6 +23,7 @@ import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.StoreUtils
+import com.junbo.store.rest.utils.PriceFormatter
 import com.junbo.store.rest.validator.ResponseValidator
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
@@ -100,6 +101,10 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
 
     @Resource(name = 'storeUtils')
     private StoreUtils storeUtils
+
+    @Resource(name = 'storePriceFormatter')
+    private PriceFormatter priceFormatter
+
     private Map<Integer, Map> initialItemsVersionedMap;
 
     private Set<String> libraryItemTypes = [
@@ -342,8 +347,9 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
                 item.offer.price = BigDecimal.ZERO
                 return Promise.pure()
             }
-            facadeContainer.priceRatingFacade.rateOffer(item.offer.self, apiContext).then { RatingItem ratingItem ->
+            facadeContainer.priceRatingFacade.rateOffer(item.offer.self, item.offer.currency, apiContext).then { RatingItem ratingItem ->
                 item.offer.price = ratingItem?.finalTotalAmount
+                item.offer.formattedPrice = priceFormatter.formatPrice(item.offer.price, item.offer.currency)
                 return Promise.pure()
             }
         }.then {
