@@ -3,6 +3,7 @@ import com.Ostermiller.util.CSVParser
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.PayoutId
 import com.junbo.common.util.IdFormatter
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.jobs.Constants
 import com.junbo.order.jobs.utils.ftp.FTPUtils
 import com.junbo.order.spec.model.FBPayoutStatusChangeRequest
@@ -72,6 +73,9 @@ class PayoutStatusUpdateJob {
 
     @Resource(name='subledgerPayoutFTPUtils')
     FTPUtils ftpUtils
+
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
 
     public void execute() {
         innerExecute(new Date(System.currentTimeMillis() ))
@@ -148,6 +152,7 @@ class PayoutStatusUpdateJob {
                         try {
                             totalProcessed.incrementAndGet()
                             self.processPayoutStatus(headersLowerCase, values)
+                            LOGGER.info('name=PayoutStatusUpdateSuccess, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','))
                         } catch (Exception ex) {
                             numOfError.incrementAndGet()
                             LOGGER.error('name=PayoutStatusUpdateError, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','), ex)
@@ -208,7 +213,9 @@ class PayoutStatusUpdateJob {
             int retryCount = 0;
             while (true) {
                 try {
-                    subledgerResource.updateStatusOnFacebookPayoutStatusChange(request).get()
+                    transactionHelper.executeInNewTransaction {
+                        subledgerResource.updateStatusOnFacebookPayoutStatusChange(request).get()
+                    }
                     break
                 } catch (Exception ex) {
                     LOGGER.error('name=PayoutStatusUpdateApiError,payoutId={},fbPayoutId={},retryCount={}', IdFormatter.encodeId(payoutId), request.fbPayoutId, retryCount, ex)

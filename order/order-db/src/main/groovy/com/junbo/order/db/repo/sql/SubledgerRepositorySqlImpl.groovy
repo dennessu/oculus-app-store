@@ -2,7 +2,6 @@ package com.junbo.order.db.repo.sql
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.PayoutId
 import com.junbo.common.id.SubledgerId
@@ -10,7 +9,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.order.db.dao.SubledgerDao
 import com.junbo.order.db.entity.SubledgerEntity
-import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.db.mapper.ModelMapper
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.util.Utils
@@ -18,6 +16,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.PayoutStatus
 import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
@@ -66,6 +65,7 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
         def newEntity = modelMapper.toSubledgerEntity(subledger, new MappingContext())
         newEntity.createdTime = oldEntity.createdTime
         newEntity.createdBy = oldEntity.createdBy
+        newEntity.resourceAge = oldEntity.resourceAge
         subledgerDao.update(newEntity)
         Utils.fillDateInfo(subledger, newEntity)
 
