@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
@@ -20,6 +21,8 @@ public class Offer {
 
     private BigDecimal price;
 
+    private String formattedPrice;
+
     private Boolean isFree;
 
     private String formattedDescription;
@@ -27,6 +30,12 @@ public class Offer {
     private CurrencyId currency;
 
     private OfferRevisionId currentRevision;
+
+    @JsonIgnore
+    private Boolean hasStoreValueItem;
+
+    @JsonIgnore
+    private Boolean hasPhysicalItem;
 
     public OfferId getSelf() {
         return self;
@@ -42,6 +51,14 @@ public class Offer {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getFormattedPrice() {
+        return formattedPrice;
+    }
+
+    public void setFormattedPrice(String formattedPrice) {
+        this.formattedPrice = formattedPrice;
     }
 
     public Boolean getIsFree() {
@@ -74,5 +91,21 @@ public class Offer {
 
     public void setCurrentRevision(OfferRevisionId currentRevision) {
         this.currentRevision = currentRevision;
+    }
+
+    public Boolean getHasStoreValueItem() {
+        return hasStoreValueItem;
+    }
+
+    public void setHasStoreValueItem(Boolean hasStoreValueItem) {
+        this.hasStoreValueItem = hasStoreValueItem;
+    }
+
+    public Boolean getHasPhysicalItem() {
+        return hasPhysicalItem;
+    }
+
+    public void setHasPhysicalItem(Boolean hasPhysicalItem) {
+        this.hasPhysicalItem = hasPhysicalItem;
     }
 }

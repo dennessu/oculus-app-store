@@ -7,7 +7,6 @@ package com.junbo.store.spec.model;
 
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.Country;
-import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
 
 import java.util.Map;
@@ -28,8 +27,6 @@ public class ApiContext {
     private Locale locale;
 
     private Country country;
-
-    private Currency currency;
 
     private String androidId;
 
@@ -72,14 +69,6 @@ public class ApiContext {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
     }
 
     public String getAndroidId() {

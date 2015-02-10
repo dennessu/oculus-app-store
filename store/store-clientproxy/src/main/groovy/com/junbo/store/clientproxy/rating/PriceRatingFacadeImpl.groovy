@@ -1,5 +1,6 @@
 package com.junbo.store.clientproxy.rating
 
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
@@ -26,11 +27,11 @@ class PriceRatingFacadeImpl implements PriceRatingFacade {
     private ResourceContainer resourceContainer
 
     @Override
-    Promise<RatingItem> rateOffer(OfferId offerId,  ApiContext apiContext) {
+    Promise<RatingItem> rateOffer(OfferId offerId, CurrencyId currencyId, ApiContext apiContext) {
         resourceContainer.ratingResource.priceRating(new RatingRequest(
                     includeCrossOfferPromos: false,
                     country: apiContext.country.getId().value,
-                    currency: apiContext.currency.getId().value,
+                    currency: currencyId.value,
                     lineItems: [
                             new RatingItem(
                                     offerId: offerId.value,

@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.common.RevisionNotes
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.json.ObjectMapperProvider
@@ -115,7 +116,7 @@ class ItemBuilder {
         } else {
             result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
         }
-        result.offer = buildOffer(caseyOffer, apiContext)
+        result.offer = buildOffer(caseyOffer)
         result.aggregatedRatings = aggregatedRatings
         fillNullValueWithDefault(result, true)
         return result
@@ -333,13 +334,17 @@ class ItemBuilder {
         return appDetails;
     }
 
-    private Offer buildOffer(CaseyOffer caseyOffer, ApiContext apiContext) {
+    private Offer buildOffer(CaseyOffer caseyOffer) {
         if (caseyOffer == null) {
             return null
         }
+
         Offer offer = new Offer()
         offer.currentRevision = caseyOffer.currentRevision
-        offer.currency = apiContext.currency.getId()
+        if (caseyOffer?.price?.currencyCode != null) {
+            offer.currency = new CurrencyId(caseyOffer?.price?.currencyCode)
+        }
+
         offer.price = caseyOffer.price?.amount
         offer.self = caseyOffer.self
         offer.isFree = caseyOffer.price?.isFree

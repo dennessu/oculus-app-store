@@ -36,6 +36,7 @@ import com.junbo.store.spec.model.browse.AcceptTosRequest
 import com.junbo.store.spec.model.browse.DeliveryRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.browse.ReviewsRequest
+import com.junbo.store.spec.model.browse.document.Offer
 import com.junbo.store.spec.model.iap.IAPConsumeItemRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
@@ -360,20 +361,18 @@ class RequestValidator {
         }
     }
 
-
-    Promise validateMakeFreePurchaseRequest(MakeFreePurchaseRequest request) {
+    void validateMakeFreePurchaseRequest(MakeFreePurchaseRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        notEmpty(request.offer, 'offer')
-        return Promise.pure(null)
+        notEmpty(request.offer?.value, 'offer')
     }
 
-    Promise<Void> validatePreparePurchaseRequest(PreparePurchaseRequest request) {
+    void validatePreparePurchaseRequest(PreparePurchaseRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        notEmpty(request.offer, 'offerId')
+        notEmpty(request.offer?.value, 'offerId')
         if (request.challengeAnswer != null) {
             if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
                 notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
@@ -383,9 +382,7 @@ class RequestValidator {
                 notEmpty(request.challengeAnswer.password, 'challengeAnswer.password')
             }
         }
-        return Promise.pure(null)
     }
-
 
     Promise validateCommitPurchaseRequest(CommitPurchaseRequest request) {
         if (request == null) {
@@ -424,32 +421,29 @@ class RequestValidator {
         }
     }
 
-    public Promise validateOfferForPurchase(UserId userId, OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
-        return facadeContainer.catalogFacade.getOffer(offerId.value, locale).then { com.junbo.store.spec.model.catalog.Offer offer ->
-            // todo:    Here we may need to call rating to determine whether this is free or not
-            if (offer.hasPhysicalItem) {
-                throw AppErrors.INSTANCE.invalidOffer('Offer has physical items.').exception()
-            }
-            if (free && !offer.isFree) {
-                throw AppErrors.INSTANCE.invalidOffer('Offer not free.').exception()
-            }
-            if (!free && offer.isFree) {
-                throw AppErrors.INSTANCE.invalidOffer('Offer is free.').exception()
-            }
-            if (offer.hasStoreValueItem) {
-                return resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(
-                        userId: userId,
-                        type: com.junbo.common.id.PIType.STOREDVALUE.toString()
-                )).then { Results<PaymentInstrument> results ->
-                    if (results == null || CollectionUtils.isEmpty(results.items)) {
-                        throw AppErrors.INSTANCE.invalidOffer('StoreValue is not exists.').exception()
-                    }
-
-                    return Promise.pure(null)
-                }
-            }
-            return Promise.pure()
+    public Promise validateOfferForPurchase(UserId userId, Offer offer, boolean free) {
+        if (offer.hasPhysicalItem) {
+            throw AppErrors.INSTANCE.invalidOffer('Offer has physical items.').exception()
         }
+        if (free && !offer.isFree) {
+            throw AppErrors.INSTANCE.invalidOffer('Offer not free.').exception()
+        }
+        if (!free && offer.isFree) {
+            throw AppErrors.INSTANCE.invalidOffer('Offer is free.').exception()
+        }
+        if (offer.hasStoreValueItem) {
+            return resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(
+                    userId: userId,
+                    type: com.junbo.common.id.PIType.STOREDVALUE.toString()
+            )).then { Results<PaymentInstrument> results ->
+                if (results == null || CollectionUtils.isEmpty(results.items)) {
+                    throw AppErrors.INSTANCE.invalidOffer('StoreValue is not exists.').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+        return Promise.pure()
     }
 
     public void validateAcceptTosRequest(AcceptTosRequest request) {
