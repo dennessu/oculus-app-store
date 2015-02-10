@@ -226,7 +226,7 @@ class TransactionReceiveJob {
         if (org.apache.commons.lang3.StringUtils.isEmpty(transaction.providerTxnId)) {
             throw new IllegalArgumentException('providerTxnId is empty')
         }
-        int index = transaction.providerTxnId.indexOf('-')
+        int index = transaction.providerTxnId.indexOf('_')
         if (index < 0) {
             throw new IllegalArgumentException('Invalid providerTxnId')
         }
