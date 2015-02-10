@@ -15,8 +15,6 @@ import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.EventStatus
-import com.junbo.order.spec.model.enums.OrderStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional

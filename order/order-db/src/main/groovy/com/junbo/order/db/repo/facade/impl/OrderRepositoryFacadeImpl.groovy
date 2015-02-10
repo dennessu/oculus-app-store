@@ -129,11 +129,11 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                                 saveRevision, revisionType).then {
                             return saveDiscounts(savedOrder.getId(), order.discounts)
                         }.then {
-                            return Promise.pure(order)
+                            return Promise.pure(getOrder(savedOrder.getId().value))
                         }
 
                     } else {
-                        return Promise.pure(order)
+                        return Promise.pure(savedOrder)
                     }
                 }.then { Order o ->
                     LOGGER.info('name=repo.createOrder_done')

@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -50,8 +51,9 @@ class RefundTaxAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
 
-        return facadeContainer.billingFacade.quoteBalance(
-                CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)).syncRecover {
+        Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)
+        balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), "EDUCATION")
+        return facadeContainer.billingFacade.quoteBalance(balance).syncRecover {
             Throwable throwable ->
                 LOGGER.error('name=Fail_To_Quote_Balance', throwable)
                 throw throwable
@@ -63,12 +65,12 @@ class RefundTaxAction extends BaseOrderEventAwareAction {
 
             if (taxedBalance.taxAmount > order.totalTax) {
                 LOGGER.error('name=Tax_Is_More_Than_Before')
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.FAILED)
+                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.FAILED))
             }
 
             if (taxedBalance.taxAmount.equals(order.totalTax)) {
                 LOGGER.info('name=No_Tax_To_Refund')
-                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.FAILED)
+                return Promise.pure(CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.FAILED))
             }
 
             CoreBuilder.fillTaxInfo(order, taxedBalance)

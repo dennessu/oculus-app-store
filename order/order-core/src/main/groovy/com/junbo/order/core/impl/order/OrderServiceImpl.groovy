@@ -331,7 +331,7 @@ class OrderServiceImpl implements OrderService {
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
                 LOGGER.info('name=updateOrderByOrderEvent_Completed')
-                orderInternalService.refreshOrderStatus(order, true)
+                orderInternalService.refreshOrderStatus(orderServiceContext.order, true)
                 return Promise.pure(orderServiceContext.orderEvent)
             }
         }
