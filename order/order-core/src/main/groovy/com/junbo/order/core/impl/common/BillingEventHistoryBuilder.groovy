@@ -83,6 +83,10 @@ class BillingEventHistoryBuilder {
                 } else if (status == EventStatus.PENDING) {
                     return BillingAction.REQUEST_REFUND.name()
                 }
+            case BalanceType.CHARGE_BACK:
+                if (status == EventStatus.COMPLETED) {
+                    return BillingAction.CHARGE_BACK.name()
+                }
         }
         throw new IllegalArgumentException("Balance_Type_Not_Supported, type-${balanceType}")
     }

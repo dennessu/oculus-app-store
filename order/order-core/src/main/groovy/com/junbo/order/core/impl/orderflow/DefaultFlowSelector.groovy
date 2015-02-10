@@ -99,7 +99,10 @@ class DefaultFlowSelector implements FlowSelector {
                 }
                 LOGGER.error('name=Charge_Event_Not_Expected. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotExpected(event.action, event.status).exception()
-
+            case OrderActionType.CHARGE_BACK.name():
+                return Promise.pure(FlowType.CHARGE_BACK.name())
+            case OrderActionType.REFUND_TAX.name():
+                return Promise.pure(FlowType.REFUND_TAX.name())
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()

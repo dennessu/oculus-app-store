@@ -179,6 +179,12 @@ class BalanceServiceImpl implements BalanceService {
                                     savedBalance.setStatus(BalanceStatus.QUEUING.name())
                                     return Promise.pure(balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.QUEUE))
                                 }
+
+                                if (savedBalance.type == BalanceType.CHARGE_BACK.name()) {
+                                    savedBalance.setStatus(BalanceStatus.COMPLETED.name())
+                                    return Promise.pure(balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CHARGE_BACK))
+                                }
+
                                 return transactionService.processBalance(savedBalance, originalBalance).recover {
                                     Throwable throwable ->
                                         updateAndCommitBalance(savedBalance, EventActionType.CHARGE)

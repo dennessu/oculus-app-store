@@ -21,6 +21,8 @@ class OrderStatusBuilder {
 
         if (CoreUtils.isRefunded(order)) { return OrderStatus.REFUNDED }
 
+        if (CoreUtils.isChargeBack(order)) { return OrderStatus.CHARGE_BACK }
+
         if (CoreUtils.isFulfillCompleted(order) && CoreUtils.isChargeCompleted(order)) {
             return OrderStatus.COMPLETED
         }
