@@ -4,10 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.billing.jobs.asyncCharge
+package com.junbo.billing.listener.asyncCharge
 
-import com.junbo.billing.jobs.clientproxy.BillingFacade
-import com.junbo.billing.jobs.clientproxy.OrderFacade
+import com.junbo.billing.listener.clientproxy.BillingFacade
+import com.junbo.billing.listener.clientproxy.OrderFacade
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance

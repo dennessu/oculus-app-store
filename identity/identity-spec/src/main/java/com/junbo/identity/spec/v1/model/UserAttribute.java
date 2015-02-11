@@ -30,16 +30,14 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
     private UserId userId;
 
     @ApiModelProperty(position = 3, required = true, value = "Link to the user Attribute Definition")
-    @JsonProperty("attributeDefinition")
+    @JsonProperty("definition")
     private UserAttributeDefinitionId userAttributeDefinitionId;
 
     @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the organization link in the attribute definition.")
     @JsonProperty("organization")
-    @CloudantIgnore
     private OrganizationId organizationId;
 
     @ApiModelProperty(position = 4, required = false, value = "[Client Immutable], copy of the type in the corresponding attribute definition")
-    @CloudantIgnore
     private String type;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Value of the user attribute")
@@ -70,7 +68,7 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
 
     public void setUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId) {
         this.userAttributeDefinitionId = userAttributeDefinitionId;
-        support.setPropertyAssigned("attributeDefinition");
+        support.setPropertyAssigned("definition");
         support.setPropertyAssigned("userAttributeDefinitionId");
     }
 

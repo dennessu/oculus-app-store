@@ -329,7 +329,7 @@ class CheckoutTests(ut.TestBase):
         return order
 
     def testFullRefund(self):
-        user = oauth.testRegister('identity commerce commerce.checkout')
+        user = oauth.testRegister('identity identity.pii commerce commerce.checkout', True)
         devinfo = self.testDeveloper()
 
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
@@ -407,6 +407,12 @@ class CheckoutTests(ut.TestBase):
             "billingAddress": address['self'],
             "typeSpecificDetails":{
                 "expireDate":"2025-11"
+            },
+            "riskFeature":{
+                "timeSinceUserAccountCreatedInDays":"10",
+                "sourceDatr":"test_datr",
+                "sourceCountry":"US",
+                "currencyPurchasing":"USD"
             },
             "futureExpansion": { }
         })
@@ -456,12 +462,40 @@ class CheckoutTests(ut.TestBase):
             "X-PLATFORM-VERSION": "4.4.2"
         }, data = order)
 
-        orderToken = oauth.getServiceAccessToken('order.service payment.service')
+        fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
+        fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
+            'orderId': order['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+        fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
+        self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
+        self.assertEqual(fulfilmentAction['status'], 'SUCCEED')
 
-        order['orderItems'][0]['quantity'] = 0
+        entitlementIds = fulfilmentAction['result']['entitlementIds']
 
+        entitlements = []
+        for entitlementId in entitlementIds:
+            entitlement = curlJson('GET', ut.test_uri, '/v1/entitlements/' + entitlementId, headers = {
+                "Authorization": "Bearer " + user.access_token
+            })
+            entitlements.append(entitlement)
+
+        # try to get entitlements directly
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 2
+        searchEntitlementIds = [ entitlement['self']['id'] for entitlement in entitlementSearchResults['results'] ]
+        self.assertSetEqual(set(entitlementIds), set(searchEntitlementIds))
+
+        adminToken = oauth.getServiceAccessToken('order.service payment.service')
+        order['orderItems'] = []
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
-            "Authorization": "Bearer " + orderToken,
+            "Authorization": "Bearer " + adminToken,
             "oculus-end-user-ip": "127.0.0.1",
             "oculus-geoip-country-code": "US",
             "X-CLIENT-NAME": "OculusStore",
@@ -481,8 +515,9 @@ class CheckoutTests(ut.TestBase):
         fulfilmentAction = fulfilment['items'][0]['fulfilmentActions'][0]
         self.assertEqual(fulfilmentAction['type'], 'GRANT_ENTITLEMENT')
         self.assertEqual(fulfilmentAction['status'], 'REVOKED')
+        assert order['totalAmount'] == 0
 
-        # try to get entitlements directly
+        # try to verify revoked entitlements
         entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
             "userId": user.json['self']['id'],
             "itemId": devinfo['item']['self']['id']
@@ -511,7 +546,7 @@ class CheckoutTests(ut.TestBase):
         return order
 
     def testRefundTax(self):
-        user = oauth.testRegister('identity commerce commerce.checkout')
+        user = oauth.testRegister('identity identity.pii commerce commerce.checkout', True)
         devinfo = self.testDeveloper()
 
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
@@ -589,6 +624,12 @@ class CheckoutTests(ut.TestBase):
             "billingAddress": address['self'],
             "typeSpecificDetails":{
                 "expireDate":"2025-11"
+            },
+            "riskFeature":{
+                "timeSinceUserAccountCreatedInDays":"10",
+                "sourceDatr":"test_datr",
+                "sourceCountry":"US",
+                "currencyPurchasing":"USD"
             },
             "futureExpansion": { }
         })
@@ -717,7 +758,7 @@ class CheckoutTests(ut.TestBase):
         return order
 
     def testPartialRefund(self):
-        user = oauth.testRegister('identity commerce commerce.checkout')
+        user = oauth.testRegister('identity identity.pii commerce commerce.checkout', True)
         devinfo = self.testDeveloper()
 
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = {
@@ -795,6 +836,12 @@ class CheckoutTests(ut.TestBase):
             "billingAddress": address['self'],
             "typeSpecificDetails":{
                 "expireDate":"2025-11"
+            },
+            "riskFeature":{
+                "timeSinceUserAccountCreatedInDays":"10",
+                "sourceDatr":"test_datr",
+                "sourceCountry":"US",
+                "currencyPurchasing":"USD"
             },
             "futureExpansion": { }
         })

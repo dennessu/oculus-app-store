@@ -136,7 +136,8 @@ class OrderResourceImpl implements OrderResource {
                         }
                         LOGGER.info('name=authorize_refund_complete. user: {}', order.user.value)
                         oldOrder.orderItems = order.orderItems
-                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext())).then { Order refundedOrder ->
+                        oldOrder.totalTax = order.totalTax
+                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(oldOrder, new ApiContext())).then { Order refundedOrder ->
                             csrActionAudit(refundedOrder)
                             return Promise.pure(refundedOrder)
                         }
@@ -171,13 +172,16 @@ class OrderResourceImpl implements OrderResource {
         }
 
         if (CollectionUtils.isEmpty(newOrder.orderItems)) {
+            LOGGER.info('name=Order_Full_Refund, id:{}', olderOrder.getId().value)
             return true
         }
 
         if(olderOrder.orderItems.size() > newOrder.orderItems.size()) {
+            LOGGER.info('name=Order_Partial_Refund, id:{}', olderOrder.getId().value)
             return true
         }
         if(olderOrder.totalTax > 0 && newOrder.totalTax == 0) {
+            LOGGER.info('name=Order_Tax_Refund, id:{}', olderOrder.getId().value)
             return true
         }
 
@@ -190,6 +194,7 @@ class OrderResourceImpl implements OrderResource {
                 throw AppErrors.INSTANCE.orderItemIsNotFoundForRefund(newItem.offer.value.toString()).exception()
             }
             if(oldItem.quantity > newItem.quantity || oldItem.totalAmount > newItem.totalAmount) {
+                LOGGER.info('name=Order_Partial_Refund_Quantity, id:{}', olderOrder.getId().value)
                 isARefund = true
             }
         }

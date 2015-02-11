@@ -1,5 +1,4 @@
 package com.junbo.identity.rest.resource.v1
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -20,15 +19,18 @@ import com.junbo.identity.spec.v1.option.model.UserAttributeGetOptions
 import com.junbo.identity.spec.v1.resource.UserAttributeResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.ws.rs.core.Response
-
 /**
  * Created by xiali_000 on 2014/12/19.
  */
 @CompileStatic
 class UserAttributeResourceImpl implements UserAttributeResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAttributeResourceImpl.class);
+
     @Autowired
     private UserAttributeService userAttributeService
 
@@ -57,8 +59,6 @@ class UserAttributeResourceImpl implements UserAttributeResource {
             throw AppCommonErrors.INSTANCE.fieldRequired('user').exception()
         }
 
-        userAttribute = clearUserAttribute(userAttribute)
-
         def callback = authorizeCallbackFactory.create(userAttribute.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
@@ -69,11 +69,9 @@ class UserAttributeResourceImpl implements UserAttributeResource {
 
             return userAttributeValidator.validateForCreate(userAttribute).then {
                 return userAttributeService.create(userAttribute).then { UserAttribute newUserAttribute ->
-                        Created201Marker.mark(newUserAttribute.getId())
-                        return fillUserAttribute(newUserAttribute).then {
-                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
-                            return Promise.pure(newUserAttribute)
-                        }
+                    Created201Marker.mark(newUserAttribute.getId())
+                    newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
+                    return Promise.pure(newUserAttribute)
                 }
             }
         }
@@ -88,7 +86,6 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         if (userAttribute == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        userAttribute = clearUserAttribute(userAttribute)
 
         return userAttributeService.get(userAttributeId).then { UserAttribute oldUserAttribute ->
             if (oldUserAttribute == null) {
@@ -104,10 +101,8 @@ class UserAttributeResourceImpl implements UserAttributeResource {
                 userAttribute = userAttributeFilter.filterForPut(userAttribute, oldUserAttribute)
                 return userAttributeValidator.validateForUpdate(userAttributeId, userAttribute, oldUserAttribute).then {
                     return userAttributeService.update(userAttribute, oldUserAttribute).then { UserAttribute newUserAttribute ->
-                        return fillUserAttribute(newUserAttribute).then {
-                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
-                            return Promise.pure(newUserAttribute)
-                        }
+                        newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
+                        return Promise.pure(newUserAttribute)
                     }
                 }
             }
@@ -117,45 +112,76 @@ class UserAttributeResourceImpl implements UserAttributeResource {
     @Override
     Promise<UserAttribute> get(UserAttributeId userAttributeId, UserAttributeGetOptions getOptions) {
         return userAttributeValidator.validateForGet(userAttributeId).then { UserAttribute existing ->
-                def callback = authorizeCallbackFactory.create(existing.userId)
-                return RightsScope.with(authorizeService.authorize(callback)) {
-                    if (!AuthorizeContext.hasRights('read')) {
-                        throw AppErrors.INSTANCE.userAttributeNotFound(userAttributeId).exception()
-                    }
+            return userAttributeDefinitionService.get(existing.userAttributeDefinitionId).then { UserAttributeDefinition uaDef ->
+                if (uaDef == null) {
+                    throw AppErrors.INSTANCE.userAttributeDefinitionNotFound(existing.userAttributeDefinitionId).exception();
+                }
+                if (uaDef.access == UserAttributeDefinition.ACCESS_PRIVATE) {
+                    def callback = authorizeCallbackFactory.create(existing.userId)
+                    return RightsScope.with(authorizeService.authorize(callback)) {
+                        if (!AuthorizeContext.hasRights('read')) {
+                            throw AppErrors.INSTANCE.userAttributeNotFound(userAttributeId).exception()
+                        }
 
-                    return fillUserAttribute(existing).then {
                         existing = userAttributeFilter.filterForGet(existing, getOptions.properties?.split(',') as List<String>)
                         return Promise.pure(existing)
                     }
+                } else {
+                    // public access, anyone can read
+                    existing = userAttributeFilter.filterForGet(existing, getOptions.properties?.split(',') as List<String>)
+                    return Promise.pure(existing)
                 }
+            }
         }
     }
 
     @Override
     Promise<Results<UserAttribute>> list(UserAttributeListOptions listOptions) {
-        return userAttributeValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { Results<UserAttribute> userAttributes ->
-                def result = new Results<UserAttribute>(items: [])
-                result.total = userAttributes.total
+        return userAttributeValidator.validateForSearch(listOptions).then { UserAttributeDefinition uaDef ->
+            listOptions.userAttributeDefinitionId = uaDef.getId()
 
-                return Promise.each(userAttributes.items) { UserAttribute newUserAttribute ->
-                    return fillUserAttribute(newUserAttribute).then {
-                        def callback = authorizeCallbackFactory.create(newUserAttribute.userId)
-                        return RightsScope.with(authorizeService.authorize(callback)) {
-                            if (newUserAttribute != null) {
-                                newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute,
-                                        listOptions.properties?.split(',') as List<String>)
-                            }
+            Promise<Boolean> authPromise = Promise.pure(true);
+            if (uaDef.access == UserAttributeDefinition.ACCESS_PRIVATE) {
+                def callback = authorizeCallbackFactory.create(listOptions.userId)
+                authPromise = RightsScope.with(authorizeService.authorize(callback)) {
+                    return Promise.pure(AuthorizeContext.hasRights('read'))
+                }
+            }
+            return authPromise.then { Boolean isAuthorized ->
+                if (!isAuthorized) {
+                    Results<UserAttribute> emptyResults = new Results<>();
+                    emptyResults.items = new ArrayList<>();
+                    emptyResults.total = 0;
+                    return Promise.pure(emptyResults);
+                }
 
-                            if (newUserAttribute != null && AuthorizeContext.hasRights('read')) {
-                                result.items.add(newUserAttribute)
-                                return Promise.pure(newUserAttribute)
-                            } else {
-                                return Promise.pure(null)
-                            }
+                return search(listOptions).then { Results<UserAttribute> userAttributes ->
+                    // optional re-validation.
+                    def userAttributeDefIds = userAttributes.items
+                            .collect { UserAttribute ua -> ua.userAttributeDefinitionId }.unique()
+                    if (userAttributeDefIds.size() > 1) {
+                        LOGGER.error("User Attribute Definition Search responded other definitions. Expected: {} Responses: {}", uaDef.id, userAttributeDefIds.join(","));
+                        throw AppCommonErrors.INSTANCE.internalServerError().exception();
+                    }
+                    if (userAttributeDefIds.size() > 0) {
+                        if (userAttributeDefIds.first() != uaDef.id) {
+                            LOGGER.error("User Attribute Definition Search responded other definitions. Expected: {} Responses: {}", uaDef.id, userAttributeDefIds.first());
+                            throw AppCommonErrors.INSTANCE.internalServerError().exception();
                         }
                     }
-                }.then {
+
+                    def result = new Results<UserAttribute>(items: [])
+                    result.total = userAttributes.total
+
+                    // no more authorization checks. It's done at the beginning.
+                    // do filterForGet for properties
+                    userAttributes.items.each { UserAttribute newUserAttribute ->
+                        if (newUserAttribute != null) {
+                            newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute,
+                                    listOptions.properties?.split(',') as List<String>)
+                        }
+                        result.items.add(newUserAttribute)
+                    }
                     return Promise.pure(result)
                 }
             }
@@ -178,34 +204,11 @@ class UserAttributeResourceImpl implements UserAttributeResource {
     }
 
     Promise<Results<UserAttribute>> search(UserAttributeListOptions options) {
-        if (options.userId != null && options.userAttributeDefinitionId != null) {
+        if (options.userId != null) {
             return userAttributeService.searchByUserIdAndAttributeDefinitionId(options.userId,
-                    options.userAttributeDefinitionId, options.limit, options.offset)
-        } else if (options.userId != null) {
-            return userAttributeService.searchByUserId(options.userId, options.limit, options.offset)
-        } else if (options.userAttributeDefinitionId != null) {
-            return userAttributeService.searchByUserAttributeDefinitionId(options.userAttributeDefinitionId, options.limit, options.offset)
-        } else if (options.isActive != null) {
-            return userAttributeService.searchByActive(options.isActive, options.limit, options.offset)
+                    options.userAttributeDefinitionId, options.activeOnly, options.limit, options.offset)
         } else {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
-        }
-    }
-
-    private static UserAttribute clearUserAttribute(UserAttribute userAttribute) {
-        userAttribute.setOrganizationId(null);
-        userAttribute.setType(null)
-
-        return userAttribute;
-    }
-
-    private Promise<UserAttribute> fillUserAttribute(UserAttribute userAttribute) {
-        return userAttributeDefinitionService.get(userAttribute.userAttributeDefinitionId).then { UserAttributeDefinition userAttributeDefinition ->
-            if (userAttributeDefinition != null) {
-                userAttribute.setOrganizationId(userAttributeDefinition.getOrganizationId())
-                userAttribute.setType(userAttributeDefinition.getType())
-            }
-            return Promise.pure(userAttribute)
+            return userAttributeService.searchByUserAttributeDefinitionId(options.userAttributeDefinitionId, options.activeOnly, options.limit, options.offset)
         }
     }
 }

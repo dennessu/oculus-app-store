@@ -8,6 +8,8 @@ import com.junbo.identity.service.UserAttributeDefinitionService
 import com.junbo.identity.spec.v1.model.UserAttributeDefinition
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class UserAttributeDefinitionServiceImpl implements UserAttributeDefinitionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAttributeDefinitionServiceImpl.class);
 
     UserAttributeDefinitionRepository userAttributeDefinitionRepository
 
@@ -60,12 +63,16 @@ class UserAttributeDefinitionServiceImpl implements UserAttributeDefinitionServi
     }
 
     @Override
-    Promise<Results<UserAttributeDefinition>> getByOrganizationIdAndType(OrganizationId organizationId, String type, Integer limit, Integer offset) {
-        Results<UserAttributeDefinition> results = new Results<>()
-        return userAttributeDefinitionRepository.getByOrganizationIdAndType(organizationId, type, limit, offset).then { List<UserAttributeDefinition> list ->
-            results.items = list
-
-            return Promise.pure(results)
+    Promise<UserAttributeDefinition> getByOrganizationIdAndType(OrganizationId organizationId, String type) {
+        return userAttributeDefinitionRepository.getByOrganizationIdAndType(organizationId, type, 2, 0).then { List<UserAttributeDefinition> list ->
+            if (list.size() > 1) {
+                LOGGER.warn("Found {} user attribute defs with org {} and type {}. Should find 1.", list.size(), organizationId, type);
+            }
+            if (list.size() == 0) {
+                return Promise.pure(null);
+            } else {
+                return Promise.pure(list.get(0));
+            }
         }
     }
 

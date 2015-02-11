@@ -7,6 +7,7 @@ dependencies {
     compile (libraries.spring_tx)
     compile (libraries.json_path)
     compile (libraries.fastjson)
+    compile(libraries.spring_security)
 
     compile junboProject(':silkcloud-core')
 

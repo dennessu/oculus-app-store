@@ -19,13 +19,18 @@ import java.util.List;
  * Created by xiali_000 on 2014/12/19.
  */
 public class UserAttributeDefinition extends PropertyAssignedAwareResourceMeta<UserAttributeDefinitionId> {
+    public static final String ACCESS_PUBLIC = "PUBLIC";
+    public static final String ACCESS_PRIVATE = "PRIVATE";
 
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]Link to the user Attribute Definition")
     @JsonProperty("self")
     private UserAttributeDefinitionId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "Attribute type, ['CATEGORY', 'TUTORIAL','ACHIEVEMENT']")
+    @ApiModelProperty(position = 2, required = true, value = "Attribute type, ['PUBLIC_PROFILE', 'PRIVATE_PROFILE', 'CATEGORY', 'TUTORIAL','ACHIEVEMENT']")
     private String type;
+
+    @ApiModelProperty(position = 3, required = false, value = "The access level of the user attribute. ['PUBLIC', 'PRIVATE'].")
+    private String access;
 
     @ApiModelProperty(position = 3, required = true, value = "Tags or description of the user Attribute, " +
             "for example \"Finished VR Home Tutorial\", \"Acheived Level 30 in Darknet\"")
@@ -91,6 +96,14 @@ public class UserAttributeDefinition extends PropertyAssignedAwareResourceMeta<U
 
     public String getDescription() {
         return description;
+    }
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
     }
 
     @Override

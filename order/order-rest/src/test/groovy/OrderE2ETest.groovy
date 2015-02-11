@@ -182,6 +182,33 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testRefundOrderChangedPayload() {
+        def order = testPutTentativeOrder()
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_REFUND_ORDER')
+            }
+        }
+        order.orderItems = null
+        order.billingHistories = null
+        order.payments = null
+        def orderResult = orderResource.updateOrderByOrderId(order.getId(), order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+        assert orderResult.status == OrderStatus.REFUNDED.name()
+        assert !orderResult.tentative
+        assert orderGet.status == OrderStatus.REFUNDED.name()
+        assert !orderGet.tentative
+        orderGet.orderItems.each { OrderItem oi ->
+            assert oi.fulfillmentHistories[0].fulfillmentEvent == FulfillmentEventType.REVERSE_FULFILL.name()
+            assert oi.fulfillmentHistories[0].success
+            assert oi.fulfillmentHistories[1].fulfillmentEvent == FulfillmentEventType.FULFILL.name()
+            assert oi.fulfillmentHistories[1].success
+        }
+    }
+
+    @Test(enabled = true)
     void testBillingException() {
         Order tentativeOrder
         transactionHelper.executeInNewTransaction {

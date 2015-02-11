@@ -2,10 +2,12 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserAttributeDefinitionId
 import com.junbo.common.id.UserAttributeId
 import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.UserAttributeValidator
+import com.junbo.identity.service.OrganizationService
 import com.junbo.identity.service.UserAttributeDefinitionService
 import com.junbo.identity.service.UserAttributeService
 import com.junbo.identity.service.UserService
@@ -27,6 +29,7 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
     UserAttributeService userAttributeService
     UserAttributeDefinitionService userAttributeDefinitionService
     UserService userService
+    OrganizationService organizationService
 
     @Override
     Promise<UserAttribute> validateForGet(UserAttributeId id) {
@@ -44,30 +47,17 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
     }
 
     @Override
-    Promise<Void> validateForSearch(UserAttributeListOptions options) {
+    Promise<UserAttributeDefinition> validateForSearch(UserAttributeListOptions options) {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.isActive == null) {
-            if (options.userId == null && options.userAttributeDefinitionId == null) {
-                throw AppCommonErrors.INSTANCE.parameterRequired('userId or userAttributeDefinitionId').exception()
-            }
-        } else {
-            if (options.userId != null) {
-                throw AppCommonErrors.INSTANCE.parameterInvalid("userId", "userId can not search with userId").exception()
-            }
-
-            if (options.userAttributeDefinitionId != null) {
-                throw AppCommonErrors.INSTANCE.parameterInvalid("userAttributeDefinitionId", "userAttributeDefinitionId can not search with userId").exception()
-            }
-
-            if (!options.isActive) {
-                throw AppCommonErrors.INSTANCE.parameterInvalid("isActive", "isActive only support true").exception()
+        if (options.activeOnly != null) {
+            if (options.userId == null) {
+                throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
             }
         }
-
-        return Promise.pure(null)
+        return validateUserAttributeDefinitionExists(options.userAttributeDefinitionId, options.type, options.organizationId);
     }
 
     @Override
@@ -81,7 +71,7 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
         }
 
         if (userAttribute.isActive != null) {
-            throw AppCommonErrors.INSTANCE.fieldNotWritable('isActive').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('activeOnly').exception()
         }
 
         if (userAttribute.isSuspended) {
@@ -93,7 +83,13 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
         }
 
         return validateUserExists(userAttribute.userId).then {
-            return validateUserAttributeDefinitionExists(userAttribute.userAttributeDefinitionId)
+            return validateUserAttributeDefinitionExists(userAttribute.userAttributeDefinitionId,
+                    userAttribute.type, userAttribute.organizationId).then { UserAttributeDefinition attributeDefinition ->
+                userAttribute.userAttributeDefinitionId = attributeDefinition.getId()
+                userAttribute.organizationId = attributeDefinition.organizationId;
+                userAttribute.type = attributeDefinition.type;
+                return Promise.pure()
+            }
         }
     }
 
@@ -104,7 +100,15 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
         }
 
         if (userAttribute.userAttributeDefinitionId != oldUserAttribute.userAttributeDefinitionId) {
-            throw AppCommonErrors.INSTANCE.fieldNotWritable('userAttributeDefinitionId').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('definition').exception()
+        }
+
+        if (userAttribute.organizationId != oldUserAttribute.organizationId) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('organization').exception()
+        }
+
+        if (userAttribute.type != oldUserAttribute.type) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('type').exception()
         }
 
         if (userAttribute.isActive != oldUserAttribute.isActive) {
@@ -112,8 +116,8 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
         }
 
         if (userAttribute.isSuspended != oldUserAttribute.isSuspended) {
-            if (!AuthorizeContext.hasScopes('csr')) {
-                throw AppCommonErrors.INSTANCE.forbiddenWithMessage('only CSR can set isSuspended').exception()
+            if (!AuthorizeContext.hasRights('admin')) {
+                throw AppCommonErrors.INSTANCE.forbiddenWithMessage('admin right is necessary to set isSuspended').exception()
             }
         }
 
@@ -138,16 +142,33 @@ class UserAttributeValidatorImpl implements UserAttributeValidator {
         }
     }
 
-    private Promise<UserAttributeDefinition> validateUserAttributeDefinitionExists(UserAttributeDefinitionId userAttributeDefinitionId) {
-        if (userAttributeDefinitionId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userAttributeDefinitionId').exception()
+    private Promise<UserAttributeDefinition> validateUserAttributeDefinitionExists(UserAttributeDefinitionId userAttributeDefinitionId, String type, OrganizationId organizationId) {
+        Promise<UserAttributeDefinition> userAttrDefGet = null;
+        if (userAttributeDefinitionId != null) {
+            if (type != null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("type", "type cannot be used together with definitionId").exception();
+            } else if (organizationId != null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("organizationId", "organizationId cannot be used together with definitionId").exception();
+            }
+            userAttrDefGet = userAttributeDefinitionService.get(userAttributeDefinitionId)
+        } else {
+            if (type == null) {
+                throw AppCommonErrors.INSTANCE.fieldRequired("type or definitionId").exception();
+            }
+            Promise<OrganizationId> getOrgId = null;
+            if (organizationId == null) {
+                getOrgId = organizationService.getDefaultOrganizationId();
+            } else {
+                getOrgId = Promise.pure(organizationId);
+            }
+            userAttrDefGet = getOrgId.then { OrganizationId orgGetResult ->
+                return userAttributeDefinitionService.getByOrganizationIdAndType(orgGetResult, type);
+            }
         }
-
-        return userAttributeDefinitionService.get(userAttributeDefinitionId).then { UserAttributeDefinition userAttributeDefinition ->
+        return userAttrDefGet.then { UserAttributeDefinition userAttributeDefinition ->
             if (userAttributeDefinition == null) {
                 throw AppErrors.INSTANCE.userAttributeDefinitionNotFound(userAttributeDefinitionId).exception()
             }
-
             return Promise.pure(userAttributeDefinition)
         }
     }

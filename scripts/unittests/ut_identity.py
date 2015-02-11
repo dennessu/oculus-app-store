@@ -256,5 +256,110 @@ class IdentityTests(ut.TestBase):
         resp = curl('DELETE', ut.test_uri, '/v1/role-assignments/' + roleAssignmentDeveloper['self']['id'], headers = {
             "Authorization": "Bearer " + user.access_token
         })
+
+    def testUserAttribute(self):
+        user1 = oauth.testRegister('identity')
+        user2 = oauth.testRegister('identity')
+
+        # create user attribute
+        userAttribute = curlJson('POST', ut.test_uri, '/v1/user-attributes', headers = {
+            "Authorization": "Bearer " + user1.access_token
+        }, data = {
+            "user": {
+                "href": user1.href,
+                "id": user1.id
+            },
+            "type": "PUBLIC_PROFILE",
+            "value": randomstr(10)
+        })
+
+        userAttributeGet = curlJson('GET', ut.test_uri, userAttribute['self']['href'], headers = {
+            "Authorization": "Bearer " + user2.access_token
+        })
+
+        assert userAttributeGet['value'] == userAttribute['value']
+        assert userAttributeGet['type'] == userAttribute['type']
+        assert userAttributeGet['organization'] is not None
+        assert userAttributeGet['definition'] is not None
+
+        userAttributeDef2 = curlJson('GET', ut.test_uri, '/v1/user-attribute-definitions', headers = {
+            "Authorization": "Bearer " + user1.access_token
+        }, query = {
+            "type": "PRIVATE_PROFILE",
+            "organizationId": userAttributeGet['organization']['id']
+        })
+        assert len(userAttributeDef2['results']) == 1
+
+        userAttribute2 = curlJson('POST', ut.test_uri, '/v1/user-attributes', headers = {
+            "Authorization": "Bearer " + user1.access_token
+        }, data = {
+            "user": {
+                "href": user1.href,
+                "id": user1.id
+            },
+            "definition": userAttributeDef2['results'][0]['self'],
+            "value": randomstr(10)
+        })
+
+        userAttribute2['value'] = "1234567"
+        userAttribute2 = curlJson('PUT', ut.test_uri, userAttribute2['self']['href'], headers = {
+            "Authorization": "Bearer " + user1.access_token
+        }, data = userAttribute2)
+
+        userAttribute2Get = curlJson('GET', ut.test_uri, userAttribute2['self']['href'], headers = {
+            "Authorization": "Bearer " + user2.access_token
+        })
+        assert userAttribute2Get['value'] == '1234567'
+
+        userAttributeList = curlJson('GET', ut.test_uri, "/v1/user-attributes", headers = {
+            "Authorization": "Bearer " + user2.access_token
+        }, query = {
+            "type": "PUBLIC_PROFILE",
+            "userId": user1.id
+        })
+        assert len(userAttributeList['results']) == 1
+
+        userAttributeList = curlJson('GET', ut.test_uri, "/v1/user-attributes", headers = {
+            "Authorization": "Bearer " + user2.access_token
+        }, query = {
+            "definitionId": userAttributeGet['definition']['id'],
+            "userId": user1.id
+        })
+        assert len(userAttributeList['results']) == 1
+
+        userAttributeList = curlJson('GET', ut.test_uri, "/v1/user-attributes", headers = {
+            "Authorization": "Bearer " + user2.access_token
+        }, query = {
+            "definitionId": userAttributeGet['definition']['id'],
+            "userId": user1.id,
+            "activeOnly": True
+        })
+        assert len(userAttributeList['results']) == 1
+
+        userAttribute["isSuspended"] = True
+        userAttribute = curlJson('PUT', ut.test_uri, userAttribute['self']['href'], headers = {
+            "Authorization": "Bearer " + oauth.getServiceAccessToken('identity.service')
+        }, data = userAttribute)
+
+        userAttributeList = curlJson('GET', ut.test_uri, "/v1/user-attributes", headers = {
+            "Authorization": "Bearer " + user2.access_token
+        }, query = {
+            "definitionId": userAttributeGet['definition']['id'],
+            "userId": user1.id,
+            "activeOnly": True
+        })
+        assert len(userAttributeList['results']) == 0
+
+        userAttributeList = curlJson('GET', ut.test_uri, "/v1/user-attributes", headers = {
+            "Authorization": "Bearer " + user2.access_token
+        }, query = {
+            "definitionId": userAttributeGet['definition']['id'],
+            "userId": user1.id
+        })
+        assert len(userAttributeList['results']) == 1
+
+
+
+
 if __name__ == '__main__':
     silkcloud_utmain()

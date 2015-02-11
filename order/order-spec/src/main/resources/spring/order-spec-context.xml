@@ -17,4 +17,9 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.order.url}"/>
     </bean>
+
+    <bean id="orderEventResourceClientProxy" class="com.junbo.order.spec.resource.proxy.OrderEventResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
 </beans>

@@ -197,4 +197,8 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 404, code = "145", message = "User Pin Not Found")
     AppError userPinNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "146", message = "UserAttributeDefinition already exists", field = "type",
+            reason = "UserAttributeDefinition with org {0} and type {1} already exists.")
+    AppError userAttributeDefinitionAlreadyExists(OrganizationId orgId, String type);
 }

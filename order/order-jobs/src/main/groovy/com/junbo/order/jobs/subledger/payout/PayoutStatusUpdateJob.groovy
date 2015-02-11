@@ -3,6 +3,7 @@ import com.Ostermiller.util.CSVParser
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.PayoutId
 import com.junbo.common.util.IdFormatter
+import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.jobs.Constants
 import com.junbo.order.jobs.utils.ftp.FTPUtils
 import com.junbo.order.spec.model.FBPayoutStatusChangeRequest
@@ -61,6 +62,8 @@ class PayoutStatusUpdateJob {
 
     @Value('${order.jobs.subledger.maxRetry}')
     private int maxRetry
+
+    private boolean parallelUpdate = false
 
     private int initialRetryIntervalSecond = 10
 
@@ -147,19 +150,25 @@ class PayoutStatusUpdateJob {
                         MDC.put(X_REQUEST_ID, UUID.randomUUID().toString());
                         try {
                             totalProcessed.incrementAndGet()
+                            LOGGER.info('name=PayoutStatusUpdateStart, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','))
                             self.processPayoutStatus(headersLowerCase, values)
+                            LOGGER.info('name=PayoutStatusUpdateSuccess, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','))
                         } catch (Exception ex) {
                             numOfError.incrementAndGet()
                             LOGGER.error('name=PayoutStatusUpdateError, file={}, index={}, values={}', payoutStatusFile.path, index, StringUtils.join(values, ','), ex)
                         }
                     }
                 })
-                taskList.add(future)
 
-                if (taskList.size() > MAX_FUTURE_NUM) {
-                    taskList.each { Future f -> f.get()}
-                    taskList.clear()
+                if (!parallelUpdate) {
+                    future.get()
+                } else {
+                    if (taskList.size() > MAX_FUTURE_NUM) {
+                        taskList.each { Future f -> f.get()}
+                        taskList.clear()
+                    }
                 }
+
                 index++
             }
 

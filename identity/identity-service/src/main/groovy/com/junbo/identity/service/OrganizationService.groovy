@@ -1,12 +1,10 @@
 package com.junbo.identity.service
-
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * Created by liangfu on 10/21/14.
  */
@@ -27,4 +25,7 @@ public interface OrganizationService {
     public Promise<Organization> searchByMigrateCompanyId(Long migratedCompanyId)
 
     Promise<Results<Organization>> searchAll(Integer limit, Integer offset)
+
+    // internal use: get the default organizationId. The result is cached.
+    Promise<OrganizationId> getDefaultOrganizationId();
 }

@@ -6,5 +6,5 @@ include 'billing-auth'
 include 'billing-core'
 include 'billing-rest'
 
-include 'billing-jobs'
+include 'billing-listener'
 include 'billing-app'

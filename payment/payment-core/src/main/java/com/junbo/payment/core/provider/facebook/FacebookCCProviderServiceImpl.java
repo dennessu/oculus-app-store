@@ -7,6 +7,7 @@
 package com.junbo.payment.core.provider.facebook;
 
 import com.junbo.common.error.AppCommonErrors;
+import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.FacebookGatewayService;
@@ -52,6 +53,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private String oculusAppId;
     private String env;
     private String rtuVerifyToken;
+    private String appSecret;
+    private String needSignVerify;
     private FacebookPaymentUtils facebookPaymentUtils;
     private FacebookGatewayService facebookGatewayService;
     private PersonalInfoFacade personalInfoFacade;
@@ -452,12 +455,12 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             throw AppServerExceptions.INSTANCE.unAuthorized(request).exception();
         }
         //Post RTU
-        if (!checkSign(request)) {
+        if ("true".equalsIgnoreCase(needSignVerify) && !checkSign(request)) {
             LOGGER.error("verify sign failed:" + rawRequest);
             throw AppServerExceptions.INSTANCE.unAuthorized(request).exception();
         }
         final FacebookRTU facebookRTU = CommonUtil.parseJsonIgnoreUnknown(request, FacebookRTU.class);
-        if(facebookRTU == null || !facebookRTU.getObject().equalsIgnoreCase("payments") || facebookRTU.getEntry().length < 0){
+        if(facebookRTU == null || !"payments".equals(facebookRTU.getObject()) || facebookRTU.getEntry() == null || facebookRTU.getEntry().length < 0){
             return Promise.pure(null);
         }
         if(!Arrays.asList(facebookRTU.getEntry()[0].getChanged_fields()).contains(FB_RISK_RTU_FIELD)){
@@ -518,7 +521,21 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     }
 
     private boolean checkSign(String request){
-        //TODO: verify the sha1 sign for the request
+        String authHeader = JunboHttpContext.getRequestHeaders().getFirst("X-Hub-Signature");
+        if (!CommonUtil.isNullOrEmpty(authHeader)){
+            if(!authHeader.startsWith("sha1=")){
+                LOGGER.error("invalid authorize header format:" + authHeader);
+                throw AppCommonErrors.INSTANCE.headerRequired("authorization").exception();
+            }
+            String calculated = CommonUtil.calHMCASHA1Hex(request, appSecret);
+            if(!authHeader.replace("sha1=", "").equals(calculated)){
+                LOGGER.error("invalid authorize header:" + authHeader);
+                throw AppCommonErrors.INSTANCE.headerRequired("authorization").exception();
+            }
+        }else{
+            LOGGER.error("missing authorize header");
+            throw AppCommonErrors.INSTANCE.headerRequired("authorization").exception();
+        }
         return true;
     }
 
@@ -622,6 +639,15 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     }
 
 
+    @Required
+    public void setNeedSignVerify(String needSignVerify) {
+        this.needSignVerify = needSignVerify;
+    }
+
+    @Required
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
+    }
     @Required
     public void setOculusAppId(String oculusAppId) {
         this.oculusAppId = oculusAppId;

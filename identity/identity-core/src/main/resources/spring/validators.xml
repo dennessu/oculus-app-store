@@ -672,6 +672,7 @@
         <property name="userAttributeDefinitionService" ref="userAttributeDefinitionService" />
         <property name="userAttributeService" ref="userAttributeService" />
         <property name="userService" ref="identityUserService" />
+        <property name="organizationService" ref="organizationService" />
     </bean>
 
     <bean id="userAttributeDefinitionValidator" class="com.junbo.identity.core.service.validator.impl.UserAttributeDefinitionValidatorImpl">
@@ -681,7 +682,14 @@
                 <value>CATEGORY</value>
                 <value>TUTORIAL</value>
                 <value>ACHIEVEMENT</value>
-                <value>PROFILE</value>
+                <value>PRIVATE_PROFILE</value>
+                <value>PUBLIC_PROFILE</value>
+            </list>
+        </property>
+        <property name="allowedAccesses">
+            <list>
+                <value>PRIVATE</value>
+                <value>PUBLIC</value>
             </list>
         </property>
         <property name="organizationService" ref="organizationService" />

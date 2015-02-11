@@ -5,16 +5,22 @@
  */
 package com.junbo.order.jobs.subledger.revenue
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.util.IdFormatter
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.OrganizationResource
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
@@ -47,9 +53,15 @@ import java.util.concurrent.Future
 @Component('order.revenueReportJob')
 class RevenueReportJob {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RevenueReportJob)
+    private static final Logger LOGGER = LoggerFactory.getLogger(RevenueReportJob)
+
+    private static final String ENTITY_US = 'U'
+
+    private static final String ENTITY_NONE_US = 'I'
 
     private static final int PAGE_SZE = 100
+
+    private static final Set<String> US_COUNTRIES = ['US', 'CA'] as Set
 
     @Resource(name ='subledgerRepositoryFacade')
     SubledgerRepositoryFacade subledgerRepository
@@ -65,6 +77,9 @@ class RevenueReportJob {
 
     @Resource(name = 'order.identityUserClient')
     private UserResource userResource
+
+    @Resource(name = 'order.identityUserPersonalInfoClient')
+    UserPersonalInfoResource userPersonalInfoResource
 
     @Resource(name='payoutExportJobAsyncTaskExecutor')
     private ThreadPoolTaskExecutor threadPoolTaskExecutor
@@ -120,6 +135,7 @@ class RevenueReportJob {
         BigDecimal txAmount = 0
         Long revShareId
         String userEntity
+        String devEntity
         String appName
 
         public void aggregate(RevenueReportRecord record) {
@@ -263,14 +279,14 @@ class RevenueReportJob {
         result['product_type'] = 'One_time_payment'
         result['bank_id'] = key.bankId
         result['account_type'] = 'App'
-        result['account_subtype'] = ''
+        result['account_subtype'] = 'digital'
         result['fbobj_id'] = key.itemId
         result['name'] = record.appName
         result['financial_id'] = key.financialId
         result['action_type'] = key.actionType
         result['revshare_id'] = record.revShareId
         result['user_entity'] = record.userEntity
-        result['dev_entity'] = ''
+        result['dev_entity'] = record.devEntity
         result['payout_currency'] = 'USD'
         result['total_amount'] = record.totalAmount
         result['fb_amount'] = record.fbAmount
@@ -289,8 +305,16 @@ class RevenueReportJob {
         record.txAmount = subledger.taxAmount
 
         Organization organization = organizationResource.get(subledger.seller, new OrganizationGetOptions()).get()
-        record.revShareId = (organization.publisherRevenueRatio * 100).longValue()
-        record.userEntity = 'US' // always US for v1
+        record.revShareId = ((organization.publisherRevenueRatio == null ? 0 : organization.publisherRevenueRatio) * 100).longValue()
+        record.userEntity = ENTITY_US // always US for v1
+        if (organization.billingAddress != null) {
+            UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(organization.billingAddress, new UserPersonalInfoGetOptions()).get()
+            Address address = (Address) ObjectMapperProvider.instance().readValue(userPersonalInfo.value.traverse(), new TypeReference<Address>() {})
+            record.devEntity = US_COUNTRIES.contains(address.countryId.value) ? ENTITY_US : ENTITY_NONE_US
+        } else {
+            LOGGER.info('name=BillingAddress_Not_Configured, orgId={}', IdFormatter.encodeId(organization.getId()))
+            record.devEntity = ENTITY_US
+        }
 
         Item item = itemResource.getItem(subledger.item?.value).get()
         def itemRevision = itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions(locale: 'en_US')).get()
