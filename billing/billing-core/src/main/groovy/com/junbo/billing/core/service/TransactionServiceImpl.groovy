@@ -28,6 +28,7 @@ import com.junbo.payment.spec.model.PaymentTransaction
 import com.junbo.payment.spec.model.RiskFeature
 import com.junbo.payment.spec.model.WebPaymentInfo
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -328,6 +329,7 @@ class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionTime(new Date())
 
         def paymentTransaction = generatePaymentTransaction(balance)
+        paymentTransaction.chargeInfo.setBusinessDescriptor('fb_refund')
         Long paymentId = getPaymentIdByRef(originalBalance.transactions[0].paymentRefId)
         LOGGER.info('name=Refund_Balance. balance currency: {}, amount: {}, pi id: {}',
                 balance.currency, balance.totalAmount, balance.piId)
@@ -375,6 +377,9 @@ class TransactionServiceImpl implements TransactionService {
         chargeInfo.setCountry(balance.country)
         if (balance.getProperty(PropertyKey.ORDER_TYPE) != null) {
             chargeInfo.setPaymentType(balance.getProperty(PropertyKey.ORDER_TYPE))
+        }
+        if (balance.getProperty(PropertyKey.BALANCE_DESCRIPTION) != null) {
+            chargeInfo.setBusinessDescriptor(balance.getProperty(PropertyKey.BALANCE_DESCRIPTION))
         }
         paymentTransaction.setChargeInfo(chargeInfo)
 
