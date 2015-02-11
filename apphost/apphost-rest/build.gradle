@@ -27,4 +27,5 @@ dependencies {
     compile junboProject(':drm-rest')
 
     compile junboProject(':email-listener')
+    compile junboProject(':billing-listener')
 }

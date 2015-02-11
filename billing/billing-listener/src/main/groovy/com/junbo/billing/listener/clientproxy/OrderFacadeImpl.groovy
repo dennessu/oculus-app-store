@@ -1,4 +1,4 @@
-package com.junbo.billing.jobs.clientproxy
+package com.junbo.billing.listener.clientproxy
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.OrderEvent
