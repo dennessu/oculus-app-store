@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.option.list;
 
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserAttributeDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.options.list.PagingGetOptions;
@@ -21,11 +22,17 @@ public class UserAttributeListOptions extends PagingGetOptions {
     @QueryParam("userId")
     private UserId userId;
 
-    @QueryParam("userAttributeDefinitionId")
+    @QueryParam("type")
+    private String type;
+
+    @QueryParam("organizationId")
+    private OrganizationId organizationId;
+
+    @QueryParam("definitionId")
     private UserAttributeDefinitionId userAttributeDefinitionId;
 
-    @QueryParam("isActive")
-    private Boolean isActive;
+    @QueryParam("activeOnly")
+    private Boolean activeOnly;
 
     public String getProperties() {
         return properties;
@@ -51,11 +58,27 @@ public class UserAttributeListOptions extends PagingGetOptions {
         this.userAttributeDefinitionId = userAttributeDefinitionId;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public String getType() {
+        return type;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public OrganizationId getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    public Boolean getActiveOnly() {
+        return activeOnly;
+    }
+
+    public void setActiveOnly(Boolean activeOnly) {
+        this.activeOnly = activeOnly;
     }
 }

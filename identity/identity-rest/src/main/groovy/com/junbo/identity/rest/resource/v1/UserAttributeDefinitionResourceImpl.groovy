@@ -128,7 +128,17 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
 
     Promise<Results<UserAttributeDefinition>> search(UserAttributeDefinitionListOptions options) {
         if (options.getOrganizationId() != null && !StringUtils.isEmpty(options.type)) {
-            return userAttributeDefinitionService.getByOrganizationIdAndType(options.organizationId, options.type, options.limit, options.offset)
+            return userAttributeDefinitionService.getByOrganizationIdAndType(options.organizationId, options.type).then { UserAttributeDefinition attrDef ->
+                List<UserAttributeDefinition> list = new ArrayList<>();
+                if (attrDef != null) {
+                    list.add(attrDef);
+                }
+                Results<UserAttributeDefinition> results = new Results<>();
+                results.setItems(list);
+                results.setTotal((long)list.size());
+
+                return Promise.pure(results);
+            }
         } else if (options.getOrganizationId() != null) {
             return userAttributeDefinitionService.getByOrganizationId(options.organizationId, options.limit, options.offset)
         } else {

@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils
 class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionValidator {
 
     private List<String> allowedTypes
+    private List<String> allowedAccesses
     private UserAttributeDefinitionService userAttributeDefinitionService
     private OrganizationService organizationService
     private ItemResource itemResource
@@ -66,7 +67,14 @@ class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionVal
         if (userAttributeDefinition.id != null) {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-        return basicCheck(userAttributeDefinition)
+        return userAttributeDefinitionService.getByOrganizationIdAndType(
+                userAttributeDefinition.organizationId, userAttributeDefinition.type).then { UserAttributeDefinition existing ->
+            if (existing != null) {
+                throw AppErrors.INSTANCE.userAttributeDefinitionAlreadyExists(userAttributeDefinition.organizationId, userAttributeDefinition.type).exception();
+            }
+
+            return basicCheck(userAttributeDefinition)
+        }
     }
 
     @Override
@@ -78,6 +86,14 @@ class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionVal
         if (userAttributeDefinitionId != userAttributeDefinition.getId()
          || userAttributeDefinition.getId() != oldUserAttributeDefinition.getId()) {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id').exception()
+        }
+
+        if (userAttributeDefinition.getOrganizationId() != oldUserAttributeDefinition.getOrganizationId()) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('organization').exception()
+        }
+
+        if (userAttributeDefinition.getType() != oldUserAttributeDefinition.getType()) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('type').exception()
         }
 
         return basicCheck(userAttributeDefinition)
@@ -96,6 +112,13 @@ class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionVal
 
         if (userAttributeDefinition.description == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('description').exception()
+        }
+
+        if (userAttributeDefinition.access == null) {
+            // default to public
+            userAttributeDefinition.access = UserAttributeDefinition.ACCESS_PUBLIC;
+        } else if (!allowedAccesses.any{ String allowedAccess -> allowedAccess.equals(userAttributeDefinition.access) }) {
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('access', allowedAccesses.join(',')).exception()
         }
 
         return checkOrganizationExists(userAttributeDefinition).then {
@@ -140,6 +163,11 @@ class UserAttributeDefinitionValidatorImpl implements UserAttributeDefinitionVal
     @Required
     void setAllowedTypes(List<String> allowedTypes) {
         this.allowedTypes = allowedTypes
+    }
+
+    @Required
+    void setAllowedAccesses(List<String> allowedAccesses) {
+        this.allowedAccesses = allowedAccesses
     }
 
     @Required

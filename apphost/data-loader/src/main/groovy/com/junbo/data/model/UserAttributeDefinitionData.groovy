@@ -6,4 +6,5 @@ package com.junbo.data.model;
 class UserAttributeDefinitionData {
     String organizationName;
     String type;
+    String access;
 }

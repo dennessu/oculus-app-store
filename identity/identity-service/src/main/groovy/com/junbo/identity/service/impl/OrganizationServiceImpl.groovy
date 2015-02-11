@@ -1,5 +1,6 @@
 package com.junbo.identity.service.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -8,6 +9,8 @@ import com.junbo.identity.service.OrganizationService
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -15,7 +18,22 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class OrganizationServiceImpl implements OrganizationService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationServiceImpl)
     private OrganizationRepository organizationRepository
+
+    // cache
+    private OrganizationId defaultOrganizationIdCache;
+    private String defaultOrganizationName;
+
+    @Required
+    void setOrganizationRepository(OrganizationRepository organizationRepository) {
+        this.organizationRepository = organizationRepository
+    }
+
+    @Required
+    void setDefaultOrganizationName(String defaultOrganizationName) {
+        this.defaultOrganizationName = defaultOrganizationName
+    }
 
     @Override
     Promise<Organization> get(OrganizationId id) {
@@ -57,8 +75,21 @@ class OrganizationServiceImpl implements OrganizationService {
         return organizationRepository.searchAll(limit, offset)
     }
 
-    @Required
-    void setOrganizationRepository(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository
+    @Override
+    Promise<OrganizationId> getDefaultOrganizationId() {
+        if (defaultOrganizationIdCache == null) {
+            return searchByCanonicalName(defaultOrganizationName.toLowerCase(), 2, 0).then { Results<Organization> results ->
+                if (results.items == null || results.items.size() == 0) {
+                    LOGGER.error("Default Organization with name {} not found.", defaultOrganizationName);
+                    throw AppCommonErrors.INSTANCE.resourceNotFound("organization", defaultOrganizationName).exception();
+                } else if (results.items.size() > 1) {
+                    LOGGER.warn("Found {} Organizations with name {}. Should find 1.", results.items.size(), defaultOrganizationName);
+                }
+                defaultOrganizationIdCache = results.items.get(0).getId();
+                return Promise.pure(defaultOrganizationIdCache);
+            }
+        }
+
+        return Promise.pure(defaultOrganizationIdCache);
     }
 }

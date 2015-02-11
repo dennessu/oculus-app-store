@@ -29,7 +29,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
             new SimpleDateFormatThreadLocal("[yyyy-MM-dd HH:mm:ss.SSS Z]");
     private static final String COUCH_REQUEST_ID = "X-Couch-Request-ID";
     private static final String COUCH_LOCATION = "Location";
-    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("access_token=[^&]+");
+    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("(?<key>access_token|client_secret)=[^&]+");
 
     private String method;
     private URI uri;
@@ -143,7 +143,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
         if (result) {
             StringBuffer sb = new StringBuffer();
             do {
-                matcher.appendReplacement(sb, "access_token=******");
+                matcher.appendReplacement(sb, "${key}=******");
                 result = matcher.find();
             } while (result);
             matcher.appendTail(sb);

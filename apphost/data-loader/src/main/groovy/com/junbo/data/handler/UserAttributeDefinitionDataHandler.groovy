@@ -52,6 +52,7 @@ class UserAttributeDefinitionDataHandler extends BaseDataHandler {
         UserAttributeDefinition userAttributeDefinition = new UserAttributeDefinition(
               type: userAttributeDefinitionType,
               organizationId: organization.getId(),
+              access: userAttributeDefinitionData.access,
               description: "$organizationName user attribute definition"
         )
 

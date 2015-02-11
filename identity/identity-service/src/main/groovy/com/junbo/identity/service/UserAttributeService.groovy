@@ -22,13 +22,9 @@ interface UserAttributeService {
 
     Promise<Void> delete(UserAttributeId userAttributeId)
 
-    Promise<Results<UserAttribute>> searchByUserId(UserId userId, Integer limit, Integer offset)
-
-    Promise<Results<UserAttribute>> searchByUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId,
-                                                                      Integer limit, Integer offset)
+    Promise<Results<UserAttribute>> searchByUserAttributeDefinitionId(
+            UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset)
 
     Promise<Results<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId,
-                                           UserAttributeDefinitionId userAttributeDefinitionId, Integer limit, Integer offset)
-
-    Promise<Results<UserAttribute>> searchByActive(Boolean active, Integer limit, Integer offset)
+            UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset)
 }

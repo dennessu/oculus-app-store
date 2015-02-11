@@ -41,6 +41,7 @@
 
     <bean id="organizationService" class="com.junbo.identity.service.impl.OrganizationServiceImpl">
         <property name="organizationRepository" ref="organizationRepository" />
+        <property name="defaultOrganizationName" value="${identity.conf.defaultOrganizationName}" />
     </bean>
 
     <bean id="piTypeService" class="com.junbo.identity.service.impl.PITypeServiceImpl">
@@ -53,6 +54,7 @@
 
     <bean id="userAttributeService" class="com.junbo.identity.service.impl.UserAttributeServiceImpl">
         <property name="userAttributeRepository" ref="userAttributeRepository" />
+        <property name="organizationService" ref="organizationService" />
     </bean>
     
     <bean id="userAttributeDefinitionService" class="com.junbo.identity.service.impl.UserAttributeDefinitionServiceImpl">

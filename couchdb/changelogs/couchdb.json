@@ -359,17 +359,17 @@
     },
     "user_attribute": {
       "views": {
-          "by_user_id": {
-              "map": "function(doc) { emit(doc.userId.toString(), doc._id)}"
-          },
-          "by_user_attribute_definition_id": {
+          "by_attribute_definition_id": {
               "map": "function(doc) { emit(doc.userAttributeDefinitionId.toString(), doc._id)}"
+          },
+          "by_attribute_definition_id_activeOnly": {
+              "map": "function(doc) { var isActive = (doc.useCount == null || doc.useCount > 0) && !doc.isSuspended; var expirationTime = doc.expirationTime == null ? '9999-01-01T00:55:19Z' : doc.expirationTime; if (isActive) emit([doc.userAttributeDefinitionId.toString(), Date.parse(expirationTime)], doc._id); }"
           },
           "by_user_id_attribute_definition_id": {
               "map": "function(doc) { emit([doc.userId.toString(), doc.userAttributeDefinitionId.toString()], doc._id) }"
           },
-          "by_isActive_expirationTime": {
-              "map": "function(doc) { var isActive = doc.useCount && doc.useCount > 0 && !doc.suspend; var expirationTime = doc.expirationTime == null ? '9999-01-01T00:55:19Z' : doc.expirationTime; emit([(!!isActive).toString(), Date.parse(expirationTime)], doc._id)}"
+          "by_user_id_attribute_definition_id_activeOnly": {
+              "map": "function(doc) { var isActive = (doc.useCount == null || doc.useCount > 0) && !doc.isSuspended; var expirationTime = doc.expirationTime == null ? '9999-01-01T00:55:19Z' : doc.expirationTime; if (isActive) emit([doc.userId.toString(), doc.userAttributeDefinitionId.toString(), Date.parse(expirationTime)], doc._id); }"
           }
       }
     },

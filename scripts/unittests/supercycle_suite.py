@@ -24,6 +24,7 @@ if __name__ == '__main__':
     suite.addTest(ut_oauth.OAuthTests('testGetCountries'))
     suite.addTest(ut_identity.IdentityTests('testGroupMembershipDeletion'))
     suite.addTest(ut_identity.IdentityTests('testRoles'))
+    suite.addTest(ut_identity.IdentityTests('testUserAttribute'))
     suite.addTest(ut_checkout_consumable.CheckoutTests('testCheckout'))
     suite.addTest(ut_checkout.CheckoutTests('testFullRefund'))
     suite.addTest(ut_checkout.CheckoutTests('testRefundTax'))

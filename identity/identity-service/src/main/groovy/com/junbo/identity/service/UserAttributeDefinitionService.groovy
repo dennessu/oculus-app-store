@@ -25,5 +25,5 @@ public interface UserAttributeDefinitionService {
 
     Promise<Results<UserAttributeDefinition>> getByOrganizationId(OrganizationId organizationId, Integer limit, Integer offset);
 
-    Promise<Results<UserAttributeDefinition>> getByOrganizationIdAndType(OrganizationId organizationId, String type, Integer limit, Integer offset);
+    Promise<UserAttributeDefinition> getByOrganizationIdAndType(OrganizationId organizationId, String type);
 }

@@ -5,6 +5,7 @@ import com.junbo.common.id.UserAttributeId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserAttributeRepository
+import com.junbo.identity.service.OrganizationService
 import com.junbo.identity.service.UserAttributeService
 import com.junbo.identity.spec.v1.model.UserAttribute
 import com.junbo.langur.core.promise.Promise
@@ -18,25 +19,26 @@ import org.springframework.beans.factory.annotation.Required
 class UserAttributeServiceImpl implements UserAttributeService {
 
     UserAttributeRepository userAttributeRepository
+    OrganizationService organizationService
 
     @Override
     Promise<UserAttribute> get(UserAttributeId userAttributeId) {
         return userAttributeRepository.get(userAttributeId).then { UserAttribute userAttribute ->
-            return Promise.pure(filter(userAttribute))
+            return Promise.pure(setIsActive(userAttribute))
         }
     }
 
     @Override
     Promise<UserAttribute> update(UserAttribute userAttribute, UserAttribute oldUserAttribute) {
         return userAttributeRepository.update(userAttribute, oldUserAttribute).then { UserAttribute updated ->
-            return Promise.pure(filter(updated))
+            return Promise.pure(setIsActive(updated))
         }
     }
 
     @Override
     Promise<UserAttribute> create(UserAttribute userAttribute) {
         return userAttributeRepository.create(userAttribute).then { UserAttribute created ->
-            return Promise.pure(filter(created))
+            return Promise.pure(setIsActive(created))
         }
     }
 
@@ -46,57 +48,29 @@ class UserAttributeServiceImpl implements UserAttributeService {
     }
 
     @Override
-    Promise<Results<UserAttribute>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserAttribute>> searchByUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset) {
         Results<UserAttribute> results = new Results<>()
-        return userAttributeRepository.searchByUserId(userId, limit, offset).then { List<UserAttribute> userAttributeList ->
-            results.items = userAttributeList
-            results.items.each { UserAttribute existing ->
-                filter(existing)
-            }
-            // todo:    Need to adapt Main branch's repository search
-            return Promise.pure(results)
-        }
-    }
-
-    @Override
-    Promise<Results<UserAttribute>> searchByUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId,
-                                                                      Integer limit, Integer offset) {
-        Results<UserAttribute> results = new Results<>()
-        return userAttributeRepository.searchByUserAttributeDefinitionId(userAttributeDefinitionId, limit, offset).then {
+        return userAttributeRepository.searchByUserAttributeDefinitionId(userAttributeDefinitionId, activeOnly, limit, offset).then {
             List<UserAttribute> userAttributeList ->
                 results.items = userAttributeList
                 results.items.each { UserAttribute existing ->
-                    filter(existing)
+                    setIsActive(existing)
                 }
                 return Promise.pure(results)
         }
     }
 
     @Override
-    Promise<Results<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId,
-                               UserAttributeDefinitionId userAttributeDefinitionId, Integer limit, Integer offset) {
+    Promise<Results<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset) {
         Results<UserAttribute> results = new Results<>()
-        return userAttributeRepository.searchByUserIdAndAttributeDefinitionId(userId, userAttributeDefinitionId, limit, offset).then {
+        return userAttributeRepository.searchByUserIdAndAttributeDefinitionId(userId, userAttributeDefinitionId, activeOnly, limit, offset).then {
             List<UserAttribute> userAttributeList ->
                 results.items = userAttributeList
                 results.items.each { UserAttribute existing ->
-                    filter(existing)
+                    setIsActive(existing)
                 }
 
                 return Promise.pure(results)
-        }
-    }
-
-    @Override
-    Promise<Results<UserAttribute>> searchByActive(Boolean active, Integer limit, Integer offset) {
-        Results<UserAttribute> results = new Results<>()
-        return userAttributeRepository.searchByActive(active, limit, offset).then { List<UserAttribute> userAttributeList ->
-            results.items = userAttributeList
-            results.items.each { UserAttribute existing ->
-                filter(existing)
-            }
-
-            return Promise.pure(results)
         }
     }
 
@@ -105,8 +79,13 @@ class UserAttributeServiceImpl implements UserAttributeService {
         this.userAttributeRepository = userAttributeRepository
     }
 
-    private static UserAttribute filter(UserAttribute userAttribute) {
+    private static UserAttribute setIsActive(UserAttribute userAttribute) {
         if (userAttribute == null) {
+            return userAttribute
+        }
+
+        if (userAttribute.getIsActive() != null) {
+            // already set, return directly
             return userAttribute
         }
 

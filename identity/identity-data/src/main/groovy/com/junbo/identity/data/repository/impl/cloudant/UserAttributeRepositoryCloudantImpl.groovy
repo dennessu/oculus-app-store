@@ -35,30 +35,36 @@ class UserAttributeRepositoryCloudantImpl extends CloudantClient<UserAttribute> 
     }
 
     @Override
-    Promise<List<UserAttribute>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<List<UserAttribute>> searchByUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset) {
+        if (activeOnly != null && activeOnly) {
+            // active only
+            def startKey = [userAttributeDefinitionId.toString(), (new Date()).getTime()]
+            def endKey = [userAttributeDefinitionId.toString()]
+            return queryView('by_attribute_definition_id_activeOnly', startKey.toArray(), endKey.toArray(), true, limit, offset, false).then { List<UserAttribute> uaList ->
+                uaList.each { UserAttribute ua -> ua.isActive = true }
+                return Promise.pure(uaList)
+            }
+        } else {
+            def startKey = [userAttributeDefinitionId.toString()]
+            def endKey = [userAttributeDefinitionId.toString()]
+            return queryView('by_attribute_definition_id', startKey.toArray(), endKey.toArray(), false, limit, offset, false)
+        }
     }
 
     @Override
-    Promise<List<UserAttribute>> searchByUserAttributeDefinitionId(UserAttributeDefinitionId userAttributeDefinitionId,
-                                                                   Integer limit, Integer offset) {
-        return super.queryView('by_user_attribute_definition_id', userAttributeDefinitionId.toString(),
-            limit, offset, false)
-    }
-
-    @Override
-    Promise<List<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId, Integer limit, Integer offset) {
-        def startKey = [userId.toString(), userAttributeDefinitionId.toString()]
-        def endKey = [userId.toString(), userAttributeDefinitionId.toString()]
-        return queryView('by_user_id_attribute_definition_id', startKey.toArray(new String()), endKey.toArray(new String()),
-                false, limit, offset, false)
-    }
-
-    @Override
-    Promise<List<UserAttribute>> searchByActive(Boolean isActive, Integer limit, Integer offset) {
-        def startKey = [isActive.toString(), (new Date()).getTime()]
-        def endKey = [isActive.toString()]
-        return queryView('by_isActive_expirationTime', startKey.toArray(new String()), endKey.toArray(new String()),
-                true, limit, offset, true);
+    Promise<List<UserAttribute>> searchByUserIdAndAttributeDefinitionId(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId, Boolean activeOnly, Integer limit, Integer offset) {
+        if (activeOnly != null && activeOnly) {
+            // active only
+            def startKey = [userId.toString(), userAttributeDefinitionId.toString(), (new Date()).getTime()]
+            def endKey = [userId.toString(), userAttributeDefinitionId.toString()]
+            return queryView('by_user_id_attribute_definition_id_activeOnly', startKey.toArray(), endKey.toArray(), true, limit, offset, false).then { List<UserAttribute> uaList ->
+                uaList.each { UserAttribute ua -> ua.isActive = true }
+                return Promise.pure(uaList)
+            }
+        } else {
+            def startKey = [userId.toString(), userAttributeDefinitionId.toString()]
+            def endKey = [userId.toString(), userAttributeDefinitionId.toString()]
+            return queryView('by_user_id_attribute_definition_id', startKey.toArray(), endKey.toArray(), false, limit, offset, false)
+        }
     }
 }
