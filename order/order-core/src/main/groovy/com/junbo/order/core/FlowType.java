@@ -27,5 +27,6 @@ public enum FlowType {
     REFUND_ORDER,
     FREE_ORDER,
     REFUND_TAX,
-    CHARGE_BACK
+    CHARGE_BACK,
+    UPDATE_REFUND
 }

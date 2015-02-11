@@ -38,7 +38,7 @@ class BillingHistoryRepositorySqlImpl implements BillingHistoryRepository {
 
     @Override
     Promise<BillingHistory> get(Long id) {
-        return null
+        return Promise.pure(modelMapper.toOrderBillingHistoryModel(orderBillingHistoryDao.read(id), new MappingContext()))
     }
 
     @Override
@@ -51,6 +51,9 @@ class BillingHistoryRepositorySqlImpl implements BillingHistoryRepository {
 
     @Override
     Promise<BillingHistory> update(BillingHistory history, BillingHistory oldHistory) {
+        history.resourceAge = oldHistory.resourceAge
+        history.createdTime = oldHistory.createdTime
+        history.createdBy = oldHistory.createdBy
         def entity = modelMapper.toOrderBillingHistoryEntity(history, new MappingContext())
         orderBillingHistoryDao.update(entity)
         return Promise.pure(modelMapper.toOrderBillingHistoryModel(entity, new MappingContext()))

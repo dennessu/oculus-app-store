@@ -244,6 +244,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=internal.captureOrder')
         assert (order != null)
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+            if (CollectionUtils.isEmpty(balances)) {
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
             Balance pendingBalance = balances.find { Balance balance ->
                 balance.type == BalanceType.MANUAL_CAPTURE.name() &&
                         balance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -260,6 +263,44 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 return getOrderByOrderId(order.getId().value, orderServiceContext, true)
             }
+        }
+    }
+
+    @Override
+    Promise<Order> checkAndUpdateRefund(Order order, OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=internal.checkAndUpdateRefund')
+        assert (order != null)
+        def requestRefunds = order.billingHistories?.findAll { BillingHistory bh ->
+            bh.billingEvent == BillingAction.REQUEST_REFUND.name()
+        }
+        if (CollectionUtils.isEmpty(requestRefunds)) {
+            LOGGER.info('name=Order_Update_Refund_No_RequestRefund_BillingHistory, orderId: {}', order.getId().value)
+            return Promise.pure(order)
+        }
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+            if (CollectionUtils.isEmpty(balances)) {
+                LOGGER.error('name=Order_Update_Refund_Balance_Not_Found, orderId: {}', order.getId().value)
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
+
+            def refundBalances = balances.findAll { Balance balance ->
+                CoreUtils.isBalanceRefunded(balance)
+            }
+            if (CollectionUtils.isEmpty(refundBalances)) {
+                LOGGER.error('name=Order_Update_Refund_No_RefundedBalance, orderId: {}', order.getId().value)
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
+
+            requestRefunds.each { BillingHistory bh ->
+                def balance = refundBalances.find { Balance b ->
+                    bh.getBalanceId() == b.getId().value.toString()
+                }
+                if (balance != null) {
+                    bh.billingEvent = BillingAction.REFUND.name()
+                    orderRepository.updateBillingHistory(bh)
+                }
+            }
+            return getOrderByOrderId(order.getId().value, orderServiceContext, true)
         }
     }
 

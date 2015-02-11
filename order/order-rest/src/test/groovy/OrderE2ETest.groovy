@@ -1,25 +1,28 @@
+import com.junbo.authorization.AuthorizeCallback
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.auth.OrderAuthorizeCallback
+import com.junbo.order.auth.OrderAuthorizeCallbackFactory
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.FlowSelector
+import com.junbo.order.core.OrderEventService
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.spec.model.BillingHistory
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderQueryParam
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.FulfillmentEventType
-import com.junbo.order.spec.model.enums.OrderStatus
+import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.*
+import com.junbo.order.spec.resource.OrderEventResource
 import com.junbo.order.spec.resource.OrderResource
+import org.springframework.beans.factory.annotation.Required
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 7/3/14.
  */
@@ -27,12 +30,37 @@ class OrderE2ETest extends BaseTest {
 
     @Resource(name = 'defaultOrderResource')
     OrderResource orderResource
+    @Resource(name = 'defaultOrderEventResource')
+    OrderEventResource orderEventResource
     @Resource(name = 'mockOrderService')
     OrderService orderServiceImpl
+    @Resource(name = 'mockOrderEventService')
+    OrderEventService orderEventServiceImpl
     @Resource(name = 'mockCsrLogResource')
     CsrLogResource csrLogResource
     @Resource(name = 'orderTransactionHelper')
     TransactionHelper transactionHelper
+
+    class TestOrderAuthorizeCallbackFactory extends OrderAuthorizeCallbackFactory {
+
+        @Required
+        void setOrderResource( OrderResource orderResource) {
+            this.orderResource = orderResource
+        }
+
+        @Override
+        AuthorizeCallback<Order> create(Order entity) {
+            return new OrderAuthorizeCallback(this, entity)
+        }
+
+        AuthorizeCallback<Order> create(UserId userId) {
+            return create(new Order(user: userId))
+        }
+
+        AuthorizeCallback<Order> create(OrderId orderId) {
+            return create(new Order())
+        }
+    }
 
     @BeforeMethod
     void setUp() {
@@ -40,6 +68,9 @@ class OrderE2ETest extends BaseTest {
         //orderServiceImpl.facadeContainer.ratingFacade = EasyMock.createMock(RatingFacade.class)
         orderResource.orderService = orderServiceImpl
         orderResource.csrLogResource = csrLogResource
+        orderEventResource.orderService = orderServiceImpl
+        orderEventResource.orderEventService = orderEventServiceImpl
+        orderEventResource.authorizeCallbackFactory = new TestOrderAuthorizeCallbackFactory()
     }
 
     @Test(enabled = true)
@@ -178,6 +209,50 @@ class OrderE2ETest extends BaseTest {
             assert oi.fulfillmentHistories[0].success
             assert oi.fulfillmentHistories[1].fulfillmentEvent == FulfillmentEventType.FULFILL.name()
             assert oi.fulfillmentHistories[1].success
+        }
+    }
+
+    @Test(enabled = true)
+    void testUpdateRefundStatus() {
+        def orderGet
+        transactionHelper.executeInNewTransaction {
+            def order = testPutTentativeOrder()
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_REFUND_ORDER')
+                }
+            }
+            order.orderItems = null
+            def orderResult = orderResource.updateOrderByOrderId(order.getId(), order).get()
+            orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_UPDATE_REFUND')
+                }
+            }
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderEvent = new OrderEvent(
+                    order: orderGet.getId(),
+                    action: OrderActionType.REFUND.name(),
+                    status: EventStatus.COMPLETED.name()
+            )
+            def oe = orderEventResource.createOrderEvent(orderEvent).get()
+            orderGet = orderResource.getOrderByOrderId(orderGet.getId()).get()
+            assert orderGet.billingHistories[0].billingEvent == BillingAction.REFUND.name()
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderEvent = new OrderEvent(
+                    order: orderGet.getId(),
+                    action: OrderActionType.REFUND.name(),
+                    status: EventStatus.COMPLETED.name()
+            )
+            def oe = orderEventResource.createOrderEvent(orderEvent).get()
+            orderGet = orderResource.getOrderByOrderId(orderGet.getId()).get()
+            assert orderGet.billingHistories[0].billingEvent == BillingAction.REFUND.name()
         }
     }
 

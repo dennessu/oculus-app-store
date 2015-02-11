@@ -13,7 +13,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.order.clientproxy.model.Offer
-import com.junbo.order.core.OrderAction
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
@@ -361,6 +360,8 @@ class CoreUtils {
             case OrderActionType.CHARGE_BACK.name():
             case OrderActionType.REFUND_TAX.name():
                 return order.status == OrderStatus.COMPLETED.name()
+            case OrderActionType.REFUND.name():
+                return order.status == OrderStatus.REFUNDED.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
@@ -423,6 +424,16 @@ class CoreUtils {
             (bh.billingEvent == BillingAction.REQUEST_REFUND.name() && bh.success) ||
                     (bh.billingEvent == BillingAction.REFUND.name() && bh.success)
         }
+    }
+
+    static Boolean isBalanceRefunded(Balance balance) {
+        if (balance == null) {
+            return false
+        }
+        if (balance.type != BalanceType.REFUND.name()) {
+            return false
+        }
+        return balance.status == BalanceStatus.AWAITING_PAYMENT.name() || balance.status == BalanceStatus.COMPLETED.name()
     }
 
     static Boolean isChargeBack(Order order) {
@@ -700,9 +711,6 @@ class CoreUtils {
 
     static Boolean bypassEvent(Order order, OrderEvent event) {
         if (isFreeOrder(order) && event.action == OrderActionType.FULFILL.name()) {
-            return true
-        }
-        if (event.action == OrderActionType.REFUND.name()) {
             return true
         }
         if (event.action == OrderActionType.FULFILL.name() && event.status == EventStatus.FAILED) {

@@ -37,6 +37,8 @@ public interface OrderInternalService {
 
     Promise<Order> captureOrder(Order order, OrderServiceContext orderServiceContext);
 
+    Promise<Order> checkAndUpdateRefund(Order order, OrderServiceContext orderServiceContext);
+
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 
     void persistOrderSnapshot(Order order);

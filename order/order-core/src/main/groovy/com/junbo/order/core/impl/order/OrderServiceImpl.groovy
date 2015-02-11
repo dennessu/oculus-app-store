@@ -286,6 +286,7 @@ class OrderServiceImpl implements OrderService {
             case OrderActionType.CHARGE.name():
             case OrderActionType.CHARGE_BACK.name():
             case OrderActionType.REFUND_TAX.name():
+            case OrderActionType.REFUND.name():
                 LOGGER.info('name=Update_Charge_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
                 break
