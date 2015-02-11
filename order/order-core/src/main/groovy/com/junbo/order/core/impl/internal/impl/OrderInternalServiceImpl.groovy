@@ -623,7 +623,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
 
                 def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildRevokeFulfillmentHistory(fr, fulfilmentItem)
-                def fulfillmentEventStatus = FulfillmentEventHistoryBuilder.getFulfillmentEventStatus(fulfilmentItem)
+                def fulfillmentEventStatus = FulfillmentEventHistoryBuilder.getRevokeFulfillmentEventStatus(fulfilmentItem)
                 if (fulfillmentEventStatus != EventStatus.COMPLETED) {
                     LOGGER.error('name=Order_Failed_to_revoke_fulfillment. orderId: ' + order.getId().value)
                     completed = false

@@ -108,7 +108,7 @@ class FulfillmentEventHistoryBuilder {
     static EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {
 
         if (CollectionUtils.isEmpty(fulfilmentItem.actions)) {
-            return EventStatus.COMPLETED
+            return EventStatus.ERROR
         }
 
         if (fulfilmentItem.actions.any { FulfilmentAction fa ->
@@ -135,7 +135,42 @@ class FulfillmentEventHistoryBuilder {
             return EventStatus.COMPLETED
         }
 
-        LOGGER.warn('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}',
+        LOGGER.error('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}',
+                fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.itemReferenceId.toString())
+        return EventStatus.ERROR
+    }
+
+    static EventStatus getRevokeFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {
+
+        if (CollectionUtils.isEmpty(fulfilmentItem.actions)) {
+            return EventStatus.ERROR
+        }
+
+        if (fulfilmentItem.actions.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.UNKNOWN
+        }) {
+            return EventStatus.ERROR
+        }
+
+        if (fulfilmentItem.actions.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.FAILED
+        }) {
+            return EventStatus.FAILED
+        }
+
+        if (fulfilmentItem.actions.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.PENDING
+        }) {
+            return EventStatus.ERROR
+        }
+
+        if (fulfilmentItem.actions.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.REVOKED
+        }) {
+            return EventStatus.COMPLETED
+        }
+
+        LOGGER.error('name=Unknown_Fulfillment_Revoke_Status, fulfilmentId={}, orderItemId={}',
                 fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.itemReferenceId.toString())
         return EventStatus.ERROR
     }
