@@ -479,8 +479,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 CoreUtils.isBalanceSettled(balance) && TaxStatus.TAXED.name() == balance.taxStatus
             }
             if (CollectionUtils.isEmpty(balancesToBeAudited)) {
-                LOGGER.error('name=No_Balance_Can_Be_Audit, orderId = {}', order.getId().value)
-                throw AppErrors.INSTANCE.billingAuditFailed('no balance can be audited.').exception()
+                order.isAudited = true
+                orderRepository.updateOrder(order, true, true, null)
+                return Promise.pure(order)
             }
             if (order.status == OrderStatus.REFUNDED.name()) {
                 def hasRefundedBalance = balancesToBeAudited.any { Balance b ->
@@ -488,7 +489,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 if (!hasRefundedBalance) {
                     LOGGER.error('name=No_Refund_Balance_Can_Be_Audit, orderId={}', order.getId().value)
-                    throw AppErrors.INSTANCE.billingAuditFailed('no refund balance can be audited.').exception()
+//                    throw AppErrors.INSTANCE.billingAuditFailed('no refund balance can be audited.').exception()
+                    return Promise.pure(order)
                 }
             }
             def auditedBalances = []
