@@ -20,7 +20,6 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private Long id;
 
-    @JsonIgnore
     private String balanceId;
 
     @JsonIgnore
