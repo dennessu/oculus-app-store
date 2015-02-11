@@ -18,6 +18,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.codec.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +29,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
@@ -191,10 +194,7 @@ public final class CommonUtil {
     public static String calHMCASHA1(String data, String key){
         String result = null;
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
-            Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
-            mac.init(signingKey);
-            byte[] rawHmac = mac.doFinal(data.getBytes());
+            byte[] rawHmac = getHMCASha1Bytes(data, key);
             result = Base64.encodeBase64String(rawHmac);
             return result;
         }catch (Exception ex){
@@ -202,6 +202,24 @@ public final class CommonUtil {
             throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
         }
     }
+
+    public static String calHMCASHA1Hex(String payload, String secret) {
+        try {
+            byte[] rawHmac = getHMCASha1Bytes(payload, secret);
+            return new String(Hex.encode(rawHmac));
+        }catch (Exception ex){
+            LOGGER.error("error calculate HMCA:", ex);
+            throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
+        }
+    }
+
+    private static byte[] getHMCASha1Bytes(String payload, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+        SecretKeySpec signingKey = new SecretKeySpec(secret.getBytes(), HMAC_SHA1_ALGORITHM);
+        Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+        mac.init(signingKey);
+        return mac.doFinal(payload.getBytes());
+    }
+
 
     public static String urlEncode(String param){
         if(isNullOrEmpty(param)){
