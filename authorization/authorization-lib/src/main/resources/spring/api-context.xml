@@ -65,6 +65,7 @@
                 <entry key="CountryResource" value="identity.admin"/>
                 <entry key="CurrencyResource" value="identity.admin"/>
                 <entry key="DeviceTypeResource" value="identity.admin"/>
+                <entry key="DeviceResource" value="identity.admin" />
                 <entry key="ErrorInfoResource" value="identity.admin"/>
                 <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin readonly.service"/>
                 <entry key="LocaleResource" value="identity.admin"/>
