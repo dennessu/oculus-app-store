@@ -138,7 +138,10 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<Balance> auditTax(Balance balance) {
         Long shippingAddressId = balance.shippingAddressId?.value
-        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
+        def billingAddressId
+        if (balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()) != null) {
+            billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
+        }
         return identityFacade.getAddress(shippingAddressId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + billingAddressId, throwable)
             throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()
