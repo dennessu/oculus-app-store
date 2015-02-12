@@ -136,7 +136,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
                 couchLocation);
     }
 
-    private static URI maskUri(URI uri) {
+    public static URI maskUri(URI uri) {
         // mask all access tokens in the URI parameters
         Matcher matcher = ACCESS_TOKEN_PATTERN.matcher(uri.toString());
         boolean result = matcher.find();

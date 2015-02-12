@@ -155,7 +155,7 @@ public class JunboAsyncHttpClient implements Closeable {
     }
 
     public Promise<Response> executeRequest(final Request request) throws IOException {
-        ProfilingHelper.begin("HTTP", "%s %s", request.getMethod(), request.getURI());
+        ProfilingHelper.begin("HTTP", "%s %s", request.getMethod(), AsyncLoggedHandler.maskUri(request.getURI()));
         try {
             Promise<Response> response = Promise.wrap(asGuavaFuture(
                     asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(),

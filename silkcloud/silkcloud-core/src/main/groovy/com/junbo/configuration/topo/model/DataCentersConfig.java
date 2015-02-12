@@ -5,6 +5,7 @@
  */
 package com.junbo.configuration.topo.model;
 
+import com.junbo.common.error.AppCommonErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,8 @@ public class DataCentersConfig {
 
     public DataCenter getDataCenter(int dc) {
         if (!hasDataCenter(dc)) {
-            throw new RuntimeException("Invalid datacenter id: " + dc);
+            logger.error("Invalid datacenter: " + dc);
+            throw AppCommonErrors.INSTANCE.fieldInvalid("id").exception();
         }
         return datacenters[dc];
     }
