@@ -3,7 +3,7 @@
   "client_secret" : "D0DFF8633FBF58C5A09CB2F98BB9E9F5#7BB22E9DFC602FE9CA31F5C69F9BB7560DD5C213275EA21D68BAAC7665F9D52B4E9770ACC48821D974766F6B485B8E2A",
   "client_name" : "nanobot",
 
-  "scopes" : [ "catalog.update" ],
+  "scopes" : [ "catalog.update", "catalog.service"  ],
   "default_scopes" : [ "catalog.update", "catalog.service" ],
 
   "response_types" : [ ],
