@@ -8,13 +8,13 @@ package com.junbo.billing.core.mock;
 
 import com.junbo.billing.clientproxy.IdentityFacade;
 import com.junbo.common.enumid.CountryId;
-import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.Address;
-import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.promise.Promise;
+
+import java.util.Date;
 
 /**
  * Created by xmchen on 14-5-19.
@@ -26,6 +26,7 @@ public class MockIdentityFacade implements IdentityFacade {
         user.setUsername(new UserPersonalInfoId(0L));
         user.setId(new UserId(userId));
         user.setStatus("ACTIVE");
+        user.setCreatedTime(new Date());
 
         return Promise.pure(user);
     }

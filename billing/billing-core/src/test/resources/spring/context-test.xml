@@ -32,6 +32,7 @@
             </map>
         </constructor-arg>
         <constructor-arg name="providerName" value="MOCK"/>
+        <constructor-arg name="vatProviderName" value="MOCK"/>
         <property name="identityFacade" ref="mockIdentityFacade" />
         <property name="paymentFacade" ref="mockPaymentFacade" />
     </bean>
