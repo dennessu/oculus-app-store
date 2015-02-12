@@ -182,7 +182,7 @@ class TaxServiceImpl implements TaxService {
                 }
 
                 TaxExempt taxExempt = getTaxExempt(user, billingAddress)
-                if (taxExempt != null && taxExempt.isTaxExemptionValidated) {
+                if (taxExempt != null) {
                     def exemptReason = taxExempt.taxExemptionReason
                     def exemptCertificate = taxExempt.taxExemptionCertificateNumber
                     if (exemptReason != null && exemptReason != '') {
@@ -210,12 +210,29 @@ class TaxServiceImpl implements TaxService {
             return null
         }
         def taxExempt = user.taxExemption.find { TaxExempt exempt ->
-            billingAddress.countryId.value == exempt.taxExemptionCountry && (
-                exempt.taxExemptionSubcountry == 'ALL' || exempt.taxExemptionSubcountry == billingAddress.subCountry
-            )
+            billingAddress.countryId.value == exempt.taxExemptionCountry &&
+                    (exempt.taxExemptionSubcountry == 'ALL' ||
+                            exempt.taxExemptionSubcountry == billingAddress.subCountry) &&
+                    isValidExemption(exempt)
+
         }
 
         return taxExempt
+    }
+
+    Boolean isValidExemption(TaxExempt exempt) {
+        if (!exempt.isTaxExemptionValidated) {
+            return false
+        }
+        def now = new Date()
+        if (exempt.taxExemptionStartDate != null && exempt.taxExemptionStartDate.after(now)) {
+            return false
+        }
+        if (exempt.taxExemptionEndDate != null && exempt.taxExemptionEndDate.before(now)) {
+            return false
+        }
+
+        return true
     }
 
     Boolean isGSACard(String number) {
