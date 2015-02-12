@@ -43,10 +43,10 @@ public class FacebookPaymentExceptionHandler  implements ExceptionHandler {
             }
             FacebookPaymentError error = CommonUtil.parseJsonIgnoreUnknown(response.getResponseBody(), FacebookPaymentError.class);
             if(error != null && error.getError() !=null){
-                if(error.getError().getCode().equalsIgnoreCase("API_EC_PAYMENTS_SYSTEM_OR_PROVIDER_ERROR")){
-                    throw AppServerExceptions.INSTANCE.providerProcessError("FacebookCC", error.getError().getMessage()).exception();
-                }else{
+                if(FacebookErrorMapUtil.isClientError(error.getError())){
                     throw AppClientExceptions.INSTANCE.providerInvalidRequest("FacebookCC", error.getError().getMessage()).exception();
+                }else{
+                    throw AppServerExceptions.INSTANCE.providerProcessError("FacebookCC", error.getError().getMessage()).exception();
                 }
             }else{
                 throw AppServerExceptions.INSTANCE.providerProcessError("FacebookCC", response.getResponseBody()).exception();

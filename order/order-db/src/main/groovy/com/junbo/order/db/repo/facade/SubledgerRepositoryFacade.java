@@ -46,6 +46,8 @@ public interface SubledgerRepositoryFacade {
 
     List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, ItemId itemId, Date endTime, PageParam pageParam);
 
+    List<SubledgerItem> getSubledgerItemsByTime(int dataCenterId, int shardKey,  Date startTime, Date endTime, PageParam pageParam);
+
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
 
     List<ItemId> getDistinctSubledgerItemItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);

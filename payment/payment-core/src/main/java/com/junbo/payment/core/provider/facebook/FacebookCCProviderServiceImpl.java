@@ -19,6 +19,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.PaymentProviderIdMappingRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
+import com.junbo.payment.spec.enums.FacebookRefundReason;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
 import com.junbo.payment.spec.internal.FacebookPaymentType;
@@ -402,9 +403,16 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction paymentRequest) {
-        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getBusinessDescriptor())){
-            throw AppCommonErrors.INSTANCE.fieldRequired("refund_reason").exception();
+        FacebookRefundReason facebookRefundReason = FacebookRefundReason.not_specified;
+        if(!CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getBusinessDescriptor())){
+            try{
+                facebookRefundReason = FacebookRefundReason.valueOf(paymentRequest.getChargeInfo().getBusinessDescriptor());
+            }catch (Exception ex){
+                LOGGER.error("invalid refund reason:" + paymentRequest.getChargeInfo().getBusinessDescriptor(), ex);
+                throw AppCommonErrors.INSTANCE.fieldInvalid("refund_reason").exception();
+            }
         }
+        final FacebookRefundReason refundReason = facebookRefundReason;
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -413,7 +421,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 if(paymentRequest.getChargeInfo() != null){
                     fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                     fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                    fbPayment.setRefundReason(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                    fbPayment.setRefundReason(refundReason.toString());
                 }
                 return facebookGatewayService.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
@@ -585,10 +593,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private void handlePaymentError(FacebookCCErrorDetail facebookCCErrorDetail){
         LOGGER.error("error response:" + facebookCCErrorDetail);
         if(facebookCCErrorDetail != null){
-            if(facebookCCErrorDetail.getCode().equalsIgnoreCase("API_EC_PAYMENTS_SYSTEM_OR_PROVIDER_ERROR")){
-                throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCCErrorDetail.getMessage()).exception();
-            }else{
+            if(FacebookErrorMapUtil.isClientError(facebookCCErrorDetail)){
                 throw AppClientExceptions.INSTANCE.providerInvalidRequest(PROVIDER_NAME, facebookCCErrorDetail.getMessage()).exception();
+            }else{
+                throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCCErrorDetail.getMessage()).exception();
             }
         }
     }

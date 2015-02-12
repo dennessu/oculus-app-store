@@ -217,6 +217,13 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     }
 
     @Override
+    BillingHistory updateBillingHistory(BillingHistory history) {
+        LOGGER.info('name=repo.updateBillingHistory')
+        BillingHistory old = billingHistoryRepository.get(history.getId()).get()
+        return billingHistoryRepository.update(history, old).get();
+    }
+
+    @Override
     List<OrderItem> getOrderItems(Long orderId) {
         LOGGER.info('name=repo.getOrderItems')
         def orderItems = orderItemRepository.getByOrderId(orderId).get()

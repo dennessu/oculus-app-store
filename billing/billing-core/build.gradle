@@ -14,4 +14,5 @@ dependencies {
     testCompile (libraries.spring_test)
     testCompile junboProject(':config-data')
     testCompile junboProject(':authorization-lib')
+    testCompile junboProject(':crypto-spec')
 }

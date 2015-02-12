@@ -37,6 +37,8 @@ public interface OrderRepositoryFacade {
 
     BillingHistory createBillingHistory(Long orderId, BillingHistory history);
 
+    BillingHistory updateBillingHistory(BillingHistory history);
+
     List<OrderItem> getOrderItems(Long orderId);
 
     OrderItem getOrderItem(Long orderItemId);

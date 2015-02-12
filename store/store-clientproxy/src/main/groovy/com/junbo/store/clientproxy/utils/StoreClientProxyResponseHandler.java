@@ -8,12 +8,9 @@ package com.junbo.store.clientproxy.utils;
 import com.junbo.langur.core.client.ResponseHandler;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.ning.http.client.Response;
-import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,10 +18,10 @@ import java.util.Set;
  */
 public class StoreClientProxyResponseHandler implements ResponseHandler{
 
-    private Set<String> overrideHeaders = new HashSet<>();
+    private Set<String> forwardedResponseHeaders = new HashSet<>();
 
-    public void setOverrideHeaders(Set<String> overrideHeaders) {
-        this.overrideHeaders = overrideHeaders;
+    public void setForwardedResponseHeaders(Set<String> forwardedResponseHeaders) {
+        this.forwardedResponseHeaders = forwardedResponseHeaders;
     }
 
     @Override
@@ -32,13 +29,13 @@ public class StoreClientProxyResponseHandler implements ResponseHandler{
         if (response == null || response.getHeaders() == null) {
             return;
         }
-        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        MultivaluedMap<String, String> responseHeaders = JunboHttpContext.getResponseHeaders();
 
-        for (Map.Entry<String, List<String>> entry : response.getHeaders().entrySet()) {
-            if (!overrideHeaders.contains(entry.getKey()) || CollectionUtils.isEmpty(entry.getValue())) {
-                continue;
+        for (String key : forwardedResponseHeaders) {
+            String newValue = response.getHeader(key);
+            if (newValue != null) {
+                responseHeaders.putSingle(key, newValue);
             }
-            requestHeaders.put(entry.getKey(), entry.getValue());
         }
     }
 }

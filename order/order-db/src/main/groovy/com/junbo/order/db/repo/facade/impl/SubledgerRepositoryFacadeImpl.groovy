@@ -112,6 +112,11 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
+    List<SubledgerItem> getSubledgerItemsByTime(int dataCenterId, int shardKey, Date startTime, Date endTime, PageParam pageParam) {
+        return subledgerItemRepository.getSubledgerItemsByTime(dataCenterId, shardKey, startTime, endTime, pageParam).get()
+    }
+
+    @Override
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId) {
         return subledgerItemRepository.getByOrderItemId(orderItemId).get()
     }

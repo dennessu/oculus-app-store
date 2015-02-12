@@ -40,7 +40,7 @@
         "readonly.service": [
             {
                 "precondition": "true",
-                "rights": [ "read" ],
+                "rights": [ "read", "read-event" ],
                 "scriptType": "SPEL"
             }
         ]

@@ -103,6 +103,8 @@ class DefaultFlowSelector implements FlowSelector {
                 return Promise.pure(FlowType.CHARGE_BACK.name())
             case OrderActionType.REFUND_TAX.name():
                 return Promise.pure(FlowType.REFUND_TAX.name())
+            case OrderActionType.REFUND.name():
+                return Promise.pure(FlowType.UPDATE_REFUND.name())
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()

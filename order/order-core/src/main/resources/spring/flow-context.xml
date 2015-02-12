@@ -109,5 +109,9 @@
         <property name="orderActionType" value="CHARGE_BACK"/>
     </bean>
 
+    <bean id="updateRefundAction" class="com.junbo.order.core.impl.orderaction.UpdateRefundAction">
+        <property name="orderActionType" value="UPDATE_REFUND"/>
+    </bean>
+
 
 </beans>

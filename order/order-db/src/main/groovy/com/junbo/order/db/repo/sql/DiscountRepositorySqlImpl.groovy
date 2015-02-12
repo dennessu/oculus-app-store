@@ -39,7 +39,7 @@ class DiscountRepositorySqlImpl implements DiscountRepository {
 
     @Override
     Promise<Discount> get(Long id) {
-        return null
+        return Promise.pure(null)
     }
 
     @Override

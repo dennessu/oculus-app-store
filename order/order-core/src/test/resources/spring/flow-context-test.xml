@@ -74,6 +74,12 @@
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
+    <bean id="mockOrderEventService" class="com.junbo.order.core.impl.orderevent.OrderEventServiceImpl">
+        <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
+        <property name="builder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
+
     <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">
         <property name="ratingFacade" ref="mockRatingFacade"/>
         <property name="billingFacade" ref="mockBillingFacade"/>
@@ -157,6 +163,10 @@
     </bean>
 
     <bean id="mockPreImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.PreImmediateSettleAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
+    <bean id="mockUpdateRefundAction" class="com.junbo.order.core.impl.orderaction.UpdateRefundAction">
         <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>
 

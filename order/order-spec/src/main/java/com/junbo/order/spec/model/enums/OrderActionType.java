@@ -28,7 +28,8 @@ public enum OrderActionType implements Identifiable<Short> {
     DELIVER(13),
     REVERSE_FULFILLMENT(14),
     REFUND_TAX(15),
-    CHARGE_BACK(16);
+    CHARGE_BACK(16),
+    UPDATE_REFUND(17);
 
     private OrderActionType(int id) {
         this.id = (short) id;

@@ -24,7 +24,6 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -70,8 +69,8 @@ public class FacebookPaymentServiceTest extends BaseTest {
         FacebookRTU facebookRTU = new FacebookRTU();
         facebookRTU.setObject("payments");
         FacebookRTUEntry facebookRTUEntry = new FacebookRTUEntry();
-        facebookRTUEntry.setId("ZXh0X3BheW1lbnRfNTcyMTk3MTc5NTc3MTQ0");
-        facebookRTUEntry.setTime(String.valueOf(new Date().getTime()));
+        facebookRTUEntry.setId("ZXh0X3BheW1lbnRfNzAzODkwMTYzMDU5MTIy");
+        facebookRTUEntry.setTime("1423722921");
         facebookRTUEntry.setChanged_fields(new String[]{"fraud_status"});
         facebookRTU.setEntry(new FacebookRTUEntry[]{facebookRTUEntry});
         String rtu = CommonUtil.toJson(facebookRTU, null);
@@ -267,22 +266,39 @@ public class FacebookPaymentServiceTest extends BaseTest {
         request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
+        RiskFeature riskFeature = new RiskFeature(){
+            {
+                setBrowserVersion("1.0");
+                setBrowserName("Chrome");
+                setCurrencyPurchasing("USD");
+                setInstalledApps(new Integer[] {1});
+                setPlatformName("Android");
+                setPlatformVersion("4.1");
+                setSourceDatr("test_datr");
+                setTimeSinceUserAccountCreatedInDays(10);
+                setSourceCountry("US");
+            }
+        };
+        request.setRiskFeature(riskFeature);
         result = addPI(request);
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
-        PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
-        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());
-        PaymentTransaction captureTrx = new PaymentTransaction(){
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(){
             {
-                setTrackingUuid(generateUUID());
-                setUserId(request.getUserId());
-                setBillingRefId(BILLING_REF_ID);
+                setId("123");
+                setName("afjakshdf");
             }
-        };
-        PaymentTransaction captureResult = mockFBPaymentService.capture(paymentResult.getId(), captureTrx).get();
-        Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        });
+
+        transaction.getChargeInfo().setItems(items);
+        transaction.setRiskFeature(riskFeature);
+        //risk pending & allow
+        transaction.getChargeInfo().setAmount(new BigDecimal("100"));
+        PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
+        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
 
         ChargeInfo first = new ChargeInfo();
         first.setCurrency(transaction.getChargeInfo().getCurrency());

@@ -6,6 +6,7 @@
 package com.junbo.order.core.impl.internal.impl
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppCommonErrors
@@ -244,6 +245,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=internal.captureOrder')
         assert (order != null)
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+            if (CollectionUtils.isEmpty(balances)) {
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
             Balance pendingBalance = balances.find { Balance balance ->
                 balance.type == BalanceType.MANUAL_CAPTURE.name() &&
                         balance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -260,6 +264,44 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 return getOrderByOrderId(order.getId().value, orderServiceContext, true)
             }
+        }
+    }
+
+    @Override
+    Promise<Order> checkAndUpdateRefund(Order order, OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=internal.checkAndUpdateRefund')
+        assert (order != null)
+        def requestRefunds = order.billingHistories?.findAll { BillingHistory bh ->
+            bh.billingEvent == BillingAction.REQUEST_REFUND.name()
+        }
+        if (CollectionUtils.isEmpty(requestRefunds)) {
+            LOGGER.info('name=Order_Update_Refund_No_RequestRefund_BillingHistory, orderId: {}', order.getId().value)
+            return Promise.pure(order)
+        }
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+            if (CollectionUtils.isEmpty(balances)) {
+                LOGGER.error('name=Order_Update_Refund_Balance_Not_Found, orderId: {}', order.getId().value)
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
+
+            def refundBalances = balances.findAll { Balance balance ->
+                CoreUtils.isBalanceRefunded(balance)
+            }
+            if (CollectionUtils.isEmpty(refundBalances)) {
+                LOGGER.error('name=Order_Update_Refund_No_RefundedBalance, orderId: {}', order.getId().value)
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
+
+            requestRefunds.each { BillingHistory bh ->
+                def balance = refundBalances.find { Balance b ->
+                    bh.getBalanceId() == b.getId().value.toString()
+                }
+                if (balance != null) {
+                    bh.billingEvent = BillingAction.REFUND.name()
+                    orderRepository.updateBillingHistory(bh)
+                }
+            }
+            return getOrderByOrderId(order.getId().value, orderServiceContext, true)
         }
     }
 
@@ -473,7 +515,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=internal.auditTax')
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).recover { Throwable throwable ->
             LOGGER.error('name=Tax_Audit_Fail', throwable)
-            throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
+//            throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
+            order.isAudited = true
+            return Promise.pure(order)
         }.then { List<Balance> balances ->
             def balancesToBeAudited = balances.findAll { Balance balance ->
                 CoreUtils.isBalanceSettled(balance) && TaxStatus.TAXED.name() == balance.taxStatus
@@ -484,19 +528,25 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 return Promise.pure(order)
             }
             if (order.status == OrderStatus.REFUNDED.name()) {
-                def hasRefundedBalance = balancesToBeAudited.any { Balance b ->
+                def refundedBalances = balancesToBeAudited.findAll { Balance b ->
                     BalanceType.REFUND.name() == b.type
                 }
-                if (!hasRefundedBalance) {
-                    LOGGER.error('name=No_Refund_Balance_Can_Be_Audit, orderId={}', order.getId().value)
-//                    throw AppErrors.INSTANCE.billingAuditFailed('no refund balance can be audited.').exception()
-                    return Promise.pure(order)
+                refundedBalances.each { Balance refundedBalance ->
+                    def originalBalance = balances.find { Balance b ->
+                        b.id == refundedBalance.originalBalanceId
+                    }
+                    def billingAddress = originalBalance.propertySet.get(PropertyKey.BILLING_ADDRESS.name())
+                    def ipGeoLocation = originalBalance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name())
+                    refundedBalance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), billingAddress)
+                    refundedBalance.propertySet.put(PropertyKey.IP_GEO_LOCATION.name(), ipGeoLocation)
                 }
             }
             def auditedBalances = []
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
                 return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
-                    LOGGER.error('name=Tax_Audit_Fail', throwable)
+                    LOGGER.error('name=Tax_Audit_Fail_Partial_Audit', throwable)
+                    order.isAudited = true
+                    return Promise.pure(order)
                 }.then { Balance auditedBalance ->
                     if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
                         auditedBalances << auditedBalance
@@ -504,7 +554,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     }
                 }
             }.then {
-                if (balancesToBeAudited?.size() == auditedBalances.size()) {
+                if (auditedBalances.size() > 0) {
                     order.isAudited = true
                     orderRepository.updateOrder(order, true, true, null)
                 }

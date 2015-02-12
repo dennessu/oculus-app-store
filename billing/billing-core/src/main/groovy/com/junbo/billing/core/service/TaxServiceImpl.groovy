@@ -138,7 +138,10 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<Balance> auditTax(Balance balance) {
         Long shippingAddressId = balance.shippingAddressId?.value
-        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
+        def billingAddressId
+        if (balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()) != null) {
+            billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
+        }
         return identityFacade.getAddress(shippingAddressId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + billingAddressId, throwable)
             throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()
@@ -179,19 +182,21 @@ class TaxServiceImpl implements TaxService {
                 }
 
                 TaxExempt taxExempt = getTaxExempt(user, billingAddress)
-                if (taxExempt != null && taxExempt.isTaxExemptionValidated) {
+                if (taxExempt != null) {
                     def exemptReason = taxExempt.taxExemptionReason
                     def exemptCertificate = taxExempt.taxExemptionCertificateNumber
                     if (exemptReason != null && exemptReason != '') {
                         balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), taxExempt.taxExemptionReason)
-                    } else if (balance.propertySet.get(PropertyKey.BIN_NUMBER.name()) != null) {
-                        def binNumber = balance.propertySet.get(PropertyKey.BIN_NUMBER.name())
-                        if (isGSACard(binNumber)) {
-                            balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), 'Government')
-                        }
                     }
                     if (exemptCertificate != null && exemptCertificate != '') {
                         balance.propertySet.put(PropertyKey.EXEMPT_CERTIFICATE.name(), taxExempt.taxExemptionCertificateNumber)
+                    }
+                }
+
+                if (balance.propertySet.get(PropertyKey.BIN_NUMBER.name()) != null) {
+                    def binNumber = balance.propertySet.get(PropertyKey.BIN_NUMBER.name())
+                    if (isGSACard(binNumber)) {
+                        balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), 'Government')
                     }
                 }
 
@@ -205,12 +210,29 @@ class TaxServiceImpl implements TaxService {
             return null
         }
         def taxExempt = user.taxExemption.find { TaxExempt exempt ->
-            billingAddress.countryId.value == exempt.taxExemptionCountry && (
-                exempt.taxExemptionSubcountry == 'ALL' || exempt.taxExemptionSubcountry == billingAddress.subCountry
-            )
+            billingAddress.countryId.value == exempt.taxExemptionCountry &&
+                    (exempt.taxExemptionSubcountry == 'ALL' ||
+                            exempt.taxExemptionSubcountry == billingAddress.subCountry) &&
+                    isValidExemption(exempt)
+
         }
 
         return taxExempt
+    }
+
+    Boolean isValidExemption(TaxExempt exempt) {
+        if (!exempt.isTaxExemptionValidated) {
+            return false
+        }
+        def now = new Date()
+        if (exempt.taxExemptionStartDate != null && exempt.taxExemptionStartDate.after(now)) {
+            return false
+        }
+        if (exempt.taxExemptionEndDate != null && exempt.taxExemptionEndDate.before(now)) {
+            return false
+        }
+
+        return true
     }
 
     Boolean isGSACard(String number) {
