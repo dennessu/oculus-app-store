@@ -93,21 +93,25 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                 if(getResult == null){
                     throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", s).exception();
                 }
-                if(getResult.getCode() != 200){
-                    FacebookCCBatchError fbBatchError = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCCBatchError.class);
-                    if(fbBatchError == null){
-                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
-                    }
-                    if(getResult.getCode() == 400){
-                        throw AppClientExceptions.INSTANCE.providerInvalidRequest("Facebook", fbBatchError.getError().getMessage()).exception();
-                    }else{
-                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
-                    }
-                }
+                checkResponse(getResult);
                 FacebookCreditCard creditCard = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCreditCard.class);
                 return Promise.pure(creditCard);
             }
         });
+    }
+
+    private void checkResponse(FacebookCCBatchResponse getResult) {
+        if(getResult.getCode() != 200){
+            FacebookCCBatchError fbBatchError = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCCBatchError.class);
+            if(fbBatchError == null){
+                throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
+            }
+            if(FacebookErrorMapUtil.isClientError(fbBatchError.getError())){
+                throw AppClientExceptions.INSTANCE.providerInvalidRequest("Facebook", fbBatchError.getError().getMessage()).exception();
+            }else{
+                throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
+            }
+        }
     }
 
     @Override
@@ -147,17 +151,7 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                 if(getResult == null){
                     throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", s).exception();
                 }
-                if(getResult.getCode() != 200){
-                    FacebookCCBatchError fbBatchError = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookCCBatchError.class);
-                    if(fbBatchError == null){
-                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "unkonw error:" + getResult.getBody()).exception();
-                    }
-                    if(getResult.getCode() == 400){
-                        throw AppClientExceptions.INSTANCE.providerInvalidRequest("Facebook", fbBatchError.getError().getMessage()).exception();
-                    }else{
-                        throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", fbBatchError.getError().getMessage()).exception();
-                    }
-                }
+                checkResponse(getResult);
                 FacebookPayment payment = CommonUtil.parseJsonIgnoreUnknown(getResult.getBody(), FacebookPayment.class);
                 return Promise.pure(payment);
             }
