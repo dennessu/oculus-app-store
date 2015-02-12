@@ -27,7 +27,7 @@
     </bean>
 
     <bean id="storeClientProxyResponseHandler" class="com.junbo.store.clientproxy.utils.StoreClientProxyResponseHandler">
-        <property name="overrideHeaders">
+        <property name="forwardedResponseHeaders">
             <set>
                 <value>oculus-region</value>
             </set>

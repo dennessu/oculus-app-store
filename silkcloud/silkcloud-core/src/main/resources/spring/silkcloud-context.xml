@@ -36,7 +36,6 @@
                 <value>Cache-Control</value>
                 <value>oculus-end-user-ip</value>
                 <value>oculus-geoip-country-code</value>
-                <value>oculus-region</value>
                 <value>X-PLATFORM-NAME</value>
                 <value>X-PLATFORM-VERSION</value>
                 <value>X-CLIENT-NAME</value>
