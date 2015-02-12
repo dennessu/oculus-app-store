@@ -19,6 +19,8 @@ public interface SubledgerItemDao extends BaseDao<SubledgerItemEntity> {
     List<SubledgerItemEntity> getByStatusItemIdCreatedTime(Integer dataCenterId, Integer shardId, SubledgerItemStatus status,
                                                             String itemId, Date endTime, int start, int count);
 
+    List<SubledgerItemEntity> getByCreatedTime(Integer dataCenterId, Integer shardId, Date startTime, Date endTime, int start, int count);
+
     List<SubledgerItemEntity> getByOrderItemId(Long orderItemId);
 
     List<String> getDistrictItemIds(Integer dataCenterId, Integer shardId, SubledgerItemStatus status, int start, int count);

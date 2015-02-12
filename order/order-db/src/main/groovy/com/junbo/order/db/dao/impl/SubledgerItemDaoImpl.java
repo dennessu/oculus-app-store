@@ -40,6 +40,19 @@ public class SubledgerItemDaoImpl extends BaseDaoImpl<SubledgerItemEntity> imple
     }
 
     @Override
+    public List<SubledgerItemEntity> getByCreatedTime(Integer dataCenterId, Integer shardId, Date startTime, Date endTime, int start, int count) {
+        Criteria criteria = this.getSessionByShardId(dataCenterId, shardId).createCriteria(SubledgerItemEntity.class);
+
+        criteria.add(Restrictions.ge("createdTime", startTime));
+        criteria.add(Restrictions.lt("createdTime", endTime));
+
+        criteria.setFirstResult(start);
+        criteria.setMaxResults(count);
+
+        return criteria.list();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<SubledgerItemEntity> getByOrderItemId(Long orderItemId) {
         Criteria criteria = this.getSession(orderItemId).createCriteria(SubledgerItemEntity.class);

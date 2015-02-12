@@ -82,6 +82,17 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
+    Promise<List<SubledgerItem>> getSubledgerItemsByTime(int dataCenterId, int shardId, Date startTime, Date endTime, PageParam pageParam) {
+        List<SubledgerItem> result = [] as List
+        subledgerItemDao.getByCreatedTime(dataCenterId, shardId,
+                startTime, endTime,
+                pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
+            result << modelMapper.toSubledgerItemModel(entity, new MappingContext())
+        }
+        return Promise.pure(result)
+    }
+
+    @Override
     Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId) {
         return Promise.pure(subledgerItemDao.getByOrderItemId(orderItemId.value).collect { SubledgerItemEntity entity ->
             return modelMapper.toSubledgerItemModel(entity, new MappingContext());

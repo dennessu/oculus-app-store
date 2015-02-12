@@ -29,6 +29,11 @@ class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualW
     }
 
     @Override
+    Promise<List<SubledgerItem>> getSubledgerItemsByTime(int dataCenterId, int shardId, Date startDate, Date endDate, PageParam pageParam) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
     Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId) {
         return super.queryView('by_orderitemid', orderItemId.value.toString())
     }

@@ -137,5 +137,10 @@
             <property name="beanName" value="orderAuditTaxJob"/>
             <property name="methodName" value="execute"/>
         </bean>
+        <bean class="com.junbo.common.job.trigger.JobDefinition">
+            <property name="jobName" value="subledgerItemExport"/>
+            <property name="beanName" value="order.subledgerItemExport"/>
+            <property name="methodName" value="execute"/>
+        </bean>
     </util:list>
 </beans>

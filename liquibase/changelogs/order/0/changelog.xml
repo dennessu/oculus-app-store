@@ -512,5 +512,12 @@
         </sql>
     </changeSet>
 
+    <changeSet author="fzhang" id = "1.11" context="PREDEPLOY">
+        <sql><![CDATA[
+                create index subledger_item_created_time on subledger_item(created_time);
+            ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

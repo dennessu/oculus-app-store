@@ -147,20 +147,32 @@ class RevenueReportJob {
     }
 
     public void execute() {
-        innerExecute(new Date())
+        Calendar calendar = Calendar.getInstance()
+        calendar.setTime(new Date())
+        calendar.add(Calendar.MONTH, -1)
+        innerExecute(calendar.getTime(), null as Integer)
     }
 
     public void execute(String dateString) {
-        innerExecute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString))
+        innerExecute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString), null as Integer)
     }
 
-    private synchronized void innerExecute(Date time) {
-        time = new Date(time.year, time.month, time.date)
+    public void execute(String dateString, String lengthInDay) {
+        innerExecute(new SimpleDateFormat('yyyy-MM-dd').parse(dateString), Integer.parseInt(lengthInDay))
+    }
+
+    private synchronized void innerExecute(Date startTime, Integer lengthInDay) {
+        startTime = new Date(startTime.year, startTime.month, startTime.date)
         Calendar calendar = Calendar.getInstance()
-        calendar.setTime(time)
-        calendar.add(Calendar.MONTH, -1)
-        Date start = calendar.getTime()
-        innerExecute(start, time)
+        calendar.setTime(startTime)
+
+        if (lengthInDay != null) {
+            calendar.add(Calendar.DAY_OF_MONTH, lengthInDay)
+        } else {
+            calendar.add(Calendar.MONTH, 1)
+        }
+
+        innerExecute(startTime, calendar.getTime())
     }
 
     private void innerExecute(Date startDate, Date endDate) {
