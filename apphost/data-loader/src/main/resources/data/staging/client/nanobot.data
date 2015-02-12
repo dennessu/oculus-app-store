@@ -4,7 +4,7 @@
   "client_name" : "nanobot",
 
   "scopes" : [ "catalog.update" ],
-  "default_scopes" : [ "catalog.update" ],
+  "default_scopes" : [ "catalog.update", "catalog.service"sh ],
 
   "response_types" : [ ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ]

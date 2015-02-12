@@ -97,7 +97,7 @@
                 <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr readonly.service"/>
-                <entry key="UserAttributeResource" value="identity identity.service identity.pii csr" />
+                <entry key="UserAttributeResource" value="identity identity.service identity.pii csr storeapi" />
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
                 <entry key="ClientEndpoint.getInfoByClientId" value="client.info"/>
