@@ -7,6 +7,7 @@
 package com.junbo.billing.clientproxy.impl.sabrix
 
 import com.thoughtworks.xstream.annotations.XStreamAlias
+import com.thoughtworks.xstream.annotations.XStreamImplicit
 import groovy.transform.CompileStatic
 
 /**
@@ -21,7 +22,7 @@ class RequestStatus {
     @XStreamAlias('IS_PARTIAL_SUCCESS')
     Boolean isPartialSuccess
 
-    @XStreamAlias('ERROR')
+    @XStreamImplicit(itemFieldName='ERROR')
     List<SabrixError> error
 
 
