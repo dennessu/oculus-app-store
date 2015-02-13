@@ -10,6 +10,7 @@
             <wf:on-entry>
                 <wf:action ref="validateUserAction"/>
                 <wf:action ref="chargeBackAction"/>
+                <wf:action ref="subledgerCreateChargeBackItemAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>

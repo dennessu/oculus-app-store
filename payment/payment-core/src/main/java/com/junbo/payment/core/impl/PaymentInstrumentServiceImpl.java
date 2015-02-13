@@ -94,7 +94,10 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public void delete(final Long paymentInstrumentId) {
+        PaymentInstrument result = getPaymentInstrument(paymentInstrumentId);
         paymentInstrumentRepositoryFacade.delete(paymentInstrumentId);
+        //remove the defaultPI form user:SER-1040
+        userInfoFacade.updateDefaultPI(result.getUserId(), paymentInstrumentId, null).get();
     }
 
     @Override

@@ -69,8 +69,6 @@ class OrderEventServiceImpl implements OrderEventService {
             case OrderActionType.PARTIAL_CHARGE.name():
             case OrderActionType.AUTHORIZE.name():
             case OrderActionType.CAPTURE.name():
-            case OrderActionType.REFUND.name():
-            case OrderActionType.PARTIAL_REFUND.name():
                 return recordBillingHistory(event, orderServiceContext)
             default:
                 return Promise.pure(event)

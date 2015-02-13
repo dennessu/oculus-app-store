@@ -114,7 +114,8 @@ The following guide is for setting up windows as the development and testing env
 Download and install the latest git from [msysGit](https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe)
 
 #### Install Python
-1. Download and install [Python 2.7](https://www.python.org/download/).
+1. Download and install [Python 2.7.6](https://www.python.org/download/).
+   Note: don't install python 2.7.9 if you are in China, the proxy tunneling is not working in 2.7.9
 1. Add the path of python and the scripts folder (for example, `C:\Python27` and `C:\Python27\Scripts`) to system `PATH`.
 1. Install PIP by running the following commands
     ```

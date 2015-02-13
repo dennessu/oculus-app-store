@@ -2,6 +2,7 @@ package com.junbo.order.jobs.transaction
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OrderId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.jobs.transaction.model.DiscrepancyReason
@@ -9,15 +10,20 @@ import com.junbo.order.jobs.transaction.model.DiscrepancyRecord
 import com.junbo.order.jobs.transaction.model.FacebookTransaction
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.EventStatus
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.SubledgerType
 import com.junbo.order.spec.model.fb.TransactionType
+import com.junbo.order.spec.resource.OrderEventResource
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 
 import javax.annotation.Resource
 import java.math.RoundingMode
@@ -35,6 +41,9 @@ class DiscrepancyProcessor {
     @Resource(name = 'order.orderClient')
     OrderResource orderResource
 
+    @Resource(name = 'order.orderEventClient')
+    OrderEventResource orderEventResource
+
     @Resource(name = 'order.billingBalanceClient')
     BalanceResource balanceResource
 
@@ -49,6 +58,10 @@ class DiscrepancyProcessor {
                 return handleChargeTransaction(order, transaction)
             case TransactionType.R:
                 return handleRefundTransaction(order, transaction)
+            case TransactionType.C:
+            case TransactionType.D:
+                handleChargeBack(order, transaction)
+                return null
             default:
                 createSublededgerItem(order, transaction)
                 return null
@@ -120,14 +133,8 @@ class DiscrepancyProcessor {
     private void createSublededgerItem(Order order, FacebookTransaction transaction) {
         SubledgerType subledgerType = null
         switch (transaction.txnType) {
-            case TransactionType.C:
-                subledgerType = SubledgerType.CHARGE_BACK
-                break
             case TransactionType.N:
                 subledgerType = SubledgerType.DECLINE
-                break
-            case TransactionType.D:
-                subledgerType = SubledgerType.CHARGE_BACK_OTW
                 break
             case TransactionType.K:
                 subledgerType = SubledgerType.CHARGE_BACK_REVERSAL
@@ -143,6 +150,26 @@ class DiscrepancyProcessor {
             } else {
                 subledgerService.createReverseSubledgerItem(subledgerType, orderItem)
             }
+        }
+    }
+
+    private void handleChargeBack(Order order, FacebookTransaction transaction) {
+        Assert.isTrue(transaction.txnType == TransactionType.C || transaction.txnType == TransactionType.D)
+        LOGGER.info('name=Start_Post_ChargeBack_OrderEvent, orderId={}', IdFormatter.encodeId(order.getId()))
+        try {
+            OrderEvent orderEvent = new OrderEvent(
+                    action: OrderActionType.CHARGE_BACK.name(),
+                    status: EventStatus.OPEN.name(),
+                    order: order.getId()
+            )
+            if (transaction.txnType == TransactionType.D) {
+                orderEvent.properties = ObjectMapperProvider.instance().writeValueAsString(Collections.singletonMap('outsideOfTimeWindow',true))
+            }
+
+            OrderEvent result = orderEventResource.createOrderEvent(orderEvent).get()
+            LOGGER.info('name=Post_ChargeBack_OrderEvent_Success, orderId={}, orderEventId={}', IdFormatter.encodeId(order.getId()), IdFormatter.encodeId(result.getId()))
+        } catch (Exception ex) {
+            LOGGER.error('name=Post_ChargeBack_OrderEvent_Fail, orderId={}', IdFormatter.encodeId(order.getId()), ex)
         }
     }
 

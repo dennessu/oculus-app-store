@@ -132,6 +132,11 @@
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
+    <bean id="order.orderEventClient" class="com.junbo.order.spec.resource.proxy.OrderEventResourceClientProxy"
+          parent="orderEventResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
     <bean id="order.cryptoClient" class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.crypto.url}"/>

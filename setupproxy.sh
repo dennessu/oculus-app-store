@@ -2,6 +2,8 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 root
 
+set_e=${-//[^e]/}
+
 personalConfigFile=./apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
 # append \n to eof if not exists.
 chmod +w "$personalConfigFile"
@@ -50,4 +52,6 @@ else
         echo "facebook proxy is removed"
     fi
 fi
+
+if [[ -n "$set_e" ]]; then set -e; else set +e; fi
 

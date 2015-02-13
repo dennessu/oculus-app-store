@@ -17,4 +17,9 @@ public class MockUserResource implements UserInfoFacade {
         user.setEmail("test@123.com");
         return Promise.pure(user);
     }
+
+    @Override
+    public Promise<Void> updateDefaultPI(Long userId, Long existingPiId,  Long piId) {
+        return Promise.pure();
+    }
 }
