@@ -4,8 +4,8 @@
   "longName": "Español(El Salvador)",
   "localeName": "Spanish(SV)",
   "fallbackLocale": {
-    "href": "/v1/locales/es_ES",
-    "id": "es_ES"
+    "href": "/v1/locales/es_LA",
+    "id": "es_LA"
   },
   "futureExpansion": {}
 }
