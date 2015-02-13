@@ -446,13 +446,13 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(offer.getFormattedDescription(), defaultIfNull(offerRevisionLocaleProperties == null ? null : offerRevisionLocaleProperties.getShortDescription()));
         Assert.assertEquals(offer.getIsFree().booleanValue(), isFree);
         if (isFree) {
-            Assert.assertEquals(offer.getPrice().doubleValue(), BigDecimal.ZERO.doubleValue(), 0.00001);
+            Assert.assertEquals(offer.getPrice(), null);
             Assert.assertEquals(offer.getCurrency(), null);
         } else {
             Assert.assertEquals(offer.getCurrency().getValue(), "USD");
-            int symbolIndex = offer.getFormattedPrice().indexOf("$");
+            int symbolIndex = offer.getPrice().indexOf("$");
             Assert.assertEquals(symbolIndex, 0);
-            Assert.assertTrue(new BigDecimal(offer.getFormattedPrice().substring(symbolIndex + 1)).compareTo(BigDecimal.ZERO) > 0);
+            Assert.assertTrue(new BigDecimal(offer.getPrice().substring(symbolIndex + 1)).compareTo(BigDecimal.ZERO) > 0);
         }
     }
 

@@ -41,6 +41,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -672,5 +673,19 @@ public class StoreTesting extends BaseTestClass {
         assert getResponse != null;
         assert getResponse.getUserProfile() != null;
         assert getResponse.getUserProfile().getPin().equals("****");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Test a user-agent in black list will get 403 forbiden response",
+            component =  Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable
+    )
+    @Test
+    public void testClientBlock() throws Exception {
+        testDataProvider.CheckUserName(RandomFactory.getRandomStringOfAlphabet(12), RandomFactory.getRandomEmailAddress());
+        TestContext.getData().putHeader("user-agent", "client_will_be_blocked");
+        testDataProvider.CheckEmailWithError(RandomFactory.getRandomEmailAddress(), 403, "199.003");
     }
 }

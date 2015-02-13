@@ -8,6 +8,7 @@ package com.junbo.store.spec.model.login;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.Challenge;
+import com.junbo.store.spec.model.identity.FullName;
 import com.junbo.store.spec.model.identity.StoreUserEmail;
 
 /**
@@ -19,6 +20,8 @@ public class AuthTokenResponse {
 
     @JsonProperty("user")
     private UserId userId;
+
+    private FullName fullName;
 
     private String username;
 
@@ -44,6 +47,14 @@ public class AuthTokenResponse {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public FullName getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(FullName fullName) {
+        this.fullName = fullName;
     }
 
     public String getUsername() {

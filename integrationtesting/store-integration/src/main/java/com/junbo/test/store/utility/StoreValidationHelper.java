@@ -22,6 +22,7 @@ import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
+import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Utility.ValidationHelper;
@@ -128,6 +129,13 @@ public class StoreValidationHelper extends ValidationHelper {
     public void verifyEmailInAuthResponse(AuthTokenResponse authTokenResponse, String email, boolean isValidated) {
         Assert.assertEquals(authTokenResponse.getEmail().getValue(), email);
         Assert.assertEquals(authTokenResponse.getEmail().getIsValidated().booleanValue(), isValidated);
+    }
+
+    public void verifyFullName(AuthTokenResponse authTokenResponse, CreateUserRequest createUserRequest) {
+        Assert.assertNotNull(authTokenResponse.getFullName());
+        Assert.assertEquals(authTokenResponse.getFullName().getFirstName(), createUserRequest.getFirstName());
+        Assert.assertEquals(authTokenResponse.getFullName().getMiddleName(), createUserRequest.getMiddleName());
+        Assert.assertEquals(authTokenResponse.getFullName().getLastName(), createUserRequest.getLastName());
     }
 
     public void verifyUserProfile(UserProfileGetResponse userProfileGetResponse, AuthTokenResponse createResponse) {

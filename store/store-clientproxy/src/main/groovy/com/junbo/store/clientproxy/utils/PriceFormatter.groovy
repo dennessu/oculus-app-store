@@ -1,4 +1,4 @@
-package com.junbo.store.rest.utils
+package com.junbo.store.clientproxy.utils
 
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.identity.spec.v1.model.Currency
@@ -19,13 +19,18 @@ class PriceFormatter {
     @Resource(name = 'storeResourceContainer')
     ResourceContainer resourceContainer
 
+    public static class CurrencySymbolPosition {
+        public static final String BEFORE = 'BEFORE'
+        public static final String AFTER = 'AFTER'
+    }
+
     String formatPrice(BigDecimal value, CurrencyId currencyId) {
         if (value == null || currencyId == null) {
             return null
         }
 
         Currency currency = resourceContainer.currencyResource.get(currencyId, new CurrencyGetOptions()).get()
-        if (currency.symbolPosition.equalsIgnoreCase(Constants.CurrencySymbolPosition.AFTER)) {
+        if (currency.symbolPosition.equalsIgnoreCase(CurrencySymbolPosition.AFTER)) {
             return value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
         } else {
             return currency.symbol + value.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP)

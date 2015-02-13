@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -112,6 +111,7 @@ class LoginResourceImpl implements LoginResource {
         User user
         UserLoginName userLoginName
         StoreUserEmail storeUserEmail
+        UserName userName
     }
 
     @Override
@@ -273,7 +273,7 @@ class LoginResourceImpl implements LoginResource {
             appErrorUtils.throwUnknownError('createUser', ex)
         }.then {
             // get the auth token
-            innerSignIn(apiContext.user, apiContext.userLoginName, apiContext.storeUserEmail).then { AuthTokenResponse response ->
+            innerSignIn(apiContext.user, apiContext.userLoginName, apiContext.storeUserEmail, apiContext.userName).then { AuthTokenResponse response ->
                 authTokenResponse = response
                 CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
                 Promise.parallel(
@@ -374,7 +374,7 @@ class LoginResourceImpl implements LoginResource {
                         clientSecret: clientSecret
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return buildResponse(accessTokenResponse, null, null, null)
+            return buildResponse(accessTokenResponse, null, null, null, null)
         }.recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.RefreshTokenExpired, ErrorCodes.OAuth.RefreshTokenInvalid)) {
                 throw ex
@@ -504,7 +504,8 @@ class LoginResourceImpl implements LoginResource {
     }
 
 
-    private Promise<AuthTokenResponse> innerSignIn(User createdUser, UserLoginName userLoginName, StoreUserEmail storeUserEmail) {
+    private Promise<AuthTokenResponse> innerSignIn(User createdUser, UserLoginName userLoginName, StoreUserEmail storeUserEmail,
+                                                   UserName userName) {
         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(
                         userId: IdFormatter.encodeId(createdUser.getId()),
@@ -514,7 +515,7 @@ class LoginResourceImpl implements LoginResource {
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return buildResponse(accessTokenResponse, createdUser, userLoginName, storeUserEmail)
+            return buildResponse(accessTokenResponse, createdUser, userLoginName, storeUserEmail, userName)
         }
     }
 
@@ -529,15 +530,18 @@ class LoginResourceImpl implements LoginResource {
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return buildResponse(accessTokenResponse, null, null, null);
+            return buildResponse(accessTokenResponse, null, null, null, null);
         }
     }
 
-    private Promise<AuthTokenResponse> buildResponse(AccessTokenResponse accessTokenResponse, User createdUser, UserLoginName userLoginName, StoreUserEmail storeUserEmail) {
+    private Promise<AuthTokenResponse> buildResponse(AccessTokenResponse accessTokenResponse, User createdUser, UserLoginName userLoginName,
+                                                     StoreUserEmail storeUserEmail, UserName userName) {
         def response = fromAuthTokenResponse(accessTokenResponse)
         if (createdUser != null) {
             Assert.notNull(userLoginName)
             Assert.notNull(storeUserEmail)
+            Assert.notNull(userName)
+            response.fullName = dataConverter.toFullName(userName)
             response.username = userLoginName.userName
             response.userId = createdUser.getId()
             response.email = storeUserEmail
@@ -559,7 +563,10 @@ class LoginResourceImpl implements LoginResource {
                     }
                     return resourceContainer.userPersonalInfoResource.get(defaultEmail.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo emailInfo ->
                         response.email = new StoreUserEmail(isValidated: emailInfo.isValidated, value: ObjectMapperProvider.instanceNotStrict().treeToValue(emailInfo.value, Email).info)
-                        return Promise.pure(response)
+                        resourceContainer.userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).then { UserPersonalInfo nameInfo ->
+                            response.fullName = dataConverter.toFullName(ObjectMapperProvider.instanceNotStrict().treeToValue(nameInfo.value, UserName))
+                            return Promise.pure(response)
+                        }
                     }
                 }
             }
@@ -711,6 +718,7 @@ class LoginResourceImpl implements LoginResource {
                                 )
                         )
                 ).then { UserPersonalInfo nameInfo ->
+                    apiContext.userName = ObjectMapperProvider.instanceNotStrict().treeToValue(nameInfo.value, UserName)
                     apiContext.user.name = nameInfo.getId()
                     return Promise.pure()
                 }.recover { Throwable throwable ->
