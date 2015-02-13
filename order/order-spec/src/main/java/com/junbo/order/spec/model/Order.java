@@ -107,15 +107,17 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
             "It might be null if there is no shipping method at this time.")
     private String shippingMethod;
 
-    @JsonProperty("shippingToAddress")
+    @JsonProperty("shipToAddress")
     @ApiModelProperty(required = true, position = 76, value = "The shipping address. Required for physical goods. " +
             "It might be null if there is no shipping address at this time.")
     private UserPersonalInfoId shippingAddress;
 
+    @JsonProperty("shipToName")
     @ApiModelProperty(required = true, position = 77, value = "The shipping user name. Required for physical goods. " +
             "It might be null if there is no shipping user name at this time.")
     private UserPersonalInfoId shippingToName;
 
+    @JsonProperty("shipToPhone")
     @ApiModelProperty(required = true, position = 78, value = "The shipping user contact phone. Required for physical goods. " +
             "It might be null if there is no shipping contact phone at this time.")
     private UserPersonalInfoId shippingToPhone;
