@@ -557,7 +557,9 @@ class SabrixFacadeImpl implements TaxFacade {
                 }
                 return Promise.pure(result)
             }
-            LOGGER.error('name=Error_Tax_Calculation, description={}', result.requestStatus?.error?.description)
+            result.requestStatus?.error.each { SabrixError error ->
+                LOGGER.error('name=Error_Tax_Calculation, description={}', error.description)
+            }
             LOGGER.info('name=Tax_Calculation_Response_Status_Code, statusCode={}', response.statusCode)
             return Promise.pure(null)
         }

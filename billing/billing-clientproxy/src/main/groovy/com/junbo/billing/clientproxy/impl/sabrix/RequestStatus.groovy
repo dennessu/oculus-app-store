@@ -22,7 +22,7 @@ class RequestStatus {
     Boolean isPartialSuccess
 
     @XStreamAlias('ERROR')
-    SabrixError error
+    List<SabrixError> error
 
 
     @Override
