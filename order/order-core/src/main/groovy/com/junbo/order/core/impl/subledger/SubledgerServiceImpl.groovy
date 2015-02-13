@@ -265,8 +265,8 @@ class SubledgerServiceImpl implements SubledgerService {
         }
 
         SubledgerItem created = innerCreateSubledgerItem(reverseSubledgerItem)
-            LOGGER.info('name=CreateReverseSubledgerItem, orderItemId={}, quantity={}',
-                    reverseSubledgerItem.orderItem, reverseSubledgerItem.totalQuantity)
+            LOGGER.info('name=CreateReverseSubledgerItem, orderItemId={}, quantity={}, type={}',
+                    reverseSubledgerItem.orderItem, reverseSubledgerItem.totalQuantity, reverseSubledgerItem.subledgerType)
         return [created]
     }
 

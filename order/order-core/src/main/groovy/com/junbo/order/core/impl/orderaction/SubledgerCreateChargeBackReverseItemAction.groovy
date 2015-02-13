@@ -21,7 +21,7 @@ import javax.annotation.Resource
 @CompileStatic
 class SubledgerCreateChargeBackReverseItemAction implements Action {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerCreateReverseItemAction)
+    private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerCreateChargeBackReverseItemAction)
 
     @Resource(name = 'orderSubledgerService')
     SubledgerService subledgerService

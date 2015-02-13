@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderaction
-
+import com.fasterxml.jackson.core.type.TypeReference
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -8,15 +9,13 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.core.SubledgerService
-import com.junbo.order.core.impl.common.SubledgerUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.subledger.SubledgerHelper
+import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.SubledgerAmount
-import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.enums.SubledgerType
-import com.junbo.order.spec.resource.SubledgerItemResource
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
@@ -81,7 +80,7 @@ class SubledgerCreateReverseItemAction implements Action, InitializingBean {
 
         SubledgerType subledgerType
         if (this.actionType == SubledgerCreateReverseItemActionType.CHARGE_BACK) {
-            subledgerType = SubledgerType.CHARGE_BACK // todo : handle DECLINE, CHARGE_BACK outside of time window
+            subledgerType = isChargeBackOutsideOfTimeWindow(serviceContext.orderEvent) ? SubledgerType.CHARGE_BACK_OTW : SubledgerType.CHARGE_BACK // todo : handle DECLINE ?
         } else {
             subledgerType = SubledgerType.REFUND
         }
@@ -89,6 +88,19 @@ class SubledgerCreateReverseItemAction implements Action, InitializingBean {
         return Promise.each(reversedOrderItems) { OrderItem orderItem ->
             subledgerService.createReverseSubledgerItem(subledgerType, orderItem)
             return Promise.pure()
+        }
+    }
+
+    private boolean isChargeBackOutsideOfTimeWindow(OrderEvent orderEvent) {
+        if (StringUtils.isEmpty(orderEvent?.properties)) {
+            return false
+        }
+        try {
+            Map<String, Object> propertiesMap = (Map<String, Object> )ObjectMapperProvider.instance().readValue(orderEvent.properties, new TypeReference<Map<String, Object> >() {})
+            return propertiesMap.containsKey('outsideOfTimeWindow')
+        } catch (Exception ex) {
+            LOGGER.error('name=Error_Parse_Properties', ex)
+            return false
         }
     }
 
