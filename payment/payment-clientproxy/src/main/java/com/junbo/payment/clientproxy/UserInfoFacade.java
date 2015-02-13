@@ -14,4 +14,5 @@ import com.junbo.payment.spec.model.UserInfo;
  */
 public interface UserInfoFacade {
     Promise<UserInfo> getUserInfo(Long userId);
+    Promise<Void> updateDefaultPI(Long userId, Long existingPiId, Long newPiId);
 }
