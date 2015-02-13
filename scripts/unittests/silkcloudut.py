@@ -87,7 +87,7 @@ def silkcloud_utmain(suite = None):
     try:
         os.chdir(currentDir)
     except OSError as e:
-        error(e + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
+        error(str(e) + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://127.0.0.1:8080/')
