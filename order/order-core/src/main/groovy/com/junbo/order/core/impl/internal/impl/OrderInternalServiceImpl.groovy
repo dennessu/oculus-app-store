@@ -545,8 +545,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
                 return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
                     LOGGER.error('name=Tax_Audit_Fail_Partial_Audit', throwable)
-                    order.isAudited = true
-                    return Promise.pure(order)
+                    return Promise.pure(null)
                 }.then { Balance auditedBalance ->
                     if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
                         auditedBalances << auditedBalance
