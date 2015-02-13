@@ -43,12 +43,12 @@ class TaxServiceImpl implements TaxService {
     IdentityFacade identityFacade
 
     @Autowired
-    void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
+    void setIdentityFacade(@Qualifier('billingIdentityFacade') IdentityFacade identityFacade) {
         this.identityFacade = identityFacade
     }
 
     @Autowired
-    void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
+    void setPaymentFacade(@Qualifier('billingPaymentFacade') PaymentFacade paymentFacade) {
         this.paymentFacade = paymentFacade
     }
 
@@ -210,18 +210,23 @@ class TaxServiceImpl implements TaxService {
             return null
         }
         def taxExempt = user.taxExemption.find { TaxExempt exempt ->
-            billingAddress.countryId.value == exempt.taxExemptionCountry &&
-                    (exempt.taxExemptionSubcountry == 'ALL' ||
-                            exempt.taxExemptionSubcountry == billingAddress.subCountry) &&
-                    isValidExemption(exempt)
-
+            isValidExemption(billingAddress, exempt)
         }
 
         return taxExempt
     }
 
-    Boolean isValidExemption(TaxExempt exempt) {
+    Boolean isValidExemption(Address billingAddress, TaxExempt exempt) {
         if (!exempt.isTaxExemptionValidated) {
+            return false
+        }
+        if (billingAddress.countryId.value != exempt.taxExemptionCountry) {
+            return false
+        }
+        if (exempt.taxExemptionSubcountry == null) {
+            return false
+        } else if (exempt.taxExemptionSubcountry.toUpperCase() != 'ALL' &&
+                exempt.taxExemptionSubcountry != billingAddress.subCountry) {
             return false
         }
         def now = new Date()
