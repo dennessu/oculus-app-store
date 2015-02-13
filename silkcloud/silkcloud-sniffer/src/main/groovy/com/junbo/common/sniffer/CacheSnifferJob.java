@@ -196,6 +196,11 @@ public class CacheSnifferJob implements InitializingBean {
         Object seqObj = payload.get(SEQ_KEY);
         String seq = seqObj == null ? null : seqObj.toString();
 
+        if (seq == null) {
+            LOGGER.warn("Unexpected change row: {}", change);
+            return;
+        }
+
         updateCache(buildLastChangeKey(cloudantUri, database), seq);
 
         // evict entity cache
