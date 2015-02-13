@@ -1155,7 +1155,7 @@ class OAuthTests(ut.TestBase):
         user.first_name = randomstr(10)
         user.last_name = randomstr(10)
         user.gender = 'male'
-        user.dob = '1980-01-01'
+        user.dob = '1980-01-01T00:00:00Z'
         user.pin = '1234'
 
         return user

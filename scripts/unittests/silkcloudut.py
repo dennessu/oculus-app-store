@@ -350,6 +350,12 @@ def getqueryparam(url, param):
         return match.group('value')
     return None
 
+def char_range(c1, c2):
+    result = ''
+    for c in range(ord(c1), ord(c2)+1):
+        result += chr(c)
+    return result
+
 def randomstr(length, charset = None):
     if charset is None:
         charset = string.ascii_lowercase + string.digits

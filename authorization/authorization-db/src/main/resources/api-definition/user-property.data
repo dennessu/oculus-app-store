@@ -1,6 +1,11 @@
 {
     "apiName": "user-property",
     "scopes": {
+        "storeapi": [{
+            "precondition": "ownedByCurrentUser",
+            "rights": ["read", "create", "update", "delete"],
+            "scriptType": "SPEL"
+        }],
         "identity": [{
             "precondition": "ownedByCurrentUser",
             "rights": ["read", "create", "update", "delete"],

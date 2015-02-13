@@ -1,9 +1,11 @@
 #!/usr/bin/python
 import silkcloudut as ut
 import ut_oauth
+import ut_storeapi
 from silkcloudut import *
 
 oauth = ut_oauth.OAuthTests('testRegister')
+storeapi = ut_storeapi.StoreTests('testRegister')
 class IdentityTests(ut.TestBase):
 
     def testGroupMembershipDeletion(self):
@@ -258,8 +260,9 @@ class IdentityTests(ut.TestBase):
         })
 
     def testUserAttribute(self):
-        user1 = oauth.testRegister('identity')
-        user2 = oauth.testRegister('identity')
+        # use store API tokens and it should pass
+        user1 = storeapi.testRegister()
+        user2 = storeapi.testRegister()
 
         # create user attribute
         userAttribute = curlJson('POST', ut.test_uri, '/v1/user-attributes', headers = {
