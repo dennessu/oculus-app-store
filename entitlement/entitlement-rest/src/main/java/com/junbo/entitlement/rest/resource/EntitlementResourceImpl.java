@@ -13,7 +13,6 @@ import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
-import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -73,13 +72,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
         Results<Entitlement> result = entitlementService.searchEntitlement(searchParam, pageMetadata);
 
         Link link = new Link();
-        if (result.getItems().size() <
-                (pageMetadata.getCount() == null
-                        ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount())) {
-            link.setHref(EntitlementConsts.NEXT_END);
-        } else {
-            link.setHref(buildNextUrl(searchParam, pageMetadata, result.getNext()));
-        }
+        link.setHref(buildNextUrl(searchParam, pageMetadata, result.getNext()));
         result.setNext(link);
         return Promise.pure(result);
     }
