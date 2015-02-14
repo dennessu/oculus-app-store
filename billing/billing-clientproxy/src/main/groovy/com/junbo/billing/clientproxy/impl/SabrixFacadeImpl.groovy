@@ -230,7 +230,10 @@ class SabrixFacadeImpl implements TaxFacade {
         invoice.externalCompanyId = configuration.externalCompanyId
         boolean isRefund = BalanceType.REFUND.name() == balance.type
         if (isRefund && isAudited) {
-            invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
+            // workaround with Sabrix known issue
+            def originalInvoiceNumbers = []
+            originalInvoiceNumbers << balance.orderIds?.get(0)?.value;
+            invoice.originalInvoiceNumber = originalInvoiceNumbers
             invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.INVOICE_DATE.name())
         }
         invoice.calculationDirection = isRefund && isAudited ?

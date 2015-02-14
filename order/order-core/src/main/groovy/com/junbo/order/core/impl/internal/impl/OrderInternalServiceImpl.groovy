@@ -544,19 +544,19 @@ class OrderInternalServiceImpl implements OrderInternalService {
             def auditedBalances = []
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
                 return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
-                    LOGGER.error('name=Tax_Audit_Fail_Partial_Audit', throwable)
+                    LOGGER.error('name=Tax_Audit_Fail', throwable)
                     return Promise.pure(balanceToBeAudited)
                 }.then { Balance auditedBalance ->
                     if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
                         auditedBalances << auditedBalance
                         return Promise.pure(null)
                     }
+                    LOGGER.error('name=Tax_Audit_Fail, orderId: {}, balanceId: {}', order.getId().value, auditedBalance.getId().value)
+                    return Promise.pure(null)
                 }
             }.then {
-                if (auditedBalances.size() > 0) {
-                    order.isAudited = true
-                    orderRepository.updateOrder(order, true, true, null)
-                }
+                order.isAudited = true
+                orderRepository.updateOrder(order, true, true, null)
                 return Promise.pure(order)
             }
         }

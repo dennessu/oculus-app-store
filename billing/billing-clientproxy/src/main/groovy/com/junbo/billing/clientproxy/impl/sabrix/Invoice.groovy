@@ -59,8 +59,9 @@ class Invoice {
     @XStreamAlias('ORIGINAL_INVOICE_DATE')
     String originalInvoiceDate
 
-    @XStreamAlias('ORIGINAL_INVOICE_NUMBER')
-    String originalInvoiceNumber
+    // duplicate ORIGINAL_INVOICE_NUMBER: known issue of Sabrix
+    @XStreamImplicit(itemFieldName='ORIGINAL_INVOICE_NUMBER')
+    List<String> originalInvoiceNumber
 
     @XStreamAlias('SELLER_PRIMARY')
     SabrixAddress sellerPrimary
