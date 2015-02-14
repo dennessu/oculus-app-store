@@ -265,8 +265,6 @@ class CatalogFacadeImpl implements CatalogFacade {
         offer.isFree = false
         CurrencyId currency = getCurrency(offerRevision.price, apiContext.country.getId())
         offer.currency = currency
-        RatingItem ratingItem = facadeContainer.priceRatingFacade.rateOffer(offer.self, currency, apiContext).get()
-        offer.price = ratingItem.finalTotalAmount
     }
 
     private CurrencyId getCurrency(Price price, CountryId countryId) {

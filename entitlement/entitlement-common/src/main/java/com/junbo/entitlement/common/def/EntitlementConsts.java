@@ -24,7 +24,6 @@ public class EntitlementConsts {
     public static final int MAX_PAGE_SIZE = 200;
     public static final int DEFAULT_PAGE_SIZE = 200;
     public static final int DEFAULT_PAGE_NUMBER = 0;
-    public static final String NEXT_END = "END";
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private static final Long NEVER_EXPIRE_LONG = 253402271999000L;   //DATE_FORMAT.parse("9999-12-31T23:59:59Z").getTime()

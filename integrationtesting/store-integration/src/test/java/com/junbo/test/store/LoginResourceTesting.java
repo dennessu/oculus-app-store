@@ -560,10 +560,12 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testLogin() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyFullName(authTokenResponse, createUserRequest);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         assert authTokenResponse.getUsername() != null;
         AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        validationHelper.verifyFullName(signInResponse, createUserRequest);
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
         validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
@@ -573,6 +575,7 @@ public class LoginResourceTesting extends BaseTestClass {
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
         validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
+        validationHelper.verifyFullName(signInResponse, createUserRequest);
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token through email login", authTokenResponse.getUsername(), signInResponse.getUsername());
@@ -608,6 +611,7 @@ public class LoginResourceTesting extends BaseTestClass {
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to current user with username login", createUserRequest.getUsername(), signInResponse.getUsername());
         validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
+        validationHelper.verifyFullName(signInResponse, createUserRequest);
     }
 
     @Property(
@@ -692,11 +696,13 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testRefreshToken() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyFullName(authTokenResponse, createUserRequest);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         AuthTokenResponse response = testDataProvider.getToken(authTokenResponse.getRefreshToken());
         Validator.Validate("Validate refreshToken works", response.getUsername(), authTokenResponse.getUsername());
         validationHelper.verifyEmailInAuthResponse(response, createUserRequest.getEmail(), true);
+        validationHelper.verifyFullName(response, createUserRequest);
 
         Error error = testDataProvider.getTokenWithError(authTokenResponse.getAccessToken(), 400, "132.001");
         assert error != null;

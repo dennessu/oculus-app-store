@@ -48,7 +48,7 @@ class EmailFacadeImpl implements EmailFacade {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailFacadeImpl)
 
     @Override
-    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<Offer> offers) {
+    Promise<Email> sendOrderConfirmationEmail(Order order, User user, List<Offer> offers) {
         if (order == null || user == null || user.getId() == null || CollectionUtils.isEmpty(offers)) {
             LOGGER.info('name=Email_Info_Not_Sufficient')
             return Promise.pure(null)
@@ -63,6 +63,26 @@ class EmailFacadeImpl implements EmailFacade {
             }
             String username = getUserName(user).get()
             Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, username, offers, templates[0])
+            return emailResource.postEmail(email)
+        }
+    }
+
+    @Override
+    Promise<Email> sendOrderRefundEmail(Order order, User user, List<Offer> offers) {
+        if (order == null || user == null || user.getId() == null || CollectionUtils.isEmpty(offers)) {
+            LOGGER.info('name=Email_Info_Not_Sufficient')
+            return Promise.pure(null)
+        }
+        return getEmailTemplates('Oculus', 'Refund_V1', user.getId()).recover {
+            LOGGER.info('name=Get_Email_Template_Error')
+            return Promise.pure(null)
+        }.then { List<EmailTemplate> templates ->
+            if (templates == null || CollectionUtils.isEmpty(templates)) {
+                LOGGER.info('name=Get_Email_Template_Empty_Templates')
+                return Promise.pure(null)
+            }
+            String username = getUserName(user).get()
+            Email email = FacadeBuilder.buildOrderRefundEmail(order, user, username, offers, templates[0])
             return emailResource.postEmail(email)
         }
     }

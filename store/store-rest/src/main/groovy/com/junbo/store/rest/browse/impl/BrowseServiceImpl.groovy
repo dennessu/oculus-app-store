@@ -24,6 +24,7 @@ import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.StoreUtils
 import com.junbo.store.rest.utils.PriceFormatter
+import com.junbo.store.clientproxy.utils.PriceFormatter
 import com.junbo.store.rest.validator.ResponseValidator
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
@@ -344,12 +345,11 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
                 return Promise.pure()
             }
             if (item.offer.isFree) {
-                item.offer.price = BigDecimal.ZERO
+                item.offer.price = null
                 return Promise.pure()
             }
             facadeContainer.priceRatingFacade.rateOffer(item.offer.self, item.offer.currency, apiContext).then { RatingItem ratingItem ->
-                item.offer.price = ratingItem?.finalTotalAmount
-                item.offer.formattedPrice = priceFormatter.formatPrice(item.offer.price, item.offer.currency)
+                item.offer.price = priceFormatter.formatPrice(ratingItem?.finalTotalAmount, item.offer.currency)
                 return Promise.pure()
             }
         }.then {

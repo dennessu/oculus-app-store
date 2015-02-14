@@ -361,7 +361,7 @@ class CoreUtils {
             case OrderActionType.REFUND_TAX.name():
                 return order.status == OrderStatus.COMPLETED.name()
             case OrderActionType.REFUND.name():
-                return order.status == OrderStatus.REFUNDED.name()
+                return order.status == OrderStatus.REFUNDED.name() || order.status == OrderStatus.COMPLETED.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }

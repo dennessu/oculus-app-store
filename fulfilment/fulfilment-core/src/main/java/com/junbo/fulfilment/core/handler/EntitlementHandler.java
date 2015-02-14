@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.core.handler;
 
+import com.junbo.fulfilment.common.util.Callback;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.context.EntitlementContext;
@@ -87,29 +88,29 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
 
     @Override
     public void revoke(EntitlementContext context) {
-        // for now, only revoke non-consumable entitlements
-        for (FulfilmentAction action : context.getActions()) {
-            try {
-                LOGGER.info("Start revoking action [" + action.getActionId() + "].");
+        for (final FulfilmentAction action : context.getActions()) {
+            LOGGER.info("Start revoking action [" + action.getActionId() + "].");
 
-                List<String> entitlements = action.getResult().getEntitlementIds();
+            List<String> entitlements = action.getResult().getEntitlementIds();
 
-                for (String entitlementId : entitlements) {
-                    entitlementGateway.revokeNonConsumable(entitlementId);
+            for (final String entitlementId : entitlements) {
+                try {
+                    executeInNewTransaction(new Callback() {
+                        public void apply() {
+                            // for now, only revoke non-consumable entitlements
+                            // entitlement component will throw exception if the entitlment is consumable
+                            entitlementGateway.revokeNonConsumable(entitlementId);
+                        }
+                    });
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred during revoking action.", e);
                 }
-
-                action.setStatus(FulfilmentStatus.REVOKED);
-
-                LOGGER.info("Finish processing action [" + action.getActionId() + "].");
-            } catch (Exception e) {
-                LOGGER.error("Error occurred during revoking action.", e);
             }
 
-            try {
-                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
-            } catch (Exception e) {
-                LOGGER.error("Error occurred during updating action.", e);
-            }
+            action.setStatus(FulfilmentStatus.REVOKED);
+            actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
+
+            LOGGER.info("Finish processing action [" + action.getActionId() + "].");
         }
     }
 }

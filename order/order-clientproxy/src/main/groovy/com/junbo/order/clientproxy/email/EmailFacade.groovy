@@ -9,5 +9,6 @@ import com.junbo.order.spec.model.Order
  * Created by LinYi on 14-3-14.
  */
 interface EmailFacade {
-    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<Offer> offers)
+    Promise<Email> sendOrderConfirmationEmail(Order order, User user, List<Offer> offers)
+    Promise<Email> sendOrderRefundEmail(Order order, User user, List<Offer> offer)
 }

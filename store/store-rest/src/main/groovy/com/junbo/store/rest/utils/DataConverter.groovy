@@ -4,6 +4,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.v1.model.PIType
+import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.model.UserTosAgreement
@@ -15,6 +16,7 @@ import com.junbo.store.spec.model.Address
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.PaymentOption
 import com.junbo.store.spec.model.browse.document.Tos
+import com.junbo.store.spec.model.identity.FullName
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
@@ -111,6 +113,14 @@ class DataConverter {
             content: tos.content,
             accepted: userTosAgreement != null,
             acceptedDate: userTosAgreement?.agreementTime
+        )
+    }
+
+    FullName toFullName(UserName userName) {
+        return new FullName(
+                firstName: userName.givenName,
+                middleName: userName.middleName,
+                lastName: userName.familyName
         )
     }
 

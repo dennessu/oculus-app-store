@@ -10,8 +10,6 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
 
-import java.math.BigDecimal;
-
 /**
  * The Offer class.
  */
@@ -19,9 +17,7 @@ public class Offer {
 
     private OfferId self;
 
-    private BigDecimal price;
-
-    private String formattedPrice;
+    private String price;
 
     private Boolean isFree;
 
@@ -45,20 +41,12 @@ public class Offer {
         this.self = self;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getFormattedPrice() {
-        return formattedPrice;
-    }
-
-    public void setFormattedPrice(String formattedPrice) {
-        this.formattedPrice = formattedPrice;
     }
 
     public Boolean getIsFree() {

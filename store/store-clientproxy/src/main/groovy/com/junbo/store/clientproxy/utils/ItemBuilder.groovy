@@ -341,13 +341,13 @@ class ItemBuilder {
 
         Offer offer = new Offer()
         offer.currentRevision = caseyOffer.currentRevision
-        if (caseyOffer?.price?.currencyCode != null) {
-            offer.currency = new CurrencyId(caseyOffer?.price?.currencyCode)
-        }
-
-        offer.price = caseyOffer.price?.amount
         offer.self = caseyOffer.self
         offer.isFree = caseyOffer.price?.isFree
+        if (!offer.isFree) {
+            if (caseyOffer?.price?.currencyCode != null) {
+                offer.currency = new CurrencyId(caseyOffer?.price?.currencyCode)
+            }
+        }
         offer.formattedDescription = caseyOffer.shortDescription
         return offer
     }

@@ -26,6 +26,7 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
@@ -217,6 +218,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         if (refunded == null) {
                             throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
+                        BillingAction action = null
+                        if (order.totalTax == BigDecimal.ZERO && order.totalAmount == existingOrder.totalAmount &&
+                                existingOrder.totalTax != BigDecimal.ZERO) {
+                            action = BillingAction.REQUEST_REFUND_TAX
+                        } else {
+                            action = BillingAction.REQUEST_REFUND
+                        }
                         def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
                         assert (isRefundable != isCancelable)
                         if (isRefundable) {
@@ -225,7 +233,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
                             context.refundedOrderItems = CoreUtils.getRefundedOrderItems(orderItemsBeforeRefund, refundedOrder.orderItems, numberAfterDecimal)
                             // todo : need to whether it is the right way to set refundedOrderItems
-                            persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
+                            persistBillingHistory(refunded, action, order)
                         } else if (isCancelable) {
                             refundedOrder.status = OrderStatus.CANCELED.name()
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.CANCEL)
@@ -272,7 +280,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=internal.checkAndUpdateRefund')
         assert (order != null)
         def requestRefunds = order.billingHistories?.findAll { BillingHistory bh ->
-            bh.billingEvent == BillingAction.REQUEST_REFUND.name()
+            bh.billingEvent == BillingAction.REQUEST_REFUND.name() ||
+                    bh.billingEvent == BillingAction.REQUEST_REFUND_TAX.name()
         }
         if (CollectionUtils.isEmpty(requestRefunds)) {
             LOGGER.info('name=Order_Update_Refund_No_RequestRefund_BillingHistory, orderId: {}', order.getId().value)
@@ -297,7 +306,11 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     bh.getBalanceId() == b.getId().value.toString()
                 }
                 if (balance != null) {
-                    bh.billingEvent = BillingAction.REFUND.name()
+                    if (bh.billingEvent.equals(BillingAction.REQUEST_REFUND_TAX.name())) {
+                        bh.billingEvent = BillingAction.REFUND_TAX.name()
+                    } else {
+                        bh.billingEvent = BillingAction.REFUND.name()
+                    }
                     orderRepository.updateBillingHistory(bh)
                 }
             }
@@ -544,19 +557,19 @@ class OrderInternalServiceImpl implements OrderInternalService {
             def auditedBalances = []
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
                 return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
-                    LOGGER.error('name=Tax_Audit_Fail_Partial_Audit', throwable)
+                    LOGGER.error('name=Tax_Audit_Fail', throwable)
                     return Promise.pure(balanceToBeAudited)
                 }.then { Balance auditedBalance ->
                     if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
                         auditedBalances << auditedBalance
                         return Promise.pure(null)
                     }
+                    LOGGER.error('name=Tax_Audit_Fail, orderId: {}, balanceId: {}', order.getId().value, auditedBalance.getId().value)
+                    return Promise.pure(null)
                 }
             }.then {
-                if (auditedBalances.size() > 0) {
-                    order.isAudited = true
-                    orderRepository.updateOrder(order, true, true, null)
-                }
+                order.isAudited = true
+                orderRepository.updateOrder(order, true, true, null)
                 return Promise.pure(order)
             }
         }

@@ -1,0 +1,19 @@
+{
+    "source" : "Oculus",
+    "action" : "Refund_V1",
+    "locales" : ["en_US"],
+    "providerName" : "mandrill",
+    "placeholderNames" : [
+        "paymentMethod",
+        "receiptNumber",
+        "billingZip",
+        "receiptDate",
+        "name",
+        "price",
+        "tax",
+        "total"
+    ]
+}
+
+
+

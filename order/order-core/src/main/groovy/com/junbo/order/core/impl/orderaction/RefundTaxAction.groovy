@@ -52,7 +52,7 @@ class RefundTaxAction extends BaseOrderEventAwareAction {
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
 
         Balance balance = CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)
-        balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), "EDUCATION")
+        //balance.propertySet.put(PropertyKey.EXEMPT_REASON.name(), "EDUCATION")
         return facadeContainer.billingFacade.quoteBalance(balance).syncRecover {
             Throwable throwable ->
                 LOGGER.error('name=Fail_To_Quote_Balance', throwable)
