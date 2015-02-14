@@ -28,7 +28,7 @@
         }],
         "organization.group.admin" : [{
             "precondition": "true",
-            "rights": [ "read", "search", "pii.read" ],
+            "rights": [ "read", "search", "pii.read", "pii.create", "pii.update", "pii.delete" ],
             "scriptType": "SPEL"
         }],
         "readonly.service": [
