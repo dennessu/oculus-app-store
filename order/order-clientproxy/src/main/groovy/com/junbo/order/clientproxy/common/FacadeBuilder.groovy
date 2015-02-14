@@ -182,4 +182,39 @@ class FacadeBuilder {
         email.replacements = properties
         return email
     }
+
+    static Email buildOrderRefundEmail(Order order, User user, String username, List<Offer> offers, EmailTemplate template) {
+        Email email = new Email()
+        email.userId = (UserId)(user.id)
+        email.templateId = template.getId()
+        // TODO: update email address as IDENTITY component
+        Map<String, String> properties = [:]
+        properties.put(ORDER_NUMBER, order.getId().value.toString())
+        Date now = new Date()
+        properties.put(ORDER_DATE, DATE_FORMATTER.get().format(now))
+        properties.put(NAME, username)
+        properties.put(SUBTOTAL, order.totalAmount?.toString())
+        properties.put(TAX, BigDecimal.ZERO.toString())
+        def grandTotal = order.totalAmount
+        if (order.totalTax != null) {
+            grandTotal += order.totalTax
+            properties.put(TAX, order.totalTax.toString())
+        }
+        properties.put(GRAND_TOTAL, grandTotal.toString())
+        offers.eachWithIndex { Offer offer, int index ->
+            // TODO update the l10n logic per catalog change
+            String offerName = offer.locales[template.locale] != null ? offer.locales[template.locale].name :
+                    (offer.locales['DEFAULT'] != null ? offer.locales['DEFAULT'].name : '')
+            properties.put(OFFER_NAME + index, offerName)
+            order.orderItems.each { OrderItem item ->
+                if (item.offer.value == offer.id) {
+                    properties.put(QUANTITY + index, item.quantity.toString())
+                    properties.put(PRICE + index, (item.quantity * item.unitPrice).toString())
+                }
+            }
+        }
+
+        email.replacements = properties
+        return email
+    }
 }

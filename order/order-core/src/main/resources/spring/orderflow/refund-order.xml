@@ -12,7 +12,6 @@
                 <wf:action ref="refundOrderAction"/>
                 <wf:action ref="subledgerCreateRefundItemAction"/>
                 <wf:action ref="reverseFulfillmentOrderAction"/>
-                <wf:action ref="sendEmailAction"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>

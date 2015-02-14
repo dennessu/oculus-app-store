@@ -21,11 +21,13 @@ public enum BillingAction implements Identifiable<Short> {
     DEPOSIT(5),
     CANCEL(6),
     CHARGE_BACK(7),
+    REFUND_TAX(8),
     REQUEST_CHARGE(100),
     REQUEST_CREDIT(102),
     REQUEST_REFUND(103),
     REQUEST_DEPOSIT(105),
-    REQUEST_CANCEL(106);
+    REQUEST_CANCEL(106),
+    REQUEST_REFUND_TAX(107);
 
     private BillingAction(int id) {
         this.id = (short) id;

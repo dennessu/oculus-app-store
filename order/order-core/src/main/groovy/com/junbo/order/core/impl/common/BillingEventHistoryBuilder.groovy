@@ -100,7 +100,8 @@ class BillingEventHistoryBuilder {
         billingHistory.totalAmount = balance.totalAmount
         billingHistory.totalTax = balance.taxAmount
 
-        if (balance.type == BalanceType.REFUND.name() || balance.type == BalanceType.CREDIT.name()) {
+        if (balance.type == BalanceType.REFUND.name() || balance.type == BalanceType.CREDIT.name() ||
+                balance.type == BalanceType.CHARGE_BACK.name()) {
             billingHistory.totalAmount = 0G - balance.totalAmount
             billingHistory.totalTax = 0G - balance.taxAmount
         }

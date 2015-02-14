@@ -9,6 +9,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.Offer
+import com.junbo.order.core.FlowType
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.Order
@@ -55,25 +56,31 @@ class SendEmailAction implements Action {
                 LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_User', ex)
                 return Promise.pure(null)
             }.then { User u ->
-                return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
-                        .then { List<PaymentInstrument> pis ->
-                    // select email type per pi & per item
-                    String emailType = null
-                    PIType piType = CollectionUtils.isEmpty(pis) ? null : PIType.get(pis[0].type)
-                    if (!CoreUtils.hasPhysicalOffer(order)) {
-                        switch (piType) {
-                            case PIType.CREDITCARD:
-                            case PIType.STOREDVALUE:
-                            case PIType.PAYPAL:
-                            case PIType.OTHERS:
-                                emailType = 'ORDER_CONFIRMATION'
-                                break
-                            default:
-                                emailType = null
-                        }
-                    }
-                    return sendEmail(emailType, order, u, catalogOffers)
+
+                String emailType = null
+                String flowName = ActionUtils.getFlowName(actionContext)
+                switch(flowName) {
+                    case FlowType.ASYNC_SETTLE.name():
+                    case FlowType.AUTH_SETTLE.name():
+                    case FlowType.COMPLETE_PREORDER.name():
+                    case FlowType.FREE_ORDER.name():
+                    case FlowType.FREE_SETTLE.name():
+                    case FlowType.IMMEDIATE_SETTLE.name():
+                    case FlowType.PREORDER_SETTLE.name():
+                    case FlowType.WEB_PAYMENT_CHARGE.name():
+                    case FlowType.WEB_PAYMENT_SETTLE.name():
+                        emailType = 'ORDER_CONFIRMATION'
+                        break
+                    case FlowType.REFUND_ORDER.name():
+                    case FlowType.REFUND_TAX.name():
+                    case FlowType.UPDATE_REFUND.name():
+                        emailType = 'ORDER_REFUND'
+                        break
+                    default:
+                        emailType = null
+
                 }
+                return sendEmail(emailType, order, u, catalogOffers)
             }
         }
     }
@@ -84,7 +91,7 @@ class SendEmailAction implements Action {
         }
         switch (emailType) {
             case 'ORDER_CONFIRMATION':
-                return facadeContainer.emailFacade.sendOrderConfirmationEMail(
+                return facadeContainer.emailFacade.sendOrderConfirmationEmail(
                         order, u, catalogOffers).recover { Throwable ex ->
                     LOGGER.error('name=SendEmail_Action_Fail', ex)
                     return Promise.pure(null)
