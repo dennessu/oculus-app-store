@@ -46,7 +46,8 @@ class ChargeBackAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
 
-        return facadeContainer.billingFacade.createBalance(CoreBuilder.buildBalance(order, BalanceType.CHARGE_BACK), false).syncRecover { Throwable throwable ->
+        Balance b = CoreBuilder.buildBalance(order, BalanceType.CHARGE_BACK, true)
+        return facadeContainer.billingFacade.createBalance(b, false).syncRecover { Throwable throwable ->
             LOGGER.error('name=Order_ChargeBack_Balance_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance balance ->

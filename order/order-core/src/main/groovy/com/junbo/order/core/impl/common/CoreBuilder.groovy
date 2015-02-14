@@ -57,6 +57,10 @@ class CoreBuilder {
             }
 
     static Balance buildBalance(Order order, BalanceType balanceType) {
+        return buildBalance(order, balanceType, false)
+    }
+
+    static Balance buildBalance(Order order, BalanceType balanceType, Boolean fillInTax) {
         if (order == null) {
             return null
         }
@@ -77,9 +81,16 @@ class CoreBuilder {
             } else {
                 balanceItem.orderItemId = item.getId()
             }
+            if (fillInTax) {
+                balanceItem.taxAmount = item.totalTax
+            }
             balance.addBalanceItem(balanceItem)
         }
 
+        if (fillInTax) {
+            balance.skipTaxCalculation = true
+            balance.taxIncluded = order.isTaxInclusive
+        }
         // TODO: confirm whether tax calculation of shipping fee is necessary
         return balance
     }
