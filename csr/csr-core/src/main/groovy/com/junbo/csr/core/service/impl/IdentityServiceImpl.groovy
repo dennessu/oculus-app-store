@@ -99,8 +99,14 @@ class IdentityServiceImpl implements IdentityService {
                 throw AppErrors.INSTANCE.userNotFoundByEmail(userEmail).exception()
             }
 
-            return userResource.get(results.items.get(0).userId as UserId, new UserGetOptions()).then { User user ->
-                return Promise.pure(user)
+            return getUsers(results).then {Results<User> users ->
+                for(User user in users.getItems()) {
+                    if (user.getStatus().equalsIgnoreCase('active')) {
+                        return Promise.pure(user)
+                    }
+                }
+
+                throw AppErrors.INSTANCE.userNotFoundByEmail(userEmail).exception()
             }
         }
     }
