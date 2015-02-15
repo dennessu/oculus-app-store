@@ -56,7 +56,10 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         entity.setCreatedTime(Utils.now());
         entity.setCreatedBy(Constant.SYSTEM_INTERNAL);
 
-        return (Long) currentSession(entity.getShardMasterId()).save(entity);
+        Session session = currentSession(entity.getShardMasterId());
+        Long id = (Long) session.save(entity);
+        session.flush();
+        return id;
     }
 
     public T get(Long id) {
@@ -67,7 +70,9 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         entity.setUpdatedTime(Utils.now());
         entity.setUpdatedBy(Constant.SYSTEM_INTERNAL);
 
-        currentSession(entity.getShardMasterId()).update(entity);
+        Session session = currentSession(entity.getShardMasterId());
+        session.update(entity);
+        session.flush();
         return entity.getId();
     }
 

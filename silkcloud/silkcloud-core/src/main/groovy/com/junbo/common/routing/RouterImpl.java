@@ -27,11 +27,12 @@ import java.util.List;
 public class RouterImpl implements Router {
     private static final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
+    public static final String CACHE_CONTROL = "Cache-Control";
+    public static final String CACHE_CONTROL_NO_CACHE = "no-cache";
+
     private static final String X_ROUTING_PATH = "X-Routing-Path";
     private static final String X_ROUTING_DC_SHARD = "X-Routing-DC-Shard";
     private static final String X_DATAACCESS_MODE = "X-DataAccess-Mode";
-    private static final String CACHE_CONTROL = "Cache-Control";
-    private static final String CACHE_CONTROL_NO_CACHE = "no-cache";
 
     private Topology topology;
     private boolean crossDcRoutingEnabled;

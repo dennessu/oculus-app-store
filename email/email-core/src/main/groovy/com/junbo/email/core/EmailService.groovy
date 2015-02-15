@@ -5,8 +5,9 @@
  */
 package com.junbo.email.core
 
-
+import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -20,4 +21,6 @@ interface EmailService {
     Promise<Email> updateEmail(String id, Email email)
 
     Promise<Void> deleteEmail(String id)
+
+    Promise<Results<Email>> searchEmail(EmailSearchOption option)
 }

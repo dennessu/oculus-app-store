@@ -75,7 +75,30 @@ public class PendingActionReplayer {
                 logger.error("ResourceAge is null for dual-write resource. Id: ${entity.id}");
                 throw new RuntimeException("ResourceAge is null for entity.")
             }
-            if (entity.resourceAge > savedEntity.resourceAge) {
+            boolean needUpdate = false
+            if (entity.resourceAge == savedEntity.resourceAge) {
+                if (entity.updatedTime == savedEntity.updatedTime) {
+                    // update just to be defensive
+                    logger.warn("Dualwrite overwrite resource {}:{} with same resourceAge same updatedTime: {}",
+                            entity.getClass(), entity.cloudantId, entity.resourceAge);
+                    needUpdate = true;
+                } else {
+                    if ((entity.updatedTime == null && savedEntity.updatedTime != null) ||
+                        (entity.updatedTime != null && savedEntity.updatedTime == null) ||
+                        (entity.updatedTime.after(savedEntity.updatedTime))) {
+                        logger.warn("Dualwrite overwrite resource {}:{} with same resourceAge: {}, updatedTimeNew: {}, updatedTimeNew: {}",
+                                entity.getClass(), entity.cloudantId, entity.resourceAge, entity.updatedTime, savedEntity.updatedTime);
+                        needUpdate = true;
+                    } else {
+                        logger.warn("Dualwrite skip resource {}:{} with same resourceAge: {}, updatedTimeNew: {}, updatedTimeNew: {}",
+                                entity.getClass(), entity.cloudantId, entity.resourceAge, entity.updatedTime, savedEntity.updatedTime);
+                    }
+                }
+            } else if (entity.resourceAge > savedEntity.resourceAge) {
+                needUpdate = true;
+            }
+
+            if (needUpdate) {
                 entity.cloudantRev = savedEntity.cloudantRev
                 return repository.update(entity, savedEntity);
             }

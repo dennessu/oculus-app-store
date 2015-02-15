@@ -6,6 +6,8 @@
 package com.junbo.email.db.repo
 
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
+import com.junbo.email.spec.model.Pagination
 import com.junbo.langur.core.promise.Promise
 
 /**
@@ -14,6 +16,8 @@ import com.junbo.langur.core.promise.Promise
 
 interface EmailHistoryRepository {
     public Promise<Email> getEmailHistory(String id)
+
+    public Promise<List<Email>> searchEmail(EmailSearchOption option)
 
     public Promise<Email> createEmailHistory(Email email)
 

@@ -59,7 +59,10 @@ public class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         if (t.getCreatedBy() == null) {
             t.setCreatedBy("0");
         }
-        return (Long) currentSession(t.getShardMasterId()).save(t);
+        Session session = currentSession(t.getShardMasterId());
+        Long id = (Long)session.save(t);
+        session.flush();
+        return id;
     }
 
     @Override

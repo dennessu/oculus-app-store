@@ -5,6 +5,8 @@
  */
 package com.junbo.email.core.validator
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
+
 /**
  * Interface of Email.
  */
@@ -14,4 +16,6 @@ interface EmailValidator {
     void validateUpdate(Email email)
 
     void validateDelete(String id)
+
+    void validateSearch(EmailSearchOption option)
 }

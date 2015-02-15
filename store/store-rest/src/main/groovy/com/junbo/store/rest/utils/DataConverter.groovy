@@ -37,6 +37,7 @@ class DataConverter {
         instrument.type = com.junbo.common.id.PIType.get(paymentInstrument.type).name()
         instrument.accountName = paymentInstrument.accountName
         instrument.accountNum = paymentInstrument.accountNumber
+        instrument.issuerIdentificationNumber = paymentInstrument.typeSpecificDetails?.issuerIdentificationNumber
 
         instrument.creditCardType = paymentInstrument.typeSpecificDetails?.creditCardType
         instrument.expireDate = paymentInstrument.typeSpecificDetails?.expireDate

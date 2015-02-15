@@ -26,6 +26,7 @@ public class CaseyOffer {
     @NotNull
     private OrganizationInfo publisher;
     private List<CaseyItem> items;
+    @NotNull
     private CaseyPrice price;
     private Map<String, CountryProperties> regions;
     @NotNull

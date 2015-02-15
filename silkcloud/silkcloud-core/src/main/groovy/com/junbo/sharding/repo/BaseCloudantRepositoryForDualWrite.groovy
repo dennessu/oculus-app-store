@@ -1,5 +1,6 @@
 package com.junbo.sharding.repo
-import com.junbo.common.cloudant.CloudantClient
+
+import com.junbo.common.cloudant.CloudantClientBase
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -10,7 +11,7 @@ import groovy.transform.CompileStatic
  * @param <T> the entity type.
  */
 @CompileStatic
-abstract class BaseCloudantRepositoryForDualWrite<T extends CloudantEntity, K> extends CloudantClient<T> {
+abstract class BaseCloudantRepositoryForDualWrite<T extends CloudantEntity, K> extends CloudantClientBase<T> {
     public BaseCloudantRepositoryForDualWrite() {
         setNoOverrideWrites(true)
     }

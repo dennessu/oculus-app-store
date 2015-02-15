@@ -6,7 +6,9 @@
 package com.junbo.email.spec.resource;
 
 import com.junbo.common.id.EmailId;
+import com.junbo.common.model.Results;
 import com.junbo.email.spec.model.Email;
+import com.junbo.email.spec.model.EmailSearchOption;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -45,4 +47,8 @@ public interface EmailResource {
     @DELETE
     @Path("/{id}")
     Promise<Response> deleteEmail(@PathParam("id") EmailId id);
+
+    @ApiOperation("search email history")
+    @GET
+    Promise<Results<Email>> search(@BeanParam EmailSearchOption emailSearchOption);
 }

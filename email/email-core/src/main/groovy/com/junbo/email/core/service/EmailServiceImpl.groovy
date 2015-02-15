@@ -6,6 +6,7 @@
 package com.junbo.email.core.service
 
 import com.junbo.common.id.EmailId
+import com.junbo.common.model.Results
 import com.junbo.email.clientproxy.IdentityFacade
 import com.junbo.email.core.EmailService
 import com.junbo.email.core.publisher.EmailPublisher
@@ -14,6 +15,7 @@ import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
 import com.junbo.email.spec.model.EmailStatus
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -80,6 +82,18 @@ class EmailServiceImpl implements EmailService {
         emailValidator.validateDelete(id)
         emailScheduleRepository.deleteEmailSchedule(id)
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Results<Email>> searchEmail(EmailSearchOption option) {
+        emailValidator.validateSearch(option)
+        return  emailHistoryRepository.searchEmail(option).then {List<Email> list ->
+            def results = new Results<Email>(items:[])
+            if (list != null && list.size() !=0) {
+                results.items.addAll(list)
+            }
+            return Promise.pure(results)
+        }
     }
 
     @Override

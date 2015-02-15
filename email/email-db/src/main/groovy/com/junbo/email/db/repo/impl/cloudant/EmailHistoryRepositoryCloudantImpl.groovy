@@ -7,6 +7,7 @@ package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 /**
@@ -29,5 +30,10 @@ class EmailHistoryRepositoryCloudantImpl extends CloudantClient<Email> implement
 
     public Promise<Void> deleteEmailHistory(String id) {
         return cloudantDelete(id)
+    }
+
+    @Override
+    Promise<List<Email>> searchEmail(EmailSearchOption option) {
+        return super.queryView("by_user_id", option.userId.toString());
     }
 }

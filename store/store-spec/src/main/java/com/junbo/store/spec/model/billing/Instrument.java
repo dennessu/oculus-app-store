@@ -22,6 +22,7 @@ public class Instrument {
     private String type;
     private String accountName;
     private String accountNum;
+    private String issuerIdentificationNumber;
     private String creditCardType;
     private String expireDate;
     private BigDecimal storedValueBalance;
@@ -70,6 +71,14 @@ public class Instrument {
 
     public void setAccountNum(String accountNum) {
         this.accountNum = accountNum;
+    }
+
+    public String getIssuerIdentificationNumber() {
+        return issuerIdentificationNumber;
+    }
+
+    public void setIssuerIdentificationNumber(String issuerIdentificationNumber) {
+        this.issuerIdentificationNumber = issuerIdentificationNumber;
     }
 
     public String getCreditCardType() {
