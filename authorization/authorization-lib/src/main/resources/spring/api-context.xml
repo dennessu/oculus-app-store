@@ -46,7 +46,7 @@
                 <!-- drm -->
                 <entry key="DrmResource" value="drm"/>
                 <!-- email -->
-                <entry key="EmailResource" value="email.service"/>
+                <entry key="EmailResource" value="email.service csr"/>
                 <entry key="EmailTemplateResource.getEmailTemplates" value="email.service email.admin readonly.service"/>
                 <entry key="EmailTemplateResource.postEmailTemplate" value="email.admin"/>
                 <entry key="EmailTemplateResource.getEmailTemplate" value="email.service email.admin readonly.service"/>

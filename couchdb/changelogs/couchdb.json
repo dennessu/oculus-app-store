@@ -82,7 +82,13 @@
       }
     },
     "dualwrite_pending_action": {},
-    "email_history": {},
+    "email_history": {
+        "views": {
+            "by_user_id": {
+                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            }
+        }
+    },
     "email_schedule": {},
     "email_template": {
       "indexes": {

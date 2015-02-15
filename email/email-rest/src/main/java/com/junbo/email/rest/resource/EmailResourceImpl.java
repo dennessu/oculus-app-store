@@ -6,8 +6,10 @@
 package com.junbo.email.rest.resource;
 
 import com.junbo.common.id.EmailId;
+import com.junbo.common.model.Results;
 import com.junbo.email.core.EmailService;
 import com.junbo.email.spec.model.Email;
+import com.junbo.email.spec.model.EmailSearchOption;
 import com.junbo.email.spec.resource.EmailResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,11 @@ public class EmailResourceImpl implements EmailResource {
     @Override
     public Promise<Email> putEmail(EmailId id, Email email) {
         return emailService.updateEmail(id.getValue(), email);
+    }
+
+    @Override
+    public Promise<Results<Email>> search(EmailSearchOption emailSearchOption) {
+        return emailService.searchEmail(emailSearchOption);
     }
 
     @Override

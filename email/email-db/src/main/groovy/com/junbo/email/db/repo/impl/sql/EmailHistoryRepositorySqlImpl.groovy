@@ -9,6 +9,7 @@ import com.junbo.email.db.dao.EmailHistoryDao
 
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailSearchOption
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -57,6 +58,10 @@ class EmailHistoryRepositorySqlImpl extends EmailBaseRepository implements Email
     }
 
     public Promise<Void> deleteEmailHistory(String id) {
+        throw new Exception('not implement')
+    }
+
+    Promise<List<Email>> searchEmail(EmailSearchOption option) {
         throw new Exception('not implement')
     }
 }
