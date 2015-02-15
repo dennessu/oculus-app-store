@@ -1,6 +1,5 @@
 package com.junbo.order.clientproxy.entitlement.impl
 
-import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Component
 import javax.annotation.Resource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 /**
  * Created by LinYi on 2014/8/14.
  */
@@ -50,7 +48,9 @@ class EntitlementFacadeImpl implements EntitlementFacade {
         String href = null
         def entitlements = []
         def entitlementSearchResults = []
-        while ('END' != href) {
+
+        boolean done = false;
+        for (int i = 0; i < 100; ++i) {
             def pageMetadata = new PageMetadata(
                     count: count,
                     bookmark: getBookmark(href)
@@ -59,7 +59,14 @@ class EntitlementFacadeImpl implements EntitlementFacade {
                     entitlementSearchParam, pageMetadata).get()
             entitlementSearchResults = results == null ? Collections.emptyList() : results.items
             entitlements.addAll(entitlementSearchResults)
+            if (results.next == null || results.next.href == null || entitlementSearchResults.size() == 0) {
+                done = true;
+                break;
+            }
             href = results.next.href
+        }
+        if (!done) {
+            LOGGER.error("Too many entitlements! Looped for 100 times and still has next: " + href);
         }
 
         return Promise.pure(entitlements)

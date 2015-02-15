@@ -51,16 +51,20 @@ public class RegionLocalDAOImpl<T, ID extends Serializable> {
     }
 
     public ID save(T entity) {
-        return  (ID) currentSession().save(entity);
+        ID id = (ID)currentSession().save(entity);
+        currentSession().flush();
+        return id;
     }
 
     public T update(T entity) {
         currentSession().update(entity);
+        currentSession().flush();
         return entity;
     }
 
     public T saveOrUpdate(T entity) {
         currentSession().saveOrUpdate(entity);
+        currentSession().flush();
         return entity;
     }
 
@@ -78,6 +82,7 @@ public class RegionLocalDAOImpl<T, ID extends Serializable> {
 
     public void merge(T entity){
         currentSession().merge(entity);
+        currentSession().flush();
     }
 
     @SuppressWarnings("unchecked")

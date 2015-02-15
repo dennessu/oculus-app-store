@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Date;
 
 /**
  * Created by linyi on 14-2-7.
@@ -72,13 +71,6 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public Long create(T t) {
-        // TODO Honor passed-in clientId
-        t.setUpdatedBy(0L);
-        t.setCreatedBy(0L);
-        Date now = new Date();
-        t.setCreatedTime(now);
-        t.setUpdatedTime(now);
-        //t.setRev(0);
         if(t instanceof CommonDbEntityDeletable) {
             ((CommonDbEntityDeletable) t).setDeleted(false);
         }
@@ -93,9 +85,6 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     public void update(T t) {
-        t.setUpdatedBy(0L);
-        Date now = new Date();
-        t.setUpdatedTime(now);
         Session session = this.getSession(t.getShardId());
         session.merge(t);
         session.flush();

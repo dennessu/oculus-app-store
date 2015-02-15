@@ -847,7 +847,7 @@ class UserResourceImpl implements UserResource {
                             ]
                     )
 
-                    return emailResource.postEmail(emailToSend).then { Email emailSent ->
+                    return emailResource.postEmail(emailToSend).then { com.junbo.email.spec.model.Email emailSent ->
                         if (emailSent == null) {
                             throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Failed to send mail')).exception()
                         }

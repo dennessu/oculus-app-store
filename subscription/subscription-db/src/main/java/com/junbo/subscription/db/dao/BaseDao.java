@@ -56,7 +56,10 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
             t.setCreatedTime(new Date());
             t.setCreatedBy("INTERNAL");
         }
-        return (Long) currentSession(t.getShardMasterId()).save(t);
+        Session session = currentSession(t.getShardMasterId());
+        Long id = (Long)session.save(t);
+        session.flush();
+        return id;
     }
 
     public T get(Long id) {
@@ -71,12 +74,16 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
             t.setModifiedTime(new Date());
             t.setModifiedBy("INTERNAL");
         }
-        currentSession(t.getShardMasterId()).merge(t);
+        Session session = currentSession(t.getShardMasterId());
+        session.merge(t);
+        session.flush();
         return t.getId();
     }
 
     public void delete(T t) {
-        currentSession(t.getShardMasterId()).delete(t);
+        Session session = currentSession(t.getShardMasterId());
+        session.delete(t);
+        session.flush();
     }
 
     public Class<T> getClassType() {

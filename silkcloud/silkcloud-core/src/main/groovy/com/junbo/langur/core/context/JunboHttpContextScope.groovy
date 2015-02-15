@@ -1,5 +1,6 @@
 package com.junbo.langur.core.context
 
+import com.junbo.common.routing.RouterImpl
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -13,6 +14,16 @@ import org.slf4j.LoggerFactory
 class JunboHttpContextScope implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JunboHttpContextScope)
+
+    static <T> T withNoCache(Closure<T> closure) {
+        if (JunboHttpContext.data == null) {
+            def contextData = new JunboHttpContext.JunboHttpContextData()
+            contextData.requestHeaders.putSingle(RouterImpl.CACHE_CONTROL, RouterImpl.CACHE_CONTROL_NO_CACHE)
+            return with(contextData, closure)
+        } else {
+            throw new RuntimeException("Method is used by jobs, not supported in Http methods.")
+        }
+    }
 
     static <T> T withNull(Closure<T> closure) {
         return with(null, closure)
