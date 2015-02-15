@@ -1,6 +1,7 @@
 package com.junbo.order.jobs
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.configuration.topo.model.DataCenter
+import com.junbo.langur.core.context.JunboHttpContextScope
 import com.junbo.order.clientproxy.TransactionHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.OrderPendingAction
@@ -97,19 +98,22 @@ class OrderPendingActionJob {
                 Future future = threadPoolTaskExecutor.submit(new Callable() {
                     @Override
                     Object call() {
-                        try {
-                            MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
-                            boolean processed = pendingActionProcessor.processPendingAction(orderPendingAction)
-                            if (processed) {
-                                orderPendingAction.completed = true
-                                transactionHelper.executeInTransaction {
-                                    orderRepository.updateOrderPendingAction(orderPendingAction)
+                        JunboHttpContextScope.withNoCache {
+                            try {
+                                MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
+                                boolean processed = pendingActionProcessor.processPendingAction(orderPendingAction)
+                                if (processed) {
+                                    orderPendingAction.completed = true
+                                    transactionHelper.executeInTransaction {
+                                        orderRepository.updateOrderPendingAction(orderPendingAction)
+                                    }
                                 }
+                            } catch (Exception ex) {
+                                LOGGER.error('name=Error_Process_OrderPendingAction, id={}, orderId={}', orderPendingAction.getId(), orderPendingAction.getOrderId(), ex)
                             }
-                        } catch (Exception ex) {
-                            LOGGER.error('name=Error_Process_OrderPendingAction, id={}, orderId={}', orderPendingAction.getId(), orderPendingAction.getOrderId(), ex)
+                            return null
                         }
-                        return null
+
                     }
                 })
 

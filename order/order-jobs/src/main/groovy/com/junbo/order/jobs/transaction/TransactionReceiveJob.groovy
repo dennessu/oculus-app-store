@@ -4,6 +4,7 @@ import com.Ostermiller.util.CSVParser
 import com.junbo.common.id.OrderId
 import com.junbo.common.util.IdFormatter
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.langur.core.context.JunboHttpContextScope
 import com.junbo.order.jobs.transaction.model.DiscrepancyRecord
 import com.junbo.order.jobs.transaction.model.FacebookTransaction
 import com.junbo.order.jobs.Constants
@@ -126,12 +127,14 @@ class TransactionReceiveJob {
                 Future<TransactionProcessResult> future = threadPoolTaskExecutor.submit(new Callable<TransactionProcessResult>() {
                     @Override
                     TransactionProcessResult call() throws Exception {
-                        MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
-                        try {
-                            return self.processTransaction(headersLowerCase, values)
-                        } catch (Exception ex) {
-                            LOGGER.error('name=ErrorProcessDiscrepancy, file={}, index={}, values={}', transactionFile.path, currentIndex, StringUtils.join(values, ','), ex)
-                            return new TransactionProcessResult(error: ex)
+                        JunboHttpContextScope.withNoCache {
+                            MDC.put(Constants.X_REQUEST_ID, UUID.randomUUID().toString());
+                            try {
+                                return self.processTransaction(headersLowerCase, values)
+                            } catch (Exception ex) {
+                                LOGGER.error('name=ErrorProcessDiscrepancy, file={}, index={}, values={}', transactionFile.path, currentIndex, StringUtils.join(values, ','), ex)
+                                return new TransactionProcessResult(error: ex)
+                            }
                         }
                     }
                 })

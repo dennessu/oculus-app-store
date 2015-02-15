@@ -46,6 +46,7 @@ class RiskPendingActionProcessor implements OrderPendingActionProcessor {
     boolean processPendingAction(OrderPendingAction orderPendingAction) {
         LOGGER.info('name=Start_Process_Risk_Pending_Order, order={}', IdFormatter.encodeId(orderPendingAction.orderId))
         Order order = orderResource.getOrderByOrderId(orderPendingAction.orderId).get()
+        String encodedOrderId = IdFormatter.encodeId(orderPendingAction.orderId)
 
         BillingHistory chargeHistory = order.billingHistories.find { BillingHistory billingHistory ->
             billingHistory.success && billingHistory.billingEvent == BillingAction.CHARGE.name()
@@ -62,7 +63,7 @@ class RiskPendingActionProcessor implements OrderPendingActionProcessor {
             if (paymentTransaction.status == PaymentStatus.RISK_ASYNC_REJECT.name()) {
                 hasResult = true
                 isReject = true
-            } else if (paymentTransaction.status != PaymentStatus.RISK_PENDING.name()) {
+            } else if (paymentTransaction.status == PaymentStatus.SETTLEMENT_SUBMITTED.name()) {
                 hasResult = true
                 isReject = false
             }
@@ -73,20 +74,21 @@ class RiskPendingActionProcessor implements OrderPendingActionProcessor {
         LOGGER.info('name=Risk_Pending_BalanceInfo, balanceId={}, balanceTransactions:{}', IdFormatter.encodeId(balance.getId()), StringUtils.join(balanceTransactionInfo, ','))
 
         if (!hasResult) {
-            LOGGER.info('name=RiskReview_Still_Pending, pendingActionId={}, orderId={}', orderPendingAction.getId(), orderPendingAction.orderId)
+            LOGGER.info('name=RiskReview_Still_Pending, pendingActionId={}, orderId={}', orderPendingAction.getId(), encodedOrderId)
             return false
         }
         if (!isReject) {
-            LOGGER.info('name=RiskReview_Approved, pendingActionId={}, orderId={}', orderPendingAction.getId(), orderPendingAction.orderId)
+            LOGGER.info('name=RiskReview_Approved, pendingActionId={}, orderId={}', orderPendingAction.getId(), encodedOrderId)
             return true
         }
 
         // rejected, do refund
-        LOGGER.info('name=RiskReview_Reject, pendingActionId={}, orderId={}', orderPendingAction.getId(), orderPendingAction.orderId)
+        LOGGER.info('name=RiskReview_Reject, pendingActionId={}, orderId={}', orderPendingAction.getId(), encodedOrderId)
         if (isOrderRefundable(order)) {
             order.orderItems = []
+            order.note = 'FBFRAUD'
             try {
-                orderResource.updateOrderByOrderId(order.getId(), order)
+                orderResource.updateOrderByOrderId(order.getId(), order).get()
             } catch (AppErrorException ex) {
                 if (!isErrorRetryable(ex)) {
                     LOGGER.error('name=Order_Refund_Fail', ex)

@@ -129,6 +129,7 @@ class OrderResourceImpl implements OrderResource {
                     }
                 } else { // order already settle
                     // determine the refund request
+                    oldOrder.note = order.note
                     if (isARefund(oldOrder, order)) {
                         LOGGER.info('name=refund, orderId: {}', orderId.value)
                         if (!AuthorizeContext.hasRights('refund')) {
