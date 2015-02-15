@@ -83,7 +83,8 @@ public class PendingActionReplayer {
                             entity.getClass(), entity.cloudantId, entity.resourceAge);
                     needUpdate = true;
                 } else {
-                    if ((entity.updatedTime != null && savedEntity.updatedTime == null) ||
+                    if ((entity.updatedTime == null && savedEntity.updatedTime != null) ||
+                        (entity.updatedTime != null && savedEntity.updatedTime == null) ||
                         (entity.updatedTime.after(savedEntity.updatedTime))) {
                         logger.warn("Dualwrite overwrite resource {}:{} with same resourceAge: {}, updatedTimeNew: {}, updatedTimeNew: {}",
                                 entity.getClass(), entity.cloudantId, entity.resourceAge, entity.updatedTime, savedEntity.updatedTime);
