@@ -293,10 +293,11 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
             if (!ratePrice || item?.offer == null) {
                 return Promise.pure()
             }
-            if (item.offer.isFree) {
+            if (item.offer.isFree || item.offer.currency == null) {
                 item.offer.price = null
                 return Promise.pure()
             }
+
             facadeContainer.priceRatingFacade.rateOffer(item.offer.self, item.offer.currency, apiContext).then { RatingItem ratingItem ->
                 item.offer.price = priceFormatter.formatPrice(ratingItem?.finalTotalAmount, item.offer.currency)
                 return Promise.pure()
