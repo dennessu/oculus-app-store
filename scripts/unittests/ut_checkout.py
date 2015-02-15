@@ -693,7 +693,7 @@ class CheckoutTests(ut.TestBase):
             "X-PLATFORM-VERSION": "4.4.2"
         }, data = order)
 
-        self.assertEqual(order['status'], 'REFUNDED')
+        self.assertEqual(order['status'], 'COMPLETED')
 
         fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')
         fulfilment = curlJson('GET', ut.test_uri, '/v1/fulfilments', query = {
