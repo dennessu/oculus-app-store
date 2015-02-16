@@ -5,6 +5,7 @@
  */
 package com.junbo.order.jobs.transaction.model;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.order.spec.model.fb.TransactionType;
 
 import java.math.BigDecimal;
@@ -14,17 +15,27 @@ import java.math.BigDecimal;
  */
 public class FacebookTransaction {
 
+    private OrderId orderId;
+
     private TransactionType txnType;
 
     private String providerTxnId;
 
-    private String paymentId;
+    private String fbPaymentId;
 
     private BigDecimal senderAmount;
 
     private BigDecimal usdAmount;
 
     private String currency;
+
+    public OrderId getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(OrderId orderId) {
+        this.orderId = orderId;
+    }
 
     public TransactionType getTxnType() {
         return txnType;
@@ -42,12 +53,12 @@ public class FacebookTransaction {
         this.providerTxnId = providerTxnId;
     }
 
-    public String getPaymentId() {
-        return paymentId;
+    public String getFbPaymentId() {
+        return fbPaymentId;
     }
 
-    public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
+    public void setFbPaymentId(String fbPaymentId) {
+        this.fbPaymentId = fbPaymentId;
     }
 
     public BigDecimal getSenderAmount() {

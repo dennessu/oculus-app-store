@@ -16,6 +16,13 @@ import java.util.Map;
  */
 public class OrderPendingAction extends ResourceMetaForDualWrite<OrderPendingActionId> {
 
+    /**
+     * Created by acer on 2015/2/2.
+     */
+    public static class PropertyKey {
+        public static final String balanceType = "balanceType";
+    }
+
     private OrderPendingActionId id;
 
     private OrderId orderId;

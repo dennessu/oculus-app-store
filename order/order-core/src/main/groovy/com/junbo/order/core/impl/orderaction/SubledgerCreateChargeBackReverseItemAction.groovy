@@ -30,7 +30,6 @@ class SubledgerCreateChargeBackReverseItemAction implements Action {
     TransactionHelper transactionHelper
 
     @Override
-    @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
