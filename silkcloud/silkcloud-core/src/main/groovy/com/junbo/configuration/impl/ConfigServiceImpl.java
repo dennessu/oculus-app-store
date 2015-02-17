@@ -92,6 +92,24 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     @Override
+    public Integer getConfigValueAsInt(String configKey, Integer defaultValue) {
+        String value = getConfigValue(configKey);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    public Boolean getConfigValueAsBool(String configKey, Boolean defaultValue) {
+        String value = getConfigValue(configKey);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value);
+    }
+
+    @Override
     public Map<String, String> getAllConfigItems() {
         return Collections.unmodifiableMap(finalProperties);
     }

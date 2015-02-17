@@ -26,7 +26,7 @@ public enum CacheFacade implements Cache {
     OFFER_REVISION,
     OFFER_CONTROL;
 
-    public static boolean cacheEnabled = Boolean.valueOf(ConfigServiceManager.instance().getConfigValue("catalog.common.cacheEnabled"));
+    public static boolean cacheEnabled = ConfigServiceManager.instance().getConfigValueAsBool("catalog.common.cacheEnabled", false);
 
     private Ehcache internal = CacheManager.getInstance().getCache(this.name());
 

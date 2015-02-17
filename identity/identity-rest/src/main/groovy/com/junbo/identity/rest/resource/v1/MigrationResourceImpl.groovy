@@ -13,6 +13,7 @@ import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.model.CloudantQueryResult
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
@@ -1647,28 +1648,24 @@ class MigrationResourceImpl implements MigrationResource {
     private static class MigrationQueryViewCallback implements CloudantClientBulk.Callback {
         private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
-        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key) {
-            if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchUserByMigrateId(results, key, bulkCache)
-            } else if (dbUri.dbName == "organization" && viewName == "by_migrate_company_id") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchByMigrateCompanyId(results, key, bulkCache)
-            } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchGroupByOrganizationId(results, key, bulkCache)
-            }
-        }
-
-        @Override
-        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey) {
-        }
-
-        @Override
-        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, Object[] startKey, Object... endKey) {
-            if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchGroupByOrganizationIdAndName(results, startKey, endKey, bulkCache)
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, CloudantViewQueryOptions options) {
+            if (options.startKey == options.endKey && options.startKey instanceof String) {
+                String key = (String) options.startKey;
+                if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
+                    def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                    searchUserByMigrateId(results, key, bulkCache)
+                } else if (dbUri.dbName == "organization" && viewName == "by_migrate_company_id") {
+                    def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                    searchByMigrateCompanyId(results, key, bulkCache)
+                } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
+                    def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                    searchGroupByOrganizationId(results, key, bulkCache)
+                }
+            } else if (options.startKey instanceof Object[]) {
+                if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
+                    def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                    searchGroupByOrganizationIdAndName(results, (Object[])options.startKey, (Object[])options.endKey, bulkCache)
+                }
             }
         }
 

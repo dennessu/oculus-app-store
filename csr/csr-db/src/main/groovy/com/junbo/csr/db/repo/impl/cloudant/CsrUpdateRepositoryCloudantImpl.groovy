@@ -1,6 +1,7 @@
 package com.junbo.csr.db.repo.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.CsrUpdateId
 import com.junbo.common.model.Results
 import com.junbo.csr.db.repo.CsrUpdateRepository
@@ -17,21 +18,14 @@ class CsrUpdateRepositoryCloudantImpl extends CloudantClient<CsrUpdate> implemen
     @Override
     Promise<Results<CsrUpdate>> searchByListOptions(CsrUpdateListOptions listOptions) {
         def resultList = new Results<CsrUpdate>(items: [])
-        return cloudantGetAll(null, null, false).then { List<CsrUpdate> list ->
+        return cloudantGetAll(new CloudantViewQueryOptions()).then { Results<CsrUpdate> results ->
+            // TODO: need to make it pre-filter
             if (listOptions.active != null) {
-                list.removeAll { CsrUpdate csrUpdate ->
+                results.items.removeAll { CsrUpdate csrUpdate ->
                     listOptions.active != csrUpdate.active
                 }
             }
-
-            list.each { CsrUpdate item ->
-                if (item != null) {
-                    resultList.items.add(item)
-                }
-            }
-
-            resultList.total = list.size()
-            return Promise.pure(resultList)
+            return Promise.pure(results)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.langur.core.promise.Promise
@@ -13,7 +15,12 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        )).then { Results<DeviceType> results ->
+            return Promise.pure(results.items)
+        }
     }
 
     @Override

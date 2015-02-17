@@ -5,7 +5,11 @@
  */
 package com.junbo.common.shuffle;
 
+import com.junbo.common.error.AppCommonErrors;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -13,6 +17,8 @@ import java.util.Map;
  * Created by liangfu on 3/6/14.
  */
 public class Oculus48Id {
+    private static final Logger logger = LoggerFactory.getLogger(Oculus48Id.class);
+
     private Oculus48Id() {
     }
 
@@ -74,6 +80,10 @@ public class Oculus48Id {
         return format(shuffle(id));
     }
 
+    public static Long decode(String id) {
+        return unShuffle(deFormat(id));
+    }
+
     public static Long shuffle(Long id) {
         Long shufflePart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
         Long nonShufflePart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
@@ -131,7 +141,8 @@ public class Oculus48Id {
             deFormat(value);
         }
         catch (Exception e) {
-            throw new RuntimeException("Invalid Oculus48Id formatted value " + value);
+            logger.warn("Invalid Oculus48Id formatted value " + value, e);
+            throw AppCommonErrors.INSTANCE.fieldInvalid("id", "id " + value + " in the request url or body is invalid.").exception();
         }
     }
 }

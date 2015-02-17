@@ -28,8 +28,7 @@ import org.springframework.http.HttpMethod
 @CompileStatic
 class UserLogProcessorImpl implements UserLogProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserLogProcessor.class)
-    private static boolean isEnabled = "true".equalsIgnoreCase(
-            ConfigServiceManager.instance().getConfigValue("common.userlog.enabled"))
+    private static boolean isEnabled = ConfigServiceManager.instance().getConfigValueAsBool("common.userlog.enabled", false)
     private UserLogRepository userLogRepo
 
     @Override

@@ -238,104 +238,116 @@ class UserResourceImpl implements UserResource {
             def resultList = new Results<User>(items: [])
 
             def filterUser = { User user ->
-                def callback = userAuthorizeCallbackFactory.create(user)
-                return RightsScope.with(authorizeService.authorize(callback)) {
-                    if (!AuthorizeContext.hasRights('search')) {
-                        throw AppCommonErrors.INSTANCE.forbidden().exception()
-                    }
+                // csr can see the deleted users
+                // list can see the deeleted users
+                if (!AuthorizeContext.hasScopes('csr') && user.status == UserStatus.DELETED.toString()) {
+                    return Promise.pure(null)
+                }
 
-                    if (!AuthorizeContext.hasScopes('csr') && user.status == UserStatus.DELETED.toString()) {
-                        return Promise.pure(null)
-                    }
+                if (user == null) {
+                    return Promise.pure(user)
+                }
 
-                    if (user == null) {
-                        return Promise.pure(user)
-                    }
+                user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
 
-                    user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
-
-                    if (user != null) {
-                        resultList.items.add(user)
-                        return Promise.pure(user)
-                    } else {
-                        return Promise.pure(null)
-                    }
+                if (user != null) {
+                    resultList.items.add(user)
+                    return Promise.pure(user)
+                } else {
+                    return Promise.pure(null)
                 }
             }
 
-            if (!StringUtils.isEmpty(listOptions.username)) {
-                String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userPersonalInfoService.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
-                    User user = null
-                    return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                        if (AuthorizeContext.hasScopes('csr')) {
-                            return userService.get(userPersonalInfo.userId).then { User existing ->
-                                if (existing.username == userPersonalInfo.getId()) {
-                                    user = existing
-                                    return Promise.pure(Promise.BREAK)
+            // pre-filter. user-id is null so it won't match anything using getOwnedByCurrentUser()
+            return RightsScope.with(authorizeService.authorize(userAuthorizeCallbackFactory.create(new User()))) {
+                if (!AuthorizeContext.hasRights('search') && !AuthorizeContext.hasRights('list')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+                if (!StringUtils.isEmpty(listOptions.username)) {
+                    String canonicalUsername = normalizeService.normalize(listOptions.username)
+                    return userPersonalInfoService.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                        // single result
+                        User user = null
+                        return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                            if (AuthorizeContext.hasScopes('csr')) {
+                                return userService.get(userPersonalInfo.userId).then { User existing ->
+                                    if (existing.username == userPersonalInfo.getId()) {
+                                        user = existing
+                                        return Promise.pure(Promise.BREAK)
+                                    }
+                                    return Promise.pure(null)
                                 }
-                                return Promise.pure(null)
+                            } else {
+                                return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
+                                    if (existing != null && existing.username == userPersonalInfo.getId()) {
+                                        user = existing
+                                        return Promise.pure(Promise.BREAK)
+                                    }
+                                    return Promise.pure(null)
+                                }
                             }
-                        } else {
+                        }.then {
+                            if (user == null) {
+                                return Promise.pure(resultList)
+                            } else {
+                                filterUser(user).then {
+                                    return Promise.pure(resultList)
+                                }
+                            }
+                        }
+                    }
+                } else if (listOptions.groupId != null) {
+                    return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
+                            listOptions.offset).then { Results<UserGroup> userGroupList ->
+                        if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
+                            return Promise.pure(resultList)
+                        }
+                        return Promise.each(userGroupList.items) { UserGroup userGroup ->
+                            return userValidator.validateForGet(userGroup.userId).then(filterUser)
+                        }.then {
+                            return Promise.pure(resultList)
+                        }
+                    }
+                } else if (listOptions.email != null) {
+                    return userPersonalInfoService.searchByEmail(listOptions.email.toLowerCase(java.util.Locale.ENGLISH), null, maximumFetchSize,
+                            0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                        // single result
+                        User user = null
+                        return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
                             return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
-                                if (existing != null && existing.username == userPersonalInfo.getId()) {
+                                UserPersonalInfoLink link = existing?.emails?.find { UserPersonalInfoLink userPersonalInfoLink ->
+                                    return userPersonalInfoLink.isDefault && userPersonalInfoLink.value == userPersonalInfo.getId()
+                                }
+
+                                if (link != null) {
                                     user = existing
                                     return Promise.pure(Promise.BREAK)
                                 }
+
                                 return Promise.pure(null)
                             }
-                        }
-                    }.then {
-                        if (user == null) {
-                            return Promise.pure(resultList)
-                        } else {
-                            filterUser(user).then {
+                        }.then {
+                            if (user == null) {
                                 return Promise.pure(resultList)
+                            } else {
+                                filterUser(user).then {
+                                    return Promise.pure(resultList)
+                                }
                             }
                         }
                     }
-                }
-            } else if (listOptions.groupId != null) {
-                return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
-                        listOptions.offset).then { Results<UserGroup> userGroupList ->
-                    if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
-                        return Promise.pure(resultList)
+                } else {
+                    // list users
+                    if (!AuthorizeContext.hasRights('list')) {
+                        throw AppCommonErrors.INSTANCE.forbidden().exception()
                     }
-                    return Promise.each(userGroupList.items) { UserGroup userGroup ->
-                        return userValidator.validateForGet(userGroup.userId).then(filterUser)
-                    }.then {
-                        return Promise.pure(resultList)
-                    }
-                }
-            } else if (listOptions.email != null) {
-                return userPersonalInfoService.searchByEmail(listOptions.email.toLowerCase(java.util.Locale.ENGLISH), null, maximumFetchSize,
-                        0).then { List<UserPersonalInfo> userPersonalInfoList ->
-                    User user = null
-                    return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                        return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
-                            UserPersonalInfoLink link = existing?.emails?.find { UserPersonalInfoLink userPersonalInfoLink ->
-                                    return userPersonalInfoLink.isDefault && userPersonalInfoLink.value == userPersonalInfo.getId()
-                            }
-
-                            if (link != null) {
-                                user = existing
-                                return Promise.pure(Promise.BREAK)
-                            }
-
-                            return Promise.pure(null)
+                    return userService.getAllUsers(listOptions.limit, listOptions.cursor).then { Results<User> userResults ->
+                        userResults.items = userResults.items.collect { User user ->
+                            userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
                         }
-                    }.then {
-                        if (user == null) {
-                            return Promise.pure(resultList)
-                        } else {
-                            filterUser(user).then {
-                                return Promise.pure(resultList)
-                            }
-                        }
+                        return Promise.pure(userResults)
                     }
                 }
-            } else {
-               throw AppCommonErrors.INSTANCE.parameterRequired('primaryMail').exception()
             }
         }
     }

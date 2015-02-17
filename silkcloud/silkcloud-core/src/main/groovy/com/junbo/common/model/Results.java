@@ -38,6 +38,11 @@ public class Results<T> {
     @JsonIgnore
     private boolean hasNext;
 
+    @JsonIgnore
+    private String nextCursor;
+    @JsonIgnore
+    private boolean usingNextCursor;        // temp variable to co-exist with old skip based cursor
+
     public Link getSelf() {
         return self;
     }
@@ -68,6 +73,22 @@ public class Results<T> {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public String getNextCursor() {
+        return nextCursor;
+    }
+
+    public void setNextCursor(String nextCursor) {
+        this.nextCursor = nextCursor;
+    }
+
+    public boolean isUsingNextCursor() {
+        return usingNextCursor;
+    }
+
+    public void setUsingNextCursor(boolean usingNextCursor) {
+        this.usingNextCursor = usingNextCursor;
     }
 
     public Long getTotal() {

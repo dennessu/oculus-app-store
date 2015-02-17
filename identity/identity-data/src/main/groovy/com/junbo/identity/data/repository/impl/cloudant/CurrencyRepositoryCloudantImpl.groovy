@@ -1,13 +1,13 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Element
-
 /**
  * Created by minhao on 4/24/14.
  */
@@ -46,6 +46,11 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
 
     @Override
     Promise<List<Currency>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        )).then { Results<Currency> results ->
+            return Promise.pure(results.items)
+        }
     }
 }

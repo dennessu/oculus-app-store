@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -23,5 +24,5 @@ public interface UserService {
 
     Promise<List<User>> getActiveUsersWithInvalidVatUser(Integer limit, Integer offset)
 
-    Promise<List<User>> getAllUsers(Integer limit, Integer offset)
+    Promise<Results<User>> getAllUsers(Integer limit, String cursor)
 }

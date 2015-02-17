@@ -1,5 +1,4 @@
 package com.junbo.common.id.util
-
 import com.junbo.common.enumid.EnumId
 import com.junbo.common.id.CloudantId
 import com.junbo.common.id.Id
@@ -18,7 +17,6 @@ import org.springframework.core.type.filter.AssignableTypeFilter
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 /**
  * IdUtil.
  */

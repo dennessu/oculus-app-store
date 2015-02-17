@@ -5,6 +5,8 @@
  */
 package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
+import com.junbo.common.model.Results
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
@@ -47,7 +49,9 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
             return queryView(view, key, pagination?.page, pagination?.size, false)
         }
         else {
-            return cloudantGetAll(null, null, false)
+            return cloudantGetAll(new CloudantViewQueryOptions()).then { Results<EmailTemplate> results ->
+                return Promise.pure(results.items)
+            }
         }
     }
 

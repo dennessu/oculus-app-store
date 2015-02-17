@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.id.DeviceId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,4 +20,6 @@ public interface DeviceService {
     Promise<Void> delete(DeviceId id)
 
     Promise<Device> searchBySerialNumber(String externalRef)
+
+    Promise<Results<Device>> listAll(int limit, int offset)
 }

@@ -1,14 +1,14 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by haomin on 14-4-11.
  */
@@ -58,7 +58,10 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
     }
 
     @Override
-    Promise<List<User>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+    Promise<Results<User>> searchAll(Integer limit, String cursor) {
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                cursor: cursor
+        ))
     }
 }

@@ -46,13 +46,16 @@
     "country": {
       "views": {
         "by_default_currency": {
-          "map": "function(doc) {emit(doc.defaultCurrency, doc._id)}"
-        },
+          "map": "function(doc) {emit(doc.defaultCurrency, doc._id)}",
+          "reduce": "_count"
+        }, 
         "by_default_locale": {
-          "map": "function(doc) {emit(doc.defaultLocale, doc._id)}"
-        },
+          "map": "function(doc) {emit(doc.defaultLocale, doc._id)}",
+          "reduce": "_count"
+        }, 
         "by_default_locale_currency": {
-          "map": "function(doc) {emit([doc.defaultCurrency, doc.defaultLocale], doc._id)}"
+          "map": "function(doc) {emit([doc.defaultCurrency, doc.defaultLocale], doc._id)}",
+          "reduce": "_count"
         }
       }
     },
@@ -67,7 +70,8 @@
     "device_type": {
       "views": {
         "by_type_code": {
-          "map": "function(doc) {  emit(doc.typeCode, doc._id)}"
+          "map": "function(doc) {  emit(doc.typeCode, doc._id)}",
+          "reduce": "_count"
         }
       }
     },
@@ -147,10 +151,12 @@
     "group": {
       "views": {
         "by_organization_id_and_name": {
-          "map": "function(doc) {  emit([doc.organizationId, doc.name], doc._id)}"
+          "map": "function(doc) {  emit([doc.organizationId, doc.name], doc._id)}",
+          "reduce": "_count"
         },
         "by_organization_id": {
-          "map": "function(doc) {  emit(doc.organizationId, doc._id)}"
+          "map": "function(doc) {  emit(doc.organizationId, doc._id)}",
+          "reduce": "_count"
         }
       }
     },
@@ -247,7 +253,8 @@
     "pitype": {
       "views": {
         "by_typeCode": {
-          "map": "function(doc) {  emit(doc.typeCode, doc._id)}"
+          "map": "function(doc) {  emit(doc.typeCode, doc._id)}",
+            "reduce": "_count"
         }
       }
     },
@@ -317,49 +324,64 @@
     "tos": {
         "views": {
             "by_title" : {
-                "map": "function(doc) { emit(doc.title, doc._id)}"
+                "map": "function(doc) { emit(doc.title, doc._id)}",
+                "reduce": "_count"
             },
             "by_type": {
-                "map": "function(doc) { emit(doc.type, doc._id)}"
+                "map": "function(doc) { emit(doc.type, doc._id)}",
+                "reduce": "_count"
             },
             "by_state": {
-                "map": "function(doc) { emit(doc.state, doc._id)}"
+                "map": "function(doc) { emit(doc.state, doc._id)}",
+                "reduce": "_count"
             },
             "by_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit(doc.countries[i], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit(doc.countries[i], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_title_type": {
-                "map": "function(doc) { emit([doc.title, doc.type], doc._id)}"
+                "map": "function(doc) { emit([doc.title, doc.type], doc._id)}",
+                "reduce": "_count"
             },
             "by_title_state": {
-                "map": "function(doc) { emit([doc.title, doc.state], doc._id)}"
+                "map": "function(doc) { emit([doc.title, doc.state], doc._id)}",
+                "reduce": "_count"
             },
             "by_title_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_type_state": {
-                "map": "function(doc) { emit([doc.type, doc.state], doc._id)}"
+                "map": "function(doc) { emit([doc.type, doc.state], doc._id)}",
+                "reduce": "_count"
             },
             "by_type_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_state_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.state, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.state, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_title_type_state": {
-                "map": "function(doc) { emit([doc.title, doc.type, doc.state], doc._id)}"
+                "map": "function(doc) { emit([doc.title, doc.type, doc.state], doc._id)}",
+                "reduce": "_count"
             },
             "by_title_type_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_title_state_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.state, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.state, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_type_state_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.state, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.state, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             },
             "by_title_type_state_country": {
-                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.state, doc.countries[i]], doc._id)}}}"
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.state, doc.countries[i]], doc._id)}}}",
+                "reduce": "_count"
             }
         }
     },
@@ -490,23 +512,28 @@
     "user_optin": {
       "views": {
         "by_communication_id": {
-          "map": "function(doc) {  emit(doc.communicationId, doc._id)}"
-        },
+          "map": "function(doc) {  emit(doc.communicationId, doc._id)}",
+            "reduce": "_count"
+        }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
-        },
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
+        }, 
         "by_user_id_communication_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.communicationId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.communicationId], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_password": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
@@ -523,81 +550,96 @@
     "user_pin": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_security_question": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {    emit(doc.userId, doc._id)}"
+          "map": "function(doc) {    emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_security_question_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_security_question_id_time": {
-          "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_phone": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_mail": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_phone_back_up_code": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_active": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_phone_back_up_code_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_code_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_tfa_id_time": {
-          "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tos": {
       "views": {
         "by_tos_id": {
-          "map": "function(doc) {  emit(doc.tosId, doc._id)}"
-        },
+          "map": "function(doc) {  emit(doc.tosId, doc._id)}",
+            "reduce": "_count"
+        }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         },
         "by_user_id_tos_id": {
-          "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}"
+          "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}",
+            "reduce": "_count"
         }
       }
     },

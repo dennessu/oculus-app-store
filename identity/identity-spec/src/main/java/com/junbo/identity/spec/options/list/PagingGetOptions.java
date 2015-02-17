@@ -20,15 +20,28 @@ public class PagingGetOptions {
     }
 
     public Integer getOffset() {
-        return offset;
+        return cursor == null ? null : Integer.parseInt(cursor);
     }
 
     public void setOffset(Integer offset) {
-        this.offset = offset;
+        if (offset == null) {
+            cursor = null;
+        } else {
+            cursor = offset.toString();
+        }
+    }
+
+    public String getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
     }
 
     @QueryParam("count")
     private Integer limit;
+
     @QueryParam("cursor")
-    private Integer offset;
+    private String cursor;
 }

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response.ResponseBuilder
  */
 @CompileStatic
 class CookieUtil {
-    static boolean SECURE = Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('oauth.cookie.secure'))
+    static boolean SECURE = ConfigServiceManager.instance().getConfigValueAsBool('oauth.cookie.secure', false)
 
     static void setCookie(ActionContext context, String cookieName,
                           String value, int maxAge = NewCookie.DEFAULT_MAX_AGE, boolean httpOnly = true) {

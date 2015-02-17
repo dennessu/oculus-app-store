@@ -121,15 +121,10 @@ class JunboApplication {
 
         @Override
         protected void doClose() {
-            String gracePeriod = ConfigServiceManager.instance().getConfigValue('apphost.gracePeriod')
-            if (gracePeriod == null) {
-                gracePeriod = '30'
-            }
-
-            Long period = Long.parseLong(gracePeriod)
-            LOGGER.info("Wait $period seconds before shutdown, put the service offline right now.")
+            int gracePeriod = ConfigServiceManager.instance().getConfigValueAsInt('apphost.gracePeriod', 30);
+            LOGGER.info("Wait $gracePeriod seconds before shutdown, put the service offline right now.")
             HealthEndpoint.serviceOnline = false
-            Thread.sleep(period * 1000)
+            Thread.sleep(gracePeriod * 1000)
             super.doClose()
         }
     }

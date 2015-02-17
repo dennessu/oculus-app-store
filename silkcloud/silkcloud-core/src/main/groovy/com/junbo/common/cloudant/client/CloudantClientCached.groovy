@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.model.CloudantQueryResult
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.CloudantId
 import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.configuration.ConfigService
@@ -41,18 +42,12 @@ class CloudantClientCached implements CloudantClientInternal {
     private CloudantClientCached() {
         ConfigService configService = ConfigServiceManager.instance()
 
-        String strMaxEntitySize = configService.getConfigValue("common.cloudant.cache.maxentitysize")
-        String strExpiration = configService.getConfigValue("common.cloudant.cache.expiration")
-        String strExpirationMap = configService.getConfigValue("common.cloudant.cache.expiration.map")
-        String strStoreViewResults = configService.getConfigValue("common.cloudant.cache.storeviewresults")
-        String strRetryAddForSnifferDelete = configService.getConfigValue("common.cloudant.cache.retryAddForSnifferDelete")
-
-        this.expiration = safeParseInt(strExpiration)
-        this.expirationMap = parseExpirationMap(strExpirationMap)
-        this.maxEntitySize = safeParseInt(strMaxEntitySize)
-        this.storeViewResults = strStoreViewResults == "true"
+        this.expiration = configService.getConfigValueAsInt("common.cloudant.cache.expiration", null)
+        this.expirationMap = parseExpirationMap(configService.getConfigValue("common.cloudant.cache.expiration.map"))
+        this.maxEntitySize = configService.getConfigValueAsInt("common.cloudant.cache.maxentitysize", null)
+        this.storeViewResults = configService.getConfigValueAsBool("common.cloudant.cache.storeviewresults", false)
         this.currentDc = DataCenters.instance().currentDataCenter()
-        this.retryAddForSnifferDelete = Boolean.parseBoolean(strRetryAddForSnifferDelete)
+        this.retryAddForSnifferDelete = configService.getConfigValueAsBool("common.cloudant.cache.retryAddForSnifferDelete", false)
     }
 
     @Override
@@ -117,56 +112,26 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        Promise<CloudantQueryResult> future = impl.cloudantGetAll(dbUri, entityClass, limit, skip, descending, includeDocs)
-        if (includeDocs && storeViewResults) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, CloudantViewQueryOptions options) {
+        Promise<CloudantQueryResult> future = impl.cloudantGetAll(dbUri, entityClass, options);
+        if (options.includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, key, limit, skip, descending, includeDocs)
-        if (includeDocs && storeViewResults) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, CloudantViewQueryOptions options) {
+        Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, options)
+        if (options.includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, startKey, endKey, limit, skip, descending, includeDocs)
-        if (includeDocs && storeViewResults) {
-            future = updateCache(dbUri, entityClass, future)
-        }
-        return future
-    }
-
-    @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, Object[] startKey, Object[] endKey,
-                                                                          boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
-        if (includeDocs && storeViewResults) {
-            future = updateCache(dbUri, entityClass, future)
-        }
-        return future
-    }
-
-    @Override
-    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
-        return impl.queryViewTotal(dbUri, key, viewName)
-    }
-
-    @Override
-    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, boolean descending) {
-        return impl.queryViewTotal(dbUri, viewName, startKey, endKey, withHighKey, descending)
-    }
-
-    @Override
-    def <T extends CloudantEntity> Promise<Integer> queryViewCount(CloudantDbUri dbUri, Class<T> entityClass,
-                             Object[] startKey, Object[] endKey, String viewName, boolean withHighKey, boolean descending, Integer limit, Integer skip) {
-        return impl.queryViewCount(dbUri, entityClass, startKey, endKey, viewName, withHighKey, descending, limit, skip)
+    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String viewName, CloudantViewQueryOptions options) {
+        return impl.queryViewTotal(dbUri, viewName, options)
     }
 
     @Override

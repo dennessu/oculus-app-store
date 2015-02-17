@@ -1,7 +1,9 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.TosId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.TosRepository
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.langur.core.promise.Promise
@@ -34,7 +36,12 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        )).then { Results<Tos> results ->
+            return Promise.pure(results.items)
+        }
     }
 
     @Override

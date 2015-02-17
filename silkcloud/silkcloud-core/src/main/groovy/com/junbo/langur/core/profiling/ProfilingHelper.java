@@ -53,13 +53,13 @@ public class ProfilingHelper {
     static {
         ConfigService configService = ConfigServiceManager.instance();
 
-        profilingLoggerEnabled = Boolean.parseBoolean(configService.getConfigValue("common.profiling.loggerEnabled"));
+        profilingLoggerEnabled = configService.getConfigValueAsBool("common.profiling.loggerEnabled", false);
 
-        String defaultThresholdConfig = configService.getConfigValue("common.profiling.defaultThreshold");
-        String defaultWarnThresholdConfig = configService.getConfigValue("common.profiling.defaultWarnThreshold");
+        Integer defaultThresholdConfig = configService.getConfigValueAsInt("common.profiling.defaultThreshold", 0);
+        Integer defaultWarnThresholdConfig = configService.getConfigValueAsInt("common.profiling.defaultWarnThreshold", 0);
         defaultThresholds = new Thresholds(
-                Integer.parseInt(defaultThresholdConfig),
-                Integer.parseInt(defaultWarnThresholdConfig));
+                defaultThresholdConfig,
+                defaultWarnThresholdConfig);
 
         String defaultThresholdsPerTypeConfig = configService.getConfigValue("common.profiling.defaultThresholdsPerType");
         for (String defaultThresholdPerType : defaultThresholdsPerTypeConfig.split(",")) {

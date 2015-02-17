@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.common.util
 
+import com.fasterxml.jackson.databind.JsonNode
 import groovy.transform.CompileStatic
 /**
  * Created by liangfu on 3/26/14.
@@ -16,6 +17,7 @@ class FilterUtil {
                 type == String ||
                 type == Date ||
                 Number.isAssignableFrom(type) ||
-                type == UUID
+                type == UUID ||
+                type == JsonNode
     }
 }

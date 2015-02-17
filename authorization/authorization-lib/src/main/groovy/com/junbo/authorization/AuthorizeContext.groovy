@@ -1,15 +1,14 @@
 package com.junbo.authorization
 import com.junbo.common.id.UserId
-import com.junbo.langur.core.track.TrackContext
-import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
+import com.junbo.langur.core.track.TrackContext
+import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.util.StringUtils
 /**
  * Created by Shenhua on 5/14/2014.
  */
@@ -178,15 +177,8 @@ class AuthorizeContext {
     static {
         ConfigService configService = ConfigServiceManager.instance();
         if (configService != null) {
-            String authorizeDisabled = configService.getConfigValue('authorization.lib.service.disabled');
-            if (authorizeDisabled != null) {
-                this.authorizeDisabled = Boolean.parseBoolean(authorizeDisabled);
-            }
-
-            String globalDebugMode = configService.getConfigValue('common.conf.debugMode');
-            if (!StringUtils.isEmpty(globalDebugMode)) {
-                this.globalDebugMode = Boolean.parseBoolean(globalDebugMode);
-            }
+            this.authorizeDisabled = configService.getConfigValueAsBool('authorization.lib.service.disabled', false);
+            this.globalDebugMode = configService.getConfigValueAsBool('common.conf.debugMode', false);
         }
 
         // make it globally available in common-lib

@@ -9,6 +9,7 @@ import com.junbo.common.id.Id;
 import com.junbo.configuration.topo.DataCenters;
 import com.ning.http.client.ProxyServer;
 import groovy.lang.Closure;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -36,6 +37,22 @@ public class Utils {
         try (AutoCloseable scope = closable) {
             return closure.call();
         }
+    }
+
+    public static String decodeBase64(String base64) {
+        return org.apache.commons.codec.binary.StringUtils.newStringUtf8(Base64.decodeBase64(base64));
+    }
+
+    public static String encodeBase64(String content) {
+        return Base64.encodeBase64String(org.apache.commons.codec.binary.StringUtils.getBytesUtf8(content));
+    }
+
+    public static byte[] decodeBase64Buffer(String base64) {
+        return Base64.decodeBase64(base64);
+    }
+
+    public static String encodeBase64Buffer(byte[] buffer) {
+        return Base64.encodeBase64String(buffer);
     }
 
     /**

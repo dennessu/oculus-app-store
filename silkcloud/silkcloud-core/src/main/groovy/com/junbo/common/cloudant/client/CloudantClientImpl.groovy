@@ -11,14 +11,13 @@ import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.cloudant.model.CloudantReduceQueryResult
 import com.junbo.common.cloudant.model.CloudantResponse
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.Utils
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
-import com.junbo.configuration.reloadable.IntegerConfig
-import com.junbo.configuration.reloadable.impl.ReloadableConfigFactory
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.ProxyServer
@@ -34,6 +33,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * CloudantClientImpl.
@@ -45,9 +45,12 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static final String VIEW_PATH   = '/_design/views/_view/'
     private static final String SEARCH_PATH = '/_design/views/_search/'
     private static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
-    private static final String HIGH_KEY_POSTFIX = '\ufff0'
+    private static final String DESIGN_VIEW = '_design/views'
+    private static final Integer SKIP_WARN_THRESHOLD = 1000000
 
     private static CloudantClientImpl singleton = new CloudantClientImpl()
+
+    private Map<String, Boolean> hasViewMap = new ConcurrentHashMap<>()
 
     public static CloudantClientImpl instance() {
         return singleton
@@ -56,12 +59,11 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static JunboAsyncHttpClient asyncHttpClient = JunboAsyncHttpClient.instance()
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
-    private static IntegerConfig writeCount = ReloadableConfigFactory.create("[common.cloudant.writes]", IntegerConfig.class)
-    private static IntegerConfig acceptedRetryCount = ReloadableConfigFactory.create("[common.cloudant.retries]", IntegerConfig.class)
-    private static IntegerConfig acceptedRetryInterval = ReloadableConfigFactory.create("[common.cloudant.retriesInterval]", IntegerConfig.class)
+    private static Integer writeCount = ConfigServiceManager.instance().getConfigValueAsInt("common.cloudant.writes", null)
+    private static Integer acceptedRetryCount = ConfigServiceManager.instance().getConfigValueAsInt("common.cloudant.retries", null)
+    private static Integer acceptedRetryInterval = ConfigServiceManager.instance().getConfigValueAsInt("common.cloudant.retriesInterval", null)
 
     private static Map<String, String> getWriteParam(Map<String, String> initial = null, boolean noOverrideWrites) {
-        Integer writeCount = writeCount.get()
         if (initial == null && writeCount == null) {
             return Collections.emptyMap()
         }
@@ -156,41 +158,50 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        def query = [:]
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, CloudantViewQueryOptions options) {
+        def originalLimit = options.limit
+        def query = fillQueryParams(dbUri, options)
 
-        if (limit != null) {
-            query.put('limit', limit.toString())
-        }
-        if (skip != null) {
-            query.put('skip', skip.toString())
-        }
-        if (descending) {
-            query.put('descending', 'true')
-        }
-        if (includeDocs) {
-            query.put('include_docs', includeDocs.toString())
-        }
+        def hasDesignViewFuture = {
+            def designViewExists = hasViewMap.get(buildGetAllKey(dbUri))
+            if (designViewExists == null) {
+                return queryDesignView(dbUri).then { Boolean queryDesignViewExists ->
+                    designViewExists = queryDesignViewExists
+                    hasViewMap.put(buildGetAllKey(dbUri), designViewExists)
 
-        return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
-            checkViewErrors("get all", dbUri, "_all_docs", response)
-
-            def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
-
-            def list = new ArrayList<>()
-            return Promise.each(result.rows) { CloudantQueryResult.ResultObject row ->
-                if (row.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
-                    return Promise.pure(null)
+                    return Promise.pure(designViewExists)
                 }
-                // tricky: effectively converting ResultObject<String, JsonNode> to ResultObject<String, T>
-                if (includeDocs && row.doc != null) {
-                    row.doc = marshaller.unmarshall(row.doc.toString(), entityClass)
+            }
+            return Promise.pure(designViewExists)
+        }
+
+        return hasDesignViewFuture().then { Boolean designViewExists ->
+            if (designViewExists) {
+                // get 1 extra element to make sure the page with specified limit can be returned
+                // because the query result can contain the design doc
+                query['limit'] = ((Integer)query['limit']) + 1
+            }
+
+            return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
+                checkViewErrors("get all", dbUri, "_all_docs", response)
+
+                def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
+                def list = new ArrayList<>()
+                result.rows.each { CloudantQueryResult.ResultObject row ->
+                    if (row.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
+                        return
+                    }
+                    // tricky: effectively converting ResultObject<String, JsonNode> to ResultObject<String, T>
+                    if (options.includeDocs && row.doc != null) {
+                        row.doc = marshaller.unmarshall(row.doc.toString(), entityClass)
+                    }
+                    if (list.size() < originalLimit) {
+                        list.add(row)
+                    }
                 }
-                list.add(row)
-                return Promise.pure(null)
-            }.then {
+
                 result.rows = list
-                if (result.totalRows != null) {
+                if (result.totalRows != null && designViewExists) {
                     // exclude the _design row
                     result.totalRows = result.totalRows - 1
                 }
@@ -200,98 +211,35 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Integer> queryViewCount(CloudantDbUri dbUri, Class<T> entityClass, Object[] startKey,
-                                    Object[] endKey, String viewName, boolean withHighKey, boolean descending, Integer limit, Integer skip) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, CloudantViewQueryOptions options) {
+        def query = fillQueryParams(dbUri, options)
+        query.put('reduce', 'false')
+
+        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
+            checkViewErrors("query view", dbUri, viewName, response)
+            return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
+        })
+    }
+
+    def Promise<Boolean> queryDesignView(CloudantDbUri dbUri) {
         def query = [:]
-        if ((startKey != null && !descending) || (endKey != null && descending)) {
-            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
-        }
-        if ((endKey != null && !descending) || (startKey != null && descending)) {
-            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
-        }
-        if (descending) {
-            query.put('descending', 'true')
-        }
-        if (limit != null) {
-            query.put('limit', limit.toString())
-        }
-        if (skip != null) {
-            query.put('skip', skip.toString())
-        }
         query.put('include_docs', 'false')
+        query.put('key', "\"$DESIGN_VIEW\"")
+        return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
+            checkViewErrors("query design view", dbUri, "_all_docs", response)
 
-        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-            checkViewErrors("query view", dbUri, viewName, response)
-            CloudantQueryResult cloudantQueryResult = marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass)
-            return Promise.pure(cloudantQueryResult?.rows?.size() == null ? 0 : cloudantQueryResult.rows.size())
-        })
+            def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
+            if (CollectionUtils.isEmpty(result.rows)) {
+                return Promise.pure(false)
+            } else {
+                return Promise.pure(true)
+            }
+        }
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName,
-                                                                          Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        def query = [:]
-        if (limit != null) {
-            query.put('limit', limit.toString())
-        }
-        if ((startKey != null && !descending) || (endKey != null && descending)) {
-            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
-        }
-        if ((endKey != null && !descending) || (startKey != null && descending)) {
-            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
-        }
-        if (skip != null) {
-            query.put('skip', skip.toString())
-        }
-        if (descending) {
-            query.put('descending', 'true')
-        }
-        if (includeDocs) {
-            query.put('include_docs', includeDocs.toString())
-        }
-
-        query.put('reduce', 'false')
-
-        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-            checkViewErrors("query view", dbUri, viewName, response)
-            return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
-        })
-    }
-
-    @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key,
-                                                                          Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        def query = [:]
-        if (key != null) {
-            query.put('key', getEncodeParameterString(key))
-        }
-        if (limit != null) {
-            query.put('limit', limit.toString())
-        }
-        if (skip != null) {
-            query.put('skip', skip.toString())
-        }
-        if (descending) {
-            query.put('descending', 'true')
-        }
-        if (includeDocs) {
-            query.put('include_docs', includeDocs.toString())
-        }
-
-        query.put('reduce', 'false')
-
-        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-            checkViewErrors("query view", dbUri, viewName, response)
-            return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
-        })
-    }
-
-    @Override
-    public Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
-        def query = [:]
-        if (key != null) {
-            query.put('key', getEncodeParameterString(key))
-        }
+    def Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String viewName, CloudantViewQueryOptions options) {
+        def query = fillQueryParams(dbUri, options);
         query.put('include_docs', 'false')
         query.put('reduce', 'true')
 
@@ -305,60 +253,6 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             return Promise.pure(result.rows.get(0).value)
         }
-    }
-
-    @Override
-    public Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, boolean descending) {
-        def query = [:]
-        if ((startKey != null && !descending) || (endKey != null && descending)) {
-            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
-        }
-        if ((endKey != null && !descending) || (startKey != null && descending)) {
-            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
-        }
-        query.put('include_docs', 'false')
-        query.put('reduce', 'true')
-
-        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then { Response response ->
-            checkViewErrors("query view total", dbUri, viewName, response)
-
-            CloudantReduceQueryResult result = marshaller.unmarshall(response.responseBody, CloudantReduceQueryResult)
-            if (CollectionUtils.isEmpty(result.rows) || result.rows.size() != 1) {
-                return Promise.pure(0)
-            }
-
-            return Promise.pure(result.rows.get(0).value)
-        }
-    }
-
-    @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey,
-                                                                          String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        def query = [:]
-        if ((startKey != null && !descending) || (endKey != null && descending)) {
-            query.put('startkey', descending ? "\"$endKey\"" : "\"$startKey\"")
-        }
-        if ((endKey != null && !descending) || (startKey != null && descending)) {
-            query.put('endkey', descending ? "\"$startKey\"" : "\"$endKey\"")
-        }
-        if (limit != null) {
-            query.put('limit', limit.toString())
-        }
-        if (skip != null) {
-            query.put('skip', skip.toString())
-        }
-        if (descending) {
-            query.put('descending', 'true')
-        }
-        if (includeDocs) {
-            query.put('include_docs', includeDocs.toString())
-        }
-        query.put('reduce', 'false')
-
-        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-            checkViewErrors("query view", dbUri, viewName, response)
-            return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
-        })
     }
 
     @Override
@@ -405,8 +299,8 @@ class CloudantClientImpl implements CloudantClientInternal {
             requestBuilder.setBody(payload)
         }
 
-        queryParams?.each { String key, String value ->
-            requestBuilder.addQueryParameter(key, value)
+        queryParams?.each { String key, Object value ->
+            requestBuilder.addQueryParameter(key, Utils.safeToString(value))
         }
 
         if (method == HttpMethod.PUT || method == HttpMethod.POST) {
@@ -424,60 +318,76 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
     }
 
-    private static String buildStartKey(Object[] keys) {
-        if (keys == null) {
-            return null
+    private LinkedHashMap fillQueryParams(CloudantDbUri dbUri, CloudantViewQueryOptions options) {
+        def query = [:]
+
+        if (options.limit == null) {
+            throw AppCommonErrors.INSTANCE.parameterInvalid("limit", "limit is required.").exception();
+        }
+        query.put('limit', options.limit)
+        if (options.skip != null) {
+            if (options.skip > SKIP_WARN_THRESHOLD) {
+                logger.warn("Cloudant query to {} skip {} is too large.", dbUri, options.skip)
+            }
+            query.put('skip', options.skip.toString())
         }
 
-        Object obj = keys.find { Object key ->
-            return key == null
+        if (options.descending) {
+            query.put('descending', 'true')
+
+            // swap startkey and endkey
+            def swapkey = options.startKey
+            options.startKey = options.endKey
+            options.endKey = swapkey
         }
-
-        if (obj != null) {
-            throw new IllegalStateException('startKey cannot contain null value')
+        if (options.includeDocs) {
+            query.put('include_docs', 'true')
         }
-
-        def result = []
-
-        keys.each { Object key ->
-            if (key instanceof String) {
-                result.add(getEncodeParameterString(key))
+        if (options.startKey) {
+            if (options.startKey == options.endKey) {
+                query.put('key', serializeKey(options.startKey))
             } else {
-                result.add(key.toString())
+                query.put('startkey', serializeKey(options.startKey))
+                if (options.endKey) {
+                    query.put('endkey', serializeKey(options.endKey))
+                }
             }
         }
-
-        return '[' + result.join(',') + ']'
+        return query
     }
 
-    private static String buildEndKey(Object[] keys, boolean withHighKey) {
+    private static String serializeKey(Object keys) {
         if (keys == null) {
             return null
         }
 
-        Object obj = keys.find { Object key ->
-            return key == null
-        }
+        if (keys instanceof Object[]) {
+            Object[] keyArray = (Object[])keys;
 
-        if (obj != null) {
-            throw new IllegalStateException('endKey cannot contain null value')
-        }
-
-        def result = []
-
-        keys.each { Object key ->
-            if (key instanceof String) {
-                result.add(getEncodeParameterString(key))
-            } else {
-                result.add(key.toString())
+            Object obj = keyArray.find { Object key ->
+                return key == null
             }
-        }
 
-        if (withHighKey) {
-            result.add('\"' + HIGH_KEY_POSTFIX + '\"')
-        }
+            if (obj != null) {
+                throw new IllegalStateException('startkey or endkey cannot contain null value')
+            }
 
-        return '[' + result.join(',') + ']'
+            def result = []
+            keys.each { Object key ->
+                if (key == CloudantViewQueryOptions.HIGH_KEY) {
+                    result.add("{}")
+                } else {
+                    result.add(getEncodeParameterString(key))
+                }
+            }
+            return '[' + result.join(',') + ']'
+        } else {
+            return getEncodeParameterString(keys)
+        }
+    }
+
+    private static String buildGetAllKey(CloudantDbUri dbUri) {
+        return dbUri.toString() + ':' + DESIGN_VIEW
     }
 
     private static JunboAsyncHttpClient.BoundRequestBuilder getRequestBuilder(HttpMethod method, String uri) {
@@ -508,7 +418,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
             if (response.statusCode == HttpStatus.BAD_REQUEST.value()) {
-                if (cloudantError?.reason == "Invalid bookmark parameter supplied") {
+                if (cloudantError?.reason == "Invalid cursor parameter supplied") {
                     throw AppCommonErrors.INSTANCE.parameterInvalid("cursor").exception();
                 }
                 if (cloudantError?.reason == "Value for limit is too large, must not exceed 200") {
@@ -539,7 +449,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             // log the warning because subsequent GETs and GETs to views may fail.
             logger.warn("Call $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED.")
 
-            Integer localWriteCount = writeCount.get()
+            Integer localWriteCount = writeCount
             if (entity == null || entity.cloudantId == null || writeCount == null) {
                 // no retry logic
             } else {
@@ -553,10 +463,10 @@ class CloudantClientImpl implements CloudantClientInternal {
                 int retry = 0
                 Closure<Promise> retryFunc = null
                 retryFunc = {
-                    Thread.sleep(acceptedRetryInterval.get())
+                    Thread.sleep(acceptedRetryInterval)
                     logger.debug("Retrying GET for $dbUri for ${entity?.cloudantId} due to 202 Accepted response. Retry: $retry")
                     ++retry
-                    if (retry > acceptedRetryCount.get()) {
+                    if (retry > acceptedRetryCount) {
                         logger.warn("Retry count exceeded to wait for $expectedReadResponse response for $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED. Retry: $retry")
                         return Promise.pure(null)
                     }
@@ -599,11 +509,11 @@ class CloudantClientImpl implements CloudantClientInternal {
         return Utils.parseProxyServer(proxyServer);
     }
 
-    public static ProxyServer getProxyServer() {
+    private static ProxyServer getProxyServer() {
         return proxyServer;
     }
 
-    public static String getEncodeParameterString(String raw) {
+    private static String getEncodeParameterString(Object raw) {
         return ObjectMapperProvider.instance().writer().writeValueAsString(raw)
     }
 }
