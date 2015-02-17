@@ -9,9 +9,11 @@ import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.Transaction
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrderId
+import com.junbo.common.util.IdFormatter
 import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
@@ -26,7 +28,6 @@ import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
@@ -218,6 +219,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         if (refunded == null) {
                             throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
+                        createPendingActionFromBalance(order.getId(), refunded)
+
                         BillingAction action = null
                         if (order.totalTax == BigDecimal.ZERO && order.totalAmount == existingOrder.totalAmount &&
                                 existingOrder.totalTax != BigDecimal.ZERO) {
@@ -742,11 +745,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 assert actionResult != null
                 return Promise.pure(actionResult)
             }
-
-            if (balance.status == BalanceStatus.PENDING_RISK_REVIEW.name()) {
-                LOGGER.info("name=Order_Pending_Risk_Review, orderId={}, balanceId={}", order.getId(), balance.getId())
-                createOrderPendingAction(order.getId(), OrderPendingActionType.RISK_REVIEW)
-            }
+            createPendingActionFromBalance(order.getId(), balance)
 
             EventStatus status = BillingEventHistoryBuilder.buildEventStatusFromImmediateSettle(balance)
             switch (status) {
@@ -790,12 +789,26 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
     }
 
-    @Override
-    OrderPendingAction createOrderPendingAction(OrderId orderId, OrderPendingActionType type) {
-        orderRepository.createOrderPendingAction(new OrderPendingAction(
+    private List<OrderPendingAction> createPendingActionFromBalance(OrderId orderId, Balance chargeOrRefundBalance) {
+        List<OrderPendingAction> results = []
+        if (chargeOrRefundBalance.status == BalanceStatus.PENDING_RISK_REVIEW.name()) {
+            LOGGER.info("name=CreateOrderPendingAction, orderId={}, balanceId={}, type={}", IdFormatter.encodeId(orderId), chargeOrRefundBalance.getId(), OrderPendingActionType.RISK_REVIEW)
+            results << orderRepository.createOrderPendingAction(new OrderPendingAction(
+                    orderId: orderId,
+                    completed: false,
+                    actionType: OrderPendingActionType.RISK_REVIEW.name()
+            ))
+        }
+
+        LOGGER.info("name=CreateOrderPendingAction, orderId={}, balanceId={}, balanceType={}, type={}", IdFormatter.encodeId(orderId),
+                chargeOrRefundBalance.getId(), chargeOrRefundBalance.type, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE)
+        results << orderRepository.createOrderPendingAction(new OrderPendingAction(
                 orderId: orderId,
                 completed: false,
-                actionType: type.name()
+                actionType: OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE.name(),
+                properties: Collections.singletonMap(OrderPendingAction.PropertyKey.balanceType, chargeOrRefundBalance.type)
         ))
+        return results
     }
+
 }

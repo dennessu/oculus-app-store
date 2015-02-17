@@ -45,11 +45,6 @@ class DeviceValidatorImpl implements DeviceValidator {
         if (options == null) {
             throw new IllegalArgumentException('options is null')
         }
-
-        if (options.externalRef == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('externalRef').exception()
-        }
-
         return Promise.pure(null)
     }
 

@@ -92,9 +92,7 @@ public final class ExecutorContext {
 
     private static ExecutorService createAsyncThreadPool() {
         ConfigService configService = ConfigServiceManager.instance();
-        String strAsyncPoolSize = configService.getConfigValue("apphost.threadPool.asyncPoolSize");
-
-        int asyncPoolSize = Integer.parseInt(strAsyncPoolSize);
+        int asyncPoolSize = configService.getConfigValueAsInt("apphost.threadPool.asyncPoolSize", 10);
         return Executors.newFixedThreadPool(asyncPoolSize, new AsyncPoolThreadFactory());
     }
 

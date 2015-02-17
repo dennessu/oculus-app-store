@@ -1,6 +1,6 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.LocaleRepository
@@ -8,7 +8,6 @@ import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Element
-
 /**
  * Created by minhao on 4/24/14.
  */
@@ -48,6 +47,9 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
 
     @Override
     Promise<Results<Locale>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false, true)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        ))
     }
 }

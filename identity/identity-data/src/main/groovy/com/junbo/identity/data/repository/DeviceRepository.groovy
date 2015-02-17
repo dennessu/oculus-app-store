@@ -6,6 +6,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.DeviceId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -19,4 +20,7 @@ import groovy.transform.CompileStatic
 interface DeviceRepository extends BaseRepository<Device, DeviceId> {
     @ReadMethod
     Promise<Device> searchBySerialNumber(String externalRef)
+
+    @ReadMethod
+    Promise<Results<Device>> listAll(int limit, int offset)
 }

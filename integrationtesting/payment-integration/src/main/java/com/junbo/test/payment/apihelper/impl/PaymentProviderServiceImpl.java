@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * Created by Cloud on 14-12-23.
  */
 public class PaymentProviderServiceImpl extends HttpClientBase implements PaymentProviderService {
-    private static final String requestUrl = String.format("http://www.facebook.com/payments/generate_token");
+    private static final String requestUrl = String.format("https://www.facebook.com/payments/generate_token");
 
     private static PaymentProviderService instance;
 

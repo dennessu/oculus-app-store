@@ -43,15 +43,11 @@ class JunboMemcachedClient implements InitializingBean {
 
         ConfigService configService = ConfigServiceManager.instance()
 
-        String strEnabled = configService.getConfigValue("common.memcached.enabled")
-        String strTimeout = configService.getConfigValue("common.memcached.timeout")
-        String strCompression = configService.getConfigValue("common.memcached.compressionThreshold")
-
         client.id = "1"
         client.servers = configService.getConfigValue("common.memcached.servers")
-        client.enabled = Boolean.parseBoolean(strEnabled)
-        client.timeout = safeParseInt(strTimeout)
-        client.compressionThreshold = safeParseInt(strCompression)
+        client.enabled = configService.getConfigValueAsBool("common.memcached.enabled", null)
+        client.timeout = configService.getConfigValueAsInt("common.memcached.timeout", null)
+        client.compressionThreshold = configService.getConfigValueAsInt("common.memcached.compressionThreshold", null)
         client.username = configService.getConfigValue("common.memcached.username")
         client.password = configService.getConfigValue("common.memcached.password")
         client.authType = configService.getConfigValue("common.memcached.auth")

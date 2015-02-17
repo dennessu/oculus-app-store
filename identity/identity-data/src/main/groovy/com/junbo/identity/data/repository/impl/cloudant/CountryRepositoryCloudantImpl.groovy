@@ -1,6 +1,7 @@
 package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -65,6 +66,9 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<Results<Country>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false, true)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        ))
     }
 }

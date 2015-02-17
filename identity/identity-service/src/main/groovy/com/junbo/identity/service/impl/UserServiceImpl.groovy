@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.service.UserService
@@ -86,8 +87,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<List<User>> getAllUsers(Integer limit, Integer offset) {
-        return userRepository.searchAll(limit, offset)
+    Promise<Results<User>> getAllUsers(Integer limit, String cursor) {
+        return userRepository.searchAll(limit, cursor)
     }
 
     @Required

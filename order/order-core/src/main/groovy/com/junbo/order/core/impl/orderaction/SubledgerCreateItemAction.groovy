@@ -65,7 +65,6 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
     OfferRevisionResource offerRevisionResource
 
     @Override
-    @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext

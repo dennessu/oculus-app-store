@@ -8,7 +8,7 @@
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "search", "delete"],
+            "rights": ["read", "create", "update", "search", "delete", "list"],
             "scriptType": "SPEL"
         }],
         "identity.search": [{
@@ -29,7 +29,7 @@
         "readonly.service": [
             {
                 "precondition": "true",
-                "rights": [ "read", "search" ],
+                "rights": [ "read", "search", "list" ],
                 "scriptType": "SPEL"
             }
         ]

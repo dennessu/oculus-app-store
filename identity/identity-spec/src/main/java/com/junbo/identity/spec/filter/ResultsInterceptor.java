@@ -19,6 +19,8 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by liangfu on 3/4/14.
@@ -55,9 +57,14 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         Link self = getSelf(responseContext);
         resultList.setSelf(self);
         if (needResetNext(resultList)) {
-            if ((resultList.hasNext())
-                    || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
-                resultList.setNext(getNext(resultList.getTotal(), self));
+            if (resultList.isUsingNextCursor()) {
+                resultList.setNext(getNext(resultList.getNextCursor(), self));
+            } else {
+                // deprecated logic for paging
+                if ((resultList.hasNext())
+                        || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
+                    resultList.setNext(getNext(resultList.getTotal(), self));
+                }
             }
         }
     }
@@ -79,6 +86,47 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         return ref;
     }
 
+    private Link getNext(String cursor, Link self) {
+        if (self == null || StringUtils.isEmpty(self.getHref())) {
+            return null;
+        }
+        if (cursor == null) {
+            return null;
+        }
+        String selfUrl = self.getHref();
+
+        Link next = new Link();
+        next.setId("");
+        next.setHref(replaceCursor(selfUrl, cursor));
+
+        return next;
+    }
+
+    private String replaceCursor(String url, String nextCursor) {
+        if (nextCursor == null) {
+            return null;
+        }
+
+        String nextURL = url;
+        try {
+            nextCursor = URLEncoder.encode(nextCursor, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        if (url.indexOf(CURSOR_FORMAT) == -1) {
+            // no cursor information in current url
+            // append mode
+            nextURL += ("&cursor=" + nextCursor);
+        } else {
+            // Replace mode
+            nextURL = nextURL.replaceAll("&cursor=[^&]*", "&cursor=" + nextCursor);
+        }
+
+        return nextURL;
+    }
+
+    //#region deprecated
     private Link getNext(Long total, Link self) {
         if (self == null || StringUtils.isEmpty(self.getHref())) {
             return null;
@@ -143,6 +191,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         return nextURL;
     }
+    //#endregion
 
     private Boolean needResetNext(Results results) {
         if (CollectionUtils.isEmpty(results.getItems())) {

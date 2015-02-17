@@ -6,7 +6,6 @@
 package com.junbo.langur.core.track;
 
 import com.junbo.configuration.ConfigServiceManager;
-import org.springframework.util.StringUtils;
 
 /**
  * The track context manager to get the singleton TrackContext.
@@ -32,12 +31,7 @@ public class TrackContextManager {
         private boolean isDebugEnabled = resolveDebugEnabled();
 
         private boolean resolveDebugEnabled() {
-            String globalDebugMode = ConfigServiceManager.instance().getConfigValue("common.conf.debugMode");
-            if (!StringUtils.isEmpty(globalDebugMode)) {
-                return Boolean.parseBoolean(globalDebugMode);
-            }
-
-            return false;
+            return ConfigServiceManager.instance().getConfigValueAsBool("common.conf.debugMode", false);
         }
 
         @Override

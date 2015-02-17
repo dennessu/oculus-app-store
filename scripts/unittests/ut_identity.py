@@ -361,8 +361,51 @@ class IdentityTests(ut.TestBase):
         })
         assert len(userAttributeList['results']) == 1
 
+    def testGetAllUsers(self):
+        serviceAuthHeader = {
+            "Authorization": "Bearer " + oauth.getServiceAccessToken('identity.service')
+        }
 
+        users = []
+        for i in range(0, 5):
+            users.append(curlJson('POST', ut.test_uri, '/v1/users', headers=serviceAuthHeader, data={
+                "status": "ACTIVE",
+                "isAnonymous": True,
+                "cor": { "id": "US" }
+            }))
 
+        # use readonly.service
+        serviceAuthHeader = {
+            "Authorization": "Bearer " + curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+                'client_id': 'readonly.service',
+                'client_secret': ut.test_client_secret,
+                'scope': 'readonly.service',
+                'grant_type': 'client_credentials'
+            }, headers = {'oculus-internal': 'true'})['access_token']
+        }
+
+        # there are at least 5 users and the user 5 users we collected are within the users we get through traversal
+        pageSize = 0
+        userResults = curlJson('GET', ut.test_uri, "/v1/users?count=%s" % pageSize, headers=serviceAuthHeader)
+        assert userResults['total'] >= 5
+
+        pageSize = int(userResults['total'] / 3)
+        userResults = curlJson('GET', ut.test_uri, "/v1/users?count=%s" % pageSize, headers=serviceAuthHeader)
+        assert userResults['total'] >= 5
+        assert userResults['next']
+
+        next = userResults['next']
+        while next:
+            userResultsPaged = curlJson('GET', ut.test_uri, next['href'], headers=serviceAuthHeader)
+            assert len(userResultsPaged['results']) == pageSize or userResultsPaged.get('next') is None
+            userResults['results'].extend(userResultsPaged['results'])
+            next = userResultsPaged.get('next')
+
+        print "Found %s results expect %s results" % (len(userResults['results']), userResults['total'])
+        assert userResults['total'] == len(userResults['results'])
+
+        for user in users:
+            assert (x for x in userResults['results'] if lambda u: user['self']['id'] == u['self']['id']).next()
 
 if __name__ == '__main__':
     silkcloud_utmain()

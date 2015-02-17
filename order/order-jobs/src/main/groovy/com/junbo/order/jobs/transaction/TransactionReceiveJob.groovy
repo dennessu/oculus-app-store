@@ -62,8 +62,8 @@ class TransactionReceiveJob {
     @Resource(name = 'userShardAlgorithm')
     private ShardAlgorithm shardAlgorithm;
 
-    @Resource(name = 'orderDiscrepancyProcessor')
-    private DiscrepancyProcessor discrepancyProcessor
+    @Resource(name = 'orderTransactionReceiveProcessor')
+    private TransactionReceiveProcessor transactionReceiveProcessor
 
     private List<String> discrepancyReportColumns;
 
@@ -193,17 +193,16 @@ class TransactionReceiveJob {
         FacebookTransaction facebookTransaction = new FacebookTransaction(
                 txnType: TransactionType.valueOf(fields['txn_type']),
                 providerTxnId: fields['provider_txn_id'],
-                paymentId: fields['payment_id'],
+                fbPaymentId: fields['payment_id'],
                 senderAmount: new BigDecimal(fields['sender_amount']),
                 usdAmount: new BigDecimal(fields['usd_amount']),
                 currency: fields['currency']
         )
 
-        OrderId orderId = getOrderId(facebookTransaction)
-        if (DataCenters.instance().currentDataCenterId() == shardAlgorithm.dataCenterId(orderId.value)) { // only handle transactions on current dc
-            TransactionProcessResult transactionProcessResult = new TransactionProcessResult()
-            transactionProcessResult.discrepancyRecord = discrepancyProcessor.process(orderId, facebookTransaction)
-            transactionProcessResult.processed = true
+        fillOrderId(facebookTransaction)
+        if (DataCenters.instance().currentDataCenterId() == shardAlgorithm.dataCenterId(facebookTransaction.orderId.value)) { // only handle transactions on current dc
+            TransactionProcessResult transactionProcessResult = new TransactionProcessResult(processed: true)
+            transactionReceiveProcessor.process(facebookTransaction, transactionProcessResult)
             return transactionProcessResult
         }
 
@@ -225,7 +224,7 @@ class TransactionReceiveJob {
         }
     }
 
-    private OrderId getOrderId(FacebookTransaction transaction) {
+    private void fillOrderId(FacebookTransaction transaction) {
         if (org.apache.commons.lang3.StringUtils.isEmpty(transaction.providerTxnId)) {
             throw new IllegalArgumentException('providerTxnId is empty')
         }
@@ -234,7 +233,7 @@ class TransactionReceiveJob {
             throw new IllegalArgumentException('Invalid providerTxnId')
         }
 
-        return new OrderId(IdFormatter.decodeId(OrderId, transaction.providerTxnId.substring(index + 1).trim()))
+        transaction.orderId = new OrderId(IdFormatter.decodeId(OrderId, transaction.providerTxnId.substring(index + 1).trim()))
     }
 
     private List<String> toCsvColumns(List<String> fields, DiscrepancyRecord record) {

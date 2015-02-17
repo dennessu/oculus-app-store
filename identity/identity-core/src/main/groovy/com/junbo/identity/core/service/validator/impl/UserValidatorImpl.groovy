@@ -193,10 +193,6 @@ class UserValidatorImpl implements UserValidator {
             if (options.username != null && StringUtils.isEmpty(normalizeService.normalize(options.username))) {
                 throw AppCommonErrors.INSTANCE.parameterInvalid('username', 'username can\'t be empty').exception()
             }
-
-            if (options.username == null && options.groupId == null) {
-                throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId or primaryEmail').exception()
-            }
         } else {
             if (!StringUtils.isEmpty(options.username) || options.groupId != null) {
                 throw AppCommonErrors.INSTANCE.parameterInvalid('primaryEmail', 'primaryEmail can not search together with username and groupId').exception()

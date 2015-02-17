@@ -14,7 +14,7 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum OrderPendingActionType implements Identifiable<Short> {
 
-    FB_TRANSACTION_RECEIVE(0),
+    PAYMENT_TRANSACTION_RECEIVE(0),
     RISK_REVIEW(1);
 
     private OrderPendingActionType(int id) {

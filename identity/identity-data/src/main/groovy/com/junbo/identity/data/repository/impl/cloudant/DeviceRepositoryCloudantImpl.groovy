@@ -1,6 +1,8 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.DeviceId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.langur.core.promise.Promise
@@ -36,5 +38,13 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
         return queryView('by_serial_number', externalRef).then { List<Device> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
+    }
+
+    @Override
+    Promise<Results<Device>> listAll(int limit, int offset) {
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        ))
     }
 }

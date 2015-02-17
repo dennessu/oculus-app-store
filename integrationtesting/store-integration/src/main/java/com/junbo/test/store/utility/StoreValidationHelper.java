@@ -28,12 +28,14 @@ import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -57,6 +59,11 @@ public class StoreValidationHelper extends ValidationHelper {
 
     public StoreValidationHelper(StoreTestDataProvider storeTestDataProvider) {
         this.storeTestDataProvider = storeTestDataProvider;
+    }
+
+    public void verifyCrediCardInstrument(Instrument instrument) {
+        Assert.assertTrue(!StringUtils.isEmpty(instrument.getCreditCardType()));
+        Assert.assertTrue(Pattern.compile("\\d{6}+").matcher(instrument.getIssuerIdentificationNumber()).matches());
     }
 
     public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {

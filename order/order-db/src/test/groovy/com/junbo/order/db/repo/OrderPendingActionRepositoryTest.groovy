@@ -31,10 +31,10 @@ class OrderPendingActionRepositoryTest extends BaseTest {
         def orderIdA = new OrderId(idGenerator.nextId(OrderId))
         def orderIdB = new OrderId(idGenerator.nextId(OrderId))
         List<OrderPendingAction> orderPendingActionList = [
-                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
-                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
                 TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.RISK_REVIEW),
-                TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
                 TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.RISK_REVIEW)
         ]
 
@@ -51,10 +51,10 @@ class OrderPendingActionRepositoryTest extends BaseTest {
         }
 
         // query by order Id
-        def list = sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE).get()
+        def list = sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE).get()
         Assert.assertEquals(list.size(), 2)
         verifyOrderPendingActionList(list, shardAlgorithm.dataCenterId(orderIdA.value), shardAlgorithm.shardId(orderIdA.value),
-                OrderPendingActionType.FB_TRANSACTION_RECEIVE, null, null, false)
+                OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, null, null, false)
 
         list = sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdB, OrderPendingActionType.RISK_REVIEW).get()
         Assert.assertEquals(list.size(), 1)
@@ -64,27 +64,27 @@ class OrderPendingActionRepositoryTest extends BaseTest {
         // query by shard
         int dcId = shardAlgorithm.dataCenterId(orderIdA.value)
         int shardId = shardAlgorithm.shardId(orderIdA.value)
-        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000),
+        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000),
             new PageParam(start: 0, count: 2)).get()
         Assert.assertEquals(list.size(), 2)
-        verifyOrderPendingActionList(list, dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000), true)
+        verifyOrderPendingActionList(list, dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000), true)
 
         Date start = created[0].createdTime
         Date end = created[2].createdTime
-        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE, start, end,
+        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, start, end,
                 new PageParam(start: 0, count: 10)).get()
         Assert.assertEquals(list.size(), 2)
-        verifyOrderPendingActionList(list, dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE, start, end, true)
+        verifyOrderPendingActionList(list, dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, start, end, true)
 
-        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000),
+        list = sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE, null, new Date(System.currentTimeMillis() + 1000),
                 new PageParam(start: 1, count: 1)).get()
         Assert.assertEquals(list.size(), 1)
 
-        Assert.assertEquals(sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE,
+        Assert.assertEquals(sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE,
                 null,
                 new SimpleDateFormat("yyyy-MM-dd").parse('2000-01-01'),
                 new PageParam(start: 0, count: 2)).get().size(), 0)
-        Assert.assertEquals(sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.FB_TRANSACTION_RECEIVE,
+        Assert.assertEquals(sqlOrderPendingActionRepository.listOrderPendingActionsCreateTimeAsc(dcId, shardId, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE,
                 created[0].createdTime,
                 created[0].createdTime,
                 new PageParam(start: 0, count: 2)).get().size(), 0)
@@ -95,9 +95,9 @@ class OrderPendingActionRepositoryTest extends BaseTest {
             updated << sqlOrderPendingActionRepository.update(e, e).get()
         }
 
-        Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE).get().size(), 0)
+        Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE).get().size(), 0)
         Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdA, OrderPendingActionType.RISK_REVIEW).get().size(), 0)
-        Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdB, OrderPendingActionType.FB_TRANSACTION_RECEIVE).get().size(), 0)
+        Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdB, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE).get().size(), 0)
         Assert.assertEquals(sqlOrderPendingActionRepository.getOrderPendingActionsByOrderId(orderIdB, OrderPendingActionType.RISK_REVIEW).get().size(), 0)
     }
 
@@ -106,10 +106,10 @@ class OrderPendingActionRepositoryTest extends BaseTest {
         def orderIdA = new OrderId(idGenerator.nextId(OrderId))
         def orderIdB = new OrderId(idGenerator.nextId(OrderId))
         List<OrderPendingAction> orderPendingActionList = [
-                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
-                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
                 TestHelper.generateOrderPendingAction(orderIdA, OrderPendingActionType.RISK_REVIEW),
-                TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.FB_TRANSACTION_RECEIVE),
+                TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.PAYMENT_TRANSACTION_RECEIVE),
                 TestHelper.generateOrderPendingAction(orderIdB, OrderPendingActionType.RISK_REVIEW)
         ]
 
@@ -118,6 +118,7 @@ class OrderPendingActionRepositoryTest extends BaseTest {
         try {
             orderPendingActionList.each { OrderPendingAction action ->
                 action.setId(new OrderPendingActionId(idGenerator.nextId(OrderPendingActionId, action.orderId.value)))
+                action.createdTime = new Date()
                 created << cloudantOrderPendingActionRepository.create(action).get()
             }
 

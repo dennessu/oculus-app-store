@@ -101,15 +101,21 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Results<Device>> list(DeviceListOptions listOptions) {
         return deviceValidator.validateForSearch(listOptions).then {
-            def resultList = new Results<Device>(items: [])
-            return deviceService.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
-                if (newDevice != null) {
-                    newDevice = deviceFilter.filterForGet(newDevice, listOptions.properties?.split(',') as List<String>)
-                    resultList.total = 1
-                    resultList.items.add(newDevice)
-                }
+            if (listOptions.externalRef != null) {
+                def resultList = new Results<Device>(items: [])
+                return deviceService.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
+                    if (newDevice != null) {
+                        newDevice = deviceFilter.filterForGet(newDevice, listOptions.properties?.split(',') as List<String>)
+                    }
 
-                return Promise.pure(resultList)
+                    if (newDevice != null) {
+                        resultList.items.add(newDevice)
+                    }
+
+                    return Promise.pure(resultList)
+                }
+            } else {
+                return deviceService.listAll(listOptions.limit, listOptions.offset)
             }
         }    
     }

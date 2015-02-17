@@ -1,13 +1,12 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * Created by haomin on 14-4-25.
  */
@@ -52,6 +51,9 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
 
     @Override
     Promise<Results<PIType>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false, true)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        ))
     }
 }

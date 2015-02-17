@@ -54,6 +54,22 @@ public interface ConfigService {
     String getConfigValue(String configKey);
 
     /**
+     * Resolve the configuration property value by config key.
+     *
+     * @param configKey The property key.
+     * @return The property value.
+     */
+    Integer getConfigValueAsInt(String configKey, Integer defaultValue);
+
+    /**
+     * Resolve the configuration property value by config key.
+     *
+     * @param configKey The property key.
+     * @return The property value.
+     */
+    Boolean getConfigValueAsBool(String configKey, Boolean defaultValue);
+
+    /**
      * Get all effective configuration items.
      *
      * @return The property bag containing all effective configuration items.

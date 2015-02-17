@@ -9,7 +9,6 @@ import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.promise.LocatableExecutorService;
 import com.junbo.langur.core.promise.Looper;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,25 +34,12 @@ public class JunboThreadPool extends FixedThreadPool implements LocatableExecuto
                     }
                 });
 
-        int corePoolSize = AbstractThreadPool.DEFAULT_MIN_THREAD_COUNT;
-        int maxPoolSize = AbstractThreadPool.DEFAULT_MAX_THREAD_COUNT;
-        int keepAliveTimeMillis = AbstractThreadPool.DEFAULT_IDLE_THREAD_KEEPALIVE_TIMEOUT;
-        int queueLimit = AbstractThreadPool.DEFAULT_MAX_TASKS_QUEUED;
-
         ConfigService configService = ConfigServiceManager.instance();
-        String strMaxPoolSize = configService.getConfigValue("apphost.threadPool.maxPoolSize");
-        String strKeepAliveTimeMillis = configService.getConfigValue("apphost.threadPool.keepAliveTimeMillis");
-        String strQueueLimit = configService.getConfigValue("apphost.threadPool.queueLimit");
 
-        if (!StringUtils.isEmpty(strMaxPoolSize)) {
-            maxPoolSize = Integer.parseInt(strMaxPoolSize);
-        }
-        if (!StringUtils.isEmpty(strKeepAliveTimeMillis)) {
-            keepAliveTimeMillis = Integer.parseInt(strKeepAliveTimeMillis);
-        }
-        if (!StringUtils.isEmpty(strQueueLimit)) {
-            queueLimit = Integer.parseInt(strQueueLimit);
-        }
+        int corePoolSize = AbstractThreadPool.DEFAULT_MIN_THREAD_COUNT;
+        int maxPoolSize = configService.getConfigValueAsInt("apphost.threadPool.maxPoolSize", AbstractThreadPool.DEFAULT_MAX_THREAD_COUNT);
+        int keepAliveTimeMillis = configService.getConfigValueAsInt("apphost.threadPool.keepAliveTimeMillis", AbstractThreadPool.DEFAULT_IDLE_THREAD_KEEPALIVE_TIMEOUT);
+        int queueLimit = configService.getConfigValueAsInt("apphost.threadPool.queueLimit", AbstractThreadPool.DEFAULT_MAX_TASKS_QUEUED);
 
         ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig();
 

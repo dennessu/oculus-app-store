@@ -41,18 +41,18 @@ public class JunboAsyncHttpClient implements Closeable {
 
         AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
         NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
-        int maxHeadersSize = Integer.parseInt(configService.getConfigValue("common.client.maxHeadersSize"));
+        int maxHeadersSize = configService.getConfigValueAsInt("common.client.maxHeadersSize", 32*1024);
         nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTP_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
         nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTPS_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
 
-        config.setConnectionTimeOutInMs(Integer.parseInt(configService.getConfigValue("common.client.connectionTimeout")));
-        config.setRequestTimeoutInMs(Integer.parseInt(configService.getConfigValue("common.client.requestTimeout")));
-        config.setMaxConnectionPerHost(Integer.parseInt(configService.getConfigValue("common.client.maxConnectionPerHost")));
+        config.setConnectionTimeOutInMs(configService.getConfigValueAsInt("common.client.connectionTimeout", null));
+        config.setRequestTimeoutInMs(configService.getConfigValueAsInt("common.client.requestTimeout", null));
+        config.setMaxConnectionPerHost(configService.getConfigValueAsInt("common.client.maxConnectionPerHost", null));
         config.setCompressionEnabled(true);
         config.setProviderConfig(nettyConfig);
 
         this.asyncHttpClient = new AsyncHttpClient(new UTF8NettyAsyncHttpProvider(config), config);
-        this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
+        this.isDebugMode = configService.getConfigValueAsBool("common.conf.debugMode", false);
     }
 
     public AsyncHttpClient getAsyncHttpClient() {

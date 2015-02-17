@@ -32,7 +32,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     private Class entityType
 
     private PendingActionRepository sqlPendingActionRepository
-    private PendingActionRepository cloudantPendingActionRepository
 
     private boolean ignoreDualWriteErrors;
 
@@ -58,10 +57,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
 
     public void setSqlPendingActionRepository(PendingActionRepository sqlPendingActionRepository) {
         this.sqlPendingActionRepository = sqlPendingActionRepository
-    }
-
-    public void setCloudantPendingActionRepository(PendingActionRepository cloudantPendingActionRepository) {
-        this.cloudantPendingActionRepository = cloudantPendingActionRepository
     }
 
     void setIgnoreDualWriteErrors(boolean ignoreDualWriteErrors) {

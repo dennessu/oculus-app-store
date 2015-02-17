@@ -1,13 +1,13 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserAttributeDefinitionId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserAttributeDefinitionRepository
 import com.junbo.identity.spec.v1.model.UserAttributeDefinition
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * Created by xiali_000 on 2014/12/19.
  */
@@ -38,7 +38,12 @@ class UserAttributeDefinitionRepositoryCloudantImpl
 
     @Override
     Promise<List<UserAttributeDefinition>> getAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset
+        )).then { Results<UserAttributeDefinition> results ->
+            return Promise.pure(results.items)
+        }
     }
 
     @Override

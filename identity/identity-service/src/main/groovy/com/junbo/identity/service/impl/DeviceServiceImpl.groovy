@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.id.DeviceId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.service.DeviceService
 import com.junbo.identity.spec.v1.model.Device
@@ -38,6 +39,11 @@ class DeviceServiceImpl implements DeviceService {
     @Override
     Promise<Device> searchBySerialNumber(String externalRef) {
         return deviceRepository.searchBySerialNumber(externalRef)
+    }
+
+    @Override
+    Promise<Results<Device>> listAll(int limit, int offset) {
+        return deviceRepository.listAll(limit, offset)
     }
 
     @Required

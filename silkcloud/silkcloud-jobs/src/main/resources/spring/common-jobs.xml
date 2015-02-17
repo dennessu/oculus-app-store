@@ -79,6 +79,7 @@
                 <!-- not dual-write to cloudant entry key="com.junbo.order.spec.model.PreorderUpdateHistory" value-ref="cloudantPreorderUpdateHistoryRepository" /-->
                 <entry key="com.junbo.order.spec.model.Subledger" value-ref="cloudantSubledgerRepository" />
                 <entry key="com.junbo.order.spec.model.SubledgerItem" value-ref="cloudantSubledgerItemRepository" />
+                entry key="com.junbo.order.spec.model.OrderPendingAction" value-ref="cloudantOrderPendingActionRepository" />
                 <entry key="com.junbo.payment.spec.model.CreditCardDetail" value-ref="cloudantCreditCardDetailRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentEvent" value-ref="cloudantPaymentEventRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentInstrument" value-ref="cloudantPaymentInstrumentRepository" />

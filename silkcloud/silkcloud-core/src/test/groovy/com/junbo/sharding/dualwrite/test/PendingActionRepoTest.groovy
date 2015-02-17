@@ -5,13 +5,11 @@
  */
 
 package com.junbo.sharding.dualwrite.test
-
 import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
-import com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl
 import com.junbo.sharding.dualwrite.data.PendingActionRepositorySqlImpl
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,10 +42,6 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
     @Qualifier("pendingActionSqlRepo")
     private PendingActionRepositorySqlImpl pendingActionSqlRepo;
 
-    @Autowired
-    @Qualifier("pendingActionCloudantRepo")
-    private PendingActionRepositoryCloudantImpl pendingActionCloudantRepo;
-
     @Test
     public void testPendingActionSqlRepository() {
         def impl = pendingActionSqlRepo
@@ -57,21 +51,6 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
 
         impl.hardDelete = !impl.hardDelete
         logger.info("SQL Repository with hardDelete: ${impl.hardDelete}")
-
-        testPendingActionRepository(impl)
-
-        impl.hardDelete = !impl.hardDelete
-    }
-
-    @Test
-    public void testPendingActionCloudantRepository() {
-        def impl = pendingActionCloudantRepo
-        logger.info("Cloudant Repository with hardDelete: ${impl.hardDelete}")
-
-        testPendingActionRepository(impl)
-
-        impl.hardDelete = !impl.hardDelete
-        logger.info("Cloudant Repository with hardDelete: ${impl.hardDelete}")
 
         testPendingActionRepository(impl)
 

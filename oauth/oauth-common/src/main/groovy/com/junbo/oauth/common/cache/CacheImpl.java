@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class CacheImpl implements Cache, InitializingBean {
 
-    public static boolean cacheEnabled = Boolean.valueOf(ConfigServiceManager.instance().getConfigValue("oauth.common.cacheEnabled"));
+    public static boolean cacheEnabled = ConfigServiceManager.instance().getConfigValueAsBool("oauth.common.cacheEnabled", false);
 
     private Ehcache internal;
 

@@ -34,7 +34,7 @@ class CloudantIdGenerator {
     static {
         ConfigService configService = ConfigServiceManager.instance()
         cloudantGlobalUri = new CloudantGlobalUri(configService.getConfigValue("common.cloudant.url"))
-        batchSize = Integer.parseInt(configService.getConfigValue("common.cloudant.bulk.idBatchSize"))
+        batchSize = configService.getConfigValueAsInt("common.cloudant.bulk.idBatchSize", null)
         cloudantDbUri = new CloudantDbUri(cloudantUri: cloudantGlobalUri.currentDcUri)
     }
 

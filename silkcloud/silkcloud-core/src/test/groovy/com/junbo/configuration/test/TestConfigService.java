@@ -3,10 +3,10 @@ package com.junbo.configuration.test;
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigService oldInstance;
@@ -34,6 +34,24 @@ public class TestConfigService implements ConfigService, AutoCloseable {
     @Override
     public String getConfigValue(String configKey) {
         return properties.get(configKey);
+    }
+
+    @Override
+    public Integer getConfigValueAsInt(String configKey, Integer defaultValue) {
+        String value = getConfigValue(configKey);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    public Boolean getConfigValueAsBool(String configKey, Boolean defaultValue) {
+        String value = getConfigValue(configKey);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value);
     }
 
     @Override

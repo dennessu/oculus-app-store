@@ -505,10 +505,12 @@ public class StoreCommerceTesting extends BaseTestClass {
         //add new credit card to user
 
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        validationHelper.verifyCrediCardInstrument(instrumentUpdateResponse.getBillingProfile().getInstruments().get(0));
         //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
         InstrumentUpdateResponse instrumentUpdateResponse2 = testDataProvider.CreateCreditCard(uid);
+        validationHelper.verifyCrediCardInstrument(instrumentUpdateResponse2.getBillingProfile().getInstruments().get(0));
         //get payment id in billing profile
         PaymentInstrumentId paymentId2 = instrumentUpdateResponse2.getBillingProfile().getInstruments().get(1).getSelf();
 
@@ -520,6 +522,7 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
+        validationHelper.verifyCrediCardInstrument(preparePurchaseResponse.getInstrument());
         OrderId orderId = preparePurchaseResponse.getOrder();
         validationHelper.verifyPreparePurchase(preparePurchaseResponse, true, null);
 

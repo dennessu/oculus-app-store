@@ -6,6 +6,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -25,5 +26,5 @@ interface UserRepository extends BaseRepository<User, UserId> {
     Promise<List<User>> searchInvalidVatUser(Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<User>> searchAll(Integer limit, Integer offset)
+    Promise<Results<User>> searchAll(Integer limit, String cursor)
 }

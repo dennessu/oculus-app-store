@@ -1,6 +1,6 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.cloudant.model.CloudantViewQueryOptions
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -11,7 +11,6 @@ import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 5/22/14.
  */
@@ -70,6 +69,10 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
 
     @Override
     Promise<Results<Organization>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false, true)
+        return cloudantGetAll(new CloudantViewQueryOptions(
+                limit: limit,
+                skip: offset,
+                includeDocs: true
+        ))
     }
 }

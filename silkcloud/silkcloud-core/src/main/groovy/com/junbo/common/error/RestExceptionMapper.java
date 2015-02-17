@@ -52,7 +52,7 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
         }
 
         // other exceptions
-        if ("true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"))) {
+        if (configService.getConfigValueAsBool("common.conf.debugMode", false)) {
             return AppCommonErrors.INSTANCE.internalServerError(e).exception().getResponse();
         }
         return AppCommonErrors.INSTANCE.internalServerError().exception().getResponse();
